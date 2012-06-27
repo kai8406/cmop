@@ -1,0 +1,127 @@
+package com.sobey.mvc.service.account;
+
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sobey.mvc.dao.account.GroupDao;
+import com.sobey.mvc.dao.account.UserDao;
+import com.sobey.mvc.entity.account.Group;
+import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.service.ServiceException;
+
+/**
+ * 安全相关实体的管理类,包括用户和权限组.
+ * 
+ * @author calvin
+ */
+// Spring Bean的标识.
+@Component
+// 默认将类中的所有public函数纳入事务管理.
+@Transactional(readOnly = true)
+public class AccountManager {
+
+	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
+
+	private UserDao userDao;
+	private GroupDao groupDao;
+	private ShiroDbRealm shiroRealm;
+
+	// -- User Manager --//
+	public User getUser(Long id) {
+		return userDao.findOne(id);
+	}
+
+	@Transactional(readOnly = false)
+	public void saveUser(User entity) {
+		userDao.save(entity);
+		shiroRealm.clearCachedAuthorizationInfo(entity.getLoginName());
+	}
+
+	/**
+	 * 删除用户,如果尝试删除超级管理员将抛出异常.
+	 */
+	@Transactional(readOnly = false)
+	public void deleteUser(Long id) {
+		if (isSupervisor(id)) {
+			logger.warn("操作员{}尝试删除超级管理员用户", SecurityUtils.getSubject()
+					.getPrincipal());
+			throw new ServiceException("不能删除超级管理员用户");
+		}
+		userDao.delete(id);
+	}
+
+	/**
+	 * 判断是否超级管理员.
+	 */
+	private boolean isSupervisor(Long id) {
+		return id == 1;
+	}
+
+	public Page<User> getAllUser(int page, int size) {
+		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
+				"id"));
+		return userDao.findAll(pageable);
+	}
+
+	public User findUserByLoginName(String loginName) {
+		return userDao.findByLoginName(loginName);
+	}
+	
+	public Group findGroupByName(String name){
+		return groupDao.findByName(name);
+		
+	}
+
+	// -- Group Manager --//
+	public Group getGroup(Long id) {
+		return groupDao.findOne(id);
+	}
+
+	public List<Group> getAllGroup() {
+		return (List<Group>) groupDao.findAll((new Sort(Direction.ASC, "id")));
+	}
+	
+	public Page<Group> getAllGroup(int page, int size) {
+		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
+				"id"));
+		return groupDao.findAll(pageable);
+	}
+
+	@Transactional(readOnly = false)
+	public void saveGroup(Group entity) {
+		groupDao.save(entity);
+		shiroRealm.clearAllCachedAuthorizationInfo();
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteGroup(Long id) {
+		groupDao.delete(id);
+		shiroRealm.clearAllCachedAuthorizationInfo();
+	}
+
+	@Autowired
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	@Autowired
+	public void setGroupDao(GroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
+
+	@Autowired(required = false)
+	public void setShiroRealm(ShiroDbRealm shiroRealm) {
+		this.shiroRealm = shiroRealm;
+	}
+}

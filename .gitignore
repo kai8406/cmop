@@ -1,0 +1,11 @@
+log
+target
+.settings
+.classpath
+.project
+.springBeans
+.DS_Store
+.externalToolBuilders
+.gitattributes
+*~
+/.git

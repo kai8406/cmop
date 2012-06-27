@@ -1,0 +1,22 @@
+﻿为公司搭的一个框架.
+
+3S:Spring Framework 3.1, Spring-Data-JPA 1.1,Apche Shiro 1.2
+
+主要借鉴了Springside4.
+
+数据放在sql下的mysql文件下
+
+
+编译好后
+
+run command
+
+$ mvn clean test -P mysql
+$ mvn clean eclipse:clean eclipse:eclipse -P mysql
+$ mvn clean tomcat7:run -P mysql
+
+访问
+http://localhost:8080/cmop
+
+
+

@@ -46,8 +46,14 @@
 			</div>
 		</form>
 	
-	<table id="contentTable"
-		class="table table-striped table-bordered table-condensed">
+	<table id="contentTable" class="table table-striped table-bordered table-condensed">
+		<colgroup>
+			<col class="span2">
+			<col class="span2">
+			<col class="span2">
+			<col class="span4">
+			<col class="span2">
+		</colgroup>
 		<thead>
 			<tr>
 				<th>登录名</th>

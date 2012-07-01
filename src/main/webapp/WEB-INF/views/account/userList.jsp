@@ -3,13 +3,14 @@
 
 <html>
 <head>
-<title>帐号管理</title>
+<title>用户管理</title>
 <script>
 	$(document).ready(function() {
 		//聚焦第一个输入框
 		$("#user-tab").addClass("active");
 		
 		$("#message").fadeOut(5000);
+		
 	});
 </script>
 </head>
@@ -21,7 +22,7 @@
 	</c:if>
 	
  	<shiro:hasPermission name="user:edit">
-		<a class="btn btn-info pager" href="create">故障申报</a>
+		<a class="btn btn-info pager" href="create">创建用户</a>
 	</shiro:hasPermission>
 	
 	<!-- Search -->

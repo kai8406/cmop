@@ -19,8 +19,6 @@ import com.sobey.mvc.service.account.AccountManager;
 /**
  * 使用@ModelAttribute, 实现Struts2 Preparable二次绑定的效果。 
  * 因为@ModelAttribute被默认执行, 而其他的action url中并没有${id}，所以需要独立出一个Controller.
- * 
- * @author calvin
  */
 @Controller
 @RequestMapping(value = "/account/user/")

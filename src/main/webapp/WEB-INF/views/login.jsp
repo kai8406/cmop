@@ -4,36 +4,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Sobey--云平台服务-登录</title>
+<title>Sobey云平台服务 &mdash; 登录</title>
 
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta http-equiv="Cache-Control" content="no-store" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-
-<link href="${ctx}/static/bootstrap/css/bootstrap.min.css"
-	type="text/css" rel="stylesheet" />
-<link
-	href="${ctx}/static/bootstrap/css/bootstrap-responsive.min.css"
-	type="text/css" rel="stylesheet" />
-<link href="${ctx}/static/jquery-validation/1.9.0/validate.css"
-	type="text/css" rel="stylesheet" />
-<link href="${ctx}/static/mini-web.css" type="text/css" rel="stylesheet" />
-
-
-<script src="${ctx}/static/jquery/jquery.min.js"
-	type="text/javascript"></script>
-<script
-	src="${ctx}/static/jquery-validation/1.9.0/jquery.validate.min.js"
-	type="text/javascript"></script>
-<script src="${ctx}/static/jquery-validation/1.9.0/messages_cn.js"
-	type="text/javascript"></script>
-<script src="${ctx}/static/bootstrap/js/bootstrap.min.js"
-	type="text/javascript"></script>
-<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-     <script src="${ctx}/static/bootstrap/js/html5.js"></script>
- <![endif]-->
+<%@ include file="/WEB-INF/layouts/meta.jsp"%>
 
 </head>
 

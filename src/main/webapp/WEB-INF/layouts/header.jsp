@@ -1,7 +1,4 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}" />
 <div id="header">
 
 	<div id="title" class="page-header">
@@ -19,7 +16,7 @@
 		<ul class="nav nav-tabs">
 			<shiro:user>
 				<shiro:hasPermission name="user:view">
-					<li id="user-tab"><a href="${ctx}/account/user/">帐号列表</a></li>
+					<li id="user-tab"><a href="${ctx}/account/user/">用户列表</a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission name="group:view">
 					<li id="group-tab"><a href="${ctx}/account/group/">权限组列表</a></li>

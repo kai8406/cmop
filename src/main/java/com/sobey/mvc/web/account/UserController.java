@@ -28,7 +28,6 @@ import com.sobey.mvc.service.account.AccountManager;
  * Delete action      : POST /account/user/delete/{id}
  * CheckLoginName ajax: GET  /account/user/checkLoginName?oldLoginName=a&loginName=b
  * 
- * @author calvin
  * 
  */
 @Controller

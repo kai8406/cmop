@@ -1,6 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 
-
 	<div class="pagination pagination-right">
 
 		<p>

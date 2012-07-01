@@ -15,7 +15,6 @@ import com.sobey.mvc.service.account.AccountManager;
 /**
  * 用于转换用户表单中复杂对象Group的checkbox的关联。
  * 
- * @author calvin
  */
 @Component
 public class GroupListEditor extends PropertyEditorSupport {

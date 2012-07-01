@@ -1,8 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 <html>
 <head>
 	<title>帐号管理</title>

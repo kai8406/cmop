@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
+
 <html>
 <head>
 <title>帐号管理</title>
@@ -9,16 +8,44 @@
 	$(document).ready(function() {
 		//聚焦第一个输入框
 		$("#user-tab").addClass("active");
+		
+		$("#message").fadeOut(5000);
 	});
 </script>
 </head>
 
 <body>
-	<h4>用户列表</h4>
+	
 	<c:if test="${not empty message}">
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>
 	</c:if>
+	
+ 	<shiro:hasPermission name="user:edit">
+		<a class="btn btn-info pager" href="create">故障申报</a>
+	</shiro:hasPermission>
+	
+	<!-- Search -->
+		<form class="well form-search" action="./FeatureList.html">
 
+			<div class="row-fluid rowshow-grid">
+
+				<div class="span3">
+					<label class="control-label">主题:</label> <input type="text" id="title" name="title"
+						placeholder="故障申报主题" class="input-medium">
+				</div>
+
+				<div class="span3">
+					<label class="control-label">创建日期:</label> <input type="text" id="" name=""
+						placeholder="创建日期" class="input-medium">
+				</div>
+
+				<div class="span3">
+					<button class="btn" type="submit">Search</button>
+				</div>
+
+			</div>
+		</form>
+	
 	<table id="contentTable"
 		class="table table-striped table-bordered table-condensed">
 		<thead>
@@ -38,8 +65,8 @@
 					<td>${user.email}</td>
 					<td>${user.groupNames}</td>
 					<td><shiro:hasPermission name="user:edit">
-							<a href="update/${user.id}" id="editLink-${user.name}">修改</a>
-							<a href="delete/${user.id}">删除</a>
+							<a class="btn btn-primary" href="update/${user.id}">修改</a>
+							<a class="btn" href="delete/${user.id}">删除</a>
 						</shiro:hasPermission></td>	
 				</tr>
 			</c:forEach>
@@ -48,9 +75,6 @@
 	
 	<%@ include file="/WEB-INF/layouts/pageable.jsp"%>
         
-	 <shiro:hasPermission name="user:edit">
-		<a class="btn" href="create">创建用户</a>
-	</shiro:hasPermission>
 
 </body>
 </html>

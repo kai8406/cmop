@@ -2,7 +2,8 @@
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
-<div id="header" class="span12">
+<div id="header">
+
 	<div id="title" class="page-header">
 		<h1>
 			Sobey<small>&mdash;云平台服务</small>

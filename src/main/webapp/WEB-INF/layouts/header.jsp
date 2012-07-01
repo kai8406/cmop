@@ -3,13 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <div id="header" class="span12">
-	<div id="title">
+	<div id="title" class="page-header">
 		<h1>
-			Mini-Web示例<small>--CRUD管理界面演示</small>
+			Sobey<small>&mdash;云平台服务</small>
 		</h1>
 		<shiro:user>
-			<span class="pull-right">Hello, <shiro:principal
-					property="name" />!!
+			<span class="pull-right">
+				Hello, <shiro:principal	property="name" />!
 			</span>
 		</shiro:user>
 	</div>

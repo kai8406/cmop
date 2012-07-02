@@ -7,8 +7,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Component;
 
-import com.sobey.mvc.entity.account.Group;
-import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.entity.Group;
+import com.sobey.mvc.entity.User;
 
 /**
  * GroupDao的扩展行为实现类.
@@ -23,7 +23,7 @@ public class GroupDaoImpl implements GroupDaoCustom {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deleteWithReference(Long id) {
+	public void deleteWithReference(Integer id) {
 		//因為Group中沒有与User的关联，只能用笨办法，查询出拥有该权限组的用户, 并删除该用户的权限组.
 		Group group = em.find(Group.class, id);
 		List<User> users = em.createQuery(QUERY_USER_BY_GROUPID).setParameter(1, id).getResultList();

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.mvc.entity.account.Group;
-import com.sobey.mvc.entity.account.Permission;
+import com.sobey.mvc.entity.Group;
+import com.sobey.mvc.entity.Permission;
 import com.sobey.mvc.service.account.AccountManager;
 
 @Controller
@@ -36,7 +36,7 @@ public class GroupDetailController {
 	}
 
 	@ModelAttribute("group")
-	public Group getGroup(@PathVariable("id") Long id) {
+	public Group getGroup(@PathVariable("id") Integer id) {
 		return accountManager.getGroup(id);
 	}
 }

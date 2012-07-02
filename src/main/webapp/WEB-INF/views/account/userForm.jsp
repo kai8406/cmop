@@ -6,7 +6,7 @@
 	<script>
 		$(document).ready(function() {
 			//聚焦第一个输入框
-			$("#loginName").focus();
+			$("#email").focus();
 			
 	 		//active tab
 	 		$("#user-tab").addClass("active");
@@ -14,14 +14,14 @@
 			//为inputForm注册validate函数
 			$("#inputForm").validate({
 				rules: {
-					loginName: {
-						remote: "${ctx}/account/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')
+					email: {
+						remote: "${ctx}/account/user/checkEmail?oldEmail=" + encodeURIComponent('${user.email}')
 					},
 					groupList:"required"
 				},
 				messages: {
-					loginName: {
-						remote: "用户登录名已存在"
+					email: {
+						remote: "登录邮箱已存在"
 					},
 					passwordConfirm: {
 						equalTo: "输入与上面相同的密码"
@@ -52,37 +52,44 @@
 				<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
 		
 				<div class="control-group">
-					<label for="loginName" class="control-label">登录名:</label>
+					<label for="email" class="control-label">登录邮箱</label>
 					<div class="controls">
-						<input type="text" id="loginName" name="loginName" size="50" value="${user.loginName}" class="required"/>
+						<input type="text" id="email" name="email" size="50" value="${user.email}" class="required email"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="name" class="control-label">用户名:</label>
+					<label for="name" class="control-label">用户真实姓名</label>
 					<div class="controls">
 						<input type="text" id="name" name="name" size="50" value="${user.name}" class="required"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="password" class="control-label">密码:</label>
+					<label for="password" class="control-label">密码</label>
 					<div class="controls">
 						<input type="password" id="password" name="password" size="50" value="${user.password}" class="required" minlength="3"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="passwordConfirm" class="control-label">确认密码:</label>
+					<label for="passwordConfirm" class="control-label">确认密码</label>
 					<div class="controls">
 						<input type="password" id="passwordConfirm" name="passwordConfirm" size="50" value="${user.password}" equalTo="#password"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="email" class="control-label">邮箱:</label>
+					<label for="phonenum" class="control-label">联系电话</label>
 					<div class="controls">
-						<input type="text" id="email" name="email" size="50" value="${user.email}" class="email"/>
+						<input type="text" id="phonenum" name="phonenum" size="50" value="${user.phonenum}" class="required"/>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="groupList" class="control-label">权限组:</label>
+					<label for="department" class="control-label">部门信息</label>
+					<div class="controls">
+						<input type="text" id="department" name="department" size="50" value="${user.department}" class="required"/>
+					</div>
+				</div>
+				 
+				<div class="control-group">
+					<label for="groupList" class="control-label">权限组</label>
 					<div class="controls">
 						<form:checkboxes path="groupList" items="${allGroups}" itemLabel="name" itemValue="id" />
 					</div>

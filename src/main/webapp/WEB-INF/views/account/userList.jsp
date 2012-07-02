@@ -26,13 +26,13 @@
 	</shiro:hasPermission>
 	
 	<!-- Search -->
-		<form class="well form-search" action="./FeatureList.html">
+		<form class="well form-search" action="${ctx}/account/user/">
 
 			<div class="row-fluid rowshow-grid">
 
 				<div class="span3">
-					<label class="control-label">主题:</label> <input type="text" id="title" name="title"
-						placeholder="故障申报主题" class="input-medium">
+					<label class="control-label">名称:</label> <input type="text" id="name" name="name" value=""
+						placeholder="用户名称" class="input-medium">
 				</div>
 
 				<div class="span3">
@@ -67,7 +67,7 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="user">
 				<tr>
-					<td>${user.loginName}</td>
+					<td>${user.id}</td>
 					<td>${user.name}</td>
 					<td>${user.email}</td>
 					<td>${user.groupNames}</td>

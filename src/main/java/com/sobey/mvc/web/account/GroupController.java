@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.mvc.entity.account.Group;
-import com.sobey.mvc.entity.account.Permission;
+import com.sobey.mvc.entity.Group;
+import com.sobey.mvc.entity.Permission;
 import com.sobey.mvc.service.account.AccountManager;
 
 @Controller
@@ -52,7 +52,7 @@ public class GroupController {
 
 	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "delete/{id}")
-	public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 		accountManager.deleteGroup(id);
 		redirectAttributes.addFlashAttribute("message", "删除权限组成功");
 		return "redirect:/account/group/";

@@ -15,12 +15,11 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.sobey.mvc.entity.account.Group;
-import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.entity.Group;
+import com.sobey.mvc.entity.User;
 
 /**
- * 自实现用户与权限查询.
- * 演示关系，密码用明文存储，因此使用默认 的SimpleCredentialsMatcher.
+ * 自实现用户与权限查询. 演示关系，密码用明文存储，因此使用默认 的SimpleCredentialsMatcher.
  */
 public class ShiroDbRealm extends AuthorizingRealm {
 
@@ -30,12 +29,13 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 * 认证回调函数, 登录时调用.
 	 */
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
+	protected AuthenticationInfo doGetAuthenticationInfo(
+			AuthenticationToken authcToken) throws AuthenticationException {
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		User user = accountManager.findUserByLoginName(token.getUsername());
+		User user = accountManager.findUserByEmail(token.getUsername());
 		if (user != null) {
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(),
-					getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getEmail(),
+					user.getName()), user.getPassword(), getName());
 		} else {
 			return null;
 		}
@@ -45,13 +45,15 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
 	 */
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		ShiroUser shiroUser = (ShiroUser) principals.fromRealm(getName()).iterator().next();
-		User user = accountManager.findUserByLoginName(shiroUser.getLoginName());
+	protected AuthorizationInfo doGetAuthorizationInfo(
+			PrincipalCollection principals) {
+		ShiroUser shiroUser = (ShiroUser) principals.fromRealm(getName())
+				.iterator().next();
+		User user = accountManager.findUserByEmail(shiroUser.getEmail());
 		if (user != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			for (Group group : user.getGroupList()) {
-				//基于Permission的权限信息
+				// 基于Permission的权限信息
 				info.addStringPermissions(group.getPermissionList());
 			}
 			return info;
@@ -64,7 +66,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 * 更新用户授权信息缓存.
 	 */
 	public void clearCachedAuthorizationInfo(String principal) {
-		SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
+		SimplePrincipalCollection principals = new SimplePrincipalCollection(
+				principal, getName());
 		clearCachedAuthorizationInfo(principals);
 	}
 
@@ -90,17 +93,20 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	public static class ShiroUser implements Serializable {
 
-		private static final long serialVersionUID = -1748602382963711884L;
-		private String loginName;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7971943669319331421L;
+		private String email;
 		private String name;
 
-		public ShiroUser(String loginName, String name) {
-			this.loginName = loginName;
+		public ShiroUser(String email, String name) {
+			this.email = email;
 			this.name = name;
 		}
 
-		public String getLoginName() {
-			return loginName;
+		public String getEmail() {
+			return email;
 		}
 
 		/**
@@ -108,7 +114,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 		 */
 		@Override
 		public String toString() {
-			return loginName;
+			return email;
 		}
 
 		public String getName() {

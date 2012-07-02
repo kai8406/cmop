@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <div id="header">
 
-	<div id="title" class="page-header">
+	<div id="logo" class="page-header">
 		<h1>
 			Sobey<small>&mdash;云平台服务</small>
 		</h1>
@@ -15,6 +15,7 @@
 	<div id="menu">
 		<ul class="nav nav-tabs">
 			<shiro:user>
+					<li id="support-tab"><a href="${ctx }/apply/support/">服务申请</a></li>
 				<shiro:hasPermission name="user:view">
 					<li id="user-tab"><a href="${ctx}/account/user/">用户列表</a></li>
 				</shiro:hasPermission>

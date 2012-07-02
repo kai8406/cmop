@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.entity.User;
 import com.sobey.mvc.service.account.AccountManager;
 
 /**
@@ -26,8 +26,7 @@ import com.sobey.mvc.service.account.AccountManager;
  * Update page        : GET  /account/user/update/{id}
  * Update action      : POST /account/user/save/{id}
  * Delete action      : POST /account/user/delete/{id}
- * CheckLoginName ajax: GET  /account/user/checkLoginName?oldLoginName=a&loginName=b
- * 
+ * CheckEmail ajax: GET  /account/user/checkEmail?oldEmail=a&email=b
  * 
  */
 @Controller
@@ -50,10 +49,14 @@ public class UserController {
 
 	@RequiresPermissions("user:view")
 	@RequestMapping(value = { "list", "" })
-	public String list(	@RequestParam(value = "page", required = false) Integer page,
-			Model model) {
+	public String list(
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "name", required=false,defaultValue="") String name, Model model) {
+		
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
-		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE);
+		Page<User> users = accountManager.getAllUser( pageNum,
+				DEFAULT_PAGE_SIZE,name);
+		
 		model.addAttribute("page", users);
 		return "account/userList";
 	}
@@ -70,13 +73,14 @@ public class UserController {
 	@RequestMapping(value = "save")
 	public String save(User user, RedirectAttributes redirectAttributes) {
 		accountManager.saveUser(user);
-		redirectAttributes.addFlashAttribute("message","创建用户 " + user.getLoginName() + " 成功");
+		redirectAttributes.addFlashAttribute("message",
+				"创建用户 " + user.getName() + " 成功");
 		return "redirect:/account/user/";
 	}
 
 	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "delete/{id}")
-	public String delete(@PathVariable("id") Long id,
+	public String delete(@PathVariable("id") Integer id,
 			RedirectAttributes redirectAttributes) {
 		accountManager.deleteUser(id);
 		redirectAttributes.addFlashAttribute("message", "删除用户成功");
@@ -84,13 +88,12 @@ public class UserController {
 	}
 
 	@RequiresPermissions("user:edit")
-	@RequestMapping(value = "checkLoginName")
+	@RequestMapping(value = "checkEmail")
 	@ResponseBody
-	public String checkLoginName(
-			@RequestParam("oldLoginName") String oldLoginName,
-			@RequestParam("loginName") String loginName) {
-		if (loginName.equals(oldLoginName)
-				|| accountManager.findUserByLoginName(loginName) == null) {
+	public String checkEmail(@RequestParam("oldEmail") String oldEmail,
+			@RequestParam("email") String email) {
+		if (email.equals(oldEmail)
+				|| accountManager.findUserByEmail(email) == null) {
 			return "true";
 		}
 		return "false";

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.entity.User;
 import com.sobey.mvc.service.account.AccountManager;
 
 /**
@@ -45,12 +45,12 @@ public class UserDetailController {
 	@RequestMapping(value = "save/{id}")
 	public String save(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
 		accountManager.saveUser(user);
-		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getLoginName() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getName() + " 成功");
 		return "redirect:/account/user/";
 	}
 
 	@ModelAttribute("user")
-	public User getAccount(@PathVariable("id") Long id) {
+	public User getAccount(@PathVariable("id") Integer id) {
 		return accountManager.getUser(id);
 	}
 }

@@ -28,7 +28,7 @@
 					class="well form-inline">
 
 					<input type="text" id="username" name="username" size="50"
-						value="${username}" class="input-small" placeholder="Email" />
+						class="input-small" placeholder="Email" />
 
 					<input type="password" id="password" name="password" size="50"
 						class="input-small" placeholder="Password" />

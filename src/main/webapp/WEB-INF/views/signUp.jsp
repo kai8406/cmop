@@ -41,7 +41,7 @@
 			<div class="control-group">
 				<label for="username" class="control-label">名称</label>
 				<div class="controls">
-					<input type="text" id="username" name="username" size="50" value="${username}" class="required input-large"/>
+					<input type="text" id="username" name="username" size="50"  class="required input-large"/>
 				</div>
 			</div>
 			<div class="control-group">

@@ -1,5 +1,6 @@
 package com.sobey.mvc.service.account;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -16,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.mvc.dao.account.GroupDao;
 import com.sobey.mvc.dao.account.UserDao;
-import com.sobey.mvc.entity.account.Group;
-import com.sobey.mvc.entity.account.User;
+import com.sobey.mvc.entity.Group;
+import com.sobey.mvc.entity.User;
 import com.sobey.mvc.service.ServiceException;
 
 /**
@@ -31,28 +32,34 @@ import com.sobey.mvc.service.ServiceException;
 @Transactional(readOnly = true)
 public class AccountManager {
 
-	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(AccountManager.class);
 
 	private UserDao userDao;
 	private GroupDao groupDao;
 	private ShiroDbRealm shiroRealm;
 
 	// -- User Manager --//
-	public User getUser(Long id) {
+	public User getUser(Integer id) {
 		return userDao.findOne(id);
 	}
 
 	@Transactional(readOnly = false)
 	public void saveUser(User entity) {
+		//
+		entity.setCreateTime(new Date());
+		entity.setType("1");
+		entity.setStatus(1);
+		//
 		userDao.save(entity);
-		shiroRealm.clearCachedAuthorizationInfo(entity.getLoginName());
+		shiroRealm.clearCachedAuthorizationInfo(entity.getEmail());
 	}
 
 	/**
 	 * 删除用户,如果尝试删除超级管理员将抛出异常.
 	 */
 	@Transactional(readOnly = false)
-	public void deleteUser(Long id) {
+	public void deleteUser(Integer id) {
 		if (isSupervisor(id)) {
 			logger.warn("操作员{}尝试删除超级管理员用户", SecurityUtils.getSubject()
 					.getPrincipal());
@@ -64,34 +71,38 @@ public class AccountManager {
 	/**
 	 * 判断是否超级管理员.
 	 */
-	private boolean isSupervisor(Long id) {
+	private boolean isSupervisor(Integer id) {
 		return id == 1;
 	}
 
-	public Page<User> getAllUser(int page, int size) {
+	public Page<User> getAllUser(int page, int size, String name) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
 				"id"));
-		return userDao.findAll(pageable);
+		if ("".equals(name)) {
+			return userDao.findAll(pageable);
+		} else {
+			return userDao.findAllByNameLike("%" + name + "%", pageable);
+		}
 	}
 
-	public User findUserByLoginName(String loginName) {
-		return userDao.findByLoginName(loginName);
+	public User findUserByEmail(String email) {
+		return userDao.findByEmail(email);
 	}
-	
-	public Group findGroupByName(String name){
+
+	public Group findGroupByName(String name) {
 		return groupDao.findByName(name);
-		
+
 	}
 
 	// -- Group Manager --//
-	public Group getGroup(Long id) {
+	public Group getGroup(Integer id) {
 		return groupDao.findOne(id);
 	}
 
 	public List<Group> getAllGroup() {
 		return (List<Group>) groupDao.findAll((new Sort(Direction.ASC, "id")));
 	}
-	
+
 	public Page<Group> getAllGroup(int page, int size) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
 				"id"));
@@ -105,7 +116,7 @@ public class AccountManager {
 	}
 
 	@Transactional(readOnly = false)
-	public void deleteGroup(Long id) {
+	public void deleteGroup(Integer id) {
 		groupDao.delete(id);
 		shiroRealm.clearAllCachedAuthorizationInfo();
 	}

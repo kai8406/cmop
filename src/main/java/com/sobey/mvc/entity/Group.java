@@ -1,4 +1,4 @@
-package com.sobey.mvc.entity.account;
+package com.sobey.mvc.entity;
 
 import java.util.List;
 
@@ -6,6 +6,9 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -16,42 +19,54 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.google.common.collect.Lists;
-import com.sobey.mvc.entity.IdEntity;
 
 /**
- * 权限组.
- * 
- * 注释见{@link User}.
- * 
+ * Group entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "acct_group")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Group extends IdEntity {
+@Table(name = "group", catalog = "cmop")
+public class Group implements java.io.Serializable {
 
+	// Fields
+
+	private Integer id;
 	private String name;
-
 	private List<String> permissionList = Lists.newArrayList();
 
+	// Constructors
+
+	/** default constructor */
 	public Group() {
 	}
 
-	public Group(Long id, String name) {
-		this.id = id;
+	/** full constructor */
+	public Group(String name) {
 		this.name = name;
 	}
 
-	@Column(nullable = false, unique = true)
+	// Property accessors
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Column(name = "name", nullable = false, length = 20)
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	@ElementCollection
-	@CollectionTable(name = "acct_group_permission", joinColumns = { @JoinColumn(name = "group_id") })
+	@CollectionTable(name = "group_permission", joinColumns = { @JoinColumn(name = "id") })
 	@Column(name = "permission")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	public List<String> getPermissionList() {
@@ -75,4 +90,5 @@ public class Group extends IdEntity {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
+
 }

@@ -37,7 +37,7 @@
 			<div id="main" class="span10">
 			
 				<form:form id="inputForm" modelAttribute="apply" action="${ctx}/apply/support/network/save/${apply.id}" method="post">
-					<input type="hidden" id="networkType"	name="networkType" value="${networkType }"  />电信CTC
+					<input type="hidden" id="networkType"	name="networkType" value="${networkType }"  /> 
 					<div class="tab-content">
 					
 						<!-- 第1步 -->

@@ -44,6 +44,41 @@ public class ApplyManager {
 	@Autowired
 	private StorageItemDao storageItemDao;
 
+	public void saveSupport(Apply apply, String networkPort,
+			String networkPortOther, NetworkDomainItem domainItemFirst,
+			NetworkDomainItem domainItemSec, StorageItem dataStorageItem,
+			StorageItem businessStorageItem, InVpnItem inVpnItem) {
+
+		this.saveApply(apply);
+
+		// 数据存储
+		storageItemDao.save(dataStorageItem);
+		storageItemDao.save(businessStorageItem);
+
+		// 接入资源
+		inVpnItem.setApply(apply);
+		inVpnItemDao.save(inVpnItem);
+
+		// 网络资源
+		// 分拆开放端口传递的值,分别保存
+		String[] networkPorts = StringUtils.split(networkPort, ",");
+		for (String servicePort : networkPorts) {
+			NetworkPortItem networkPortItem = new NetworkPortItem();
+			networkPortItem.setApply(apply);
+			networkPortItem.setServicePort(servicePort);
+			networkPortItemDao.save(networkPortItem);
+		}
+
+		// 如果"其它服务端口"有值
+		if (StringUtils.isNotBlank(networkPortOther)) {
+			NetworkPortItem networkPortItem = new NetworkPortItem();
+			networkPortItem.setApply(apply);
+			networkPortItem.setServicePort(networkPortOther);
+			networkPortItemDao.save(networkPortItem);
+		}
+
+	}
+
 	/**
 	 * 接入服务申请
 	 * 
@@ -53,9 +88,8 @@ public class ApplyManager {
 	public void saveSupportJoin(Apply apply, InVpnItem inVpnItem) {
 
 		this.saveApply(apply);
-
 		inVpnItem.setApply(apply);
-		this.saveInVpnItem(inVpnItem);
+		inVpnItemDao.save(inVpnItem);
 	}
 
 	/**
@@ -109,11 +143,6 @@ public class ApplyManager {
 		apply.setCreateTime(new Date());
 		applyDao.save(apply);
 
-	}
-
-	@Transactional(readOnly = false)
-	public void saveInVpnItem(InVpnItem inVpnItem) {
-		inVpnItemDao.save(inVpnItem);
 	}
 
 	public Page<Apply> getAllApply(int page, int size, String title, int status) {

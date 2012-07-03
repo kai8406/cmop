@@ -43,6 +43,95 @@ public class SupportController {
 	}
 
 	/**
+	 * 跳转到服务申请页面
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "create")
+	public String toSupport(Model model) {
+		model.addAttribute("apply", new Apply());
+		model.addAttribute("inVpnItem", new InVpnItem());
+		model.addAttribute("storage", new StorageItem());
+		model.addAttribute("networkDomainItem", new NetworkDomainItem());
+		model.addAttribute("networkPortItem", new NetworkPortItem());
+		return "apply/supportForm";
+
+	}
+
+	@RequestMapping(value = "save")
+	public String support(
+			Apply apply,
+			@RequestParam("account") String account,
+			@RequestParam("accountUser") String accountUser,
+			@RequestParam("visitHost") String visitHost,
+
+			@RequestParam(value = "networkPort") String networkPort,
+			@RequestParam(value = "networkPortOther", defaultValue = "") String networkPortOther,
+			@RequestParam(value = "analyseTypeFirst") Integer analyseTypeFirst,
+			@RequestParam(value = "domainFirst") String domainFirst,
+			@RequestParam(value = "ipFirst") String ipFirst,
+
+			@RequestParam(value = "analyseTypeSec") Integer analyseTypeSec,
+			@RequestParam(value = "domainSec") String domainSec,
+			@RequestParam(value = "ipSec") String ipSec,
+
+			@RequestParam(value = "dataStorageType") String dataStorageType,
+			@RequestParam(value = "dataSorageSpace") Integer dataSorageSpace,
+			@RequestParam(value = "dataStorageThroughput") Integer dataStorageThroughput,
+			@RequestParam(value = "dataStorageIops") Integer dataStorageIops,
+
+			@RequestParam(value = "businessStorageType") String businessStorageType,
+			@RequestParam(value = "businessStorageSpace") Integer businessStorageSpace,
+			@RequestParam(value = "businessStorageThroughput") Integer businessStorageThroughput,
+			@RequestParam(value = "businessStorageIops") Integer businessStorageIops,
+
+			RedirectAttributes redirectAttributes) {
+
+		InVpnItem inVpnItem = new InVpnItem();
+		inVpnItem.setAccount(accountUser);
+		inVpnItem.setAccountUser(accountUser);
+		inVpnItem.setVisitHost(visitHost);
+		inVpnItem.setInType(1);
+
+		NetworkDomainItem domainItemFirst = new NetworkDomainItem();
+		domainItemFirst.setAnalyseType(analyseTypeFirst);
+		domainItemFirst.setDomain(domainFirst);
+		domainItemFirst.setIp(ipFirst);
+		domainItemFirst.setApply(apply);
+
+		NetworkDomainItem domainItemSec = new NetworkDomainItem();
+		domainItemSec.setAnalyseType(analyseTypeSec);
+		domainItemSec.setDomain(domainSec);
+		domainItemSec.setIp(ipSec);
+		domainItemSec.setApply(apply);
+
+		StorageItem dataStorageItem = new StorageItem();
+		dataStorageItem.setApply(apply);
+		dataStorageItem.setStorageType(Integer.parseInt(dataStorageType));
+		dataStorageItem.setStorageSpace(dataSorageSpace);
+		dataStorageItem.setStorageThroughput(dataStorageThroughput);
+		dataStorageItem.setStorageIops(dataStorageIops);
+
+		StorageItem businessStorageItem = new StorageItem();
+		businessStorageItem.setApply(apply);
+		businessStorageItem.setStorageType(Integer
+				.parseInt(businessStorageType));
+		businessStorageItem.setStorageSpace(businessStorageSpace);
+		businessStorageItem.setStorageThroughput(businessStorageThroughput);
+		businessStorageItem.setStorageIops(businessStorageIops);
+
+		applyManager.saveSupport(apply, networkPort, networkPortOther,
+				domainItemFirst, domainItemSec, dataStorageItem,
+				businessStorageItem, inVpnItem);
+
+		redirectAttributes.addFlashAttribute("message",
+				"创建申请: " + apply.getTitle() + " 成功");
+		return "redirect:/apply/support/";
+
+	}
+
+	/**
 	 * 跳转到接入服务申请页面
 	 * 
 	 * @param model
@@ -160,16 +249,6 @@ public class SupportController {
 			@RequestParam(value = "ipSec") String ipSec,
 			RedirectAttributes redirectAttributes) {
 
-		System.err.println("networkPort:" + networkPort);
-		System.err.println("analyseTypeFirst:" + analyseTypeFirst);
-		System.err.println("domainFirst:" + domainFirst);
-		System.err.println("ipFirst:" + ipFirst);
-		System.err.println("analyseTypeSec:" + analyseTypeSec);
-		System.err.println("domainSec:" + domainSec);
-		System.err.println("ipSec:" + ipSec);
-
-		System.out.println(apply.getNetworkType());
-
 		NetworkDomainItem domainItemFirst = new NetworkDomainItem();
 		domainItemFirst.setAnalyseType(analyseTypeFirst);
 		domainItemFirst.setDomain(domainFirst);
@@ -206,23 +285,12 @@ public class SupportController {
 			@RequestParam(value = "dataSorageSpace") Integer dataSorageSpace,
 			@RequestParam(value = "dataStorageThroughput") Integer dataStorageThroughput,
 			@RequestParam(value = "dataStorageIops") Integer dataStorageIops,
-			
+
 			@RequestParam(value = "businessStorageType") String businessStorageType,
 			@RequestParam(value = "businessStorageSpace") Integer businessStorageSpace,
 			@RequestParam(value = "businessStorageThroughput") Integer businessStorageThroughput,
 			@RequestParam(value = "businessStorageIops") Integer businessStorageIops,
 			RedirectAttributes redirectAttributes) {
-
-		System.err.println("dataStorageType:" + dataStorageType);
-		System.err.println("dataSorageSpace:" + dataSorageSpace);
-		System.err.println("dataStorageThroughput:" + dataStorageThroughput);
-		System.err.println("dataStorageIops:" + dataStorageIops);
-
-		System.err.println("businessStorageType:" + businessStorageType);
-		System.err.println("businessStorageSpace:" + businessStorageSpace);
-		System.err.println("businessStorageThroughput:"
-				+ businessStorageThroughput);
-		System.err.println("businessStorageIops:" + businessStorageIops);
 
 		StorageItem dataStorageItem = new StorageItem();
 		dataStorageItem.setApply(apply);
@@ -233,7 +301,8 @@ public class SupportController {
 
 		StorageItem businessStorageItem = new StorageItem();
 		businessStorageItem.setApply(apply);
-		businessStorageItem.setStorageType(Integer.parseInt(businessStorageType));
+		businessStorageItem.setStorageType(Integer
+				.parseInt(businessStorageType));
 		businessStorageItem.setStorageSpace(businessStorageSpace);
 		businessStorageItem.setStorageThroughput(businessStorageThroughput);
 		businessStorageItem.setStorageIops(businessStorageIops);

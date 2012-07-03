@@ -21,7 +21,6 @@
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>
 	</c:if>
 	
-	
 	<div class="row">
 			<div id="leftbar" class="span2">
 				<ul class="nav nav-list">
@@ -42,7 +41,7 @@
 							<legend>向导</legend>
 							<p>点击按钮,可根据自身业务需求创建一个服务申请.</p>
 
-							<a class="btn btn-info" href="./SupportForm.html">服务申请</a>
+							<a class="btn btn-info" href="${ctx }/apply/support/create/"">服务申请</a>
 
 							<p class="page-header">
 								<strong>Note:</strong> 创建服务成功后,可通过点击详情按钮查看申请的审核进度.

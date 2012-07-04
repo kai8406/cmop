@@ -41,7 +41,7 @@
 							<legend>向导</legend>
 							<p>点击按钮,可根据自身业务需求创建一个服务申请.</p>
 
-							<a class="btn btn-info" href="${ctx }/apply/support/create/"">服务申请</a>
+							<a class="btn btn-info" href="${ctx }/apply/support/form/"">服务申请</a>
 
 							<p class="page-header">
 								<strong>Note:</strong> 创建服务成功后,可通过点击详情按钮查看申请的审核进度.
@@ -135,7 +135,9 @@
 								</td>
 								<td> 
 									<a class="btn" href="./SupportDetail.html">查看</a> 
-									<a class="btn btn-primary" href="update/${apply.id}">修改</a>
+									
+									<a class="btn btn-primary" href="${ctx}/apply/support/edit/${apply.id}">修改</a>
+									
 									<!-- 暂时不管审核状态,任何时候都可以变更 -->
 									<a href="${ctx }/apply/feature/create/${apply.id}">变更</a>
 									

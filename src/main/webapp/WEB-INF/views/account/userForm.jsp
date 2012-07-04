@@ -51,31 +51,31 @@
 				
 				<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
 		
-				<div class="control-group">
+				<div class="control-">
 					<label for="email" class="control-label">登录邮箱</label>
 					<div class="controls">
 						<input type="text" id="email" name="email" size="50" value="${user.email}" class="required email"/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-">
 					<label for="name" class="control-label">用户真实姓名</label>
 					<div class="controls">
 						<input type="text" id="name" name="name" size="50" value="${user.name}" class="required"/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-">
 					<label for="password" class="control-label">密码</label>
 					<div class="controls">
 						<input type="password" id="password" name="password" size="50" value="${user.password}" class="required" minlength="3"/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-">
 					<label for="passwordConfirm" class="control-label">确认密码</label>
 					<div class="controls">
 						<input type="password" id="passwordConfirm" name="passwordConfirm" size="50" value="${user.password}" equalTo="#password"/>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="control-">
 					<label for="phonenum" class="control-label">联系电话</label>
 					<div class="controls">
 						<input type="text" id="phonenum" name="phonenum" size="50" value="${user.phonenum}" class="required"/>

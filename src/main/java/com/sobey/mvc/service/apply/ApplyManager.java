@@ -2,7 +2,6 @@ package com.sobey.mvc.service.apply;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -23,9 +22,6 @@ import com.sobey.mvc.dao.account.StorageItemDao;
 import com.sobey.mvc.dao.account.UserDao;
 import com.sobey.mvc.entity.Apply;
 import com.sobey.mvc.entity.InVpnItem;
-import com.sobey.mvc.entity.NetworkDomainItem;
-import com.sobey.mvc.entity.NetworkPortItem;
-import com.sobey.mvc.entity.StorageItem;
 import com.sobey.mvc.entity.User;
 
 @Component
@@ -44,111 +40,59 @@ public class ApplyManager {
 	@Autowired
 	private StorageItemDao storageItemDao;
 
-	public void saveSupport(Apply apply, String networkPort,
-			String networkPortOther, NetworkDomainItem domainItemFirst,
-			NetworkDomainItem domainItemSec, StorageItem dataStorageItem,
-			StorageItem businessStorageItem, InVpnItem inVpnItem) {
-
-		this.saveApply(apply);
-
-		// 数据存储
-		storageItemDao.save(dataStorageItem);
-		storageItemDao.save(businessStorageItem);
-
-		// 接入资源
-		inVpnItem.setApply(apply);
-		inVpnItemDao.save(inVpnItem);
-
-		// 网络资源
-		// 分拆开放端口传递的值,分别保存
-		String[] networkPorts = StringUtils.split(networkPort, ",");
-		for (String servicePort : networkPorts) {
-			NetworkPortItem networkPortItem = new NetworkPortItem();
-			networkPortItem.setApply(apply);
-			networkPortItem.setServicePort(servicePort);
-			networkPortItemDao.save(networkPortItem);
-		}
-
-		// 如果"其它服务端口"有值
-		if (StringUtils.isNotBlank(networkPortOther)) {
-			NetworkPortItem networkPortItem = new NetworkPortItem();
-			networkPortItem.setApply(apply);
-			networkPortItem.setServicePort(networkPortOther);
-			networkPortItemDao.save(networkPortItem);
-		}
-
-	}
-
 	/**
-	 * 接入服务申请
-	 * 
-	 * @param apply
-	 * @param inVpnItem
+	 * 分页
 	 */
-	public void saveSupportJoin(Apply apply, InVpnItem inVpnItem) {
-
-		this.saveApply(apply);
-		inVpnItem.setApply(apply);
-		inVpnItemDao.save(inVpnItem);
+	public Page<Apply> getAllApply(int page, int size) {
+		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
+				"id"));
+		return applyDao.findAll(pageable);
 	}
 
-	/**
-	 * 网络资源申请
-	 * 
-	 * @param apply
-	 * @param networkPort
-	 * @param domainItemFirst
-	 * @param domainItemSec
-	 */
-	public void saveSupportNetwork(Apply apply, String networkPort,
-			String networkPortOther, NetworkDomainItem domainItemFirst,
-			NetworkDomainItem domainItemSec) {
-
-		this.saveApply(apply);
-
-		// 分拆开放端口传递的值,分别保存
-		String[] networkPorts = StringUtils.split(networkPort, ",");
-		for (String servicePort : networkPorts) {
-			NetworkPortItem networkPortItem = new NetworkPortItem();
-			networkPortItem.setApply(apply);
-			networkPortItem.setServicePort(servicePort);
-			networkPortItemDao.save(networkPortItem);
-		}
-
-		// 如果"其它服务端口"有值
-		if (StringUtils.isNotBlank(networkPortOther)) {
-			NetworkPortItem networkPortItem = new NetworkPortItem();
-			networkPortItem.setApply(apply);
-			networkPortItem.setServicePort(networkPortOther);
-			networkPortItemDao.save(networkPortItem);
-		}
-
+	public InVpnItem findInVpnItemByapplyId(Integer applyId) {
+		return inVpnItemDao.findByApply_Id(applyId);
 	}
 
-	public void saveSupportStroage(Apply apply, StorageItem dataStorageItem,
-			StorageItem businessStorageItem) {
-		this.saveApply(apply);
-		storageItemDao.save(dataStorageItem);
-		storageItemDao.save(businessStorageItem);
+	public Apply findApplyById(Integer id) {
+		return applyDao.findOne(id);
 
 	}
 
 	@Transactional(readOnly = false)
-	public void saveApply(Apply apply) {
+	public InVpnItem insertInVpnItem(InVpnItem inVpnItem, Apply apply) {
 
 		Subject subject = SecurityUtils.getSubject();
 		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
 		apply.setUser(user);
-		apply.setStatus(1);// 1.待审核状态.
+		apply.setStatus(1);
 		apply.setCreateTime(new Date());
+		apply.setResourceType(1);
 		applyDao.save(apply);
 
+		inVpnItem.setApply(apply);
+		inVpnItem.setInType(1);
+
+		return inVpnItemDao.save(inVpnItem);
 	}
 
-	public Page<Apply> getAllApply(int page, int size, String title, int status) {
-		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
-				"id"));
-		return applyDao.findAll(pageable);
+	@Transactional(readOnly = false)
+	public void updateInVpnItem(InVpnItem inVpnItem, Apply apply,Integer applyId) {
+
+
+		Apply applyUpate = applyDao.findOne(applyId);
+		
+		System.out.println(applyUpate.getCreateTime());
+
+		applyUpate.setTitle(apply.getTitle());
+		applyUpate.setServiceStart(apply.getServiceStart());
+		applyUpate.setServiceEnd(apply.getServiceEnd());
+		applyUpate.setDescription(apply.getDescription());
+		applyUpate.setResourceType(apply.getResourceType());
+		applyDao.save(applyUpate);
+
+		inVpnItem.setApply(applyUpate);
+		inVpnItem.setInType(1);
+		inVpnItemDao.save(inVpnItem);
 	}
 
 }

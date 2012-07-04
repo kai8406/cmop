@@ -36,8 +36,9 @@
 			
 			<div id="main" class="span10">
 			
-				<form:form id="inputForm" modelAttribute="apply" action="${ctx}/apply/support/join/save/${apply.id}" method="post">
-
+				<form:form id="inputForm" modelAttribute="inVpnItem" action="." method="post">
+				 <form:hidden path="id" />
+				<input type="text" name="applyId" value="${apply.id }" />
 					<div class="tab-content">
 					
 						<!-- 第1步 -->
@@ -48,7 +49,7 @@
 								<div class="control-group">
 									<label class="control-label">接入服务申请主题</label>
 									<div class="controls">
-										<input type="text" id="title" name="title" value="${title }"  class="input-large" />
+										<input type="text" id="title" name="title" value="${inVpnItem.apply.title }"  class="input-large" />
 									</div>
 								</div>
 								
@@ -56,15 +57,15 @@
 								<div class="control-group">
 									<label class="control-label">申请起始时间</label>
 									<div class="controls">
-										<input type="text" id="serviceStart" name="serviceStart" value="${serviceStart }" class="input-medium" />&mdash;
-										<input type="text" id="serviceEnd" name="serviceEnd" value="${serviceEnd }" class="input-medium" />
+										<input type="text" id="serviceStart" name="serviceStart" value="${inVpnItem.apply.serviceStart }" class="input-medium" />&mdash;
+										<input type="text" id="serviceEnd" name="serviceEnd" value="${inVpnItem.apply.serviceEnd }" class="input-medium" />
 									</div>
 								</div>
 
 								<div class="control-group">
 									<label class="control-label">申请用途</label>
 									<div class="controls">
-										<textarea rows="3" id="description" name="description" class="input-xlarge">${description}</textarea>
+										<textarea rows="3" id="description" name="description" class="input-xlarge">${inVpnItem.apply.description}</textarea>
 									</div>
 								</div>
 
@@ -97,21 +98,21 @@
 								<div class="control-group">
 									<label class="control-label">账号</label>
 									<div class="controls">
-										<input type="text" id="account" name="account" value="${account }" class="input-large" />
+										<input type="text" id="account" name="account" value="${inVpnItem.account }" class="input-large" />
 									</div>
 								</div>
 								
 								<div class="control-group">
 									<label class="control-label">使用人</label>
 									<div class="controls">
-										<input type="text" id="accountUser" name="accountUser" value="${accountUser }" class="input-large" />
+										<input type="text" id="accountUser" name="accountUser" value="${inVpnItem.accountUser }" class="input-large" />
 									</div>
 								</div>
 								
 								<div class="control-group">
 									<label class="control-label">需要访问主机</label>
 									<div class="controls">
-										<input type="text" id="visitHost" name="visitHost" value="${visitHost }" class="input-large" />
+										<input type="text" id="visitHost" name="visitHost" value="${inVpnItem.visitHost }" class="input-large" />
 									</div>
 								</div>
 
@@ -163,7 +164,9 @@
 									</tbody>
 								</table>
 							</fieldset>
-
+							
+							<a href="${ctx }/apply/support/list" class="btn">list</a>
+							
 							<div class="form-actions">
 								<a id="backStep" class="btn ">返回</a>
 								<button class="btn btn-success">保存修改</button>

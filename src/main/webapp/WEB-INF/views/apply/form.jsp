@@ -36,9 +36,10 @@
 			
 			<div id="main" class="span10">
 			
-				<form:form id="inputForm" modelAttribute="inVpnItem" action="." method="post">
-				 <form:hidden path="id" />
-				<input type="text" name="applyId" value="${apply.id }" />
+				<form:form id="inputForm" modelAttribute="apply" action="." method="post">
+				<input type="hidden" name="id" value="${apply.id}"/>
+				<input type="hidden" name="inVpnItemId" value="${inVpnItem.id }" />
+				
 					<div class="tab-content">
 					
 						<!-- 第1步 -->
@@ -49,23 +50,22 @@
 								<div class="control-group">
 									<label class="control-label">接入服务申请主题</label>
 									<div class="controls">
-										<input type="text" id="title" name="title" value="${inVpnItem.apply.title }"  class="input-large" />
+										<input type="text" id="title" name="title" value="${apply.title }"  class="input-large" />
 									</div>
 								</div>
-								
 								
 								<div class="control-group">
 									<label class="control-label">申请起始时间</label>
 									<div class="controls">
-										<input type="text" id="serviceStart" name="serviceStart" value="${inVpnItem.apply.serviceStart }" class="input-medium" />&mdash;
-										<input type="text" id="serviceEnd" name="serviceEnd" value="${inVpnItem.apply.serviceEnd }" class="input-medium" />
+										<input type="text" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" class="input-medium" />&mdash;
+										<input type="text" id="serviceEnd" name="serviceEnd" value="${apply.serviceEnd }" class="input-medium" />
 									</div>
 								</div>
 
 								<div class="control-group">
 									<label class="control-label">申请用途</label>
 									<div class="controls">
-										<textarea rows="3" id="description" name="description" class="input-xlarge">${inVpnItem.apply.description}</textarea>
+										<textarea rows="3" id="description" name="description" class="input-xlarge">${apply.description}</textarea>
 									</div>
 								</div>
 
@@ -73,13 +73,25 @@
 									<label class="control-label">资源类型</label>
 									<div class="controls">
 										<label class="radio"> 
-											<input type="radio"  value="1" name="resourceType" />生产资源
+											<input type="radio"  value="1" name="resourceType" 
+											<c:if test="${apply.resourceType == 1 }">
+												checked="checked" 
+											</c:if>
+											/>生产资源
 										</label> 
 										<label class="radio"> 
-											<input type="radio" value=" 2"	name="resourceType" /> 测试/演示资源
+											<input type="radio" value=" 2"	name="resourceType" 
+											<c:if test="${apply.resourceType == 2 }">
+												checked="checked" 
+											</c:if>
+											/> 测试/演示资源
 										</label> 
 										<label class="radio"> 
-											<input type="radio" value="3" name="resourceType" /> 公测资源
+											<input type="radio" value="3" name="resourceType"
+											<c:if test="${apply.resourceType == 3 }">
+												checked="checked" 
+											</c:if>
+											 /> 公测资源
 										</label>
 									</div>
 								</div>
@@ -164,8 +176,6 @@
 									</tbody>
 								</table>
 							</fieldset>
-							
-							<a href="${ctx }/apply/support/list" class="btn">list</a>
 							
 							<div class="form-actions">
 								<a id="backStep" class="btn ">返回</a>

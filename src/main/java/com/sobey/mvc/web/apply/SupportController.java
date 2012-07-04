@@ -68,16 +68,15 @@ public class SupportController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public String editOnSubmit(
+	public String editOnSubmit(@ModelAttribute("apply") Apply apply,
 			@ModelAttribute("inVpnItem") InVpnItem inVpnItem,
-			@ModelAttribute("apply") Apply apply,
-			@RequestParam("applyId") Integer applyId,
+			@RequestParam("inVpnItemId") Integer inVpnItemId,
 			RedirectAttributes redirectAttributes, Model model) {
 
-		applyManager.updateInVpnItem(inVpnItem, apply, applyId);
+		applyManager.updateInVpnItem(inVpnItem, apply, inVpnItemId);
 
-		redirectAttributes.addFlashAttribute("message", "修改申请 "
-				+ inVpnItem.getApply().getTitle() + " 成功");
+		redirectAttributes.addFlashAttribute("message",
+				"修改申请 " + apply.getTitle() + " 成功");
 
 		return "redirect:/apply/support/";
 	}

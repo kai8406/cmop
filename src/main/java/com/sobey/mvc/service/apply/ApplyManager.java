@@ -76,13 +76,10 @@ public class ApplyManager {
 	}
 
 	@Transactional(readOnly = false)
-	public void updateInVpnItem(InVpnItem inVpnItem, Apply apply,Integer applyId) {
+	public void updateInVpnItem(InVpnItem inVpnItem, Apply apply,
+			Integer inVpnItemId) {
 
-
-		Apply applyUpate = applyDao.findOne(applyId);
-		
-		System.out.println(applyUpate.getCreateTime());
-
+		Apply applyUpate = applyDao.findOne(apply.getId());
 		applyUpate.setTitle(apply.getTitle());
 		applyUpate.setServiceStart(apply.getServiceStart());
 		applyUpate.setServiceEnd(apply.getServiceEnd());
@@ -90,9 +87,13 @@ public class ApplyManager {
 		applyUpate.setResourceType(apply.getResourceType());
 		applyDao.save(applyUpate);
 
-		inVpnItem.setApply(applyUpate);
-		inVpnItem.setInType(1);
-		inVpnItemDao.save(inVpnItem);
+		InVpnItem inVpnItemUpate = inVpnItemDao.findOne(inVpnItemId);
+		inVpnItemUpate.setApply(applyUpate);
+		inVpnItemUpate.setAccount(inVpnItem.getAccount());
+		inVpnItemUpate.setAccountUser(inVpnItem.getAccountUser());
+		inVpnItemUpate.setVisitHost(inVpnItem.getVisitHost());
+		inVpnItemUpate.setInType(1);
+		inVpnItemDao.save(inVpnItemUpate);
 	}
 
 }

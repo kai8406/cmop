@@ -16,7 +16,8 @@
 				rules:{
 					name:{
 						remote: "${ctx}/account/group/checkGroupName?oldName="+encodeURIComponent('${group.name}')
-					}
+					},
+					permissionList:"required"
 				},
 				messages:{
 					name:{remote:"权限名已存在"}
@@ -28,11 +29,15 @@
 </head>
 
 <body>
-	<form:form id="inputForm" modelAttribute="group" action="${ctx}/account/group/save/${user.id}" method="post">
+	<form:form id="inputForm" modelAttribute="group" action="${ctx}/account/group/save/${user.id}" method="post" cssClass="form-horizontal">
+	
+		<input type="hidden" name="id" value="${group.id}"/>
+		
 		<div class="tab-content span6 offset2">
-			<input type="hidden" name="id" value="${group.id}"/>
 			<fieldset>
+			
 				<legend><small>管理权限组</small></legend>
+				
 				<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
 				
 				<div class="control-group">
@@ -41,13 +46,14 @@
 						<input type="text" id="name" name="name" size="50" class="required" value="${group.name}"/>
 					</div>
 				</div>
+				
 				<div class="control-group">
 					<label for="permissionList" class="control-label">权限列表</label>
-					<hr>
-					</div>
 					<div class="controls">
 						<form:checkboxes path="permissionList" items="${allPermissions}" itemLabel="displayName" itemValue="value" />
 					</div>
+				</div>
+				
 				<div class="form-actions">
 					<input id="submit" class="btn btn-primary" type="submit" value="保存修改"/>&nbsp;	
 					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>

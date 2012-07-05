@@ -25,8 +25,8 @@
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<colgroup>
-			<col class="span2">
-			<col class="span8">
+			<col class="span3">
+			<col class="span7">
 			<col class="span2">
 		</colgroup>
 		<thead>
@@ -42,8 +42,8 @@
 				<td>${group.permissionNames}</td>
 				<td>
 					<shiro:hasPermission name="group:edit">
-						<a class="btn btn-primary"  href="update/${group.id}">修改</a> 
-						<a class="btn" href="delete/${group.id}">删除</a>
+						<a href="update/${group.id}">修改</a> 
+						<a href="delete/${group.id}">删除</a>
 					</shiro:hasPermission>	
 				</td>
 			</tr>

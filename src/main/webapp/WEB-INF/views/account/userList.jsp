@@ -6,7 +6,8 @@
 <title>用户管理</title>
 <script>
 	$(document).ready(function() {
-		//聚焦第一个输入框
+		
+		//active tab
 		$("#user-tab").addClass("active");
 		
 		$("#message").fadeOut(5000);
@@ -26,18 +27,12 @@
 	</shiro:hasPermission>
 	
 	<!-- Search -->
-		<form class="well form-search" action="${ctx}/account/user/">
+		<form class="well well-small form-search" action="${ctx}/account/user/">
 
 			<div class="row-fluid rowshow-grid">
 
 				<div class="span3">
-					<label class="control-label">名称:</label> <input type="text" id="name" name="name" value=""
-						placeholder="用户名称" class="input-medium">
-				</div>
-
-				<div class="span3">
-					<label class="control-label">创建日期:</label> <input type="text" id="" name=""
-						placeholder="创建日期" class="input-medium">
+					<label class="control-label">名称:</label> <input type="text" id="name" name="name"  placeholder="用户名称" class="input-medium">
 				</div>
 
 				<div class="span3">
@@ -49,17 +44,15 @@
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<colgroup>
-			<col class="span2">
-			<col class="span2">
-			<col class="span2">
+			<col class="span3">
+			<col class="span3">
 			<col class="span4">
 			<col class="span2">
 		</colgroup>
 		<thead>
 			<tr>
-				<th>登录名</th>
+				<th>登录邮箱</th>
 				<th>用户名</th>
-				<th>邮箱</th>
 				<th>权限组
 				<th>操作</th>
 			</tr>
@@ -67,13 +60,12 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="user">
 				<tr>
-					<td>${user.id}</td>
-					<td>${user.name}</td>
 					<td>${user.email}</td>
+					<td>${user.name}</td>
 					<td>${user.groupNames}</td>
 					<td><shiro:hasPermission name="user:edit">
-							<a class="btn btn-primary" href="update/${user.id}">修改</a>
-							<a class="btn" href="delete/${user.id}">删除</a>
+							<a href="update/${user.id}">修改</a>
+							<a href="delete/${user.id}">删除</a>
 						</shiro:hasPermission></td>	
 				</tr>
 			</c:forEach>
@@ -82,6 +74,5 @@
 	
 	<%@ include file="/WEB-INF/layouts/pageable.jsp"%>
         
-
 </body>
 </html>

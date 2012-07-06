@@ -5,10 +5,9 @@
 	<title>帐号管理</title>
 	<script>
 		$(document).ready(function() {
-			//聚焦第一个输入框
+			
 			$("#group-tab").addClass("active");
 			
-			$("#message").fadeOut(5000);
 		});
 	</script>
 </head>
@@ -20,7 +19,7 @@
 	</c:if>
 	
 	<shiro:hasPermission name="group:edit">
-		<a class="btn btn-info pager" href="create">创建权限组</a>
+		<a class="btn btn-info pager" href="${ctx }/account/group/save/">创建权限组</a>
 	</shiro:hasPermission>
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">

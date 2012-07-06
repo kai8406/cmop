@@ -10,8 +10,6 @@
 		//active tab
 		$("#user-tab").addClass("active");
 		
-		$("#message").fadeOut(5000);
-		
 	});
 </script>
 </head>
@@ -23,7 +21,7 @@
 	</c:if>
 	
  	<shiro:hasPermission name="user:edit">
-		<a class="btn btn-info pager" href="create">创建用户</a>
+		<a class="btn btn-info pager" href="${ctx }/account/user/save/">创建用户</a>
 	</shiro:hasPermission>
 	
 	<!-- Search -->
@@ -64,7 +62,7 @@
 					<td>${user.name}</td>
 					<td>${user.groupNames}</td>
 					<td><shiro:hasPermission name="user:edit">
-							<a href="update/${user.id}">修改</a>
+							<a href="${ctx }/account/user/update/${user.id}">修改</a>
 							<a href="delete/${user.id}">删除</a>
 						</shiro:hasPermission></td>	
 				</tr>

@@ -29,7 +29,7 @@
 </head>
 
 <body>
-	<form:form id="inputForm" modelAttribute="group" action="${ctx}/account/group/save/${user.id}" method="post" cssClass="form-horizontal">
+	<form:form id="inputForm" modelAttribute="group" action="." method="post" cssClass="form-horizontal">
 	
 		<input type="hidden" name="id" value="${group.id}"/>
 		
@@ -55,7 +55,7 @@
 				</div>
 				
 				<div class="form-actions">
-					<input id="submit" class="btn btn-primary" type="submit" value="保存修改"/>&nbsp;	
+					<input class="btn btn-primary" type="submit" value="保存修改"/>&nbsp;	
 					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 				</div>
 			</fieldset>

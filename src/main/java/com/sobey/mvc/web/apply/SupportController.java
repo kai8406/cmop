@@ -38,15 +38,15 @@ public class SupportController {
 	}
 
 	// 跳转到新增页面
-	@RequestMapping(value = "/form", method = RequestMethod.GET)
-	public String create(Model model) {
+	@RequestMapping(value = "/save", method = RequestMethod.GET)
+	public String createForm(Model model) {
 		model.addAttribute("inVpnItem", new InVpnItem());
 		return "apply/form";
 	}
 
 	// 保存
-	@RequestMapping(value = "/form", method = RequestMethod.POST)
-	public String createOnSubmit(InVpnItem inVpnItem, Apply apply,
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(InVpnItem inVpnItem, Apply apply,
 			RedirectAttributes redirectAttributes, Model model) {
 
 		applyManager.insertInVpnItem(inVpnItem, apply);
@@ -58,8 +58,8 @@ public class SupportController {
 	}
 
 	// 跳转到修改页面
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-	public String edit(@PathVariable("id") Integer id, Model model) {
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String updateForm(@PathVariable("id") Integer id, Model model) {
 		InVpnItem inVpnItem = applyManager.findInVpnItemByapplyId(id);
 		Apply apply = applyManager.findApplyById(id);
 		model.addAttribute("apply", apply);
@@ -67,8 +67,8 @@ public class SupportController {
 		return "/apply/form";
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public String editOnSubmit(@ModelAttribute("apply") Apply apply,
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(@ModelAttribute("apply") Apply apply,
 			@ModelAttribute("inVpnItem") InVpnItem inVpnItem,
 			@RequestParam("inVpnItemId") Integer inVpnItemId,
 			RedirectAttributes redirectAttributes, Model model) {

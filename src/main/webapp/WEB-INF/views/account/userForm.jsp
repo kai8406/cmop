@@ -40,7 +40,7 @@
 </head>
 
 <body>
-	<form:form id="inputForm" modelAttribute="user" action="${ctx}/account/user/save/${user.id}" method="post" cssClass="form-horizontal">
+	<form:form id="inputForm" modelAttribute="user" action="." method="post" cssClass="form-horizontal">
 	
 		<input type="hidden" name="id" value="${user.id}"/>
 		
@@ -100,7 +100,7 @@
 				</div>	
 				
 				<div class="form-actions">
-					<input id="submit" class="btn btn-primary" type="submit" value="保存修改"/>&nbsp;	
+					<button class="btn btn-primary">保存修改</button>&nbsp;	
 					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 				</div>
 

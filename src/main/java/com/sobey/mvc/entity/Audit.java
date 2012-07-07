@@ -25,6 +25,7 @@ public class Audit implements java.io.Serializable {
 	private Apply apply;
 	private AuditFlow auditFlow;
 	private Date createTime;
+	private String result;
 	private String opinion;
 
 	// Constructors
@@ -34,17 +35,19 @@ public class Audit implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Audit(Apply apply, AuditFlow auditFlow, Date createTime) {
+	public Audit(Apply apply, AuditFlow auditFlow, Date createTime, String result) {
 		this.apply = apply;
 		this.auditFlow = auditFlow;
 		this.createTime = createTime;
+		this.result = result;
 	}
 
 	/** full constructor */
-	public Audit(Apply apply, AuditFlow auditFlow, Date createTime, String opinion) {
+	public Audit(Apply apply, AuditFlow auditFlow, Date createTime, String result, String opinion) {
 		this.apply = apply;
 		this.auditFlow = auditFlow;
 		this.createTime = createTime;
+		this.result = result;
 		this.opinion = opinion;
 	}
 
@@ -87,6 +90,15 @@ public class Audit implements java.io.Serializable {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	
+	@Column(name = "result", nullable = false, length = 1)
+	public String getResult() {
+		return this.result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	@Column(name = "opinion", length = 45)

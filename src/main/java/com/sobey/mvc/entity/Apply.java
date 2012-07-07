@@ -27,24 +27,16 @@ public class Apply implements java.io.Serializable {
 
 	private Integer id;
 	private User user;
+	private String serviceType;
 	private Integer resourceType;
 	private String title;
 	private String description;
 	private String serviceStart;
 	private String serviceEnd;
 	private Date createTime;
-	private Integer serverType;
-	private Integer serverCount;
-	private Integer osType;
-	private Integer osBit;
-	private Integer networkType;
-	private Integer networkBand;
-	private String networkInIp;
-	private String networkOutIp;
 	private Integer status;
 	private Integer redmineIssueId;
 	private Integer applyId;
-	private Integer redmineChangesetId;
 	private Set<NetworkPortItem> networkPortItems = new HashSet<NetworkPortItem>(0);
 	private Set<StorageItem> storageItems = new HashSet<StorageItem>(0);
 	private Set<InVpnItem> inVpnItems = new HashSet<InVpnItem>(0);
@@ -58,8 +50,9 @@ public class Apply implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Apply(User user, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+	public Apply(User user, String serviceType, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
 		this.user = user;
+		this.serviceType = serviceType;
 		this.resourceType = resourceType;
 		this.title = title;
 		this.description = description;
@@ -70,29 +63,20 @@ public class Apply implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Apply(User user, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, Integer serverType,
-			Integer serverCount, Integer osType, Integer osBit, Integer networkType, Integer networkBand, String networkInIp, String networkOutIp,
-			Integer status, Integer redmineIssueId, Integer applyId, Integer redmineChangesetId, Set<NetworkPortItem> networkPortItems,
-			Set<StorageItem> storageItems, Set<InVpnItem> inVpnItems, Set<Audit> audits, Set<NetworkDomainItem> networkDomainItems) {
+	public Apply(User user, String serviceType, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, 
+			Integer status, Integer redmineIssueId, Integer applyId, Set<NetworkPortItem> networkPortItems, Set<StorageItem> storageItems, 
+			Set<InVpnItem> inVpnItems, Set<Audit> audits, Set<NetworkDomainItem> networkDomainItems) {
 		this.user = user;
+		this.serviceType = serviceType;
 		this.resourceType = resourceType;
 		this.title = title;
 		this.description = description;
 		this.serviceStart = serviceStart;
 		this.serviceEnd = serviceEnd;
 		this.createTime = createTime;
-		this.serverType = serverType;
-		this.serverCount = serverCount;
-		this.osType = osType;
-		this.osBit = osBit;
-		this.networkType = networkType;
-		this.networkBand = networkBand;
-		this.networkInIp = networkInIp;
-		this.networkOutIp = networkOutIp;
 		this.status = status;
 		this.redmineIssueId = redmineIssueId;
 		this.applyId = applyId;
-		this.redmineChangesetId = redmineChangesetId;
 		this.networkPortItems = networkPortItems;
 		this.storageItems = storageItems;
 		this.inVpnItems = inVpnItems;
@@ -122,6 +106,15 @@ public class Apply implements java.io.Serializable {
 		this.user = user;
 	}
 
+	@Column(name = "service_type", nullable = false, length = 45)
+	public String getServiceType() {
+		return this.serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+	
 	@Column(name = "resource_type", nullable = false)
 	public Integer getResourceType() {
 		return this.resourceType;
@@ -176,78 +169,6 @@ public class Apply implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	@Column(name = "server_type")
-	public Integer getServerType() {
-		return this.serverType;
-	}
-
-	public void setServerType(Integer serverType) {
-		this.serverType = serverType;
-	}
-
-	@Column(name = "server_count")
-	public Integer getServerCount() {
-		return this.serverCount;
-	}
-
-	public void setServerCount(Integer serverCount) {
-		this.serverCount = serverCount;
-	}
-
-	@Column(name = "os_type")
-	public Integer getOsType() {
-		return this.osType;
-	}
-
-	public void setOsType(Integer osType) {
-		this.osType = osType;
-	}
-
-	@Column(name = "os_bit")
-	public Integer getOsBit() {
-		return this.osBit;
-	}
-
-	public void setOsBit(Integer osBit) {
-		this.osBit = osBit;
-	}
-
-	@Column(name = "network_type")
-	public Integer getNetworkType() {
-		return this.networkType;
-	}
-
-	public void setNetworkType(Integer networkType) {
-		this.networkType = networkType;
-	}
-
-	@Column(name = "network_band")
-	public Integer getNetworkBand() {
-		return this.networkBand;
-	}
-
-	public void setNetworkBand(Integer networkBand) {
-		this.networkBand = networkBand;
-	}
-
-	@Column(name = "network_in_ip", length = 45)
-	public String getNetworkInIp() {
-		return this.networkInIp;
-	}
-
-	public void setNetworkInIp(String networkInIp) {
-		this.networkInIp = networkInIp;
-	}
-
-	@Column(name = "network_out_ip", length = 45)
-	public String getNetworkOutIp() {
-		return this.networkOutIp;
-	}
-
-	public void setNetworkOutIp(String networkOutIp) {
-		this.networkOutIp = networkOutIp;
-	}
-
 	@Column(name = "status", nullable = false)
 	public Integer getStatus() {
 		return this.status;
@@ -273,15 +194,6 @@ public class Apply implements java.io.Serializable {
 
 	public void setApplyId(Integer applyId) {
 		this.applyId = applyId;
-	}
-
-	@Column(name = "redmine_changeset_id")
-	public Integer getRedmineChangesetId() {
-		return this.redmineChangesetId;
-	}
-
-	public void setRedmineChangesetId(Integer redmineChangesetId) {
-		this.redmineChangesetId = redmineChangesetId;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")

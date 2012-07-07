@@ -21,8 +21,8 @@ public class StorageItem implements java.io.Serializable {
 
 	private Integer id;
 	private Apply apply;
-	private Integer storageType;
 	private Integer storageSpace;
+	private Integer storageType;
 	private Integer storageThroughput;
 	private Integer storageIops;
 
@@ -33,18 +33,16 @@ public class StorageItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StorageItem(Apply apply, Integer storageType, Integer storageSpace, Integer storageThroughput) {
+	public StorageItem(Apply apply, Integer storageSpace) {
 		this.apply = apply;
-		this.storageType = storageType;
 		this.storageSpace = storageSpace;
-		this.storageThroughput = storageThroughput;
 	}
 
 	/** full constructor */
-	public StorageItem(Apply apply, Integer storageType, Integer storageSpace, Integer storageThroughput, Integer storageIops) {
+	public StorageItem(Apply apply, Integer storageSpace, Integer storageType, Integer storageThroughput, Integer storageIops) {
 		this.apply = apply;
-		this.storageType = storageType;
 		this.storageSpace = storageSpace;
+		this.storageType = storageType;
 		this.storageThroughput = storageThroughput;
 		this.storageIops = storageIops;
 	}
@@ -71,15 +69,6 @@ public class StorageItem implements java.io.Serializable {
 		this.apply = apply;
 	}
 
-	@Column(name = "storage_type", nullable = false)
-	public Integer getStorageType() {
-		return this.storageType;
-	}
-
-	public void setStorageType(Integer storageType) {
-		this.storageType = storageType;
-	}
-
 	@Column(name = "storage_space", nullable = false)
 	public Integer getStorageSpace() {
 		return this.storageSpace;
@@ -89,7 +78,16 @@ public class StorageItem implements java.io.Serializable {
 		this.storageSpace = storageSpace;
 	}
 
-	@Column(name = "storage_throughput", nullable = false)
+	@Column(name = "storage_type")
+	public Integer getStorageType() {
+		return this.storageType;
+	}
+
+	public void setStorageType(Integer storageType) {
+		this.storageType = storageType;
+	}
+
+	@Column(name = "storage_throughput")
 	public Integer getStorageThroughput() {
 		return this.storageThroughput;
 	}

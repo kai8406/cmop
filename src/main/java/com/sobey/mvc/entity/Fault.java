@@ -23,10 +23,12 @@ public class Fault implements java.io.Serializable {
 
 	private Integer id;
 	private User user;
-	private Date createTime;
+	private String title;
 	private Integer level;
 	private String description;
+	private Date createTime;
 	private Integer redmineIssueId;
+	private Integer redmineStatus;
 
 	// Constructors
 
@@ -35,20 +37,23 @@ public class Fault implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Fault(User user, Date createTime, Integer level, String description) {
+	public Fault(User user, String title, Integer level, String description, Date createTime) {
 		this.user = user;
-		this.createTime = createTime;
+		this.title = title;
 		this.level = level;
 		this.description = description;
+		this.createTime = createTime;
 	}
 
 	/** full constructor */
-	public Fault(User user, Date createTime, Integer level, String description, Integer redmineIssueId) {
+	public Fault(User user, String title, Integer level, String description, Date createTime, Integer redmineIssueId, Integer redmineStatus) {
 		this.user = user;
-		this.createTime = createTime;
+		this.title = title;
 		this.level = level;
 		this.description = description;
+		this.createTime = createTime;
 		this.redmineIssueId = redmineIssueId;
+		this.redmineStatus = redmineStatus;
 	}
 
 	// Property accessors
@@ -73,13 +78,13 @@ public class Fault implements java.io.Serializable {
 		this.user = user;
 	}
 
-	@Column(name = "create_time", nullable = false, length = 19)
-	public Date getCreateTime() {
-		return this.createTime;
+	@Column(name = "title", nullable = false, length = 45)
+	public String getTitle() {
+		return this.title;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	@Column(name = "level", nullable = false)
@@ -100,6 +105,15 @@ public class Fault implements java.io.Serializable {
 		this.description = description;
 	}
 
+	@Column(name = "create_time", nullable = false, length = 19)
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	
 	@Column(name = "redmine_issue_id")
 	public Integer getRedmineIssueId() {
 		return this.redmineIssueId;
@@ -107,6 +121,15 @@ public class Fault implements java.io.Serializable {
 
 	public void setRedmineIssueId(Integer redmineIssueId) {
 		this.redmineIssueId = redmineIssueId;
+	}
+	
+	@Column(name = "redmine_status")
+	public Integer getRedmineStatus() {
+		return this.redmineStatus;
+	}
+
+	public void setRedmineStatus(Integer redmineStatus) {
+		this.redmineStatus = redmineStatus;
 	}
 
 }

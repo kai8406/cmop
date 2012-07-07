@@ -1,4 +1,4 @@
-package com.sobey.mvc.dao.account;
+package com.sobey.mvc.dao.apply;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

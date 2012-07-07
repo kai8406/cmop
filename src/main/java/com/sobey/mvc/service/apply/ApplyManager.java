@@ -15,11 +15,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sobey.mvc.dao.account.ApplyDao;
-import com.sobey.mvc.dao.account.InVpnItemDao;
-import com.sobey.mvc.dao.account.NetworkPortItemDao;
-import com.sobey.mvc.dao.account.StorageItemDao;
 import com.sobey.mvc.dao.account.UserDao;
+import com.sobey.mvc.dao.apply.ApplyDao;
+import com.sobey.mvc.dao.apply.InVpnItemDao;
+import com.sobey.mvc.dao.apply.NetworkPortItemDao;
+import com.sobey.mvc.dao.apply.StorageItemDao;
 import com.sobey.mvc.entity.Apply;
 import com.sobey.mvc.entity.InVpnItem;
 import com.sobey.mvc.entity.User;
@@ -35,10 +35,7 @@ public class ApplyManager {
 	private ApplyDao applyDao;
 	@Autowired
 	private InVpnItemDao inVpnItemDao;
-	@Autowired
-	private NetworkPortItemDao networkPortItemDao;
-	@Autowired
-	private StorageItemDao storageItemDao;
+	
 
 	/**
 	 * 分页

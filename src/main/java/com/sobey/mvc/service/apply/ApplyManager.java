@@ -1,11 +1,11 @@
 package com.sobey.mvc.service.apply;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,25 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.mvc.dao.account.UserDao;
 import com.sobey.mvc.dao.apply.ApplyDao;
-import com.sobey.mvc.dao.apply.InVpnItemDao;
-import com.sobey.mvc.dao.apply.NetworkPortItemDao;
-import com.sobey.mvc.dao.apply.StorageItemDao;
+import com.sobey.mvc.dao.apply.ComputeItemDao;
 import com.sobey.mvc.entity.Apply;
-import com.sobey.mvc.entity.InVpnItem;
+import com.sobey.mvc.entity.ComputeItem;
 import com.sobey.mvc.entity.User;
 
 @Component
 @Transactional(readOnly = true)
 public class ApplyManager {
-	private static Logger logger = LoggerFactory.getLogger(ApplyManager.class);
 
 	@Autowired
 	private UserDao userDao;
 	@Autowired
 	private ApplyDao applyDao;
+
 	@Autowired
-	private InVpnItemDao inVpnItemDao;
-	
+	private ComputeItemDao computeItemDao;
 
 	/**
 	 * 分页
@@ -46,51 +43,36 @@ public class ApplyManager {
 		return applyDao.findAll(pageable);
 	}
 
-	public InVpnItem findInVpnItemByapplyId(Integer applyId) {
-		return inVpnItemDao.findByApply_Id(applyId);
-	}
-
 	public Apply findApplyById(Integer id) {
 		return applyDao.findOne(id);
-
 	}
 
-	@Transactional(readOnly = false)
-	public InVpnItem insertInVpnItem(InVpnItem inVpnItem, Apply apply) {
+	public Apply saveApply(Apply apply) {
+		return applyDao.save(apply);
+	}
+
+	public void saveComputeItemList(List<ComputeItem> list, Apply apply) {
+
+		DateTime dateTime = new DateTime();
 
 		Subject subject = SecurityUtils.getSubject();
 		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
 		apply.setUser(user);
-		apply.setStatus(1);
 		apply.setCreateTime(new Date());
-		apply.setResourceType(1);
-		applyDao.save(apply);
-
-		inVpnItem.setApply(apply);
-		inVpnItem.setInType(1);
-
-		return inVpnItemDao.save(inVpnItem);
+		apply.setTitle(user.getName() + "-ECS-"
+				+ dateTime.toString("yyyyMMddHHmmss"));
+		apply.setStatus(1);
+		apply.setServiceType("ECS");
+		this.saveApply(apply);
+		for (ComputeItem computeItem : list) {
+			this.saveComputeItem(computeItem, apply);
+		}
 	}
 
-	@Transactional(readOnly = false)
-	public void updateInVpnItem(InVpnItem inVpnItem, Apply apply,
-			Integer inVpnItemId) {
+	public ComputeItem saveComputeItem(ComputeItem computeItem, Apply apply) {
+		computeItem.setApply(apply);
+		return computeItemDao.save(computeItem);
 
-		Apply applyUpate = applyDao.findOne(apply.getId());
-		applyUpate.setTitle(apply.getTitle());
-		applyUpate.setServiceStart(apply.getServiceStart());
-		applyUpate.setServiceEnd(apply.getServiceEnd());
-		applyUpate.setDescription(apply.getDescription());
-		applyUpate.setResourceType(apply.getResourceType());
-		applyDao.save(applyUpate);
-
-		InVpnItem inVpnItemUpate = inVpnItemDao.findOne(inVpnItemId);
-		inVpnItemUpate.setApply(applyUpate);
-		inVpnItemUpate.setAccount(inVpnItem.getAccount());
-		inVpnItemUpate.setAccountUser(inVpnItem.getAccountUser());
-		inVpnItemUpate.setVisitHost(inVpnItem.getVisitHost());
-		inVpnItemUpate.setInType(1);
-		inVpnItemDao.save(inVpnItemUpate);
 	}
 
 }

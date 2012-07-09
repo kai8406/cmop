@@ -157,7 +157,7 @@
 						<div class="page-header">操作系统</div>
 						<div class="row">
 								<div class="span1">
-									<img alt="windows OS" src="./img/windows_logo.png" />
+									<img alt="windows OS" src="${ctx}/static/custom/images/windows-logo.png" />
 								</div>
 								<div class="span5">
 									<div id="osId" class="hidden">1</div>
@@ -179,7 +179,7 @@
 							</div>
 							<div class="row">
 								<div class="span1">
-									<img alt="windows OS" src="./img/windows_logo.png" />
+									<img alt="windows OS" src="${ctx}/static/custom/images/windows-logo.png" />
 								</div>
 								<div class="span5">
 									<div id="osId" class="hidden">2</div>
@@ -201,7 +201,7 @@
 							</div>
 							<div class="row">
 								<div class="span1">
-									<img alt="centOS" src="./img/centos-logo.png" />
+									<img alt="centOS" src="${ctx}/static/custom/images/centos-logo.png" />
 								</div>
 								<div class="span5">
 									<div id="osId" class="hidden">3</div>
@@ -223,7 +223,7 @@
 							</div>
 							<div class="row">
 								<div class="span1">
-									<img alt="centOS" src="./img/centos-logo.png" />
+									<img alt="centOS" src="${ctx}/static/custom/images/centos-logo.png" />
 								</div>
 								<div class="span5">
 									<div id="osId" class="hidden">4</div>

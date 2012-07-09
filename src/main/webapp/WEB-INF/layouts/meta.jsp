@@ -16,7 +16,7 @@
 <script src="${ctx}/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="${ctx}/static/jquery-ui/js/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
 <script src="${ctx}/static/jquery-ui/js/jquery.ui.datepicker-zh-CN.js" type="text/javascript"></script>
-<script src="${ctx}/static/cmop.js" type="text/javascript"></script>
+<script src="${ctx}/static/custom/js/cmop.js" type="text/javascript"></script>
 
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>

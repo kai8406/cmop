@@ -2,6 +2,8 @@ package com.sobey.mvc;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.sobey.framework.utils.Identities;
+
 public class T {
 
 	/**
@@ -9,11 +11,10 @@ public class T {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		String[] a = StringUtils.split("aaaaaaaaa,bbbbbbbbbbbb,cccccccccc,dddd,dddd", ",");
-		for (String s : a) {
-			System.out.println(s);
-		}
+		System.out.println(Identities.randomLong());
+		System.out.println(Identities.uuid());
+		System.out.println(Identities.uuid2());
+		System.out.println(Identities.randomBase62(12));
 		
 	}
 

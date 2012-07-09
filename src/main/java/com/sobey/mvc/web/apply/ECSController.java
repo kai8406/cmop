@@ -154,7 +154,8 @@ public class ECSController {
 			}
 
 		}
-
+		
+		System.out.println(computeItemList.size());
 		applyManager.saveComputeItemList(computeItemList, apply);
 
 		redirectAttributes.addFlashAttribute("message",

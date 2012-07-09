@@ -26,60 +26,13 @@ function displayInputParameter(){
 	$("#td_time").html( $("#serviceStart").val() + '&nbsp;至&nbsp;' + $("#serviceEnd").val());
 	
 	
-	/*接入服务*/
-	account = $("#account").val() ;
-	user = $("#accountUser").val();
-	visitHost = $("#visitHost").val();
-	$("#td_inVpnItem").html("<code>账号:</code>"+account+"<code>使用人:</code>"+user+"<code>需要访问主机:</code>"+visitHost);
-	
 	
 	/*存储资源*/
-	//存储资源:数据存储
-	if($('#dataStorageType').is(":checked")){
-		
-		$("#tr_dataStorage").show();
-		
-		//容量空间
-		space = $("input[name='dataSorageSpace']:checked").val();
-		
-		//Throughput（吞吐量）
-	 	if($("input[name='dataStorageThroughput']:checked").val() === 1){
-	 		throughput = "50 Mbps以内"; 
-	 	}else{
-	 		throughput = "50 Mbps以上"; 
-	 	}
-		
-		//IOPS（每秒进行读写（I/O）操作的次数）
-		iops = $("#dataStorageIops").val();
-		
-	 	$("#td_dataStorage").html("<code>存储类型:</code>数据存储<code>容量空间:</code>"+space+"G<code>吞吐量:</code>"+throughput+"<code>IOPS:</code>"+iops);
-	 	
-	}else{
-		$("#tr_dataStorage").hide();
+	if($("#otherSpace").is(":checked")){
+		$("#otherSpace").val($("#otherSpaceValue").val());
 	}
-	
-	//存储资源:业务存储
-	if($('#businessStorageType').is(":checked")){
-		
-		$("#tr_businessStorage").show();
-		
-		//容量空间
-		space = $("input[name='businessStorageSpace']:checked").val();
-		
-		//Throughput（吞吐量）
-	 	if($("input[name='businessStorageThroughput']:checked").val() === 1){
-	 		throughput = "50 Mbps以内"; 
-	 	}else{
-	 		throughput = "50 Mbps以上"; 
-	 	}
-		
-		//IOPS（每秒进行读写（I/O）操作的次数）
-		iops = $("#businessStorageIops").val();
-		
-	 	$("#td_businessStorage").html("<code>存储类型:</code>业务存储<code>容量空间:</code>"+space+"G<code>吞吐量:</code>"+throughput+"<code>IOPS:</code>"+iops);
-	}else{
-		$("#tr_businessStorage").hide();
-	}
+	space = $("input[name='storageSpace']:checked").val();	//容量空间
+	$("#td_storage").html(space);
 	
 	
 	/*计算资源*/
@@ -97,10 +50,10 @@ function displayInputParameter(){
 	instancesNum = $("#instancesNum").val();
 	
 	//操作系统
-	if($("input[id='osBit']:checked")){
+	if($("input[name='osBit']:checked")){
 		
 		//获得radio的父节点,用于取得最近的serverId
-		osNode = $("input[id='osBit']:checked").parent().parent().parent();
+		osNode = $("input[name='osBit']:checked").parent().parent().parent();
 		
 		//给隐藏域osType赋上选中的操作类型ID用于提交到后台.
 	 	$("#osType").val(osNode.find("#osId").val());
@@ -109,7 +62,7 @@ function displayInputParameter(){
 	}
 	
 	//操作系统位数
- 	if($("input[id='osBit']:checked").val() == 1){
+ 	if($("input[name='osBit']:checked").val() == 1){
  		osBit = "32 Bit"; 
  	}else{
  		osBit = "64 Bit"; 
@@ -213,7 +166,6 @@ function switchTab(){
 		$('#myTab li:eq('+ (nextSteps.index(this) + 1) +') a').tab('show'); 
 		displayInputParameter();
 		
-		
 		//
 		/*将已选择的资源显示在详情列表中*/ 
 		$("tr.ResourcesDetail").remove();
@@ -315,11 +267,13 @@ function getOSNameByOSId(osId){
 function appendSingleResourcesStr(osId,bitValue,serverTypeId,serverCount){
 	
 	 str = "<div class='row alert' id='singleResources'>";
-	 
 	 str +="<div class='span1' id='osName_SingleResources'>"+getOSNameByOSId(osId)+"</div>";
+	 str +="<div class='hidden' id='osId_SingleResources'>"+osId+"</div>";
 	 
+	 str +="<div class='hidden' id='osBitId__SingleResources'>"+bitValue+"</div>";
 	 str +="<div class='span1' id='osBitName__SingleResources'>"+getBitName(bitValue)+"</div>";
 	 
+	 str +="<div class='hidden' id='serverTypeId__SingleResources'>"+serverTypeId+"</div>";
 	 str +="<div class='span4' id='serverTypeName__SingleResources'>"+getServerTypeNameByServerTypeId(serverTypeId)+"</div>";
 	 
 	 str +="<div class='span1' id='serverCount__SingleResources'>"+serverCount+"</div>";
@@ -334,13 +288,13 @@ function appendSingleResourcesStr(osId,bitValue,serverTypeId,serverCount){
  */
 function selectServer(object,modalObject){
 	
-	modalId =  modalObject.parent().parent().attr("id"); //弹出框ID
-	
-	var osTypes= [];
-	var bits= [];
-	var serverTypeIds = [];
-	var serverCount = [];
-	  
+	 	modalId =  modalObject.parent().parent().attr("id"); //弹出框ID
+		 
+		 var osTypes= [];
+		 var bits= [];
+		 var serverTypeIds = [];
+		 var serverCount = [];
+		 
 	
 	//所选择的OS
 	var osId =  object.parent().parent().find("#osId").text();
@@ -363,16 +317,16 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 osTypes.push(osId);
-		 bits.push(checkOsBit);
-		 serverTypeIds.push(smallTypeId);
-		 serverCount.push(smallCount);
-		 
 		 //将选中的信息(OS,BIT,服务器规格和数量)在页面显示.
+		 osTypes.push(osId);                
+		 bits.push(checkOsBit);             
+		 serverTypeIds.push(smallTypeId);   
+		 serverCount.push(smallCount);      
+		 
 		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,smallTypeId,smallCount));
-	 }
-	 
-	 
+	 }    	 
+	      	 
+	      	 
 	 var middleCount = modalObject.parent().parent().find("#middleServerCount").val();//所选规格middle的数量
 	 if(middleCount != ""){//数量框不为空
 		 
@@ -386,12 +340,12 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 osTypes.push(osId);
-		 bits.push(checkOsBit);
-		 serverTypeIds.push(middleTypeId);
-		 serverCount.push(middleCount);
+		 osTypes.push(osId);                
+		 bits.push(checkOsBit);             
+		 serverTypeIds.push(middleTypeId);   
+		 serverCount.push(middleCount);      
 		 
-		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,middleTypeId,middleCount));
+		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,middleTypeId,smallCount));
 		 
 	 }
 	 
@@ -409,18 +363,19 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 osTypes.push(osId);
-		 bits.push(checkOsBit);
-		 serverTypeIds.push(largeTypeId);
-		 serverCount.push(largeCount);
+		 osTypes.push(osId);                
+		 bits.push(checkOsBit);             
+		 serverTypeIds.push(largeTypeId);   
+		 serverCount.push(largeCount);      
 		 
-		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,largeTypeId,largeCount));
+		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,largeTypeId,smallCount));
 	 }
 	 
-	 	$("#osTypes"+modalId+"").val(osTypes);
-		$("#bits"+modalId+"").val(bits);
-		$("#serverTypeIds"+modalId+"").val(serverTypeIds);
-		$("#serverCount"+modalId+"").val(serverCount);
+	   	$("#osTypes"+modalId+"").val(osTypes);
+	  	$("#bits"+modalId+"").val(bits);
+	  	$("#serverTypeIds"+modalId+"").val(serverTypeIds);
+	  	$("#serverCount"+modalId+"").val(serverCount);
+
 	
 }
 

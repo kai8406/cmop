@@ -7,7 +7,7 @@
 		<li><a href="#"><i class="icon-book"></i>PM</a></li>
 		<li class="divider"></li>
 		<li class="nav-header">存储资源</li>
-		<li><a href="./SupportES3Form.html"><i class="icon-cog"></i>
+		<li><a href="${ctx}/apply/support/es3/save/"><i class="icon-cog"></i>
 				ES3</a></li>
 		<li class="divider"></li>
 		<li class="nav-header">网络资源</li>

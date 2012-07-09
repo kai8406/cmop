@@ -61,7 +61,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, String type, Date createTime, Integer status) {
+	public User(String name, String password, String email, String phonenum,
+			Integer department, String type, Date createTime, Integer status) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -73,8 +74,10 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, String type, Date createTime,
-			Date loginTime, Integer status, Set<AuditFlow> auditFlows, Set<Fault> faults, Set<Apply> applies) {
+	public User(String name, String password, String email, String phonenum,
+			Integer department, Integer leaderId, String type, Date createTime,
+			Date loginTime, Integer status, Set<AuditFlow> auditFlows,
+			Set<Fault> faults, Set<Apply> applies) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -218,34 +221,35 @@ public class User implements java.io.Serializable {
 	public void setApplies(Set<Apply> applies) {
 		this.applies = applies;
 	}
+
 	// 多对多定义
-		@ManyToMany
-		@JoinTable(name = "user_group", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id") })
-		// Fecth策略定义
-		@Fetch(FetchMode.SUBSELECT)
-		// 集合按id排序.
-		@OrderBy("id")
-		// 集合中对象id的缓存.
-		@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-		public List<Group> getGroupList() {
-			return groupList;
-		}
+	@ManyToMany
+	@JoinTable(name = "user_group", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.SUBSELECT)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<Group> getGroupList() {
+		return groupList;
+	}
 
-		public void setGroupList(List<Group> groupList) {
-			this.groupList = groupList;
-		}
+	public void setGroupList(List<Group> groupList) {
+		this.groupList = groupList;
+	}
 
-		/**
-		 * 用户拥有的权限组名称字符串, 多个权限组名称用','分隔.
-		 */
-		// 非持久化属性.
-		@Transient
-		public String getGroupNames() {
-			return Collections3.extractToString(groupList, "name", ", ");
-		}
+	/**
+	 * 用户拥有的权限组名称字符串, 多个权限组名称用','分隔.
+	 */
+	// 非持久化属性.
+	@Transient
+	public String getGroupNames() {
+		return Collections3.extractToString(groupList, "name", ", ");
+	}
 
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this);
-		}
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 }

@@ -173,7 +173,7 @@ function switchTab(){
 		$("#selectedResources #singleResources").each(function(){
 			str += "<tr class='ResourcesDetail'>" +
 					"<td>计算资源</td>" +
-					"<td><code>操作系统:</code>"+
+					"<td>"+
 						$(this).children("#osName_SingleResources").text()+"&nbsp;"+ $(this).children("#osBitName__SingleResources").text()+
 						"<code>规格:</code>"+$(this).children("#serverTypeName__SingleResources").text()+
 						"<code>数量:</code>"+$(this).children("#serverCount__SingleResources").text()+"" +
@@ -186,6 +186,31 @@ function switchTab(){
 		$("#formDetail tbody:last-child").append(str);
 		
 		//
+		
+		var osTypes= [];
+		 var bits= [];
+		 var serverTypeIds = [];
+		 var serverCount = [];
+		 
+		$("#selectedResources #singleResources").each(function() {
+			 var osId = $(this).find("#osId_SingleResources").text();
+			 var checkOsBit = $(this).find("#osBitId__SingleResources").text();
+			 var middleTypeId = $(this).find("#serverTypeId__SingleResources").text();
+			 var middleCount = $(this).find("#serverCount__SingleResources").text();
+			 
+			
+			 osTypes.push(osId);                
+			 bits.push(checkOsBit);             
+			 serverTypeIds.push(middleTypeId);   
+			 serverCount.push(middleCount);      
+			 
+		});
+		
+	 	$("#osTypes").val(osTypes);
+	  	$("#bits").val(bits);
+	  	$("#serverTypeIds").val(serverTypeIds);
+	  	$("#serverCount").val(serverCount);
+
 	
 		
 	 });
@@ -289,12 +314,6 @@ function appendSingleResourcesStr(osId,bitValue,serverTypeId,serverCount){
 function selectServer(object,modalObject){
 	
 	 	modalId =  modalObject.parent().parent().attr("id"); //弹出框ID
-		 
-		 var osTypes= [];
-		 var bits= [];
-		 var serverTypeIds = [];
-		 var serverCount = [];
-		 
 	
 	//所选择的OS
 	var osId =  object.parent().parent().find("#osId").text();
@@ -317,12 +336,6 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 //将选中的信息(OS,BIT,服务器规格和数量)在页面显示.
-		 osTypes.push(osId);                
-		 bits.push(checkOsBit);             
-		 serverTypeIds.push(smallTypeId);   
-		 serverCount.push(smallCount);      
-		 
 		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,smallTypeId,smallCount));
 	 }    	 
 	      	 
@@ -340,12 +353,7 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 osTypes.push(osId);                
-		 bits.push(checkOsBit);             
-		 serverTypeIds.push(middleTypeId);   
-		 serverCount.push(middleCount);      
-		 
-		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,middleTypeId,smallCount));
+		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,middleTypeId,middleCount));
 		 
 	 }
 	 
@@ -363,19 +371,10 @@ function selectServer(object,modalObject){
 			 }
 		});
 		 
-		 osTypes.push(osId);                
-		 bits.push(checkOsBit);             
-		 serverTypeIds.push(largeTypeId);   
-		 serverCount.push(largeCount);      
-		 
-		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,largeTypeId,smallCount));
+		 $("#selectedResources ").append(appendSingleResourcesStr(osId,checkOsBit,largeTypeId,largeCount));
 	 }
 	 
-	   	$("#osTypes"+modalId+"").val(osTypes);
-	  	$("#bits"+modalId+"").val(bits);
-	  	$("#serverTypeIds"+modalId+"").val(serverTypeIds);
-	  	$("#serverCount"+modalId+"").val(serverCount);
-
+	  
 	
 }
 

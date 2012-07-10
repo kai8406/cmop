@@ -31,7 +31,7 @@
 		$("#serviceEnd").datepicker();
 		
 
-		$("#serviceStart").val(getDateByMonthNum(0)); // 一个月后的日期
+		$("#serviceStart").val(getDateByMonthNum(0)); // 当前的日期
 		$("#serviceEnd").val(getDateByMonthNum(1)); // 一个月后的日期
 		
 		inputServiceDate();
@@ -75,25 +75,10 @@
 				<input type="hidden" name="id" value="${apply.id}"/>
 				<input type="hidden" name="title" value="${apply.title}"/>
 				
-				<input type="hidden" id="osTypesComputResources" name="osTypesComputResources" value=""/>
-				<input type="hidden" id="bitsComputResources" name="bitsComputResources" value=""/>
-				<input type="hidden" id="serverTypeIdsComputResources" name="serverTypeIdsComputResources" value=""/>
-				<input type="hidden" id="serverCountComputResources" name="serverCountComputResources" value=""/>
-				
-				<input type="hidden" id="osTypesComputResources2" name="osTypesComputResources2" value=""/>
-				<input type="hidden" id="bitsComputResources2" name="bitsComputResources2" value=""/>
-				<input type="hidden" id="serverTypeIdsComputResources2" name="serverTypeIdsComputResources2" value=""/>
-				<input type="hidden" id="serverCountComputResources2" name="serverCountComputResources2" value=""/>
-				
-				<input type="hidden" id="osTypesComputResources3" name="osTypesComputResources3" value=""/>
-				<input type="hidden" id="bitsComputResources3" name="bitsComputResources3" value=""/>
-				<input type="hidden" id="serverTypeIdsComputResources3" name="serverTypeIdsComputResources3" value=""/>
-				<input type="hidden" id="serverCountComputResources3" name="serverCountComputResources3" value=""/>
-				
-				<input type="hidden" id="osTypesComputResources4" name="osTypesComputResources4" value=""/>
-				<input type="hidden" id="bitsComputResources4" name="bitsComputResources4" value=""/>
-				<input type="hidden" id="serverTypeIdsComputResources4" name="serverTypeIdsComputResources4" value=""/>
-				<input type="hidden" id="serverCountComputResources4" name="serverCountComputResources4" value=""/>
+				<input type="hidden" id="osTypes" name="osTypes" value=""/>
+				<input type="hidden" id="bits" name="bits" value=""/>
+				<input type="hidden" id="serverTypeIds" name="serverTypeIds" value=""/>
+				<input type="hidden" id="serverCount" name="serverCount" value=""/>
 				
 					<div class="tab-content">
 					
@@ -106,7 +91,7 @@
 									<label class="control-label">资源类型</label>
 									<div class="controls">
 										<label class="radio"> 
-											<input type="radio"  value="1" name="resourceType" 
+											<input type="radio"  value="1" name="resourceType"   
 											<c:if test="${apply.resourceType == 1 }">
 												checked="checked" 
 											</c:if>
@@ -247,6 +232,54 @@
 							<!-- 显示选中的计算资源 -->
 							<div id="selectedResources">
 								<div class="page-header">选中计算资源</div>
+								
+								<c:if test="${not empty computeList}">
+								<c:forEach var="item" items="${computeList }">
+									<div id="singleResources" class="row alert">
+									
+										<div id="osName_SingleResources" class="span1">
+											<c:if test="${item[1] == 1 }">Windwos2003R2
+											</c:if>
+											<c:if test="${item[1] == 2 }">Windwos2008R2
+											</c:if>
+											<c:if test="${item[1] == 3 }">Centos5.6
+											</c:if>
+											<c:if test="${item[1] == 4 }">Centos6.3
+											</c:if>
+										</div>
+										
+										<div id="osId_SingleResources" class="hidden">${item[1] }</div>
+										
+										
+										<div id="osBitId__SingleResources" class="hidden">${item[2] }</div>
+										
+										<div id="osBitName__SingleResources" class="span1">
+											<c:if test="${item[2] == 1 }">32 Bit
+											</c:if>
+											<c:if test="${item[2] == 2 }">64 Bit
+											</c:if>
+										</div>
+										
+										<div id="serverTypeId__SingleResources" class="hidden">${item[3] }</div>
+										
+											<div id="serverTypeName__SingleResources" class="span4">
+											<c:if test="${item[3] == 1 }">Small &mdash;CPU[单核] Memory[1GB] Disk[20GB]
+											</c:if>
+											<c:if test="${item[3] == 2 }">Middle &mdash; CPU[双核] Memory[2GB] Disk[20GB]
+											</c:if>
+											<c:if test="${item[3] == 3 }">Large &mdash; CPU[四核] Memory[4GB] Disk[20GB]
+											</c:if>
+										
+										</div>
+										
+										<div id="serverCount__SingleResources" class="span1">${item[4] }</div>
+										
+										<button data-dismiss="alert" id="removeResources" class="close">×</button>
+									</div>
+									
+								</c:forEach>
+								
+								</c:if>
 							</div>
 							
 							

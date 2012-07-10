@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,130 +38,87 @@ public class ECSController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(
 			Apply apply,
-
-			@RequestParam(value = "osTypesComputResources", required = false) String osTypesComputResources,
-			@RequestParam(value = "bitsComputResources", required = false) String bitsComputResources,
-			@RequestParam(value = "serverTypeIdsComputResources", required = false) String serverTypeIdsComputResources,
-			@RequestParam(value = "serverCountComputResources", required = false) String serverCountComputResources,
-
-			@RequestParam(value = "osTypesComputResources2", required = false) String osTypesComputResources2,
-			@RequestParam(value = "bitsComputResources2", required = false) String bitsComputResources2,
-			@RequestParam(value = "serverTypeIdsComputResources2", required = false) String serverTypeIdsComputResources2,
-			@RequestParam(value = "serverCountComputResources2", required = false) String serverCountComputResources2,
-
-			@RequestParam(value = "osTypesComputResources3", required = false) String osTypesComputResources3,
-			@RequestParam(value = "bitsComputResources3", required = false) String bitsComputResources3,
-			@RequestParam(value = "serverTypeIdsComputResources3", required = false) String serverTypeIdsComputResources3,
-			@RequestParam(value = "serverCountComputResources3", required = false) String serverCountComputResources3,
-
-			@RequestParam(value = "osTypesComputResources4", required = false) String osTypesComputResources4,
-			@RequestParam(value = "bitsComputResources4", required = false) String bitsComputResources4,
-			@RequestParam(value = "serverTypeIdsComputResources4", required = false) String serverTypeIdsComputResources4,
-			@RequestParam(value = "serverCountComputResources4", required = false) String serverCountComputResources4,
-
+			@RequestParam(value = "osTypes", required = false) String osTypes,
+			@RequestParam(value = "bits", required = false) String bits,
+			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds,
+			@RequestParam(value = "serverCount", required = false) String serverCount,
 			RedirectAttributes redirectAttributes) {
 
-		String[] osTypes = StringUtils.split(osTypesComputResources, ",");
-		String[] bits = StringUtils.split(bitsComputResources, ",");
-		String[] serverTypeIds = StringUtils.split(
-				serverTypeIdsComputResources, ",");
-		String[] serverCount = StringUtils.split(serverCountComputResources,
-				",");
-
-		String[] osTypes2 = StringUtils.split(osTypesComputResources2, ",");
-		String[] bits2 = StringUtils.split(bitsComputResources2, ",");
-		String[] serverTypeIds2 = StringUtils.split(
-				serverTypeIdsComputResources2, ",");
-		String[] serverCount2 = StringUtils.split(serverCountComputResources2,
-				",");
-
-		String[] osTypes3 = StringUtils.split(osTypesComputResources3, ",");
-		String[] bits3 = StringUtils.split(bitsComputResources3, ",");
-		String[] serverTypeIds3 = StringUtils.split(
-				serverTypeIdsComputResources3, ",");
-		String[] serverCount3 = StringUtils.split(serverCountComputResources3,
-				",");
-
-		String[] osTypes4 = StringUtils.split(osTypesComputResources4, ",");
-		String[] bits4 = StringUtils.split(bitsComputResources4, ",");
-		String[] serverTypeIds4 = StringUtils.split(
-				serverTypeIdsComputResources4, ",");
-		String[] serverCount4 = StringUtils.split(serverCountComputResources4,
-				",");
+		String[] osTypesArray = StringUtils.split(osTypes, ",");
+		String[] bitsArray = StringUtils.split(bits, ",");
+		String[] serverTypeIdsArray = StringUtils.split(serverTypeIds, ",");
+		String[] serverCountArray = StringUtils.split(serverCount, ",");
 
 		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 
 		// 同OS,bit
-		for (int i = 0; i < serverCount.length; i++) {
+		for (int i = 0; i < serverCountArray.length; i++) {
 			// 输入的数量
-			int num = Integer.parseInt(serverCount[i]);
+			int num = Integer.parseInt(serverCountArray[i]);
 
 			for (int j = 0; j < num; j++) {
 				ComputeItem computeItem = new ComputeItem();
-				computeItem.setApply(apply);
-				computeItem.setIdentifier(Identities.uuid2());
-				computeItem.setOsBit(Integer.parseInt(bits[i])); // 位数
-				computeItem.setOsType(Integer.parseInt(osTypes[i])); // 操作系统
-				computeItem.setServerType(Integer.parseInt(serverTypeIds[i])); // 规格
+				computeItem.setIdentifier(Identities.randomBase62(12));
+				computeItem.setOsBit(Integer.parseInt(bitsArray[i])); // 位数
+				computeItem.setOsType(Integer.parseInt(osTypesArray[i])); // 操作系统
+				computeItem.setServerType(Integer
+						.parseInt(serverTypeIdsArray[i])); // 规格
 				computeItemList.add(computeItem);
 			}
 
 		}
 
-		// 同OS,bit
-		for (int i = 0; i < serverCount2.length; i++) {
-			// 输入的数量
-			int num = Integer.parseInt(serverCount2[i]);
-
-			for (int j = 0; j < num; j++) {
-				ComputeItem computeItem = new ComputeItem();
-				computeItem.setApply(apply);
-				computeItem.setIdentifier(Identities.uuid2());
-				computeItem.setOsBit(Integer.parseInt(bits2[i])); // 位数
-				computeItem.setOsType(Integer.parseInt(osTypes2[i])); // 操作系统
-				computeItem.setServerType(Integer.parseInt(serverTypeIds2[i])); // 规格
-				computeItemList.add(computeItem);
-			}
-
-		}
-
-		for (int i = 0; i < serverCount3.length; i++) {
-			// 输入的数量
-			int num = Integer.parseInt(serverCount3[i]);
-
-			for (int j = 0; j < num; j++) {
-				ComputeItem computeItem = new ComputeItem();
-				computeItem.setApply(apply);
-				computeItem.setIdentifier(Identities.uuid2());
-				computeItem.setOsBit(Integer.parseInt(bits3[i])); // 位数
-				computeItem.setOsType(Integer.parseInt(osTypes3[i])); // 操作系统
-				computeItem.setServerType(Integer.parseInt(serverTypeIds3[i])); // 规格
-				computeItemList.add(computeItem);
-			}
-
-		}
-
-		for (int i = 0; i < serverCount4.length; i++) {
-			// 输入的数量
-			int num = Integer.parseInt(serverCount4[i]);
-
-			for (int j = 0; j < num; j++) {
-				ComputeItem computeItem = new ComputeItem();
-				computeItem.setApply(apply);
-				computeItem.setIdentifier(Identities.uuid2());
-				computeItem.setOsBit(Integer.parseInt(bits4[i])); // 位数
-				computeItem.setOsType(Integer.parseInt(osTypes4[i])); // 操作系统
-				computeItem.setServerType(Integer.parseInt(serverTypeIds4[i])); // 规格
-				computeItemList.add(computeItem);
-			}
-
-		}
-		
-		System.out.println(computeItemList.size());
 		applyManager.saveComputeItemList(computeItemList, apply);
 
 		redirectAttributes.addFlashAttribute("message",
-				"创建申请 " + apply.getTitle() + " 成功");
+				"创建ECS申请 " + apply.getTitle() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
+
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String updateForm(@PathVariable("id") Integer id, Model model) {
+		model.addAttribute("apply", applyManager.findApplyById(id));
+		model.addAttribute("computeList",
+				applyManager.findComputeListByApplyId(id));
+		return "apply/compute/ecsForm";
+	}
+
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(
+			@ModelAttribute("apply") Apply apply,
+			@RequestParam(value = "osTypes", required = false) String osTypes,
+			@RequestParam(value = "bits", required = false) String bits,
+			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds,
+			@RequestParam(value = "serverCount", required = false) String serverCount,
+			RedirectAttributes redirectAttributes) {
+
+		String[] osTypesArray = StringUtils.split(osTypes, ",");
+		String[] bitsArray = StringUtils.split(bits, ",");
+		String[] serverTypeIdsArray = StringUtils.split(serverTypeIds, ",");
+		String[] serverCountArray = StringUtils.split(serverCount, ",");
+
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+
+		// 同OS,bit
+		for (int i = 0; i < serverCountArray.length; i++) {
+			// 输入的数量
+			int num = Integer.parseInt(serverCountArray[i]);
+			for (int j = 0; j < num; j++) {
+				ComputeItem computeItem = new ComputeItem();
+				computeItem.setIdentifier(Identities.randomBase62(12));
+				computeItem.setOsBit(Integer.parseInt(bitsArray[i])); // 位数
+				computeItem.setOsType(Integer.parseInt(osTypesArray[i])); // 操作系统
+				computeItem.setServerType(Integer
+						.parseInt(serverTypeIdsArray[i])); // 规格
+				computeItemList.add(computeItem);
+			}
+		}
+
+		applyManager.upateComputeItemList(computeItemList, apply);
+
+		redirectAttributes.addFlashAttribute("message",
+				"修改ECS申请 " + apply.getTitle() + " 成功");
+		return REDIRECT_SUCCESS_URL;
+	}
+
 }

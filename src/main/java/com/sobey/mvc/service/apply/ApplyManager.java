@@ -54,10 +54,23 @@ public class ApplyManager {
 		return applyDao.findOne(id);
 	}
 
+	@Transactional(readOnly = false)
 	public Apply saveApply(Apply apply) {
 		return applyDao.save(apply);
 	}
 
+	@Transactional(readOnly = false)
+	public Apply updateApply(Apply apply) {
+		return applyDao.save(apply);
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List findComputeListByApplyId(Integer applyId) {
+		return customDaoImp.findComputeListByApplyId(applyId);
+	}
+
+	@Transactional(readOnly = false)
 	public void saveComputeItemList(List<ComputeItem> list, Apply apply) {
 
 		DateTime dateTime = new DateTime();
@@ -70,15 +83,37 @@ public class ApplyManager {
 		apply.setStatus(1);
 		apply.setServiceType("ECS");
 		this.saveApply(apply);
-		System.out.println("********************");
+
 		for (ComputeItem computeItem : list) {
-			System.out.println(computeItem.getIdentifier());
-			System.out.println(computeItem.getOsType());
 			this.saveComputeItem(computeItem, apply);
 		}
-		
+
 	}
 
+	@Transactional(readOnly = false)
+	public void upateComputeItemList(List<ComputeItem> list, Apply apply) {
+
+		Subject subject = SecurityUtils.getSubject();
+		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
+		apply.setUser(user);
+		apply.setStatus(1);
+		apply.setServiceType("ECS");
+		apply.setCreateTime(new Date());
+		this.updateApply(apply);
+
+		List<ComputeItem> computeItemList = (List<ComputeItem>) computeItemDao
+				.findAllByApply(apply);
+		for (ComputeItem computeItem : computeItemList) {
+			computeItemDao.delete(computeItem.getId());
+		}
+
+		for (ComputeItem computeItem : list) {
+			this.saveComputeItem(computeItem, apply);
+		}
+
+	}
+
+	@Transactional(readOnly = false)
 	public ComputeItem saveComputeItem(ComputeItem computeItem, Apply apply) {
 		computeItem.setApply(apply);
 		return computeItemDao.save(computeItem);
@@ -88,11 +123,18 @@ public class ApplyManager {
 		return computeItemDao.findOne(id);
 	}
 
+	@SuppressWarnings("rawtypes")
+	public List findComputeListByStorageItemId(Integer storageItemId) {
+		return customDaoImp.findComputeListByStorageItemId(storageItemId);
+
+	}
+
 	public List<ComputeItem> getAllComputeItem() {
 		return (List<ComputeItem>) computeItemDao.findAll((new Sort(
 				Direction.ASC, "id")));
 	}
 
+	@Transactional(readOnly = false)
 	public void saveES3(StorageItem storageItem, Apply apply, List<String> list) {
 		DateTime dateTime = new DateTime();
 		Subject subject = SecurityUtils.getSubject();
@@ -107,9 +149,7 @@ public class ApplyManager {
 		this.saveApply(apply);
 
 		storageItem.setApply(apply);
-		
 		storageItemDao.save(storageItem);
-
 		if (list != null) {
 			for (String computeId : list) {
 				customDaoImp.saveComputeStorage(computeId, storageItem.getId());
@@ -118,4 +158,35 @@ public class ApplyManager {
 
 	}
 
+	@Transactional(readOnly = false)
+	public void updateES3(StorageItem storageItem, Integer storageItemId,
+			Apply apply, List<String> list) {
+		Subject subject = SecurityUtils.getSubject();
+		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
+		apply.setUser(user);
+		apply.setStatus(1);
+		apply.setServiceType("ES3");
+		apply.setCreateTime(new Date());
+		this.updateApply(apply);
+
+		// 删除老数据
+		customDaoImp.deleteComputeStorage(storageItemId);
+
+		StorageItem storageItemUpdate = storageItemDao.findOne(storageItemId);
+		storageItemUpdate.setStorageSpace(storageItem.getStorageSpace());
+		storageItemUpdate.setApply(apply);
+		storageItemDao.save(storageItemUpdate);
+
+		if (list != null) {
+			for (String computeId : list) {
+				customDaoImp.saveComputeStorage(computeId, storageItemId);
+			}
+		}
+
+	}
+
+	public StorageItem findStorageItemByApply(Apply apply) {
+		return storageItemDao.findByApply(apply);
+
+	}
 }

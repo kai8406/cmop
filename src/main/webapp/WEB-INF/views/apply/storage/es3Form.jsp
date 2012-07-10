@@ -42,9 +42,12 @@
 
 		<div id="main" class="span10">
 
-			<form:form id="inputForm" modelAttribute="storageItem" action="."
+			<form:form id="inputForm" modelAttribute="apply" action="."
 				method="post">
 
+				<input type="hidden" name="id" value="${apply.id}" />
+				<input type="hidden" name="storageItemId" value="${storageItem.id}" />
+				<input type="hidden" name="title" value="${apply.title}" />
 
 				<div class="tab-content">
 
@@ -111,19 +114,44 @@
 								<label class="control-label">容量空间</label>
 								<div class="controls">
 									<label class="radio"> <input type="radio" value="20"
-										name="storageSpace" /> 20GB
+										name="storageSpace"
+										<c:if test="${storageItem.storageSpace == 20 }">
+												checked="checked" 
+											</c:if> />20GB
 									</label> <label class="radio"> <input type="radio" value="30"
-										name="storageSpace" /> 30GB
+										name="storageSpace"
+										<c:if test="${storageItem.storageSpace == 30 }">
+												checked="checked" 
+											</c:if> />30GB
 									</label> <label class="radio"> <input type="radio" value="50"
-										name="storageSpace" /> 50GB
+										name="storageSpace"
+										<c:if test="${storageItem.storageSpace == 50 }">
+												checked="checked" 
+											</c:if> />50GB
 									</label> <label class="radio"> <input type="radio" value="100"
-										name="storageSpace" /> 100GB
+										name="storageSpace"
+										<c:if test="${storageItem.storageSpace == 100 }">
+												checked="checked" 
+											</c:if> />100GB
 									</label> <label class="radio"> <input type="radio" value="200"
-										name="storageSpace" /> 200GB
+										name="storageSpace"
+										<c:if test="${storageItem.storageSpace == 200 }">
+												checked="checked" 
+											</c:if> />200GB
 									</label> <label class="radio"> <input type="radio" value=""
-										id="otherSpace" name="storageSpace" />其它 <input type="text"
-										id="otherSpaceValue" value="" class="input-medium" />
+										id="otherSpace" name="storageSpace"
+										<c:if test="${storageItem.storageSpace != 20 && storageItem.storageSpace != 30 && storageItem.storageSpace != 50 && storageItem.storageSpace != 100 && storageItem.storageSpace != 200  }">
+												checked="checked" 
+										</c:if> />
+										其它 <input type="text" id="otherSpaceValue"
+										value="${storageItem.storageSpace}"
+										<c:if test="${storageItem.storageSpace != 20 && storageItem.storageSpace != 30 && storageItem.storageSpace != 50 && storageItem.storageSpace != 100 && storageItem.storageSpace != 200  }">
+									  name="${storageItem.storageSpace}"
+									  </c:if>
+										class="input-medium" />
+
 									</label>
+
 								</div>
 							</div>
 
@@ -146,25 +174,43 @@
 											</tr>
 										</thead>
 										<tbody>
+
+
 											<c:forEach var="item" items="${AllComputeItem }">
+
 												<tr>
 													<td><input type="checkbox" name="ids"
-														value="${item.id }" /> ${item.identifier}</td>
-													<td><c:if test="${item.osType == 1}">Windwos2003R2
-							</c:if> <c:if test="${item.osType == 2}">Windwos2008R2
-							</c:if> <c:if test="${item.osType == 3}">Centos5.6
-							</c:if> <c:if test="${item.osType == 4}">Centos6.3
-							</c:if> &nbsp; <c:if test="${item.osBit == 1}">
-								32 Bit
-							</c:if> <c:if test="${item.osBit ==2}">
-								64 Bit
-							</c:if></td>
-													<td><c:if test="${item.serverType == 1}">Small 
-							</c:if> <c:if test="${item.serverType == 2}">Middle
-							</c:if> <c:if test="${item.serverType == 3}">Large 
-							</c:if></td>
-												</tr>
+														value="${item.id }"
+														<c:if test="${not empty checkedComputeItem }">
+															<c:forEach var="checked" items="${checkedComputeItem }">
+															<c:if test="${checked[0] == item.id }">
+																	checked="checked"
+															  </c:if>
 											</c:forEach>
+											</c:if>
+
+
+											/> ${item.identifier}
+											</td>
+
+											<td><c:if test="${item.osType == 1}">Windwos2003R2
+															</c:if> <c:if test="${item.osType == 2}">Windwos2008R2
+															</c:if> <c:if test="${item.osType == 3}">Centos5.6
+															</c:if> <c:if test="${item.osType == 4}">Centos6.3
+															</c:if> &nbsp; <c:if test="${item.osBit == 1}">
+																32 Bit
+															</c:if> <c:if test="${item.osBit ==2}">
+																64 Bit
+															</c:if></td>
+											<td><c:if test="${item.serverType == 1}">Small 
+															</c:if> <c:if test="${item.serverType == 2}">Middle
+															</c:if> <c:if test="${item.serverType == 3}">Large 
+															</c:if></td>
+											</tr>
+
+
+											</c:forEach>
+
 										</tbody>
 									</table>
 

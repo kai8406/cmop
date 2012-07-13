@@ -5,8 +5,8 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 
-<link href="${ctx}/static/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="${ctx}/static/bootstrap/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet" />
+<link href="${ctx}/static/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet" />
+<link href="${ctx}/static/bootstrap/css/bootstrap-responsive.css" type="text/css" rel="stylesheet" />
 <link href="${ctx}/static/jquery-validation/1.9.0/validate.css" type="text/css" rel="stylesheet" />
 <link href="${ctx}/static/jquery-ui/css/jquery-ui-1.8.21.custom.css" type="text/css" rel="stylesheet" />
 

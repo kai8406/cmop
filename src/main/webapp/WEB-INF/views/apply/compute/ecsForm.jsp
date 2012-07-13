@@ -5,15 +5,10 @@
 <head>
 <style type="text/css">
 .alert {
-	padding: 8px 35px 8px 14px;
 	margin-bottom: 0px;
 	color: black;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	background-color: #fff;
 	border: 1px solid #fff;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
 }
 </style>
 	<title>ECS服务申请</title>
@@ -32,7 +27,7 @@
 		
 
 		$("#serviceStart").val(getDateByMonthNum(0)); // 当前的日期
-		$("#serviceEnd").val(getDateByMonthNum(1)); // 一个月后的日期
+		$("#serviceEnd").val(getDateByMonthNum(6)); // 一个月后的日期
 		
 		inputServiceDate();
 		
@@ -49,6 +44,8 @@
 		$("#modalSave4").click(function() {
 			selectServer($("#inputResources4"),$(this));
 		});
+		
+		$("#inputForm").validate();
 
 	});
 </script>
@@ -70,7 +67,7 @@
 			
 			<div id="main" class="span10">
 			
-				<form:form id="inputForm" modelAttribute="apply" action="." method="post">
+				<form:form id="inputForm" modelAttribute="apply" action="." method="post" class="form-horizontal">
 				
 				<input type="hidden" name="id" value="${apply.id}"/>
 				<input type="hidden" name="title" value="${apply.title}"/>
@@ -90,57 +87,48 @@
 								<div class="control-group">
 									<label class="control-label">资源类型</label>
 									<div class="controls">
-										<label class="radio"> 
-											<input type="radio"  value="1" name="resourceType"   
-											<c:if test="${apply.resourceType == 1 }">
-												checked="checked" 
-											</c:if>
-											/>生产资源
-										</label> 
-										<label class="radio"> 
-											<input type="radio" value=" 2"	name="resourceType" 
-											<c:if test="${apply.resourceType == 2 }">
-												checked="checked" 
-											</c:if>
-											/> 测试/演示资源
-										</label> 
-										<label class="radio"> 
-											<input type="radio" value="3" name="resourceType"
-											<c:if test="${apply.resourceType == 3 }">
-												checked="checked" 
-											</c:if>
-											 /> 公测资源
-										</label>
+										<c:forEach var="map" items="${resourceTypeMap }">
+											<label class="radio"> 
+												<input type="radio" value="<c:out value='${map.key}' />" name="resourceType" 
+													<c:if test="${apply.resourceType == null && map.key == 1}">checked="checked"</c:if>
+													<c:if test="${apply.resourceType == map.key }">checked="checked"</c:if>
+												 />  	
+												<c:out value="${map.value}" />
+											</label>
+										</c:forEach>
 									</div>
 								</div>
-								
 								
 								<div class="control-group">
 									<label class="control-label">申请起始时间</label>
 									<div class="controls">
-										<input type="text" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" class="input-medium" />&mdash;
-										<input type="text" id="serviceEnd" name="serviceEnd" value="${apply.serviceEnd }" class="input-medium" />
+										<input type="text" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" class="required  input-medium" readonly="readonly"/>
+										&mdash;
+										<input type="text" id="serviceEnd" name="serviceEnd" value="${apply.serviceEnd }" class="required  input-medium" readonly="readonly"/>
 									</div>
 								</div>
 
 								<div class="control-group">
 									<label class="control-label">申请用途</label>
 									<div class="controls">
-										<textarea rows="2" id="description" name="description" class="input-xlarge">${apply.description}</textarea>
+										<textarea rows="2" id="description" name="description" maxlength="100"  class="required input-xlarge">${apply.description}</textarea>
 									</div>
 								</div>
 								
 							</fieldset>
 							
-							<div class="form-actions">
-								<a id="nextStep" class="btn btn-primary">下一步</a>
+							<hr />
+							<div>
+								<a id="nextStep" class="btn btn-info">下一步</a>
 							</div>
 						</div>
 
 						<!-- 第2步 -->
 						<div class="tab-pane fade span8" id="profile2">
-						<div class="page-header">操作系统</div>
-						<div class="row">
+						<fieldset>
+								<legend>操作系统</legend>
+						
+							<div class="row">
 								<div class="span1">
 									<img alt="windows OS" src="${ctx}/static/custom/images/windows-logo.png" />
 								</div>
@@ -151,17 +139,21 @@
 										ultricies vehicula.</p>
 								</div>
 								<div class="span1">
-									<label class="radio"> <input type="radio" value="1"
-										checked="checked" name="osBit1" /> 32 Bit
-									</label> <label class="radio"> <input type="radio" value="2"
-										name="osBit1" /> 64 Bit
-									</label>
+									<c:forEach var="map" items="${osBitMap }">
+										<label class="radio">
+											<input type="radio" value="<c:out value='${map.key}' />" 
+											<c:if test="${map.key == 1 }">checked="checked"</c:if>
+											name="osBit1" /> 
+											<c:out value="${map.value}" />
+										</label>
+									</c:forEach>
 								</div>
 								<div class="span1">
 									<a id="inputResources" class="btn" data-toggle="modal"
 										href="#ComputResources">Select</a>
 								</div>
 							</div>
+							
 							<div class="row">
 								<div class="span1">
 									<img alt="windows OS" src="${ctx}/static/custom/images/windows-logo.png" />
@@ -173,11 +165,14 @@
 										ultricies vehicula.</p>
 								</div>
 								<div class="span1">
-									<label class="radio"> <input type="radio" value="1"
-										checked="checked" name="osBit2" /> 32 Bit
-									</label> <label class="radio"> <input type="radio" value="2"
-										name="osBit2" /> 64 Bit
-									</label>
+										<c:forEach var="map" items="${osBitMap }">
+										<label class="radio">
+											<input type="radio" value="<c:out value='${map.key}' />" 
+											<c:if test="${map.key == 1 }">checked="checked"</c:if>
+											name="osBit2" /> 
+											<c:out value="${map.value}" />
+										</label>
+									</c:forEach>
 								</div>
 								<div class="span1">
 									<a id="inputResources2" class="btn" data-toggle="modal"
@@ -195,11 +190,14 @@
 										ultricies vehicula.</p>
 								</div>
 								<div class="span1">
-									<label class="radio"> <input type="radio" value="1"
-										checked="checked" name="osBit3" /> 32 Bit
-									</label> <label class="radio"> <input type="radio" value="2"
-										name="osBit3" /> 64 Bit
-									</label>
+										<c:forEach var="map" items="${osBitMap }">
+										<label class="radio">
+											<input type="radio" value="<c:out value='${map.key}' />" 
+											<c:if test="${map.key == 1 }">checked="checked"</c:if>
+											name="osBit3" /> 
+											<c:out value="${map.value}" />
+										</label>
+									</c:forEach>
 								</div>
 								<div class="span1">
 									<a id="inputResources3" class="btn" data-toggle="modal"
@@ -217,11 +215,14 @@
 										ultricies vehicula.</p>
 								</div>
 								<div class="span1">
-									<label class="radio"> <input type="radio" value="1"
-										checked="checked" name="osBit4" /> 32 Bit
-									</label> <label class="radio"> <input type="radio" value="2"
-										name="osBit4" /> 64 Bit
-									</label>
+										<c:forEach var="map" items="${osBitMap }">
+										<label class="radio">
+											<input type="radio" value="<c:out value='${map.key}' />" 
+											<c:if test="${map.key == 1 }">checked="checked"</c:if>
+											name="osBit4" /> 
+											<c:out value="${map.value}" />
+										</label>
+									</c:forEach>
 								</div>
 								<div class="span1">
 									<a id="inputResources4" class="btn" data-toggle="modal"
@@ -238,14 +239,13 @@
 									<div id="singleResources" class="row alert">
 									
 										<div id="osName_SingleResources" class="span1">
-											<c:if test="${item[1] == 1 }">Windwos2003R2
-											</c:if>
-											<c:if test="${item[1] == 2 }">Windwos2008R2
-											</c:if>
-											<c:if test="${item[1] == 3 }">Centos5.6
-											</c:if>
-											<c:if test="${item[1] == 4 }">Centos6.3
-											</c:if>
+										
+											<c:forEach var="map" items="${osTypeMap}">
+												<c:if test="${item[1] == map.key  }">
+													<c:out value="${map.value}" />
+												</c:if>
+											</c:forEach>
+										
 										</div>
 										
 										<div id="osId_SingleResources" class="hidden">${item[1] }</div>
@@ -254,21 +254,24 @@
 										<div id="osBitId__SingleResources" class="hidden">${item[2] }</div>
 										
 										<div id="osBitName__SingleResources" class="span1">
-											<c:if test="${item[2] == 1 }">32 Bit
-											</c:if>
-											<c:if test="${item[2] == 2 }">64 Bit
-											</c:if>
+										
+											<c:forEach var="map" items="${osBitMap}">
+												<c:if test="${item[2] == map.key  }">
+													<c:out value="${map.value}" />
+												</c:if>
+											</c:forEach>
+											
 										</div>
 										
 										<div id="serverTypeId__SingleResources" class="hidden">${item[3] }</div>
 										
 											<div id="serverTypeName__SingleResources" class="span4">
-											<c:if test="${item[3] == 1 }">Small &mdash;CPU[单核] Memory[1GB] Disk[20GB]
-											</c:if>
-											<c:if test="${item[3] == 2 }">Middle &mdash; CPU[双核] Memory[2GB] Disk[20GB]
-											</c:if>
-											<c:if test="${item[3] == 3 }">Large &mdash; CPU[四核] Memory[4GB] Disk[20GB]
-											</c:if>
+											
+											<c:forEach var="map" items="${serverTypeMap}">
+												<c:if test="${item[3] == map.key  }">
+													<c:out value="${map.value}" />
+												</c:if>
+											</c:forEach>
 										
 										</div>
 										
@@ -282,10 +285,11 @@
 								</c:if>
 							</div>
 							
-							
-							<div class="form-actions">
-								<a id="backStep" class="btn">返回</a> 
-								<a id="nextStep" class="btn btn-primary">下一步</a>
+							</fieldset>
+							<hr>
+							<div>
+								<a id="backStep" class="btn">返回</a> <a id="nextStep"
+									class="btn btn-info">下一步</a>
 							</div>
 						</div>
 
@@ -308,8 +312,8 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td>申请主题</td>
-											<td id="td_title"></td>
+											<td>资源类型</td>
+											<td id="td_resourceType"></td>
 										</tr>
 										<tr>
 											<td>起始时间</td>
@@ -317,20 +321,15 @@
 										</tr>
 										<tr>
 											<td>申请用途</td>
-											<td id="td_usage"></td>
+											<td id="td_description"></td>
 										</tr>
-										<tr>
-											<td>资源类型</td>
-											<td id="td_resourceType"></td>
-										</tr>
-
 									</tbody>
 								</table>
 							</fieldset>
 							
-							<div class="form-actions">
+							<div>
 								<a id="backStep" class="btn ">返回</a>
-								<button class="btn btn-success">保存修改</button>
+								<button class="btn btn-primary">保存</button>
 							</div>
 							
 						</div>
@@ -360,11 +359,18 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td><div class="hidden" id="smallTypeId">1</div>Small
-													&mdash;CPU[单核] Memory[1GB] Disk[20GB]</td>
-												<td><input type="text" id="smallServerCount"
-													class="input-mini" /></td>
-											</tr>
+											
+											
+												<td>
+													<div class="hidden" id="smallTypeId">1</div>
+													Small &mdash;CPU[单核] Memory[1GB] Disk[20GB]
+												</td>
+												
+												<td>
+													<input type="text" id="smallServerCount" class="input-mini" />
+												</td>
+											</tr> 
+											
 											<tr>
 												<td><div class="hidden" id="middleTypeId">2</div>Middle
 													&mdash; CPU[双核] Memory[2GB] Disk[20GB]</td>

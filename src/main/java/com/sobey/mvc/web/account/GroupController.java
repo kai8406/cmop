@@ -22,7 +22,7 @@ import com.sobey.mvc.service.account.AccountManager;
 public class GroupController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 5;
+	private static final int DEFAULT_PAGE_SIZE = 10;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/group/";
 
 	@Autowired

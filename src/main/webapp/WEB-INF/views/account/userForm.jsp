@@ -88,7 +88,20 @@
 				<div class="control-group">
 					<label for="department" class="control-label">部门信息</label>
 					<div class="controls">
-						<input type="text" id="department" name="department" size="50" value="${user.department}" class=""/>
+						
+						<select id="department"	name="department" class="input-medium">
+							<c:forEach var="map" items="${departmentMap }">
+								<option value="	<c:out value='${map.key}'/>" 
+									<c:if test="${user.department == map.key }">
+										selected="selected"
+									</c:if>
+								>
+									<c:out value="${map.value}" />
+								</option>
+							</c:forEach>
+
+						</select>
+						
 					</div>
 				</div>
 				 
@@ -100,7 +113,7 @@
 				</div>	
 				
 				<div class="form-actions">
-					<button class="btn btn-primary">保存修改</button>&nbsp;	
+					<button class="btn btn-primary">保存</button>&nbsp;	
 					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 				</div>
 

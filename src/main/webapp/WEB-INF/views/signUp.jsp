@@ -52,7 +52,7 @@
 			</div>
 			<div class="control-group">
 				<div class="controls">
-				<label class="checkbox inline" for="rememberMe"> <input type="checkbox" id="rememberMe" name="rememberMe"/> 记住我</label>
+				<label class="checkbox inline" for="rememberMe"> <input type="checkbox" checked="checked" id="rememberMe" name="rememberMe"/> 记住我</label>
 				</div>
 			</div>
 			

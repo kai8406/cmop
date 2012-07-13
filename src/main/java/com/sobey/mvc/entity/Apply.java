@@ -35,12 +35,14 @@ public class Apply implements java.io.Serializable {
 	private String serviceEnd;
 	private Date createTime;
 	private Integer status;
+	private Integer auditOrder;
 	private Integer redmineIssueId;
 	private Integer applyId;
-	private Set<NetworkPortItem> networkPortItems = new HashSet<NetworkPortItem>(0);
+	private Set<ComputeItem> computeItems = new HashSet<ComputeItem>(0);
 	private Set<StorageItem> storageItems = new HashSet<StorageItem>(0);
-	private Set<InVpnItem> inVpnItems = new HashSet<InVpnItem>(0);
 	private Set<Audit> audits = new HashSet<Audit>(0);
+	private Set<NetworkPortItem> networkPortItems = new HashSet<NetworkPortItem>(0);
+	private Set<InVpnItem> inVpnItems = new HashSet<InVpnItem>(0);
 	private Set<NetworkDomainItem> networkDomainItems = new HashSet<NetworkDomainItem>(0);
 
 	// Constructors
@@ -64,8 +66,8 @@ public class Apply implements java.io.Serializable {
 
 	/** full constructor */
 	public Apply(User user, String serviceType, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, 
-			Integer status, Integer redmineIssueId, Integer applyId, Set<NetworkPortItem> networkPortItems, Set<StorageItem> storageItems, 
-			Set<InVpnItem> inVpnItems, Set<Audit> audits, Set<NetworkDomainItem> networkDomainItems) {
+			Integer status, Integer auditOrder, Integer redmineIssueId, Integer applyId, Set<ComputeItem> computeItems, Set<StorageItem> storageItems, Set<Audit> audits,   
+			Set<NetworkPortItem> networkPortItems, Set<InVpnItem> inVpnItems, Set<NetworkDomainItem> networkDomainItems) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.resourceType = resourceType;
@@ -75,12 +77,14 @@ public class Apply implements java.io.Serializable {
 		this.serviceEnd = serviceEnd;
 		this.createTime = createTime;
 		this.status = status;
+		this.auditOrder = auditOrder;
 		this.redmineIssueId = redmineIssueId;
 		this.applyId = applyId;
-		this.networkPortItems = networkPortItems;
+		this.computeItems = computeItems;
 		this.storageItems = storageItems;
-		this.inVpnItems = inVpnItems;
 		this.audits = audits;
+		this.networkPortItems = networkPortItems;
+		this.inVpnItems = inVpnItems;
 		this.networkDomainItems = networkDomainItems;
 	}
 
@@ -177,6 +181,15 @@ public class Apply implements java.io.Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
+	@Column(name = "audit_order", nullable = false)
+	public Integer getAuditOrder() {
+		return this.auditOrder;
+	}
+
+	public void setAuditOrder(Integer auditOrder) {
+		this.auditOrder = auditOrder;
+	}
 
 	@Column(name = "redmine_issue_id")
 	public Integer getRedmineIssueId() {
@@ -197,15 +210,6 @@ public class Apply implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
-	public Set<NetworkPortItem> getNetworkPortItems() {
-		return this.networkPortItems;
-	}
-
-	public void setNetworkPortItems(Set<NetworkPortItem> networkPortItems) {
-		this.networkPortItems = networkPortItems;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
 	public Set<StorageItem> getStorageItems() {
 		return this.storageItems;
 	}
@@ -215,12 +219,12 @@ public class Apply implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
-	public Set<InVpnItem> getInVpnItems() {
-		return this.inVpnItems;
+	public Set<ComputeItem> getComputeItems() {
+		return this.computeItems;
 	}
 
-	public void setInVpnItems(Set<InVpnItem> inVpnItems) {
-		this.inVpnItems = inVpnItems;
+	public void setComputeItems(Set<ComputeItem> computeItems) {
+		this.computeItems = computeItems;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
@@ -230,6 +234,24 @@ public class Apply implements java.io.Serializable {
 
 	public void setAudits(Set<Audit> audits) {
 		this.audits = audits;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<NetworkPortItem> getNetworkPortItems() {
+		return this.networkPortItems;
+	}
+
+	public void setNetworkPortItems(Set<NetworkPortItem> networkPortItems) {
+		this.networkPortItems = networkPortItems;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<InVpnItem> getInVpnItems() {
+		return this.inVpnItems;
+	}
+
+	public void setInVpnItems(Set<InVpnItem> inVpnItems) {
+		this.inVpnItems = inVpnItems;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")

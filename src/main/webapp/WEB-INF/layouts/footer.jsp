@@ -3,8 +3,6 @@
 <style>
 
 #footer {
-	margin-top: 15px;
-	margin-bottom: 15px;
 	padding: 15px 0px 0px 0px;
 	font-size: 95%;
 	text-align: center;
@@ -18,6 +16,6 @@
 </style>
 
 <div id="footer" class="span12">
-	Copyright &copy; 2005-2012 <a href="${ctx}/login">Sobey CMOP</a>
+	Copyright &copy; 2012 <a href="${ctx}/login/index">Sobey CMOP</a>
 </div>
 

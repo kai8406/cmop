@@ -21,10 +21,8 @@ public class StorageItem implements java.io.Serializable {
 
 	private Integer id;
 	private Apply apply;
+	private String identifier;
 	private Integer storageSpace;
-	private Integer storageType;
-	private Integer storageThroughput;
-	private Integer storageIops;
 
 	// Constructors
 
@@ -32,19 +30,11 @@ public class StorageItem implements java.io.Serializable {
 	public StorageItem() {
 	}
 
-	/** minimal constructor */
-	public StorageItem(Apply apply, Integer storageSpace) {
-		this.apply = apply;
-		this.storageSpace = storageSpace;
-	}
-
 	/** full constructor */
-	public StorageItem(Apply apply, Integer storageSpace, Integer storageType, Integer storageThroughput, Integer storageIops) {
+	public StorageItem(Apply apply, String identifier, Integer storageSpace) {
 		this.apply = apply;
+		this.identifier = identifier;
 		this.storageSpace = storageSpace;
-		this.storageType = storageType;
-		this.storageThroughput = storageThroughput;
-		this.storageIops = storageIops;
 	}
 
 	// Property accessors
@@ -78,31 +68,13 @@ public class StorageItem implements java.io.Serializable {
 		this.storageSpace = storageSpace;
 	}
 
-	@Column(name = "storage_type")
-	public Integer getStorageType() {
-		return this.storageType;
+	@Column(name = "identifier", nullable = false, length = 45)
+	public String getIdentifier() {
+		return this.identifier;
 	}
 
-	public void setStorageType(Integer storageType) {
-		this.storageType = storageType;
-	}
-
-	@Column(name = "storage_throughput")
-	public Integer getStorageThroughput() {
-		return this.storageThroughput;
-	}
-
-	public void setStorageThroughput(Integer storageThroughput) {
-		this.storageThroughput = storageThroughput;
-	}
-
-	@Column(name = "storage_iops")
-	public Integer getStorageIops() {
-		return this.storageIops;
-	}
-
-	public void setStorageIops(Integer storageIops) {
-		this.storageIops = storageIops;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 }

@@ -1,12 +1,16 @@
 package com.sobey.mvc.web.apply;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sobey.mvc.Constant;
 import com.sobey.mvc.entity.Apply;
 import com.sobey.mvc.service.apply.ApplyManager;
 
@@ -20,15 +24,38 @@ public class SupportController {
 	@Autowired
 	private ApplyManager applyManager;
 
+	/**
+	 * 列出包括ECS,ES3等服务申请的List
+	 * 
+	 * @param page
+	 * @param title
+	 * @param status
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = { "list", "" })
-	public String List(
-			@RequestParam(value = "page", required = false) Integer page,
-			Model model) {
+	public String List(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "title", required = false, defaultValue = "") String title,
+			@RequestParam(value = "status", required = false, defaultValue = "0") Integer status, Model model) {
+
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
-		Page<Apply> applys = applyManager.getAllApply(pageNum,
-				DEFAULT_PAGE_SIZE);
+		Page<Apply> applys = applyManager.getApplyPageable(pageNum, DEFAULT_PAGE_SIZE, title, status);
 		model.addAttribute("page", applys);
+
+		model.addAttribute("ecsCount", applyManager.getComputeItemCountByEmail());
+		model.addAttribute("es3Count", applyManager.getStorageItemCountByEmail());
+
 		return "apply/supportList";
+	}
+
+	/**
+	 * 提供审核状态Map
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("applyStatusMap")
+	public Map<String, String> applyStatusMap() {
+		return Constant.APPLY_STATUS;
 	}
 
 }

@@ -26,7 +26,8 @@ public class AuditFlow implements java.io.Serializable {
 	private Integer id;
 	private User user;
 	private Integer flowType;
-	private String auditOrder;
+	private Integer auditOrder;
+	private Boolean isFinal;
 	private Set<Audit> audits = new HashSet<Audit>(0);
 
 	// Constructors
@@ -36,17 +37,19 @@ public class AuditFlow implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public AuditFlow(User user, Integer flowType, String auditOrder) {
+	public AuditFlow(User user, Integer flowType, Integer auditOrder, Boolean isFinal) {
 		this.user = user;
 		this.flowType = flowType;
 		this.auditOrder = auditOrder;
+		this.isFinal = isFinal;
 	}
 
 	/** full constructor */
-	public AuditFlow(User user, Integer flowType, String auditOrder, Set<Audit> audits) {
+	public AuditFlow(User user, Integer flowType, Integer auditOrder, Boolean isFinal, Set<Audit> audits) {
 		this.user = user;
 		this.flowType = flowType;
 		this.auditOrder = auditOrder;
+		this.isFinal = isFinal;
 		this.audits = audits;
 	}
 
@@ -81,13 +84,22 @@ public class AuditFlow implements java.io.Serializable {
 		this.flowType = flowType;
 	}
 
-	@Column(name = "audit_order", nullable = false, length = 1)
-	public String getAuditOrder() {
+	@Column(name = "audit_order", nullable = false)
+	public Integer getAuditOrder() {
 		return this.auditOrder;
 	}
 
-	public void setAuditOrder(String auditOrder) {
+	public void setAuditOrder(Integer auditOrder) {
 		this.auditOrder = auditOrder;
+	}
+	
+	@Column(name = "is_final", nullable = false)
+	public Boolean getIsFinal() {
+		return this.isFinal;
+	}
+
+	public void setIsFinal(Boolean isFinal) {
+		this.isFinal = isFinal;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "auditFlow")

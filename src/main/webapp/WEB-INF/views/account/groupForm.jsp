@@ -55,7 +55,7 @@
 				</div>
 				
 				<div class="form-actions">
-					<input class="btn btn-primary" type="submit" value="保存修改"/>&nbsp;	
+					<input class="btn btn-primary" type="submit" value="保存"/>&nbsp;	
 					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 				</div>
 			</fieldset>

@@ -33,8 +33,8 @@
 		<div id="Guide" class="span2">
 			<div class="tabbable tabs-left">
 				<ul class="nav nav-tabs" id="myTab">
-					<li class="active"><a href="#profile1" data-toggle="tab">1.ECS资源申请</a></li>
-					<li><a href="#profile2" data-toggle="tab">2.ECS资源</a></li>
+					<li class="active"><a href="#profile1" data-toggle="tab">1.ES3资源申请</a></li>
+					<li><a href="#profile2" data-toggle="tab">2.ES3资源</a></li>
 					<li><a href="#profile3" data-toggle="tab">3.提交</a></li>
 				</ul>
 			</div>
@@ -43,7 +43,7 @@
 		<div id="main" class="span10">
 
 			<form:form id="inputForm" modelAttribute="apply" action="."
-				method="post">
+				class="form-horizontal" method="post">
 
 				<input type="hidden" name="id" value="${apply.id}" />
 				<input type="hidden" name="storageItemId" value="${storageItem.id}" />
@@ -57,28 +57,19 @@
 							<legend>ES3资源申请</legend>
 
 							<div class="control-group">
-								<label class="control-label">资源类型</label>
-								<div class="controls">
-									<label class="radio"> <input type="radio" value="1"
-										name="resourceType"
-										<c:if test="${apply.resourceType == 1 }">
-												checked="checked" 
-											</c:if> />生产资源
-									</label> <label class="radio"> <input type="radio" value=" 2"
-										name="resourceType"
-										<c:if test="${apply.resourceType == 2 }">
-												checked="checked" 
-											</c:if> />
-										测试/演示资源
-									</label> <label class="radio"> <input type="radio" value="3"
-										name="resourceType"
-										<c:if test="${apply.resourceType == 3 }">
-												checked="checked" 
-											</c:if> />
-										公测资源
-									</label>
+									<label class="control-label">资源类型</label>
+									<div class="controls">
+										<c:forEach var="map" items="${resourceTypeMap }">
+											<label class="radio"> 
+												<input type="radio" value="<c:out value='${map.key}' />" name="resourceType" 
+													<c:if test="${apply.resourceType == null && map.key == 1}">checked="checked"</c:if>
+													<c:if test="${apply.resourceType == map.key }">checked="checked"</c:if>
+												 />  	
+												<c:out value="${map.value}" />
+											</label>
+										</c:forEach>
+									</div>
 								</div>
-							</div>
 
 
 							<div class="control-group">
@@ -101,8 +92,9 @@
 
 						</fieldset>
 
-						<div class="form-actions">
-							<a id="nextStep" class="btn btn-primary">下一步</a>
+						<hr />
+						<div>
+							<a id="nextStep" class="btn btn-info">下一步</a>
 						</div>
 					</div>
 
@@ -113,121 +105,126 @@
 							<div class="control-group">
 								<label class="control-label">容量空间</label>
 								<div class="controls">
-									<label class="radio"> <input type="radio" value="20"
-										name="storageSpace"
-										<c:if test="${storageItem.storageSpace == 20 }">
-												checked="checked" 
-											</c:if> />20GB
-									</label> <label class="radio"> <input type="radio" value="30"
-										name="storageSpace"
-										<c:if test="${storageItem.storageSpace == 30 }">
-												checked="checked" 
-											</c:if> />30GB
-									</label> <label class="radio"> <input type="radio" value="50"
-										name="storageSpace"
-										<c:if test="${storageItem.storageSpace == 50 }">
-												checked="checked" 
-											</c:if> />50GB
-									</label> <label class="radio"> <input type="radio" value="100"
-										name="storageSpace"
-										<c:if test="${storageItem.storageSpace == 100 }">
-												checked="checked" 
-											</c:if> />100GB
-									</label> <label class="radio"> <input type="radio" value="200"
-										name="storageSpace"
-										<c:if test="${storageItem.storageSpace == 200 }">
-												checked="checked" 
-											</c:if> />200GB
-									</label> <label class="radio"> <input type="radio" value=""
-										id="otherSpace" name="storageSpace"
-										<c:if test="${storageItem.storageSpace != 20 && storageItem.storageSpace != 30 && storageItem.storageSpace != 50 && storageItem.storageSpace != 100 && storageItem.storageSpace != 200  }">
-												checked="checked" 
-										</c:if> />
-										其它 <input type="text" id="otherSpaceValue"
-										value="${storageItem.storageSpace}"
-										<c:if test="${storageItem.storageSpace != 20 && storageItem.storageSpace != 30 && storageItem.storageSpace != 50 && storageItem.storageSpace != 100 && storageItem.storageSpace != 200  }">
-									  name="${storageItem.storageSpace}"
-									  </c:if>
-										class="input-medium" />
+								
+								
+										<c:forEach var="map" items="${storageSpaceMap }">
+											<label class="radio"> 
+												<input type="radio" value="<c:out value='${map.key}'/>"	name="storageSpace"
+													<c:if test="${storageItem.storageSpace == map.key }"> checked="checked" </c:if>
+												 />
+												<c:out value="${map.value}" />
+											</label>
+										</c:forEach>
+									
+									
+									  <label class="radio"> 
+										  <input type="radio" value=""	id="otherSpace" name="storageSpace"
+												<c:if test="${
+													storageItem.storageSpace != 20 && 
+													storageItem.storageSpace != 30 && 
+													storageItem.storageSpace != 50 && 
+													storageItem.storageSpace != 100 && 
+													storageItem.storageSpace != 200  
+												}">
+													checked="checked" 
+												</c:if>
+											 />
+										 
+											其它 
+										
+											<input type="text" id="otherSpaceValue"	value="${storageItem.storageSpace}"
+												<c:if test="${
+													storageItem.storageSpace != 20 &&
+													storageItem.storageSpace != 30 &&
+													storageItem.storageSpace != 50 &&
+													storageItem.storageSpace != 100 &&
+													storageItem.storageSpace != 200  
+												 }">
+												  name="${storageItem.storageSpace}"
+											  </c:if>
+											class="input-medium" />
 
 									</label>
-
 								</div>
 							</div>
-
-							<a class="btn btn-warning" data-toggle="modal" href="#es3Modal">选择挂靠实例</a>
-
-							<div id="es3Modal" class="modal hide fade form-horizontal ">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h3>实例列表</h3>
-								</div>
-								<div class="modal-body">
-
-									<table
-										class="table table-striped table-bordered table-condensed">
-										<thead>
-											<tr>
-												<th>标识符</th>
-												<th>操作系统</th>
-												<th>ECS规格</th>
-											</tr>
-										</thead>
-										<tbody>
-
-
-											<c:forEach var="item" items="${AllComputeItem }">
-
-												<tr>
-													<td><input type="checkbox" name="ids"
-														value="${item.id }"
-														<c:if test="${not empty checkedComputeItem }">
-															<c:forEach var="checked" items="${checkedComputeItem }">
-															<c:if test="${checked[0] == item.id }">
-																	checked="checked"
-															  </c:if>
-											</c:forEach>
-											</c:if>
-
-
-											/> ${item.identifier}
-											</td>
-
-											<td><c:if test="${item.osType == 1}">Windwos2003R2
-															</c:if> <c:if test="${item.osType == 2}">Windwos2008R2
-															</c:if> <c:if test="${item.osType == 3}">Centos5.6
-															</c:if> <c:if test="${item.osType == 4}">Centos6.3
-															</c:if> &nbsp; <c:if test="${item.osBit == 1}">
-																32 Bit
-															</c:if> <c:if test="${item.osBit ==2}">
-																64 Bit
-															</c:if></td>
-											<td><c:if test="${item.serverType == 1}">Small 
-															</c:if> <c:if test="${item.serverType == 2}">Middle
-															</c:if> <c:if test="${item.serverType == 3}">Large 
-															</c:if></td>
-											</tr>
-
-
-											</c:forEach>
-
-										</tbody>
-									</table>
-
-								</div>
-								<div class="modal-footer">
-									<a href="#" class="btn" data-dismiss="modal">取消</a> <a href="#"
-										id="modalSave" data-dismiss="modal" class="btn btn-primary">确定</a>
-								</div>
-							</div>
-
-
 
 						</fieldset>
 
-						<div class="form-actions">
+						<fieldset>
+							<legend>挂载ECS</legend>
+
+							<div style="height: 20em; overflow: auto;">
+
+								<table
+									class="table table-striped table-bordered table-condensed">
+									<colgroup>
+										<col class="span2">
+										<col class="span2">
+										<col class="span4">
+									</colgroup>
+								
+									<thead>
+										<tr>
+											<th>标识符</th>
+											<th>操作系统</th>
+											<th>ECS规格</th>
+										</tr>
+									</thead>
+									<tbody>
+
+										<c:forEach var="item" items="${AllComputeItem }">
+
+											<tr>
+												<td>
+													<input type="checkbox" name="ids" value="${item.id }"
+														<c:if test="${not empty checkedComputeItem }">
+															<c:forEach var="checked" items="${checkedComputeItem }">
+																<c:if test="${checked[0] == item.id }">checked="checked"</c:if>
+															</c:forEach>
+														</c:if>
+	
+													/> ${item.identifier}
+												</td>
+
+											<td>
+												<c:forEach var="map" items="${osTypeMap}">
+													<c:if test="${item.osType == map.key  }">
+														<c:out value="${map.value}" />
+													</c:if>
+												</c:forEach>
+												
+													 &nbsp;
+													 
+												 <c:forEach var="map" items="${osBitMap}">
+													<c:if test="${item.osBit == map.key  }">
+														<c:out value="${map.value}" />
+													</c:if>
+												</c:forEach>
+												 
+											</td>
+											
+											<td>
+												<c:forEach var="map" items="${serverTypeMap}">
+													<c:if test="${item.serverType == map.key  }">
+														<c:out value="${map.value}" />
+													</c:if>
+												</c:forEach>
+											</td>
+										</tr>
+
+										</c:forEach>
+
+									</tbody>
+								</table>
+
+							</div>
+
+						</fieldset>
+
+						<hr />
+						<div>
 							<a id="backStep" class="btn">返回</a> <a id="nextStep"
-								class="btn btn-primary">下一步</a>
+								class="btn btn-info">下一步</a>
 						</div>
 					</div>
 
@@ -249,8 +246,8 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td>申请主题</td>
-										<td id="td_title"></td>
+										<td>资源类型</td>
+										<td id="td_resourceType"></td>
 									</tr>
 									<tr>
 										<td>起始时间</td>
@@ -261,10 +258,6 @@
 										<td id="td_usage"></td>
 									</tr>
 									<tr>
-										<td>资源类型</td>
-										<td id="td_resourceType"></td>
-									</tr>
-									<tr>
 										<td>容量空间</td>
 										<td id="td_storage"></td>
 									</tr>
@@ -273,11 +266,11 @@
 							</table>
 						</fieldset>
 
-						<div class="form-actions">
+						<hr>
+						<div>
 							<a id="backStep" class="btn ">返回</a>
-							<button class="btn btn-success">保存修改</button>
+							<button class="btn btn-primary">保存</button>
 						</div>
-
 					</div>
 
 				</div>

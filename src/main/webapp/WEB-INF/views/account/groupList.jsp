@@ -8,6 +8,8 @@
 			
 			$("#group-tab").addClass("active");
 			
+			$("#message").fadeOut(5000);
+			
 		});
 	</script>
 </head>

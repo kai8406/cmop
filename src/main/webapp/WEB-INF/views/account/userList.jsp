@@ -10,6 +10,8 @@
 		//active tab
 		$("#user-tab").addClass("active");
 		
+		$("#message").fadeOut(5000);
+		
 	});
 </script>
 </head>
@@ -24,13 +26,12 @@
 		<a class="btn btn-info pager" href="${ctx }/account/user/save/">创建用户</a>
 	</shiro:hasPermission>
 	
-	<!-- Search -->
 		<form class="well well-small form-search" action="${ctx}/account/user/">
 
 			<div class="row-fluid rowshow-grid">
 
 				<div class="span3">
-					<label class="control-label">名称:</label> <input type="text" id="name" name="name"  placeholder="用户名称" class="input-medium">
+					<label class="control-label">名称:</label> <input type="text" id="name" name="name"  class="input-medium">
 				</div>
 
 				<div class="span3">

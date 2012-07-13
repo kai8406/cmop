@@ -45,6 +45,19 @@
 
 	</properties>
 	<dependencies>
+	
+	<dependency>
+	<groupId>javax.mail</groupId>
+	<artifactId>mail</artifactId>
+	<version>1.4</version>
+</dependency>
+
+		<!-- redmine -->
+		<dependency>
+			<groupId>com.taskadapter</groupId>
+			<artifactId>redmine-java-api</artifactId>
+			<version>1.14</version>
+		</dependency>
 
 		<!-- sitemesh -->
 		<dependency>

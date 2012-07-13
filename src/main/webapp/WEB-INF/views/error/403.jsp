@@ -1,12 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page
-	import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter"%>
-<%@ page import="org.apache.shiro.authc.ExcessiveAttemptsException"%>
-<%@ page import="org.apache.shiro.authc.IncorrectCredentialsException"%>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}" />
 <html>
 <head>
 <title>403 - 用户权限不足</title>

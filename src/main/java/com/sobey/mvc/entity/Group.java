@@ -65,7 +65,7 @@ public class Group implements java.io.Serializable {
 		this.name = name;
 	}
 	
-	@ElementCollection       
+	@ElementCollection
 	@CollectionTable(name = "group_permission", joinColumns = { @JoinColumn(name = "group_id") })
 	@Column(name = "permission")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

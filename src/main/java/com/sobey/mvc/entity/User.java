@@ -73,8 +73,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, String type, Date createTime,
-			Date loginTime, Integer status, Set<AuditFlow> auditFlows, Set<Fault> faults, Set<Apply> applies) {
+	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, String type, Date createTime, Date loginTime, Integer status,
+			Set<AuditFlow> auditFlows, Set<Fault> faults, Set<Apply> applies) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -218,7 +218,7 @@ public class User implements java.io.Serializable {
 	public void setApplies(Set<Apply> applies) {
 		this.applies = applies;
 	}
-	
+
 	// 多对多定义
 	@ManyToMany
 	@JoinTable(name = "user_group", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id") })
@@ -249,5 +249,5 @@ public class User implements java.io.Serializable {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
+
 }

@@ -11,7 +11,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class Constant {
 
-	// 所属部门
+	/**
+	 * 服务类型 1:ecs 2: es3
+	 */
+	public static final Map<String, String> SERVICE_TYPE = new LinkedHashMap<String, String>();
+	static {
+		SERVICE_TYPE.put("1", "ecs".toLowerCase());
+		SERVICE_TYPE.put("2", "es3".toLowerCase());
+	}
+
+	/**
+	 * 所属部门
+	 */
 	public static final Map<String, String> DEPARTMENT = new LinkedHashMap<String, String>();
 	static {
 		DEPARTMENT.put("1", "新媒体产品部");
@@ -19,7 +30,9 @@ public class Constant {
 		DEPARTMENT.put("3", "新媒体测试部");
 	}
 
-	// 资源类型
+	/**
+	 * 资源类型
+	 */
 	public static final Map<Integer, String> RESOURCE_TYPE = new LinkedHashMap<Integer, String>();
 	static {
 		RESOURCE_TYPE.put(1, "生产资源");
@@ -27,7 +40,9 @@ public class Constant {
 		RESOURCE_TYPE.put(3, "公测资源");
 	}
 
-	// 服务器类型
+	/**
+	 * 服务器类型
+	 */
 	public static final Map<Integer, String> SERVER_TYPE = new LinkedHashMap<Integer, String>();
 	static {
 		SERVER_TYPE.put(1, "Small-[CPU:单核; Memory:1GB; Disk:20GB]");
@@ -35,7 +50,9 @@ public class Constant {
 		SERVER_TYPE.put(3, "Large-[CPU:四核; Memory:4GB; Disk:20GB]");
 	}
 
-	// 操作系统类型
+	/**
+	 * 操作系统类型
+	 */
 	public static final Map<Integer, String> OS_TYPE = new LinkedHashMap<Integer, String>();
 	static {
 		OS_TYPE.put(1, "Windwos2003R2");
@@ -44,14 +61,18 @@ public class Constant {
 		OS_TYPE.put(4, "Centos6.3");
 	}
 
-	// 操作系统位数
+	/**
+	 * 操作系统位数
+	 */
 	public static final Map<Integer, String> OS_BIT = new LinkedHashMap<Integer, String>();
 	static {
 		OS_BIT.put(1, "32 Bit");
 		OS_BIT.put(2, "64 Bit");
 	}
 
-	// 申请状态
+	/**
+	 * 申请状态
+	 */
 	public static final Map<String, String> APPLY_STATUS = new LinkedHashMap<String, String>();
 	static {
 		APPLY_STATUS.put("1", "待审核");
@@ -60,7 +81,9 @@ public class Constant {
 		APPLY_STATUS.put("4", "已审核");
 	}
 
-	// 故障级别
+	/**
+	 * 故障级别
+	 */
 	public static final Map<String, String> FAULT_LEVEL = new LinkedHashMap<String, String>();
 	static {
 		FAULT_LEVEL.put("1", "低");
@@ -70,14 +93,25 @@ public class Constant {
 		FAULT_LEVEL.put("5", "立刻");
 	}
 
-	// 容量空间
+	/**
+	 * 容量空间
+	 */
 	public static final Map<Integer, String> STORAGE_SPACE = new LinkedHashMap<Integer, String>();
 	static {
 		STORAGE_SPACE.put(20, "20GB");
 		STORAGE_SPACE.put(30, "30GB");
 		STORAGE_SPACE.put(50, "50GB");
 		STORAGE_SPACE.put(100, "100GB");
-		STORAGE_SPACE.put(200, "200GB");
+	}
+
+	/**
+	 * 审批结果
+	 */
+	public static final Map<String, String> AUDIT_RESULT = new LinkedHashMap<String, String>();
+	static {
+		AUDIT_RESULT.put("1", "同意");
+		AUDIT_RESULT.put("2", "不同意但继续");
+		AUDIT_RESULT.put("3", "不同意且退回");
 	}
 
 	// 网络接入链路
@@ -97,13 +131,24 @@ public class Constant {
 		ANALYSE_TYPE.put("4", "CNAME");
 	}
 
-	// 网络接入速率单位
+	/**
+	 * 网络接入速率单位:M
+	 */
 	public static final String SPEED_UNIT = "M";
-	// 存储空间
+
+	/**
+	 * 存储空间单位:GB
+	 */
 	public static final String STORAGE_UNIT = "GB";
-	// 空格
+
+	/**
+	 * 空格 3个&nbsp;
+	 */
 	public static final String BLANK_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;";
-	// 审批-不同意但退回
+
+	/**
+	 * 审批-不同意但退回 : 3
+	 */
 	public static final String AUDIT_NOTPASS_GOBACK = "3";
 
 }

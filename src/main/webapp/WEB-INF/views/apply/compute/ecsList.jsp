@@ -8,10 +8,10 @@
 	$(document).ready(function() {
 		//聚焦指定的Tab
 		$("#support-tab").addClass("active");
-		/* 
+ 
 		$("#ecs-bar").addClass("active");
 		$("#ecs-icon").addClass("icon-white");
-		 */
+	 
 		$("#message").fadeOut(5000);
 	});
 </script>
@@ -31,7 +31,9 @@
 		<%@ include file="/WEB-INF/layouts/left.jsp"%>
 
 		<div id="main" class="span10">
-
+				
+			<a class="btn btn-info pager"  href="${ctx}/apply/support/ecs/save/">创建ECS</a>
+				
 			<form class="well well-small form-search"
 				action="${ctx }/apply/support/ecs/">
 

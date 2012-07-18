@@ -92,7 +92,7 @@ public class AuditFlow implements java.io.Serializable {
 	public void setAuditOrder(Integer auditOrder) {
 		this.auditOrder = auditOrder;
 	}
-	
+
 	@Column(name = "is_final", nullable = false)
 	public Boolean getIsFinal() {
 		return this.isFinal;

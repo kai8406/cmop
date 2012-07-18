@@ -24,7 +24,7 @@ public class GroupDaoImpl implements GroupDaoCustom {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteWithReference(Integer id) {
-		//因為Group中沒有与User的关联，只能用笨办法，查询出拥有该权限组的用户, 并删除该用户的权限组.
+		// 因為Group中沒有与User的关联，只能用笨办法，查询出拥有该权限组的用户, 并删除该用户的权限组.
 		Group group = em.find(Group.class, id);
 		List<User> users = em.createQuery(QUERY_USER_BY_GROUPID).setParameter(1, id).getResultList();
 		for (User u : users) {

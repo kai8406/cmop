@@ -3,6 +3,7 @@ package com.sobey.mvc.service.apply;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.joda.time.DateTime;
@@ -18,10 +19,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.framework.utils.Identities;
+import com.sobey.mvc.Constant;
 import com.sobey.mvc.dao.account.UserDao;
 import com.sobey.mvc.dao.apply.ApplyDao;
 import com.sobey.mvc.dao.apply.ComputeItemDao;
-import com.sobey.mvc.dao.apply.CustomDaoImp;
+import com.sobey.mvc.dao.apply.CustomDao;
 import com.sobey.mvc.dao.apply.FaultDao;
 import com.sobey.mvc.dao.apply.StorageItemDao;
 import com.sobey.mvc.dao.auditflow.AuditFlowDao;
@@ -51,7 +53,7 @@ public class ApplyManager {
 	@Autowired
 	private StorageItemDao storageItemDao;
 	@Autowired
-	private CustomDaoImp customDaoImp;
+	private CustomDao customDao;
 	@Autowired
 	private AuditFlowDao auditFlowDao;
 
@@ -147,7 +149,7 @@ public class ApplyManager {
 			return faultDao.findAllByTitleLikeAndLevelAndUser(title, level, email, pageable);
 		}
 	}
-	
+
 	/**
 	 * 保存故障申报
 	 * 
@@ -161,8 +163,6 @@ public class ApplyManager {
 		fault.setCreateTime(new Date());
 		faultDao.save(fault);
 	}
-
-	
 
 	public Fault getBug(Integer id) {
 		return faultDao.findOne(id);
@@ -188,7 +188,6 @@ public class ApplyManager {
 		}
 		return "";
 	}
-	
 
 	public Page<Apply> getAllApply(int page, int size) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.DESC, "id"));
@@ -211,7 +210,7 @@ public class ApplyManager {
 
 	@SuppressWarnings("rawtypes")
 	public List findComputeListByApplyId(Integer applyId) {
-		return customDaoImp.findComputeListByApplyId(applyId);
+		return customDao.findComputeListByApplyId(applyId);
 	}
 
 	@Transactional(readOnly = false)
@@ -222,10 +221,10 @@ public class ApplyManager {
 		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
 		apply.setUser(user);
 		apply.setCreateTime(new Date());
-		apply.setTitle(user.getName() + "-ECS-" + dateTime.toString("yyyyMMddHHmmss"));
+		apply.setTitle(user.getName() + "-" + Constant.SERVICE_TYPE.get("1") + "-" + dateTime.toString("yyyyMMddHHmmss"));
 		apply.setStatus(1);
 		apply.setAuditOrder(0);
-		apply.setServiceType("ECS");
+		apply.setServiceType(Constant.SERVICE_TYPE.get("1"));
 		this.saveApply(apply);
 
 		for (ComputeItem computeItem : list) {
@@ -242,7 +241,7 @@ public class ApplyManager {
 		apply.setUser(user);
 		apply.setStatus(1);
 		apply.setAuditOrder(0);
-		apply.setServiceType("ECS");
+		apply.setServiceType(Constant.SERVICE_TYPE.get("1"));
 		apply.setCreateTime(new Date());
 		this.updateApply(apply);
 
@@ -268,7 +267,7 @@ public class ApplyManager {
 
 	@SuppressWarnings("rawtypes")
 	public List findComputeListByStorageItemId(Integer storageItemId) {
-		return customDaoImp.findComputeListByStorageItemId(storageItemId);
+		return customDao.findComputeListByStorageItemId(storageItemId);
 	}
 
 	public List<ComputeItem> getAllComputeItem() {
@@ -276,58 +275,103 @@ public class ApplyManager {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveES3(StorageItem storageItem, Apply apply, List<String> list) {
+	public void saveES3(String[] ecsIds, String[] spaces, Apply apply) {
 		DateTime dateTime = new DateTime();
 		Subject subject = SecurityUtils.getSubject();
 		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
 		apply.setUser(user);
 		apply.setCreateTime(new Date());
-		apply.setTitle(user.getName() + "-ES3-" + dateTime.toString("yyyyMMddHHmmss"));
-		apply.setStatus(1);
+		apply.setTitle(user.getName() + "-" + Constant.SERVICE_TYPE.get("2") + "-" + dateTime.toString("yyyyMMddHHmmss"));
+		apply.setStatus(1); // 待审核
 		apply.setAuditOrder(0);
-		apply.setServiceType("ES3");
+		apply.setServiceType(Constant.SERVICE_TYPE.get("2"));
 
 		this.saveApply(apply);
 
-		storageItem.setApply(apply);
-		storageItem.setIdentifier("ES3-" + Identities.randomBase62(8));
-		storageItemDao.save(storageItem);
+		for (int i = 0; i < spaces.length; i++) {
 
-		if (list != null) {
-			for (String computeId : list) {
-				customDaoImp.saveComputeStorage(computeId, storageItem.getId());
+			StorageItem storageItem = new StorageItem();
+			storageItem.setStorageSpace(Integer.parseInt(spaces[i]));// 存储空间大小
+			storageItem.setApply(apply);
+			storageItem.setIdentifier(Constant.SERVICE_TYPE.get("2") + "-" + Identities.randomBase62(8));
+			storageItemDao.save(storageItem);
+
+			String[] ecsIdArray = StringUtils.split(ecsIds[i], ",");// 单个存储空间挂载的实例ID数组
+
+			for (int j = 0; j < ecsIdArray.length; j++) {
+
+				String[] ecsId = StringUtils.split(ecsIdArray[j], "/"); // 存储空间挂载的实例ID
+
+				for (String computeId : ecsId) {
+
+					// 将存储空间挂靠在计算资源上
+					customDao.saveComputeStorage(computeId, storageItem.getId());
+				}
 			}
+
 		}
 
 		this.sendMail(user, apply);
 	}
 
 	@Transactional(readOnly = false)
-	public void updateES3(StorageItem storageItem, Integer storageItemId, Apply apply, List<String> list) {
+	public void updateES3(String[] ecsIds, String[] spaces, String[] spaceIds, Apply apply) {
 		Subject subject = SecurityUtils.getSubject();
 		User user = userDao.findByEmail(subject.getPrincipal().toString());// 当前用户
 		apply.setUser(user);
 		apply.setStatus(1);
 		apply.setAuditOrder(0);
-		apply.setServiceType("ES3");
+		apply.setServiceType(Constant.SERVICE_TYPE.get("2"));
 		apply.setCreateTime(new Date());
 		this.updateApply(apply);
 
 		// 删除老数据
-		customDaoImp.deleteComputeStorage(storageItemId);
+		customDao.deleteComputeStorageItemListByApply(apply.getId());
 
-		StorageItem storageItemUpdate = storageItemDao.findOne(storageItemId);
-		storageItemUpdate.setStorageSpace(storageItem.getStorageSpace());
-		storageItemUpdate.setApply(apply);
-		storageItemDao.save(storageItemUpdate);
+		for (int i = 0; i < spaces.length; i++) {
 
-		if (list != null) {
-			for (String computeId : list) {
-				customDaoImp.saveComputeStorage(computeId, storageItemId);
+			StorageItem storageItem;
+			if ("0".equals(spaceIds[i])) {
+				storageItem = new StorageItem();
+				storageItem.setStorageSpace(Integer.parseInt(spaces[i]));// 存储空间大小
+				storageItem.setApply(apply);
+				storageItem.setIdentifier(Constant.SERVICE_TYPE.get("2") + "-" + Identities.randomBase62(8));
+				storageItemDao.save(storageItem);
+			} else {
+				storageItem = storageItemDao.findOne(Integer.parseInt(spaceIds[i]));
+				storageItem.setApply(apply);
+				storageItemDao.save(storageItem);
 			}
+
+			String[] ecsIdArray = StringUtils.split(ecsIds[i], ",");// 单个存储空间挂载的实例ID数组
+
+			for (int j = 0; j < ecsIdArray.length; j++) {
+				String[] ecsId = StringUtils.split(ecsIdArray[j], "/"); // 存储空间挂载的实例ID
+
+				for (String computeId : ecsId) {
+					customDao.saveComputeStorage(computeId, storageItem.getId());
+				}
+			}
+
 		}
 
 		this.sendMail(user, apply);
+	}
+
+	/**
+	 * 根据申请单ID获得该申请下ECS和ES3有挂载关系的列表
+	 * 
+	 * <pre>
+	 * 显示页面字段为: 存储空间ID,存储空间identifier,存储大小,计算资源ID,计算资源identifier
+	 * </pre>
+	 * 
+	 * @param applyId
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List findComputeStorageItemListByApply(Integer applyId) {
+		return customDao.findComputeStorageItemListByApply(applyId);
+
 	}
 
 	public StorageItem findStorageItemByApply(Apply apply) {
@@ -335,23 +379,34 @@ public class ApplyManager {
 	}
 
 	public Page<Apply> getAuditApply(int page, int size, String title, int status) {
+
 		title = "%" + title + "%";
+
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.DESC, "id"));
+
 		if (status == 0) {
+
 			Subject subject = SecurityUtils.getSubject();
-			User user = userDao.findByEmail(subject.getPrincipal().toString()); // 当前用户
+			User user = userDao.findByEmail(subject.getPrincipal().toString()); // 当前登录用户
+
+			// 根据当前用户和审批类型获得审批流程.
 			AuditFlow auditFlow = auditFlowDao.findByUserAndFlowType(user, 1);
-			// if (auditFlow!=null) { //当前领导不是直属领导
-			logger.info("--->" + auditFlow.getIsFinal().toString());
-			int auditOrder = auditFlow.getAuditOrder() - 1;
-			return applyDao.findAllByTitleLikeAndStatusNotAndAuditOrderAndUser_leaderId(title, 4, auditOrder,
-					user.getId(), pageable);
-			// } else {
-			// //由于在审批流程中，直属领导不是固定的，所以第一级审批人无法获得，除非直属领导就是审批流程中的第二级审批人（经与陆俊确认，此种情况不考虑，所有申请的审批目前都要经过三个审批人）
-			// return
-			// applyDao.findAllByTitleLikeAndStatusAndAuditOrderAndUser_leaderId(title,
-			// 1, 0, user.getId(), pageable);
-			// }
+
+			if (auditFlow != null) { // 当前领导不是直属领导
+				logger.info("IsFinal --->" + auditFlow.getIsFinal().toString());
+
+				// 审批顺序
+				int auditOrder = auditFlow.getAuditOrder() - 1;
+				logger.info("auditOrder --->" + auditOrder);
+
+				return applyDao.findAllByTitleLikeAndStatusNotAndAuditOrderAndUser_leaderId(title, 4, auditOrder, user.getId(), pageable);
+			} else {
+				// 由于在审批流程中，直属领导不是固定的，所以第一级审批人无法获得，除非直属领导就是审批流程中的第二级审批人（经与陆俊确认，此种情况不考虑，所有申请的审批目前都要经过三个审批人）
+				// return
+				// applyDao.findAllByTitleLikeAndStatusAndAuditOrderAndUser_leaderId(title,
+				// 1, 0, user.getId(), pageable);
+				return null;
+			}
 		} else {
 			return applyDao.findAllByTitleLikeAndStatus(title, 4, pageable);
 		}
@@ -395,9 +450,8 @@ public class ApplyManager {
 			user = userDao.findOne(user.getLeaderId());
 			AuditFlow auditFlow = auditFlowDao.findByUserAndFlowType(user, 1);
 			logger.info("--->auditFlow.getUser():" + auditFlow.getUser());
-			List computeItems = customDaoImp.findComputeListByApplyId(apply.getId());
-			MailUtil.send(apply.getId(), MailUtil.buildMailDesc(apply, computeItems), auditFlow.getUser().getId(),
-					auditFlow.getUser().getEmail());
+			List computeItems = customDao.findComputeListByApplyId(apply.getId());
+			MailUtil.send(apply.getId(), MailUtil.buildMailDesc(apply, computeItems), auditFlow.getUser().getId(), auditFlow.getUser().getEmail());
 		}
 	}
 

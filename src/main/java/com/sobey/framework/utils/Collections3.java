@@ -15,18 +15,19 @@ public class Collections3 {
 	/**
 	 * 提取集合中的对象的两个属性(通过Getter函数), 组合成Map.
 	 * 
-	 * @param collection 来源集合.
-	 * @param keyPropertyName 要提取为Map中的Key值的属性名.
-	 * @param valuePropertyName 要提取为Map中的Value值的属性名.
+	 * @param collection
+	 *            来源集合.
+	 * @param keyPropertyName
+	 *            要提取为Map中的Key值的属性名.
+	 * @param valuePropertyName
+	 *            要提取为Map中的Value值的属性名.
 	 */
-	public static Map extractToMap(final Collection collection, final String keyPropertyName,
-			final String valuePropertyName) {
+	public static Map extractToMap(final Collection collection, final String keyPropertyName, final String valuePropertyName) {
 		Map map = new HashMap(collection.size());
 
 		try {
 			for (Object obj : collection) {
-				map.put(PropertyUtils.getProperty(obj, keyPropertyName),
-						PropertyUtils.getProperty(obj, valuePropertyName));
+				map.put(PropertyUtils.getProperty(obj, keyPropertyName), PropertyUtils.getProperty(obj, valuePropertyName));
 			}
 		} catch (Exception e) {
 			throw Reflections.convertReflectionExceptionToUnchecked(e);
@@ -38,8 +39,10 @@ public class Collections3 {
 	/**
 	 * 提取集合中的对象的一个属性(通过Getter函数), 组合成List.
 	 * 
-	 * @param collection 来源集合.
-	 * @param propertyName 要提取的属性名.
+	 * @param collection
+	 *            来源集合.
+	 * @param propertyName
+	 *            要提取的属性名.
 	 */
 	public static List extractToList(final Collection collection, final String propertyName) {
 		List list = new ArrayList(collection.size());
@@ -58,9 +61,12 @@ public class Collections3 {
 	/**
 	 * 提取集合中的对象的一个属性(通过Getter函数), 组合成由分割符分隔的字符串.
 	 * 
-	 * @param collection 来源集合.
-	 * @param propertyName 要提取的属性名.
-	 * @param separator 分隔符.
+	 * @param collection
+	 *            来源集合.
+	 * @param propertyName
+	 *            要提取的属性名.
+	 * @param separator
+	 *            分隔符.
 	 */
 	public static String extractToString(final Collection collection, final String propertyName, final String separator) {
 		List list = extractToList(collection, propertyName);
@@ -75,7 +81,8 @@ public class Collections3 {
 	}
 
 	/**
-	 * 转换Collection所有元素(通过toString())为String, 每个元素的前面加入prefix，后面加入postfix，如<div>mymessage</div>。
+	 * 转换Collection所有元素(通过toString())为String,
+	 * 每个元素的前面加入prefix，后面加入postfix，如<div>mymessage</div>。
 	 */
 	public static String convertToString(final Collection collection, final String prefix, final String postfix) {
 		StringBuilder builder = new StringBuilder();
@@ -111,13 +118,13 @@ public class Collections3 {
 			return null;
 		}
 
-		//当类型为List时，直接取得最后一个元素 。
+		// 当类型为List时，直接取得最后一个元素 。
 		if (collection instanceof List) {
 			List<T> list = (List<T>) collection;
 			return list.get(list.size() - 1);
 		}
 
-		//其他类型通过iterator滚动到最后一个元素.
+		// 其他类型通过iterator滚动到最后一个元素.
 		Iterator<T> iterator = collection.iterator();
 		while (true) {
 			T current = iterator.next();

@@ -27,7 +27,7 @@ import com.sobey.mvc.service.account.AccountManager;
 public class UserController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
 
 	@Autowired
@@ -51,8 +51,7 @@ public class UserController {
 	 */
 	@RequiresPermissions("user:view")
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
+	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);

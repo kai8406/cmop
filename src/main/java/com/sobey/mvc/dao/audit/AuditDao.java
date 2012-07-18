@@ -10,5 +10,5 @@ import com.sobey.mvc.entity.Audit;
 public interface AuditDao extends PagingAndSortingRepository<Audit, Integer> {
 
 	List<Audit> findByApply(Apply apply);
-	
+
 }

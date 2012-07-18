@@ -1,3 +1,57 @@
+/**
+ * 申请页面中,点击"下一步"和"后退"时切换Tab
+ * ul的ID	:		myTab
+ * 下一步按钮ID:	nextStep
+ * 返回按钮ID:		backStep
+ */
+function switchTab(){
+	
+	//下一步
+	var nextSteps = $("a[id^='nextStep']");
+	nextSteps.click(function(){
+		
+		if(!$("#inputForm").valid()){
+			return false; 
+		}
+		
+		//ES3验证
+		if($("#otherSpace").is(":checked")){
+			if($.trim($("#otherSpaceValue").val()) == "" ){
+ 				 $("#es3MessageBox").removeClass("hidden").addClass("show");
+				return false; 
+			}
+		}
+		$("#es3MessageBox").removeClass("show").addClass("hidden");
+		
+		
+		$('#myTab li:eq('+ (nextSteps.index(this) + 1) +') a').tab('show'); 
+		
+		displayInputParameter();
+		
+		selectResources();
+		
+		mountES3();
+		
+	 });
+	
+	//退回
+	var backSteps = $("a[id^='backStep']");
+	backSteps.click(function(){
+		
+		$('#myTab li:eq('+backSteps.index(this)+') a').tab('show'); // Select 1 tab (0-indexed)
+		
+		displayInputParameter();
+	 });
+	
+	//Tab切换
+	var tabStep = $("#myTab li a");
+	tabStep.click(function(){
+		displayInputParameter();
+	 });
+	
+		
+}
+
 
 /**
  * 将输入的各种参数插入到最后的详情table中
@@ -6,20 +60,29 @@
 function displayInputParameter(){
 	
 	//申请用途
-	$("#td_description").html($("#description").val());
+	$("#dd_description").html($("#description").val());
 	
 	//资源类型
 	resourceType = $("input[name='resourceType']:checked").val();
 	if(resourceType == 1){
-		$("#td_resourceType").html("生产资源");
+		$("#dd_resourceType").html("生产资源");
 	}else if(resourceType ==2){
-		$("#td_resourceType").html("测试/演示资源 ");
+		$("#dd_resourceType").html("测试/演示资源 ");
 	}else{
-		$("#td_resourceType").html("公测资源 ");
+		$("#dd_resourceType").html("公测资源 ");
 	}
 	
 	//起始日期
-	$("#td_time").html( $("#serviceStart").val() + '&nbsp;至&nbsp;' + $("#serviceEnd").val());
+	$("#dd_time").html( $("#serviceStart").val() + '&nbsp;至&nbsp;' + $("#serviceEnd").val());
+	
+	$("#mountDetail").empty();
+	var str="";
+	$("#mountDevice input[name='ids']:checked").each(function(){
+		str += "<dd>"+$(this).val()+"</dd>";
+	});
+	$("#mountDetail").append(str);//最后插入
+	
+	
 	
 	
 	/*存储资源*/
@@ -27,7 +90,7 @@ function displayInputParameter(){
 		$("#otherSpace").val($("#otherSpaceValue").val());
 	}
 	space = $("input[name='storageSpace']:checked").val();	//容量空间
-	$("#td_storage").html(space);
+	$("#dd_storage").html(space+"GB");
 	
 	
  	
@@ -39,28 +102,17 @@ function displayInputParameter(){
 function selectResources(){
 	//
 	/*将已选择的资源显示在详情列表中*/ 
-	$("tr.ResourcesDetail").remove();
-	
+	$("#ResourcesDetail").empty();//清空显示列表
 	var str = "";
 	$("#selectedResources #singleResources").each(function(){
-		str += "<tr class='ResourcesDetail'>" +
-				"<td>计算资源</td>" +
-				"<td>"+
-					$(this).children("#osName_SingleResources").text()+"&nbsp;"+ $(this).children("#osBitName__SingleResources").text()+
-					"<code>规格:</code>"+$(this).children("#serverTypeName__SingleResources").text()+
-					"<code>数量:</code>"+$(this).children("#serverCount__SingleResources").text()+"" +
-				"</td>" +
-				"</tr>"; 
-		
+		str += "<dd>"+$(this).children("#osName_SingleResources").text()+"&nbsp;"+ $(this).children("#osBitName__SingleResources").text()+"<strong>规格:</strong>"+$(this).children("#serverTypeName__SingleResources").text()+"<strong>数量:</strong> "+$(this).children("#serverCount__SingleResources").text()+"</dd>";
 	});
-	
-	//最后插入
-	$("#formDetail tbody:last-child").append(str);
+	$("#ResourcesDetail").append(str);//最后插入
 	
 	var osTypes= [];
-	 var bits= [];
-	 var serverTypeIds = [];
-	 var serverCount = [];
+	var bits= [];
+	var serverTypeIds = [];
+	var serverCount = [];
 	 
 	$("#selectedResources #singleResources").each(function() {
 		 var osId = $(this).find("#osId_SingleResources").text();
@@ -81,40 +133,26 @@ function selectResources(){
   	$("#serverCount").val(serverCount);
 }
 
-/**
- * 申请页面中,点击"下一步"和"后退"时切换Tab
- * ul的ID	:		myTab
- * 下一步按钮ID:	nextStep
- * 返回按钮ID:		backStep
- */
-function switchTab(){
+function mountES3(){
 	
-	//下一步
-	var nextSteps = $("a[id^='nextStep']");
-	nextSteps.click(function(){
-		$('#myTab li:eq('+ (nextSteps.index(this) + 1) +') a').tab('show'); 
-		
-		displayInputParameter();
-		
-		selectResources();
-	 });
+	var ecsIds = [];
+	var spaces=[];
+	var spaceIds=[];
+	$("#ES3MountList #ES3Mount").each(function(){
+		var ecsId = $(this).find("#checkedES3Id").text();
+		var space = $(this).find("#space_value").text();
+		var spaceId = $(this).find("#space_Id").text();
+		ecsIds.push(ecsId);
+		spaces.push(space);
+		spaceIds.push(spaceId);
+	});
 	
-	//退回
-	var backSteps = $("a[id^='backStep']");
-	backSteps.click(function(){
-		
-		$('#myTab li:eq('+backSteps.index(this)+') a').tab('show'); // Select 1 tab (0-indexed)
-		
-		displayInputParameter();
-	 });
+	$("#ecsIds").val(ecsIds);
+	$("#spaces").val(spaces);
+	$("#spaceIds").val(spaceIds);
 	
-	//Tab切换
-	var tabStep = $("#myTab li a");
-	tabStep.click(function(){
-		displayInputParameter();
-	 });
 	
-		
+	
 }
 
 
@@ -206,7 +244,7 @@ function selectServer(object,modalObject){
 	var checkOsBit = object.parent().parent().find("input[name^='osBit']:checked").val();
 	
 	
-	var smallCount = modalObject.parent().parent().find("#smallServerCount").val();//所选规格small的数量
+	var smallCount = modalObject.parent().parent().find("#small_ServerCount").val();//所选规格small的数量
 	 if(smallCount != ""){//数量框不为空
 		 
 		var smallTypeId =  $("#smallTypeId").text(); //服务器类型ID; 1 
@@ -224,7 +262,7 @@ function selectServer(object,modalObject){
 	 }    	 
 	      	 
 	      	 
-	 var middleCount = modalObject.parent().parent().find("#middleServerCount").val();//所选规格middle的数量
+	 var middleCount = modalObject.parent().parent().find("#middle_ServerCount").val();//所选规格middle的数量
 	 if(middleCount != ""){//数量框不为空
 		 
 		 var middleTypeId =  $("#middleTypeId").text(); //服务器类型ID; 2 
@@ -241,7 +279,7 @@ function selectServer(object,modalObject){
 		 
 	 }
 	 
-	 var largeCount = modalObject.parent().parent().find("#largeServerCount").val();;//所选规格large的数量
+	 var largeCount = modalObject.parent().parent().find("#large_ServerCount").val();;//所选规格large的数量
 	 if(largeCount != ""){//数量框不为空
 		 
 		 

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ import com.sobey.mvc.service.ServiceException;
 @Transactional(readOnly = true)
 public class AccountManager {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(AccountManager.class);
+	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
 
 	private UserDao userDao;
 	private GroupDao groupDao;
@@ -42,6 +42,17 @@ public class AccountManager {
 	// -- User Manager --//
 	public User getUser(Integer id) {
 		return userDao.findOne(id);
+	}
+
+	/**
+	 * 获得当前登录User
+	 * 
+	 * @return
+	 */
+	public User getCurrentUser() {
+		Subject subject = SecurityUtils.getSubject();
+		return userDao.findByEmail(subject.getPrincipal().toString()); // 当前登录用户
+
 	}
 
 	@Transactional(readOnly = false)
@@ -61,8 +72,7 @@ public class AccountManager {
 	@Transactional(readOnly = false)
 	public void deleteUser(Integer id) {
 		if (isSupervisor(id)) {
-			logger.warn("操作员{}尝试删除超级管理员用户", SecurityUtils.getSubject()
-					.getPrincipal());
+			logger.warn("操作员{}尝试删除超级管理员用户", SecurityUtils.getSubject().getPrincipal());
 			throw new ServiceException("不能删除超级管理员用户");
 		}
 		userDao.delete(id);
@@ -76,8 +86,7 @@ public class AccountManager {
 	}
 
 	public Page<User> getAllUser(int page, int size, String name) {
-		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
-				"id"));
+		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
 		if ("".equals(name)) {
 			return userDao.findAll(pageable);
 		} else {
@@ -104,8 +113,7 @@ public class AccountManager {
 	}
 
 	public Page<Group> getAllGroup(int page, int size) {
-		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC,
-				"id"));
+		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
 		return groupDao.findAll(pageable);
 	}
 

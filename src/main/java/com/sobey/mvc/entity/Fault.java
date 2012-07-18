@@ -113,7 +113,7 @@ public class Fault implements java.io.Serializable {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	
+
 	@Column(name = "redmine_issue_id")
 	public Integer getRedmineIssueId() {
 		return this.redmineIssueId;
@@ -122,7 +122,7 @@ public class Fault implements java.io.Serializable {
 	public void setRedmineIssueId(Integer redmineIssueId) {
 		this.redmineIssueId = redmineIssueId;
 	}
-	
+
 	@Column(name = "redmine_status")
 	public Integer getRedmineStatus() {
 		return this.redmineStatus;

@@ -29,12 +29,12 @@ public class LoginController {
 		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, userName);
 		return FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME != null ? "signUp" : "login";
 	}
-	
+
 	@RequestMapping(value = "/login/index", method = RequestMethod.GET)
 	public String index() {
 		return "index";
 	}
-	
+
 	@RequestMapping(value = "/help", method = RequestMethod.GET)
 	public String help() {
 		return "help";

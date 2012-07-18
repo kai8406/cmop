@@ -91,7 +91,7 @@ public class Audit implements java.io.Serializable {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	
+
 	@Column(name = "result", nullable = false, length = 1)
 	public String getResult() {
 		return this.result;

@@ -22,15 +22,14 @@ import com.sobey.mvc.service.apply.ApplyManager;
 public class FaultController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/apply/fault/";
 
 	@Autowired
 	private ApplyManager applyManager;
 
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "title", required = false, defaultValue = "") String title,
+	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "title", required = false, defaultValue = "") String title,
 			@RequestParam(value = "level", required = false, defaultValue = "0") Integer level, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;

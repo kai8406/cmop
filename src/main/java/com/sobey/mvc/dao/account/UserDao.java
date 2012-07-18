@@ -12,6 +12,13 @@ import com.sobey.mvc.entity.User;
  */
 public interface UserDao extends PagingAndSortingRepository<User, Integer> {
 
+	/**
+	 * 根据登录邮箱获得用户
+	 * 
+	 * @param email
+	 *            登录邮箱
+	 * @return
+	 */
 	User findByEmail(String email);
 
 	Page<User> findAllByNameLike(String name, Pageable pageable);

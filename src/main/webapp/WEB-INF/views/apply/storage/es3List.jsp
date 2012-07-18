@@ -8,10 +8,10 @@
 	$(document).ready(function() {
 		//聚焦指定的Tab
 		$("#support-tab").addClass("active");
-		/* 
+		 
 		$("#es3-bar").addClass("active");
 		$("#es3-icon").addClass("icon-white");
-		 */
+		 
 		$("#message").fadeOut(5000);
 	});
 </script>
@@ -32,6 +32,8 @@
 
 		<div id="main" class="span10">
 
+			<a class="btn btn-info pager" href="${ctx}/apply/support/es3/save/">创建ES3</a>
+	
 			<form class="well well-small form-search"
 				action="${ctx }/apply/support/es3/">
 

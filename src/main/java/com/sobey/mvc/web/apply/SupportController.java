@@ -34,8 +34,7 @@ public class SupportController {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String List(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "title", required = false, defaultValue = "") String title,
+	public String List(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "title", required = false, defaultValue = "") String title,
 			@RequestParam(value = "status", required = false, defaultValue = "0") Integer status, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
@@ -49,13 +48,33 @@ public class SupportController {
 	}
 
 	/**
-	 * 提供审核状态Map
+	 * 提供审批状态Map
 	 * 
 	 * @return
 	 */
 	@ModelAttribute("applyStatusMap")
 	public Map<String, String> applyStatusMap() {
 		return Constant.APPLY_STATUS;
+	}
+
+	/**
+	 * 审批结果
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("auditResultMap")
+	public Map<String, String> auditResultMap() {
+		return Constant.AUDIT_RESULT;
+	}
+
+	/**
+	 * 服务类型
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("serviceTypeMap")
+	public Map<String, String> serviceTypeMap() {
+		return Constant.SERVICE_TYPE;
 	}
 
 }

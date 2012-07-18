@@ -31,6 +31,7 @@
 		
 		inputServiceDate();
 		
+		
 		//点击弹出窗口保存时.
 		$("#modalSave").click(function() {
 			selectServer($("#inputResources"),$(this));
@@ -45,7 +46,18 @@
 			selectServer($("#inputResources4"),$(this));
 		});
 		
-		$("#inputForm").validate();
+		$("a[id^='inputResources']").click(function(){
+			$("input[id$='_ServerCount']").val("");
+		});
+		
+		
+		
+		//验证
+		$("#inputForm").validate({
+			rules:{
+				resourceType:"required"
+			}
+		});
 
 	});
 </script>
@@ -117,16 +129,16 @@
 								
 							</fieldset>
 							
-							<hr />
-							<div>
+							<div class="form-actions">
 								<a id="nextStep" class="btn btn-info">下一步</a>
 							</div>
 						</div>
 
 						<!-- 第2步 -->
 						<div class="tab-pane fade span8" id="profile2">
+						
 						<fieldset>
-								<legend>操作系统</legend>
+								<legend>计算资源</legend>
 						
 							<div class="row">
 								<div class="span1">
@@ -229,12 +241,13 @@
 										href="#ComputResources4">Select</a>
 								</div>
 							</div>
+							</fieldset>
 							
 							<!-- 显示选中的计算资源 -->
-							<div id="selectedResources">
-								<div class="page-header">选中计算资源</div>
+							<div id="selectedResources" >
+							<fieldset>
+								<legend>选中计算资源</legend>
 								
-								<c:if test="${not empty computeList}">
 								<c:forEach var="item" items="${computeList }">
 									<div id="singleResources" class="row alert">
 									
@@ -282,12 +295,12 @@
 									
 								</c:forEach>
 								
-								</c:if>
+									</fieldset>
+								
 							</div>
 							
-							</fieldset>
-							<hr>
-							<div>
+							
+							<div class="form-actions">
 								<a id="backStep" class="btn">返回</a> <a id="nextStep"
 									class="btn btn-info">下一步</a>
 							</div>
@@ -298,36 +311,33 @@
 						<div class="tab-pane fade span8" id="profile3">
 							<fieldset>
 								<legend>ECS资源申请详情</legend>
-								<table class="table table-bordered table-striped"
-									id="formDetail">
-									<colgroup>
-										<col class="span2">
-										<col class="span6">
-									</colgroup>
-									<thead>
-										<tr>
-											<th>Tag</th>
-											<th>Description</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>资源类型</td>
-											<td id="td_resourceType"></td>
-										</tr>
-										<tr>
-											<td>起始时间</td>
-											<td id="td_time"></td>
-										</tr>
-										<tr>
-											<td>申请用途</td>
-											<td id="td_description"></td>
-										</tr>
-									</tbody>
-								</table>
+								
+								<dl class="dl-horizontal">
+									<dt>申请类型:</dt>
+									<dd>ECS申请</dd>
+					
+									<dt>资源类型:</dt>
+									<dd id="dd_resourceType"></dd>
+									
+									<dt>申请起始时间:</dt>
+									<dd id="dd_time"></dd>
+									
+									<dt>申请用途:</dt>
+									<dd id="dd_description"></dd>
+										
+									<hr>
+										
+									<dt>计算资源:</dt>
+									<div id="ResourcesDetail"></div>
+								</dl>
+								
 							</fieldset>
 							
 							<div>
+								
+							</div>
+							
+							<div class="form-actions">
 								<a id="backStep" class="btn ">返回</a>
 								<button class="btn btn-primary">保存</button>
 							</div>
@@ -335,11 +345,8 @@
 						</div>
 
 					</div>
-
-				</form:form>
-			</div>
-		</div>
-				<!-- 弹出选择计算资源规格DIV -->
+					
+					<!-- 弹出选择计算资源规格DIV -->
 							<div id="ComputResources" class="modal hide fade form-horizontal">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -367,21 +374,21 @@
 												</td>
 												
 												<td>
-													<input type="text" id="smallServerCount" class="input-mini" />
+													<input type="text" id="small_ServerCount"  class="input-mini digits" maxlength="2" />
 												</td>
 											</tr> 
 											
 											<tr>
 												<td><div class="hidden" id="middleTypeId">2</div>Middle
 													&mdash; CPU[双核] Memory[2GB] Disk[20GB]</td>
-												<td><input type="text" id="middleServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="middle_ServerCount"
+													class="input-mini digits" maxlength="2"  /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="largeTypeId">3</div>Large
 													&mdash; CPU[四核] Memory[4GB] Disk[20GB]</td>
-												<td><input type="text" id="largeServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="large_ServerCount"
+													class="input-mini digits" maxlength="2"  /></td>
 											</tr>
 										</tbody>
 									</table>
@@ -413,20 +420,20 @@
 											<tr>
 												<td><div class="hidden" id="smallTypeId">1</div>Small
 													&mdash;CPU[单核] Memory[1GB] Disk[20GB]</td>
-												<td><input type="text" id="smallServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="small_ServerCount"
+													class="input-mini digits" maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="middleTypeId">2</div>Middle
 													&mdash; CPU[双核] Memory[2GB] Disk[20GB]</td>
-												<td><input type="text" id="middleServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="middle_ServerCount"
+													class="input-mini digits" maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="largeTypeId">3</div>Large
 													&mdash; CPU[四核] Memory[4GB] Disk[20GB]</td>
-												<td><input type="text" id="largeServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="large_ServerCount"
+													class="input-mini digits" maxlength="2" /></td>
 											</tr>
 										</tbody>
 									</table>
@@ -458,20 +465,20 @@
 											<tr>
 												<td><div class="hidden" id="smallTypeId">1</div>Small
 													&mdash;CPU[单核] Memory[1GB] Disk[20GB]</td>
-												<td><input type="text" id="smallServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="small_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="middleTypeId">2</div>Middle
 													&mdash; CPU[双核] Memory[2GB] Disk[20GB]</td>
-												<td><input type="text" id="middleServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="middle_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="largeTypeId">3</div>Large
 													&mdash; CPU[四核] Memory[4GB] Disk[20GB]</td>
-												<td><input type="text" id="largeServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="large_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 										</tbody>
 									</table>
@@ -503,20 +510,20 @@
 											<tr>
 												<td><div class="hidden" id="smallTypeId">1</div>Small
 													&mdash;CPU[单核] Memory[1GB] Disk[20GB]</td>
-												<td><input type="text" id="smallServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="small_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="middleTypeId">2</div>Middle
 													&mdash; CPU[双核] Memory[2GB] Disk[20GB]</td>
-												<td><input type="text" id="middleServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="middle_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 											<tr>
 												<td><div class="hidden" id="largeTypeId">3</div>Large
 													&mdash; CPU[四核] Memory[4GB] Disk[20GB]</td>
-												<td><input type="text" id="largeServerCount"
-													class="input-mini" /></td>
+												<td><input type="text" id="large_ServerCount"
+													class="input-mini digits"  maxlength="2" /></td>
 											</tr>
 										</tbody>
 									</table>
@@ -526,6 +533,11 @@
 										id="modalSave4" data-dismiss="modal" class="btn btn-primary">确定</a>
 								</div>
 							</div>
+
+				</form:form>
+			</div>
+		</div>
+				
 		
 		
 		

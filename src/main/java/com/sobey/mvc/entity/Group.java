@@ -64,7 +64,7 @@ public class Group implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@ElementCollection
 	@CollectionTable(name = "group_permission", joinColumns = { @JoinColumn(name = "group_id") })
 	@Column(name = "permission")

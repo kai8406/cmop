@@ -15,7 +15,7 @@
 
 </style>
 
-<div id="footer" class="span12">
+<div id="footer">
 	Copyright &copy; 2012 <a href="${ctx}/login/index">Sobey CMOP</a>
 </div>
 

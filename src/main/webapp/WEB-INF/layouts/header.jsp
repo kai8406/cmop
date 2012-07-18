@@ -12,13 +12,15 @@
 		</shiro:user>
 	</div>
 
-	<div id="menu" class="span12">
+	<div id="menu">
 		<ul class="nav nav-tabs">
 			<li id="index-tab"><a href="${ctx}/">首页</a></li>
 			<shiro:user>
 				<shiro:hasPermission name="apply:view">
 					<li id="support-tab"><a href="${ctx}/apply/support/">服务申请</a></li>
+					<!-- 
 					<li id="feature-tab"><a href="${ctx}/apply/feature/">服务变更</a></li>
+					 -->
 					<li id="fault-tab"><a href="${ctx}/apply/fault/">故障申报</a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission name="audit:view">

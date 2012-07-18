@@ -8,7 +8,7 @@ public class DateUtil {
 	public static void main(String[] args) {
 		addDate(null);
 	}
-	
+
 	public static Date addDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		if (date == null) {

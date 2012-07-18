@@ -99,5 +99,4 @@ public class ComputeItem implements java.io.Serializable {
 		this.serverType = serverType;
 	}
 
-
 }

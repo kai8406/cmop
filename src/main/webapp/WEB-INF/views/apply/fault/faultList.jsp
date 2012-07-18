@@ -68,7 +68,7 @@
 			<c:forEach items="${page.content}" var="item">
 				<tr>
 					<td>${item.title}</td>
-					<td>${item.createTime}</td>
+					<td><fmt:formatDate value="${item.createTime}" pattern ="yyyy-MM-dd HH:mm:ss" /></td>
 					<td>
 						<c:forEach var="map" items="${faultLevelMap}">
 							<c:if test="${item.level== map.key}">

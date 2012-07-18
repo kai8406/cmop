@@ -44,80 +44,82 @@
 	
 		<input type="hidden" name="id" value="${user.id}"/>
 		
-		<div class="tab-content span6 offset2">
-			<fieldset>
-				<legend><small>管理账号</small></legend>
-				
-				<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
-				
-				<div class="control-group">
-					<label for="email" class="control-label">登录邮箱</label>
-					<div class="controls">
-						<input type="text" id="email" name="email" size="50" value="${user.email}" class="required email"/>
+		<div class="tab-content">
+			<div class="span6 offset2">
+				<fieldset>
+					<legend><small>管理账号</small></legend>
+					
+					<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
+					
+					<div class="control-group">
+						<label for="email" class="control-label">登录邮箱</label>
+						<div class="controls">
+							<input type="text" id="email" name="email" size="50" value="${user.email}" class="required email"/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="name" class="control-label">用户真实姓名</label>
-					<div class="controls">
-						<input type="text" id="name" name="name" size="50" value="${user.name}" class="required"/>
+					
+					<div class="control-group">
+						<label for="name" class="control-label">用户真实姓名</label>
+						<div class="controls">
+							<input type="text" id="name" name="name" size="50" value="${user.name}" class="required"/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="password" class="control-label">密码</label>
-					<div class="controls">
-						<input type="password" id="password" name="password" size="50" value="${user.password}" class="required" minlength="3"/>
+					
+					<div class="control-group">
+						<label for="password" class="control-label">密码</label>
+						<div class="controls">
+							<input type="password" id="password" name="password" size="50" value="${user.password}" class="required" minlength="3"/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="passwordConfirm" class="control-label">确认密码</label>
-					<div class="controls">
-						<input type="password" id="passwordConfirm" name="passwordConfirm" size="50" value="${user.password}" equalTo="#password"/>
+					
+					<div class="control-group">
+						<label for="passwordConfirm" class="control-label">确认密码</label>
+						<div class="controls">
+							<input type="password" id="passwordConfirm" name="passwordConfirm" size="50" value="${user.password}" equalTo="#password"/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="phonenum" class="control-label">联系电话</label>
-					<div class="controls">
-						<input type="text" id="phonenum" name="phonenum" size="50" value="${user.phonenum}" class=""/>
+					
+					<div class="control-group">
+						<label for="phonenum" class="control-label">联系电话</label>
+						<div class="controls">
+							<input type="text" id="phonenum" name="phonenum" size="50" value="${user.phonenum}" class=""/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="department" class="control-label">部门信息</label>
-					<div class="controls">
-						
-						<select id="department"	name="department" class="input-medium">
-							<c:forEach var="map" items="${departmentMap }">
-								<option value="	<c:out value='${map.key}'/>" 
-									<c:if test="${user.department == map.key }">
-										selected="selected"
-									</c:if>
-								>
-									<c:out value="${map.value}" />
-								</option>
-							</c:forEach>
-
-						</select>
-						
+					
+					<div class="control-group">
+						<label for="department" class="control-label">部门信息</label>
+						<div class="controls">
+							
+							<select id="department"	name="department" class="input-medium">
+								<c:forEach var="map" items="${departmentMap }">
+									<option value="	<c:out value='${map.key}'/>" 
+										<c:if test="${user.department == map.key }">
+											selected="selected"
+										</c:if>
+									>
+										<c:out value="${map.value}" />
+									</option>
+								</c:forEach>
+	
+							</select>
+							
+						</div>
 					</div>
-				</div>
-				 
-				<div class="control-group">
-					<label for="groupList" class="control-label ">权限组</label>
-					<div class="controls">
-						<form:checkboxes path="groupList" items="${allGroups}" itemLabel="name" itemValue="id" />
+					 
+					<div class="control-group">
+						<label for="groupList" class="control-label ">权限组</label>
+						<div class="controls">
+							<form:checkboxes path="groupList" items="${allGroups}" itemLabel="name" itemValue="id" />
+						</div>
+					</div>	
+					
+					<div class="form-actions">
+						<button class="btn btn-primary">保存</button>&nbsp;	
+						<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 					</div>
-				</div>	
-				
-				<div class="form-actions">
-					<button class="btn btn-primary">保存</button>&nbsp;	
-					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
-				</div>
-
-			</fieldset>
+	
+				</fieldset>
+			</div>
 		</div>
 	</form:form>
 </body>

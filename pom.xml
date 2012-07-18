@@ -10,7 +10,6 @@
 
 		<!-- 主要依赖库的版本定义 -->
 		<org.springframework-version>3.1.2.RELEASE</org.springframework-version>
-		<spring.security.core.version>3.1.0.RELEASE</spring.security.core.version>
 		<org.hibernate-version>4.1.4.Final</org.hibernate-version>
 		<spring-data-jpa.version>1.1.0.RELEASE</spring-data-jpa.version>
 		<shiro.version>1.2.0</shiro.version>
@@ -45,12 +44,12 @@
 
 	</properties>
 	<dependencies>
-	
-	<dependency>
-	<groupId>javax.mail</groupId>
-	<artifactId>mail</artifactId>
-	<version>1.4</version>
-</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
 
 		<!-- redmine -->
 		<dependency>

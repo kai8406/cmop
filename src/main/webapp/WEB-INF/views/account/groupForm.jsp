@@ -33,32 +33,34 @@
 	
 		<input type="hidden" name="id" value="${group.id}"/>
 		
-		<div class="tab-content span6 offset2">
-			<fieldset>
-			
-				<legend><small>管理权限组</small></legend>
+		<div class="tab-content">
+			<div class="span6 offset2">
+				<fieldset>
 				
-				<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
-				
-				<div class="control-group">
-					<label for="name" class="control-label">名称:</label>
-					<div class="controls">
-						<input type="text" id="name" name="name" size="50" class="required" value="${group.name}"/>
+					<legend><small>管理权限组</small></legend>
+					
+					<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
+					
+					<div class="control-group">
+						<label for="name" class="control-label">名称:</label>
+						<div class="controls">
+							<input type="text" id="name" name="name" size="50" class="required" value="${group.name}"/>
+						</div>
 					</div>
-				</div>
-				
-				<div class="control-group">
-					<label for="permissionList" class="control-label">权限列表</label>
-					<div class="controls">
-						<form:checkboxes path="permissionList" items="${allPermissions}" itemLabel="displayName" itemValue="value" />
+					
+					<div class="control-group">
+						<label for="permissionList" class="control-label">权限列表</label>
+						<div class="controls">
+							<form:checkboxes path="permissionList" items="${allPermissions}" itemLabel="displayName" itemValue="value" />
+						</div>
 					</div>
-				</div>
-				
-				<div class="form-actions">
-					<input class="btn btn-primary" type="submit" value="保存"/>&nbsp;	
-					<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
-				</div>
-			</fieldset>
+					
+					<div class="form-actions">
+						<input class="btn btn-primary" type="submit" value="保存"/>&nbsp;	
+						<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
+					</div>
+				</fieldset>
+			</div>
 		</div>
 	</form:form>
 </body>

@@ -27,7 +27,7 @@ import com.sobey.mvc.service.apply.ApplyManager;
 public class ECSController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/apply/support/ecs/";
 
 	@Autowired
@@ -42,8 +42,7 @@ public class ECSController {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String List(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "identifier", required = false, defaultValue = "") String identifier, Model model) {
+	public String List(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "identifier", required = false, defaultValue = "") String identifier, Model model) {
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<ComputeItem> computeItems = applyManager.getComputeItemPageable(pageNum, DEFAULT_PAGE_SIZE, identifier);
 		model.addAttribute("page", computeItems);
@@ -79,10 +78,8 @@ public class ECSController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Apply apply, @RequestParam(value = "osTypes", required = false) String osTypes,
-			@RequestParam(value = "bits", required = false) String bits,
-			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds,
-			@RequestParam(value = "serverCount", required = false) String serverCount,
+	public String save(Apply apply, @RequestParam(value = "osTypes", required = false) String osTypes, @RequestParam(value = "bits", required = false) String bits,
+			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds, @RequestParam(value = "serverCount", required = false) String serverCount,
 			RedirectAttributes redirectAttributes) {
 
 		String[] osTypesArray = StringUtils.split(osTypes, ",");
@@ -99,7 +96,7 @@ public class ECSController {
 
 			for (int j = 0; j < num; j++) {
 				ComputeItem computeItem = new ComputeItem();
-				computeItem.setIdentifier("ECS-" + Identities.randomBase62(8));
+				computeItem.setIdentifier(Constant.SERVICE_TYPE.get("1") + "-" + Identities.randomBase62(8));
 				computeItem.setOsBit(Integer.parseInt(bitsArray[i])); // 位数
 				computeItem.setOsType(Integer.parseInt(osTypesArray[i])); // 操作系统
 				computeItem.setServerType(Integer.parseInt(serverTypeIdsArray[i])); // 规格
@@ -144,11 +141,8 @@ public class ECSController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("apply") Apply apply,
-			@RequestParam(value = "osTypes", required = false) String osTypes,
-			@RequestParam(value = "bits", required = false) String bits,
-			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds,
-			@RequestParam(value = "serverCount", required = false) String serverCount,
+	public String update(@ModelAttribute("apply") Apply apply, @RequestParam(value = "osTypes", required = false) String osTypes, @RequestParam(value = "bits", required = false) String bits,
+			@RequestParam(value = "serverTypeIds", required = false) String serverTypeIds, @RequestParam(value = "serverCount", required = false) String serverCount,
 			RedirectAttributes redirectAttributes) {
 
 		String[] osTypesArray = StringUtils.split(osTypes, ",");
@@ -164,7 +158,7 @@ public class ECSController {
 			int num = Integer.parseInt(serverCountArray[i]);
 			for (int j = 0; j < num; j++) {
 				ComputeItem computeItem = new ComputeItem();
-				computeItem.setIdentifier("ECS-" + Identities.randomBase62(8));
+				computeItem.setIdentifier(Constant.SERVICE_TYPE.get("1") + "-" + Identities.randomBase62(8));
 				computeItem.setOsBit(Integer.parseInt(bitsArray[i])); // 位数
 				computeItem.setOsType(Integer.parseInt(osTypesArray[i])); // 操作系统
 				computeItem.setServerType(Integer.parseInt(serverTypeIdsArray[i])); // 规格

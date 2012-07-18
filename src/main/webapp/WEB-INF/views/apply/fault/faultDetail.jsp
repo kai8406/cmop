@@ -22,7 +22,7 @@
 				<dd>${fault.user.name}</dd>
 
 				<dt>申请时间:</dt>
-				<dd>${fault.createTime}</dd>
+				<dd><fmt:formatDate value="${fault.createTime}" pattern ="yyyy-MM-dd HH:mm:ss" /></dd>
 
 				<dt>申请主题:</dt>
 				<dd>${fault.title}</dd>

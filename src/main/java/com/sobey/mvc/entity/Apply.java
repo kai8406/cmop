@@ -65,9 +65,9 @@ public class Apply implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Apply(User user, String serviceType, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, 
-			Integer status, Integer auditOrder, Integer redmineIssueId, Integer applyId, Set<ComputeItem> computeItems, Set<StorageItem> storageItems, Set<Audit> audits,   
-			Set<NetworkPortItem> networkPortItems, Set<InVpnItem> inVpnItems, Set<NetworkDomainItem> networkDomainItems) {
+	public Apply(User user, String serviceType, Integer resourceType, String title, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, Integer auditOrder,
+			Integer redmineIssueId, Integer applyId, Set<ComputeItem> computeItems, Set<StorageItem> storageItems, Set<Audit> audits, Set<NetworkPortItem> networkPortItems, Set<InVpnItem> inVpnItems,
+			Set<NetworkDomainItem> networkDomainItems) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.resourceType = resourceType;
@@ -118,7 +118,7 @@ public class Apply implements java.io.Serializable {
 	public void setServiceType(String serviceType) {
 		this.serviceType = serviceType;
 	}
-	
+
 	@Column(name = "resource_type", nullable = false)
 	public Integer getResourceType() {
 		return this.resourceType;
@@ -181,7 +181,7 @@ public class Apply implements java.io.Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	
+
 	@Column(name = "audit_order", nullable = false)
 	public Integer getAuditOrder() {
 		return this.auditOrder;
@@ -235,7 +235,7 @@ public class Apply implements java.io.Serializable {
 	public void setAudits(Set<Audit> audits) {
 		this.audits = audits;
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
 	public Set<NetworkPortItem> getNetworkPortItems() {
 		return this.networkPortItems;

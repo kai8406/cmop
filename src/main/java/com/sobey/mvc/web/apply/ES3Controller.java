@@ -1,6 +1,5 @@
 package com.sobey.mvc.web.apply;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import com.sobey.mvc.service.apply.ApplyManager;
 public class ES3Controller {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/apply/support/es3/";
 
 	@Autowired
@@ -39,8 +38,7 @@ public class ES3Controller {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String List(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "identifier", required = false, defaultValue = "") String identifier, Model model) {
+	public String List(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "identifier", required = false, defaultValue = "") String identifier, Model model) {
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<StorageItem> storageItems = applyManager.getStorageItemPageable(pageNum, DEFAULT_PAGE_SIZE, identifier);
 		model.addAttribute("page", storageItems);
@@ -66,17 +64,18 @@ public class ES3Controller {
 	 * 新增
 	 * 
 	 * @param apply
-	 * @param storageItem
-	 *            存储空间大小
 	 * @param redirectAttributes
-	 * @param list
+	 * @param ecsIds
+	 *            挂载的实例ID
+	 * @param spaces
+	 *            存储空间
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Apply apply, StorageItem storageItem, RedirectAttributes redirectAttributes,
-			@RequestParam(value = "ids", required = false) List<String> list) {
+	public String save(Apply apply, RedirectAttributes redirectAttributes, @RequestParam(value = "ecsIds", required = false) String[] ecsIds,
+			@RequestParam(value = "spaces", required = false) String[] spaces) {
 
-		applyManager.saveES3(storageItem, apply, list);
+		applyManager.saveES3(ecsIds, spaces, apply);
 
 		redirectAttributes.addFlashAttribute("message", "创建ES3申请 " + apply.getTitle() + " 成功");
 		return REDIRECT_SUCCESS_URL;
@@ -92,14 +91,11 @@ public class ES3Controller {
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
 		Apply apply = applyManager.findApplyById(id);
-		StorageItem storageItem = applyManager.findStorageItemByApply(apply);
 
 		model.addAttribute("apply", apply);
-		model.addAttribute("storageItem", storageItem);
 		model.addAttribute("AllComputeItem", applyManager.getAllComputeItem());
-
 		// 已挂载的实例
-		model.addAttribute("checkedComputeItem", applyManager.findComputeListByStorageItemId(storageItem.getId()));
+		model.addAttribute("checkedComputeItem", applyManager.findComputeStorageItemListByApply(id));
 
 		return "apply/storage/es3Form";
 	}
@@ -107,23 +103,21 @@ public class ES3Controller {
 	/**
 	 * 修改
 	 * 
-	 * @param storageItem
-	 *            存储空间大小
-	 * @param storageItemId
-	 *            存储空间Id
 	 * @param apply
-	 * @param list
-	 *            挂载的实例
+	 * @param ecsIds
+	 *            挂载的实例ID
+	 * @param spaceIds
+	 *            存储空间的ID(如果是新增ID为0,如果是已存在的则不为0)
+	 * @param spaces
+	 *            存储空间
 	 * @param redirectAttributes
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("storageItem") StorageItem storageItem,
+	public String update(@ModelAttribute("apply") Apply apply, @RequestParam(value = "ecsIds", required = false) String[] ecsIds,
+			@RequestParam(value = "spaceIds", required = false) String[] spaceIds, @RequestParam(value = "spaces", required = false) String[] spaces, RedirectAttributes redirectAttributes) {
 
-	@RequestParam("storageItemId") Integer storageItemId, @ModelAttribute("apply") Apply apply,
-			@RequestParam(value = "ids", required = false) List<String> list, RedirectAttributes redirectAttributes) {
-
-		applyManager.updateES3(storageItem, storageItemId, apply, list);
+		applyManager.updateES3(ecsIds, spaces, spaceIds, apply);
 
 		redirectAttributes.addFlashAttribute("message", "修改ES3申请 " + apply.getTitle() + " 成功");
 		return REDIRECT_SUCCESS_URL;

@@ -22,7 +22,7 @@ import com.sobey.mvc.service.account.AccountManager;
 public class GroupController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/group/";
 
 	@Autowired
@@ -30,12 +30,9 @@ public class GroupController {
 
 	@RequiresPermissions("group:view")
 	@RequestMapping(value = { "list", "" })
-	public String list(
-			@RequestParam(value = "page", required = false) Integer page,
-			Model model) {
+	public String list(@RequestParam(value = "page", required = false) Integer page, Model model) {
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
-		Page<Group> groups = accountManager.getAllGroup(pageNum,
-				DEFAULT_PAGE_SIZE);
+		Page<Group> groups = accountManager.getAllGroup(pageNum, DEFAULT_PAGE_SIZE);
 		model.addAttribute("page", groups);
 		return "account/groupList";
 	}
@@ -52,8 +49,7 @@ public class GroupController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Group group, RedirectAttributes redirectAttributes) {
 		accountManager.saveGroup(group);
-		redirectAttributes.addFlashAttribute("message",
-				"创建权限组 " + group.getName() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "创建权限组 " + group.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
 
@@ -67,18 +63,15 @@ public class GroupController {
 
 	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("group") Group group,
-			RedirectAttributes redirectAttributes) {
+	public String update(@ModelAttribute("group") Group group, RedirectAttributes redirectAttributes) {
 		accountManager.saveGroup(group);
-		redirectAttributes.addFlashAttribute("message",
-				"修改权限组 " + group.getName() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "修改权限组 " + group.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "delete/{id}")
-	public String delete(@PathVariable("id") Integer id,
-			RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 		accountManager.deleteGroup(id);
 		redirectAttributes.addFlashAttribute("message", "删除权限组成功");
 		return REDIRECT_SUCCESS_URL;
@@ -87,10 +80,8 @@ public class GroupController {
 	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "checkGroupName")
 	public @ResponseBody
-	String checkGroupName(@RequestParam("oldName") String oldName,
-			@RequestParam("name") String name) {
-		if (name.equals(oldName)
-				|| accountManager.findGroupByName(name) == null) {
+	String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		if (name.equals(oldName) || accountManager.findGroupByName(name) == null) {
 			return "true";
 		}
 		return "false";

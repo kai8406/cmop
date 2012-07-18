@@ -9,7 +9,7 @@
 		//聚焦指定的Tab
 		$("#support-tab").addClass("active");
 
-		$("#message").fadeOut(3000);
+		$("#message").fadeOut(5000);
 	});
 </script>
 </head>
@@ -91,23 +91,93 @@
 					<c:forEach items="${page.content}" var="item">
 						<tr>
 							<td>${item.title}</td>
-							<td>${item.createTime}</td>
-							<td><c:if test="${item.status == 1 }">
+							<td><fmt:formatDate value="${item.createTime}" pattern ="yyyy-MM-dd HH:mm:ss" /></td>
+							<td>
+								<c:if test="${item.status == 1 }">
 									<span class="label label-important">待审核</span>
-								</c:if> <c:if test="${item.status == 2 }">
+								</c:if> 
+								
+								<c:if test="${item.status == 2 }">
 									<span class="label label-warning">审核中</span>
-								</c:if> <c:if test="${item.status == 4 }">
+								</c:if> 
+								
+								<c:if test="${item.status == 3 }">
+									<span class="label label-inverse">已退回</span>
+								</c:if> 
+								
+								<c:if test="${item.status == 4 }">
 									<span class="label label-success">已审核</span>
-								</c:if></td>
-							<td><c:if test="${item.serviceType == 'ECS' }">
-									<a href="${ctx }/apply/support/ecs/detail/${item.id}">查看</a>
-									<a href="${ctx }/apply/support/ecs/update/${item.id}">修改</a>
-								</c:if> <c:if test="${item.serviceType == 'ES3' }">
-									<a href="${ctx }/apply/support/es3/detail/${item.id}">查看</a>
-									<a href="${ctx }/apply/support/es3/update/${item.id}">修改</a>
-								</c:if></td>
+								</c:if>
+							</td>
+							<td>
+								
+								<c:forEach var="map" items="${serviceTypeMap }">
+									
+									<c:if test="${map.value == item.serviceType }">
+									
+										<a href="${ctx }/apply/support/${map.value }/detail/${item.id}">申请详情</a>
+										
+										
+										<!-- 待审核状态下不能显示 -->
+										<c:if test="${item.status != 1 }">
+											<a href="#auditDetail_${item.id }"  data-toggle="modal">审核进度</a>
+										</c:if>					
+										
+										<!-- 只有 待审核 已返回 才能显示 -->
+										<c:if test="${item.status == 1 || item.status == 3 }">
+											<a href="${ctx }/apply/support/${map.value }/update/${item.id}">修改</a>
+										</c:if>										
+									
+									</c:if>
+								
+								</c:forEach>
+							
+								
+							</td>
 						</tr>
+						
+						<div id="auditDetail_${item.id}" class="modal hide fade form-horizontal">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h3>审核进度</h3>
+								</div>
+								<div class="modal-body">
+								
+									<dl class="dl-horizontal">
+										<c:forEach var="audits" items="${item.audits }">
+											<dt>审核人:</dt>
+											<dd>${audits.apply.user.name }</dd>
+											<dt>审核时间:</dt>
+											<dd>
+												<fmt:formatDate value="${audits.createTime}" pattern ="yyyy-MM-dd HH:mm:ss" />
+											</dd>
+											<dt>审核结果:</dt>
+											<dd>
+												<c:forEach var="map" items="${auditResultMap }">
+													<c:if test="${map.key == audits.result }">
+														<c:out value="${map.value}" />
+													</c:if>
+												</c:forEach>
+											</dd>
+											<dt>审核意见:</dt>
+											<dd>${audits.opinion}</dd>
+											
+											<hr>
+											
+										</c:forEach>
+									</dl>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn" data-dismiss="modal">关闭</a>  
+								</div>
+							</div>
+							
 					</c:forEach>
+					
+					
+					
+							
+							
 				</tbody>
 			</table>
 

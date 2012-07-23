@@ -15,7 +15,7 @@
 	<description>Spring公共配置 </description>
 
 	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
-	<context:component-scan base-package="com.sobey.mvc">
+	<context:component-scan base-package="com.sobey.cmop">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 
@@ -35,14 +35,14 @@
 	
 	<bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 		<property name="databasePlatform">
-			<bean factory-method="getDialect" class="com.sobey.framework.utils.Hibernates">
+			<bean factory-method="getDialect" class="com.sobey.framework.hibernate.Hibernates">
 				<constructor-arg ref="dataSource"/>
 			</bean>
 		</property>
 	</bean>
 
 	<!-- Spring Data Jpa配置 -->
- 	<jpa:repositories base-package="com.sobey.mvc"  transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
+ 	<jpa:repositories base-package="com.sobey.cmop.mvc"  transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
    
 	<!-- Jpa 事务配置 -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -55,7 +55,7 @@
 	<!-- production/local development环境 -->
  	<beans profile="production,development">
  		<context:property-placeholder ignore-unresolvable="true"
-			location="classpath*:/application.properties,
+			location="classpath*:/jdbc.properties,
           			  classpath*:/application.local.properties" />	
 		
 		<!-- 数据源配置, 使用DBCP数据库连接池 -->
@@ -79,5 +79,21 @@
 		<!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/ExampleDB" />-->
 	</beans>
 	
-	
+	<!-- 定时器服务：获取IDC内部网络的PING质量信息   repeatInterval：毫秒级  3600000=1小时
+    <bean id="idcNetQualityJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="monitorService"/>
+        <property name="targetMethod" value="idcNetQuality"/>
+    </bean>
+	<bean id="idcNetQualityTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="idcNetQualityJob" />
+		<property name="repeatInterval" value="30000" />
+	</bean>  
+    <bean id="scheduler" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="idcNetQualityTrigger"/>
+            </list>
+        </property>
+    </bean> -->
+    
 </beans>

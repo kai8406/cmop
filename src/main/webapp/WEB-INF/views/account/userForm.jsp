@@ -89,8 +89,7 @@
 					<div class="control-group">
 						<label for="department" class="control-label">部门信息</label>
 						<div class="controls">
-							
-							<select id="department"	name="department" class="input-medium">
+							<select id="department"	name="department" class="input-large">
 								<c:forEach var="map" items="${departmentMap }">
 									<option value="	<c:out value='${map.key}'/>" 
 										<c:if test="${user.department == map.key }">
@@ -100,9 +99,32 @@
 										<c:out value="${map.value}" />
 									</option>
 								</c:forEach>
-	
 							</select>
-							
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label for="department" class="control-label">直属领导</label>
+						<div class="controls">
+
+							<select id="leaderId" name="leaderId" class="input-large">
+								<option value=""></option>
+								<c:forEach var="item" items="${leaderList }">
+									<option value="${item.id }" 
+										<c:if test="${user.leaderId == item.id }">
+											selected="selected"
+										</c:if>
+									>
+										${item.name } &minus;
+										<c:forEach var="map" items="${departmentMap }">
+											<c:if test="${item.department == map.key}">
+												<c:out value="${map.value}" />
+											</c:if>
+										</c:forEach>
+									</option>
+								</c:forEach>
+
+							</select>
 						</div>
 					</div>
 					 

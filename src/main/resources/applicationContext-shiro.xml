@@ -12,7 +12,7 @@
 	</bean>
 
 	<!-- 項目自定义的Realm -->
-	<bean id="shiroDbRealm" class="com.sobey.mvc.service.account.ShiroDbRealm"  depends-on="userDao,groupDao">
+	<bean id="shiroDbRealm" class="com.sobey.cmop.mvc.service.account.ShiroDbRealm"  depends-on="userDao,groupDao">
 		<property name="accountManager" ref="accountManager"/>
 	</bean>
 
@@ -20,9 +20,12 @@
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
 		<property name="loginUrl" value="/login" />
-		<property name="successUrl" value="/account/user/" />
+		<property name="successUrl" value="/home" />
 		<property name="filterChainDefinitions">
 			<value>
+				/account/user/regist = anon
+			 	/account/user/checkEmail** = anon 
+			 	/servlet/** = anon
 				/login = authc
 				/logout = logout
 				/static/** = anon

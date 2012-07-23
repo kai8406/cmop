@@ -12,22 +12,22 @@
 		overflowToDisk="true" maxEntriesLocalDisk="100000" />
 
 	<!-- Special objects setting. -->
-	<cache name="com.sobey.mvc.entity.account.User" maxEntriesLocalHeap="1000" eternal="true"
+	<cache name="com.sobey.cmop.mvc.entity.account.User" maxEntriesLocalHeap="1000" eternal="true"
 		overflowToDisk="true" maxEntriesLocalDisk="10000">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
 			properties="replicatePuts=false,replicateUpdatesViaCopy=false" />
 	</cache>
-	<cache name="com.sobey.mvc.entity.account.User.groupList" maxEntriesLocalHeap="1000" eternal="true"
+	<cache name="com.sobey.cmop.mvc.entity.account.User.groupList" maxEntriesLocalHeap="1000" eternal="true"
 		overflowToDisk="true" maxEntriesLocalDisk="10000">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
 			properties="replicatePuts=false,replicateUpdatesViaCopy=false" />
 	</cache>
-	<cache name="com.sobey.mvc.entity.account.Group" maxEntriesLocalHeap="100" eternal="true"
+	<cache name="com.sobey.cmop.mvc.entity.account.Group" maxEntriesLocalHeap="100" eternal="true"
 		overflowToDisk="true" maxEntriesLocalDisk="1000">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
 			properties="replicatePuts=false,replicateUpdatesViaCopy=false" />
 	</cache>
-	<cache name="com.sobey.mvc.entity.account.Group.permissionList" maxEntriesLocalHeap="100"
+	<cache name="com.sobey.cmop.mvc.entity.account.Group.permissionList" maxEntriesLocalHeap="100"
 		eternal="true" overflowToDisk="true" maxEntriesLocalDisk="1000">
 		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
 			properties="replicatePuts=false,replicateUpdatesViaCopy=false" />

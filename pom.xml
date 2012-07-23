@@ -22,6 +22,7 @@
 		<ehcache.version>2.5.2</ehcache.version>
 		<hibernate.jpa-api.version>2.0-cr-1</hibernate.jpa-api.version>
 		<commons-io.version>2.4</commons-io.version>
+		<commons-net.version>3.1</commons-net.version>
 		<hibernate-validator.version>4.3.0.Final</hibernate-validator.version>
 		<joda-time.version>2.1</joda-time.version>
 		<guava.version>12.0</guava.version>
@@ -185,6 +186,13 @@
 			<artifactId>ehcache-core</artifactId>
 			<version>${ehcache.version}</version>
 		</dependency>
+		<!-- SSH -->
+		<dependency>
+			<groupId>ch.ethz.ganymed</groupId>
+			<artifactId>ganymed-ssh2</artifactId>
+			<version>build210</version>
+		</dependency>
+
 
 		<!-- @Valid -->
 		<dependency>
@@ -320,6 +328,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons-net.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>

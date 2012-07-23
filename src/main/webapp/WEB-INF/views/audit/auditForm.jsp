@@ -180,9 +180,17 @@ function setResult(result) {
 				</div>
 				<hr>
 				<div class="form-actions">
-					<button class="btn btn-success" onclick="setResult(1)">同意</button>
-					<button class="btn btn-success" onclick="return setResult(2)">不同意但继续</button>
-					<button class="btn btn-success" onclick="return setResult(3)">不同意且退回</button>
+				
+					<c:if test="${ empty result }">
+						<button class="btn btn-success" onclick="setResult(1)">同意</button>
+						<button class="btn btn-success" onclick="return setResult(2);">不同意但继续</button>
+						<button class="btn btn-success" onclick="return setResult(3);">不同意且退回</button>
+					</c:if>
+					
+					<c:if test="${not empty result }">
+						<button class="btn btn-success" onclick="return setResult(${result})">保存</button>
+						<button class="btn " onclick="window.close();">取消</button>
+					</c:if>
 				</div>				
 			</form>
 		</div>

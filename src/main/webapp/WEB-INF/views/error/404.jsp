@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
 <%
@@ -16,7 +17,7 @@
 		<div id="content" class="span12">
 			<h3>您访问的页面不存在！</h3><br>
 			<div>
-				<a href="${ctx}" class="btn btn-primary">返回首页</a>
+				<a href="${ctx}/home/" class="btn btn-primary">返回首页</a>
 			</div>			
 		</div>
 	</div>

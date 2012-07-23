@@ -7,10 +7,11 @@
 
 <%
 	Throwable ex = null;
-	if (exception != null)
-		ex = exception;
-	if (request.getAttribute("javax.servlet.error.exception") != null)
+	//if (exception != null)
+	//	ex = exception;
+	if (request.getAttribute("javax.servlet.error.exception") != null) {
 		ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
+	}
 
 	//记录日志
 	Logger logger = LoggerFactory.getLogger("500.jsp");
@@ -24,20 +25,14 @@
 </head>
 
 <body>
-
-	<c:url value="/" var="homeUrl" />
-
 	<div class="row span6 offset3">
 		<div class="page-header">
 			<h1>系统发生内部错误!</h1>
 		</div>
 
 		<div>
-			<a href="${homeUrl}" class="btn btn-primary">返回首页</a>
+			<a href="${ctx}/home/" class="btn btn-primary">返回首页</a>
 		</div>
-
 	</div>
-
-
 </body>
 </html>

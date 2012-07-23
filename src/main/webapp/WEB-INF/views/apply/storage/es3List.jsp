@@ -8,10 +8,10 @@
 	$(document).ready(function() {
 		//聚焦指定的Tab
 		$("#support-tab").addClass("active");
-		 
+
 		$("#es3-bar").addClass("active");
 		$("#es3-icon").addClass("icon-white");
-		 
+
 		$("#message").fadeOut(5000);
 	});
 </script>
@@ -33,7 +33,7 @@
 		<div id="main" class="span10">
 
 			<a class="btn btn-info pager" href="${ctx}/apply/support/es3/save/">创建ES3</a>
-	
+
 			<form class="well well-small form-search"
 				action="${ctx }/apply/support/es3/">
 
@@ -59,6 +59,7 @@
 					<tr>
 						<th>标识符</th>
 						<th>存储空间(GB)</th>
+						<th>存储类型</th>
 					</tr>
 				</thead>
 
@@ -66,7 +67,16 @@
 					<c:forEach items="${page.content}" var="item">
 						<tr>
 							<td>${item.identifier}</td>
-							<td>${item.storageSpace}</td>
+							<td>${item.space}</td>
+							<td>
+								<c:forEach var="map" items="${storeageTypeMap }">
+
+									<c:if test="${ map.key == item.storageType }">
+										<c:out value="${map.value}" />
+									</c:if>
+
+								</c:forEach>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>

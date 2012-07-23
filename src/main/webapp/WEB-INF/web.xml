@@ -93,6 +93,16 @@
 		<servlet-name>springServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+	<!-- 监控Servlet -->
+	<servlet> 
+		<servlet-name>idcNetLinkServlet</servlet-name>
+		<servlet-class>com.sobey.framework.servlet.DelegatingServletProxy</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>idcNetLinkServlet</servlet-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</servlet-mapping> 
 
 	<!-- session超时定义,单位为分钟 -->
 	<session-config>

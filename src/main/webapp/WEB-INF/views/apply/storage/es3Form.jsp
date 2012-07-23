@@ -31,20 +31,38 @@
 		inputServiceDate();
 		
 		$("#inputForm").validate({
-			rules:{	storageSpace:"required",resourceType:"required"	}
+			rules:{	space:"required",resourceType:"required"	}
 		});
 		/////////////////////
 		
 		
 		//点击增加,动态生成一行 存储空间+挂载按钮
 		$("#createES3Mount").click(function(){
-			var storageSpace = $("input[name='storageSpace']:checked").val();//获得选中radio的值.
+			
+			var space ;
+			
+			var storeageTypeId =$("input[name='storeageType']:checked").val();//获得选中radio的值.
+			
+			//ES3验证
+			if($("#otherSpace").is(":checked")){//如果选中"其它"
+				
+				if($.trim($("#otherSpaceValue").val()) == "" ){//如果输入框为空
+					$("#es3MessageBox").modal("toggle");
+					return false; 
+				}else{
+					space = $("#otherSpaceValue").val();
+				}
+			}else{
+				 space = $("input[name='space']:checked").val();//获得选中radio的值.
+			}
 			
 			//插入挂载行
 			 str = "<div class='row alert' id='ES3Mount'>";
-			 str +="<div class='span1' id='space'>"+storageSpace+"&nbsp;GB</div>";
+			 str +="<div class='span1' id='space'>"+space+"&nbsp;GB</div>";
 			 str +="<div class='hidden' id='space_Id'>0</div>";
-			 str +="<div class='hidden' id='space_value'>"+storageSpace+"</div>";
+			 str +="<div class='hidden' id='space_value'>"+space+"</div>";
+			 str +="<div class='span1' id='storeageType_value'>"+fGetStoreageTypeValueById(storeageTypeId)+"</div>";
+			 str +="<div class='hidden' id='storeageType_id'>"+storeageTypeId+"</div>";
 			 str +="<div class='span1 '><a id='ES3MountBtn' name='' class='btn btn-warning bES3Tmp' data-toggle='modal' href='#ecsListModal'>挂载</a></div>";
 			 str +="<div id='showIdentifier' class='span4'></div>";
 			 str +="<div class='hidden' id='checkedES3Id'></div>";
@@ -52,7 +70,7 @@
 			$("#ES3MountList").append(str);
 			
 		});
-	 
+		
 		
 		//点击挂载按钮触发
 		$("#ES3MountBtn").live("click",function(){
@@ -113,6 +131,7 @@
 				<input type="hidden" name="ecsIds" id="ecsIds" value="" />
 				<input type="hidden" name="spaces" id="spaces" value="" />
 				<input type="hidden" name="spaceIds" id="spaceIds" value="" />
+				<input type="hidden" name="storeageTypes" id="storeageTypes" value="" />
 
 				<div class="tab-content">
 
@@ -173,11 +192,11 @@
 								<label class="control-label">容量空间</label>
 								<div class="controls">
 								
-										<c:forEach var="map" items="${storageSpaceMap }" varStatus="index" >
+										<c:forEach var="map" items="${spaceMap }" varStatus="index" >
 											<label class="radio inline	"> 
-												<input type="radio" value="<c:out value='${map.key}'/>"	name="storageSpace"
+												<input type="radio" value="<c:out value='${map.key}'/>"	name="space"
 													<c:if test="${index.index == 0 }"> checked="checked" </c:if>
-													<c:if test="${storageItem.storageSpace == map.key }"> checked="checked" </c:if>
+													<c:if test="${storageItem.space == map.key }"> checked="checked" </c:if>
 												 />
 												<c:out value="${map.value}" />
 											</label>
@@ -185,13 +204,13 @@
 									
 									
 									  <label class="radio inline"> 
-										  <input type="radio" value=""	id="otherSpace" name="storageSpace"
+										  <input type="radio" value=""	id="otherSpace" name="space"
 												<c:if test="${
-													storageItem.storageSpace != 20 && 
-													storageItem.storageSpace != 30 && 
-													storageItem.storageSpace != 50 && 
-													storageItem.storageSpace != 100 && 
-													storageItem.storageSpace != null
+													storageItem.space != 20 && 
+													storageItem.space != 30 && 
+													storageItem.space != 50 && 
+													storageItem.space != 100 && 
+													storageItem.space != null
 												}">
 													checked="checked" 
 												</c:if>
@@ -199,14 +218,14 @@
 										 
 											其它 
 										
-											<input type="text" id="otherSpaceValue" name="otherSpaceValue"	value="${storageItem.storageSpace}"
+											<input type="text" id="otherSpaceValue" name="otherSpaceValue"	value="${storageItem.space}"
 												<c:if test="${
-													storageItem.storageSpace != 20 &&
-													storageItem.storageSpace != 30 &&
-													storageItem.storageSpace != 50 &&
-													storageItem.storageSpace != 100  
+													storageItem.space != 20 &&
+													storageItem.space != 30 &&
+													storageItem.space != 50 &&
+													storageItem.space != 100  
 												 }">
-												  name="${storageItem.storageSpace}"
+												  name="${storageItem.space}"
 											  </c:if>
 											class="input-mini digits" maxlength="5" />
 									</label>
@@ -214,7 +233,19 @@
 								</div>
 							</div>
 							
-							<div id="es3MessageBox" class="alert alert-error hidden">请输入容量空间。</div>
+							<div class="control-group">
+								<label class="control-label">存储类型</label>
+								<div class="controls">
+									<c:forEach var="map" items="${storeageTypeMap }">
+										<label class="radio"> 
+											<input type="radio" value="<c:out value='${map.key}'/>"	name="storeageType"
+												<c:if test="${ map.key == 1}">checked="checked"</c:if>
+											 />
+											<c:out value="${map.value}" />
+										</label>
+									</c:forEach>
+								</div>
+							</div>
 							
 						</fieldset>
 
@@ -226,14 +257,30 @@
 
 									<div id="ES3Mount" class="row alert">
 										<div id="space" class="span1">${item[2] }&nbsp;GB</div>
-										<div class='hidden' id='space_Id'>${item[0]}</div>
+										<div class='hidden' id='space_Id'>${item[0]}</div> 
 										<div id="space_value" class="hidden">${item[2] }</div>
+										
+										<div id="storeageType_id" class="hidden">${item[3] }</div>
+										<div class="span1" id="storeageType_value">
+										
+										<c:forEach var="map" items="${storeageTypeMap }">
+											
+											<c:if test="${ map.key == item[3]}">
+												<c:out value="${map.value}" />
+											</c:if>
+											
+										</c:forEach>
+										
+										
+										</div>
+										
+			 
 										<div class="span1 ">
 											<a href="#ecsListModal" data-toggle="modal"
 												class="btn btn-warning bES3Tmp" name="" id="ES3MountBtn">挂载</a>
 										</div>
-										<div class="span4" id="showIdentifier">${item[4]}</div>
-										<div id="checkedES3Id" class="hidden">${item[3]}/</div>
+										<div class="span4" id="showIdentifier">${item[5]}</div>
+										<div id="checkedES3Id" class="hidden">${item[4]}/</div>
 										<button data-dismiss="alert" class="close">×</button>
 									</div>
 
@@ -267,18 +314,9 @@
 									
 									<dt>申请用途:</dt>
 									<dd id="dd_description"></dd>
-										
-									<hr>
-										
-									<dt>存储空间:</dt>
-									<dd id="dd_storage"></dd>
-									 
-									<hr>
-									<dt>挂载实例ID:</dt>
-								 
+									
 							 
-									<div id="mountDetail">
-									</div>
+									<div id="mountDetail"></div>
 									
 								</dl>
 							 
@@ -328,7 +366,7 @@
 
 											<tr>
 												<td>
-													<input type="checkbox" id="ids" name="ids" value="${item.id }" /> 
+													<input type="checkbox" id="ids" name="ids" value="${item.id }" />  
 												</td>
 												<td id="esc_identifier">${item.identifier}</td>
 												<td>
@@ -364,7 +402,14 @@
 					id="ecsListModalSave" data-dismiss="modal" name="" class="btn btn-primary">确定</a>
 			</div>
 		</div>
-
+		
+		
+		<div id="es3MessageBox" class="modal hide  form-horizontal">
+			<div class="modal-body">请输入容量空间.</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">确定</a> 
+			</div>
+		</div>
 
 
 </body>

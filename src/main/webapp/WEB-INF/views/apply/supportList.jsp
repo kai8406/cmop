@@ -33,16 +33,25 @@
 				<h3>我的资源</h3>
 				<div class="row page-header">
 					<div class="span2">
-						<a href="${ctx }/apply/support/ecs/">ECS (${ecsCount})</a>
+						<a href="${ctx}/apply/support/ecs/">ECS (${ecsCount})</a>
 					</div>
 					<div class="span2">
-						<a href="${ctx }/apply/support/es3/">ES3 (${es3Count})</a>
+						<a href="${ctx}/apply/support/es3/">ES3 (${es3Count})</a>
 					</div>
+					<div class="span2">
+						<a href="${ctx}/apply/support/eip/">EIP (${ecsCount})</a>
+					</div>
+					<div class="span2">
+						<a href="${ctx}/apply/support/efw/">EFW (${es3Count})</a>
+					</div>		
+					<div class="span2">
+						<a href="${ctx}/apply/support/elb/">ELB (${es3Count})</a>
+					</div>				
 				</div>
 			</div>
 
 			<form class="well well-small form-search"
-				action="${ctx }/apply/support/">
+				action="${ctx}/apply/support/">
 
 				<div class="row-fluid show-grid">
 

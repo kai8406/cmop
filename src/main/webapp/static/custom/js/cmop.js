@@ -14,16 +14,6 @@ function switchTab(){
 			return false; 
 		}
 		
-		//ES3验证
-		if($("#otherSpace").is(":checked")){
-			if($.trim($("#otherSpaceValue").val()) == "" ){
- 				 $("#es3MessageBox").removeClass("hidden").addClass("show");
-				return false; 
-			}
-		}
-		$("#es3MessageBox").removeClass("show").addClass("hidden");
-		
-		
 		$('#myTab li:eq('+ (nextSteps.index(this) + 1) +') a').tab('show'); 
 		
 		displayInputParameter();
@@ -77,8 +67,24 @@ function displayInputParameter(){
 	
 	$("#mountDetail").empty();
 	var str="";
-	$("#mountDevice input[name='ids']:checked").each(function(){
-		str += "<dd>"+$(this).val()+"</dd>";
+	$("#ES3MountList #ES3Mount").each(function(){
+		var space = $(this).find("#space").text();
+		var ecsIdentifier = $(this).find("#showIdentifier").text();
+		var storeageType = $(this).find("#storeageType_value").text();
+		
+		 
+		str += "<hr>";
+		str += "<dt>存储空间:</dt>";
+		str += "<dd>"+space+"</dd>";
+		
+		str += "<dt>存储类型:</dt>";
+		str += "<dd>"+storeageType+"</dd>";
+		
+		str += "<dt>绑定计算资源:</dt>";
+		str += "<dd>"+ecsIdentifier+"</dd>";
+		
+		 
+		
 	});
 	$("#mountDetail").append(str);//最后插入
 	
@@ -89,7 +95,7 @@ function displayInputParameter(){
 	if($("#otherSpace").is(":checked")){
 		$("#otherSpace").val($("#otherSpaceValue").val());
 	}
-	space = $("input[name='storageSpace']:checked").val();	//容量空间
+	space = $("input[name='space']:checked").val();	//容量空间
 	$("#dd_storage").html(space+"GB");
 	
 	
@@ -138,18 +144,22 @@ function mountES3(){
 	var ecsIds = [];
 	var spaces=[];
 	var spaceIds=[];
+	var storeageTypes=[];
 	$("#ES3MountList #ES3Mount").each(function(){
 		var ecsId = $(this).find("#checkedES3Id").text();
 		var space = $(this).find("#space_value").text();
 		var spaceId = $(this).find("#space_Id").text();
+		var storeageType = $(this).find("#storeageType_id").text();
 		ecsIds.push(ecsId);
 		spaces.push(space);
 		spaceIds.push(spaceId);
+		storeageTypes.push(storeageType);
 	});
 	
 	$("#ecsIds").val(ecsIds);
 	$("#spaces").val(spaces);
 	$("#spaceIds").val(spaceIds);
+	$("#storeageTypes").val(storeageTypes);
 	
 	
 	
@@ -343,6 +353,15 @@ function inputServiceDate()
 		}
 	});
     
+}
+
+function fGetStoreageTypeValueById(id){
+	if(id == 1 ){
+		return "Throughput";
+	}else{
+		
+		return "IOPS";
+	}
 }
 
 

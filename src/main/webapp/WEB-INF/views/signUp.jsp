@@ -11,6 +11,8 @@
 	<script>
 		$(document).ready(function() {
 			
+			$("#username").focus();
+			
 			$("#message").fadeOut(3000);
 			
 			$("#loginForm").validate();

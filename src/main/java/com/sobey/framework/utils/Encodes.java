@@ -14,6 +14,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.sobey.framework.exception.Exceptions;
+
 /**
  * 封装各种格式的编码解码工具类.
  * 

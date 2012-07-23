@@ -16,6 +16,6 @@
 </style>
 
 <div id="footer">
-	Copyright &copy; 2012 <a href="${ctx}/login/index">Sobey CMOP</a>
+	Copyright &copy; 2012 <a href="${ctx}/login/index">Sobey</a>
 </div>
 

@@ -4,11 +4,11 @@
 	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
-		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 	default-lazy-init="true">
 
@@ -17,17 +17,18 @@
 	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
 	<context:component-scan base-package="com.sobey.cmop">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 	</context:component-scan>
-
+	
 	<!-- Jpa Entity Manager 配置 -->
-	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
-		<property name="dataSource" ref="dataSource"/> 
-		<property name="persistenceUnitName" value="defaultPU"/>
-		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/> 
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+		<property name="packagesToScan" value="com.sobey.cmop"/>
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
-				<prop key="net.sf.ehcache.configurationResourceName">ehcache/ehcache-hibernate-local.xml</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">cache/ehcache-hibernate-local.xml</prop>
 				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
 			</props>
 		</property>
@@ -52,12 +53,12 @@
 	<!-- 使用annotation定义事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 	
+	<!-- JSR303 Validator定义 -->
+ 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+ 	
 	<!-- production/local development环境 -->
- 	<beans profile="production,development">
- 		<context:property-placeholder ignore-unresolvable="true"
-			location="classpath*:/jdbc.properties,
-          			  classpath*:/application.local.properties" />	
-		
+ 	<beans profile="production">
+ 		<context:property-placeholder ignore-unresolvable="true" location="classpath*:/application.properties" />		
 		<!-- 数据源配置, 使用DBCP数据库连接池 -->
 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 			<!-- Connection Info -->
@@ -65,7 +66,6 @@
 			<property name="url" value="${jdbc.url}" />
 			<property name="username" value="${jdbc.username}" />
 			<property name="password" value="${jdbc.password}" />
-		
 			<!-- Connection Pooling Info -->
 			<property name="maxActive" value="${dbcp.maxActive}" />
 			<property name="maxIdle" value="${dbcp.maxIdle}" />
@@ -74,26 +74,6 @@
 			<property name="timeBetweenEvictionRunsMillis" value="3600000" />
 			<property name="minEvictableIdleTimeMillis" value="3600000" />
 		</bean>
-		
-		<!-- 数据源配置,使用应用服务器的数据库连接池 -->
-		<!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/ExampleDB" />-->
 	</beans>
-	
-	<!-- 定时器服务：获取IDC内部网络的PING质量信息   repeatInterval：毫秒级  3600000=1小时
-    <bean id="idcNetQualityJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="monitorService"/>
-        <property name="targetMethod" value="idcNetQuality"/>
-    </bean>
-	<bean id="idcNetQualityTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-		<property name="jobDetail" ref="idcNetQualityJob" />
-		<property name="repeatInterval" value="30000" />
-	</bean>  
-    <bean id="scheduler" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref bean="idcNetQualityTrigger"/>
-            </list>
-        </property>
-    </bean> -->
     
 </beans>

@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.web.account;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -21,12 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.common.collect.Lists;
-import com.sobey.cmop.Constant;
-import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.AccountManager;
-import com.sobey.cmop.mvc.service.audit.AuditFlowManager;
 
 @Controller
 @RequestMapping(value = "/account/user")
@@ -38,9 +33,6 @@ public class UserController {
 
 	@Autowired
 	private AccountManager accountManager;
-
-	@Autowired
-	private AuditFlowManager auditFlowManager;
 
 	@Autowired
 	private GroupListEditor groupListEditor;
@@ -94,32 +86,6 @@ public class UserController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(User user, RedirectAttributes redirectAttributes) {
 
-		/*
-		 * 权限组里是否包含管理员
-		 */
-		boolean isAdmin = user.getGroupList().contains(accountManager.getGroup(Constant.USER_TYPE_ADMIN));
-
-		/*
-		 * 权限组里是否包含审核人
-		 */
-		boolean isAudit = user.getGroupList().contains(accountManager.getGroup(Constant.USER_TYPE_AUDIT));
-
-		if (isAdmin) {
-			if (isAudit) {// 如果权限组包含管理员和审核人,用户类型都设置为审核人
-				user.setType(Constant.USER_TYPE_AUDIT);
-			} else {
-				user.setType(Constant.USER_TYPE_ADMIN);
-			}
-		} else if (isAudit) {
-
-			// 审核人的用户类型都设置为审核人
-			user.setType(Constant.USER_TYPE_AUDIT);
-
-		} else {
-			// 申请人或其他
-			user.setType(Constant.USER_TYPE_APPLY);
-		}
-
 		accountManager.saveUser(user);
 		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
@@ -150,36 +116,6 @@ public class UserController {
 	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-
-		auditFlowManager.deleteByUser(user);// 删除该用户所有的审核流程.
-
-		/*
-		 * 权限组里是否包含管理员
-		 */
-		boolean isAdmin = user.getGroupList().contains(accountManager.getGroup(Constant.USER_TYPE_ADMIN));
-
-		/*
-		 * 权限组里是否包含审核人
-		 */
-		boolean isAudit = user.getGroupList().contains(accountManager.getGroup(Constant.USER_TYPE_AUDIT));
-
-		if (isAdmin) {
-			if (isAudit) {// 如果权限组包含管理员和审核人,用户类型都设置为审核人
-				user.setType(Constant.USER_TYPE_AUDIT);
-				auditFlowManager.saveAuditFlow(user);
-			} else {
-				user.setType(Constant.USER_TYPE_ADMIN);
-			}
-		} else if (isAudit) {
-
-			// 审核人的用户类型都设置为审核人
-			user.setType(Constant.USER_TYPE_AUDIT);
-			auditFlowManager.saveAuditFlow(user);
-
-		} else {
-			// 申请人或其他
-			user.setType(Constant.USER_TYPE_APPLY);
-		}
 
 		accountManager.saveUser(user);
 
@@ -227,17 +163,6 @@ public class UserController {
 	@RequestMapping(value = "/regist", method = RequestMethod.POST)
 	public String regist(User user, RedirectAttributes redirectAttributes) {
 
-		List<Group> groupList = Lists.newArrayList();
-
-		groupList.add(accountManager.getGroup(Constant.USER_TYPE_APPLY));// 插入groupId为2的角色：申请人角色
-		user.setGroupList(groupList);
-
-		user.setType(Constant.USER_TYPE_APPLY);// 申请人
-
-		User leader = accountManager.getUser(user.getLeaderId());// 所属领导信息
-		// 领导所属部门.
-		user.setDepartment(leader.getDepartment());
-
 		// 保存用户信息
 		accountManager.saveUser(user);
 
@@ -267,25 +192,5 @@ public class UserController {
 			return "true";
 		}
 		return "false";
-	}
-
-	/**
-	 * 部门Map
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("departmentMap")
-	public Map<String, String> departmentMap() {
-		return Constant.DEPARTMENT;
-	}
-
-	/**
-	 * 有审核权限的领导列表
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("leaderList")
-	public List<User> leaderList() {
-		return accountManager.getLeaderListByType(Constant.USER_TYPE_AUDIT);
 	}
 }

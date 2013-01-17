@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * 日期工具类
+ * 
  * @author Jason
  */
 public class DateUtil {
@@ -13,21 +14,23 @@ public class DateUtil {
 		addDate(null, 1);
 	}
 
-    /**
-     * 获得默认格式的当前时间
-     * @return
-     */
-    public static String getCurrentTime() {
-        String str = "";
-        str = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(new Date());
-        return str;
-    }
-    
-    /**
-     * 按参数增加天
-     * @param date
-     * @return
-     */
+	/**
+	 * 获得默认格式的当前时间
+	 * 
+	 * @return
+	 */
+	public static String getCurrentTime() {
+		String str = "";
+		str = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(new Date());
+		return str;
+	}
+
+	/**
+	 * 按参数增加天
+	 * 
+	 * @param date
+	 * @return
+	 */
 	public static Date addDate(Date date, int days) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		if (date == null) {
@@ -37,7 +40,7 @@ public class DateUtil {
 		cal.setTime(date);
 		cal.add(Calendar.DAY_OF_MONTH, days);
 		date = cal.getTime();
-		System.out.println(days+" days after(or before) is " + format.format(date));
+		System.out.println(days + " days after(or before) is " + format.format(date));
 		return date;
 	}
 }

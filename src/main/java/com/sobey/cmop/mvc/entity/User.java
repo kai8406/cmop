@@ -1,21 +1,16 @@
 package com.sobey.cmop.mvc.entity;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -49,9 +44,6 @@ public class User implements java.io.Serializable {
 	private Date createTime;
 	private Date loginTime;
 	private Integer status;
-	private Set<AuditFlow> auditFlows = new HashSet<AuditFlow>(0);
-	private Set<Fault> faults = new HashSet<Fault>(0);
-	private Set<Apply> applies = new HashSet<Apply>(0);
 	private List<Group> groupList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
@@ -73,8 +65,7 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
-			Set<AuditFlow> auditFlows, Set<Fault> faults, Set<Apply> applies) {
+	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -85,9 +76,6 @@ public class User implements java.io.Serializable {
 		this.createTime = createTime;
 		this.loginTime = loginTime;
 		this.status = status;
-		this.auditFlows = auditFlows;
-		this.faults = faults;
-		this.applies = applies;
 	}
 
 	// Property accessors
@@ -190,33 +178,6 @@ public class User implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	public Set<AuditFlow> getAuditFlows() {
-		return this.auditFlows;
-	}
-
-	public void setAuditFlows(Set<AuditFlow> auditFlows) {
-		this.auditFlows = auditFlows;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	public Set<Fault> getFaults() {
-		return this.faults;
-	}
-
-	public void setFaults(Set<Fault> faults) {
-		this.faults = faults;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	public Set<Apply> getApplies() {
-		return this.applies;
-	}
-
-	public void setApplies(Set<Apply> applies) {
-		this.applies = applies;
 	}
 
 	// 多对多定义

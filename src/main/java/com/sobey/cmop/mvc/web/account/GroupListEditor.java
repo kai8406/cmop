@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sobey.framework.utils.Collections3;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.AccountManager;
+import com.sobey.framework.utils.Collections3;
 
 /**
  * 用于转换用户表单中复杂对象Group的checkbox的关联。

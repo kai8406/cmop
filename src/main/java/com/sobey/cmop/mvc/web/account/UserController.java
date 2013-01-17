@@ -86,7 +86,7 @@ public class UserController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(User user, RedirectAttributes redirectAttributes) {
 
-		accountManager.saveUser(user);
+		accountManager.registerUser(user);
 		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
@@ -98,7 +98,6 @@ public class UserController {
 	 * @param model
 	 * @return
 	 */
-	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("allGroups", accountManager.getAllGroup());
@@ -113,11 +112,16 @@ public class UserController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-
-		accountManager.saveUser(user);
+		
+		System.out.println("user id:"+user.getId());
+		System.out.println("user getCreateTime:"+user.getCreateTime());
+		System.out.println("user getStatus:"+user.getStatus());
+		System.out.println("user getPlainPassword:"+user.getPlainPassword());
+		System.out.println("user getPassword:"+user.getPassword());
+		
+		accountManager.updateUser(user);
 
 		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
@@ -164,7 +168,7 @@ public class UserController {
 	public String regist(User user, RedirectAttributes redirectAttributes) {
 
 		// 保存用户信息
-		accountManager.saveUser(user);
+		accountManager.registerUser(user);
 
 		// 用户登录
 		Subject subject = SecurityUtils.getSubject();
@@ -174,7 +178,7 @@ public class UserController {
 
 		redirectAttributes.addFlashAttribute("message", "注册成功!");
 
-		return "redirect:/home/";
+		return "redirect:/index/";
 	}
 
 	/**

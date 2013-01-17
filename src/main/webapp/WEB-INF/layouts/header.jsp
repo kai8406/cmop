@@ -2,7 +2,7 @@
 <div id="header">
 	<div id="logo" class="page-header">
 		<h1>
-			<a href="${ctx}/home/">Sobey<small>&mdash;云平台管理系统</small></a>
+			<a href="${ctx}/index/">Sobey<small>&mdash;云平台管理系统</small></a>
 		</h1>
 		<shiro:user>
 			<span class="pull-right"> 
@@ -14,7 +14,7 @@
 	<div id="menu">
 		<ul class="nav nav-tabs">
 
-			<li id="index-tab"><a href="${ctx}/home/">首页</a></li>
+			<li id="index-tab"><a href="${ctx}/index/">首页</a></li>
 			<shiro:user>
 				<shiro:hasPermission name="apply:view">
 					<li id="support-tab"><a href="${ctx}/apply/support/">服务申请</a></li>

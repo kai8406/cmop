@@ -23,7 +23,7 @@
 					email: {
 						remote: "登录邮箱已存在"
 					},
-					passwordConfirm: {
+					confirmPassword: {
 						equalTo: "输入与上面相同的密码"
 					}
 				},
@@ -50,7 +50,7 @@
 					<legend><small>管理账号</small></legend>
 					
 					<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
-					
+					<input name="status" type="hidden" value="1">
 					<div class="control-group">
 						<label for="email" class="control-label">登录邮箱</label>
 						<div class="controls">
@@ -65,69 +65,28 @@
 						</div>
 					</div>
 					
+					
+					<div class="control-group">
+						<label for="name" class="control-label">登录名</label>
+						<div class="controls">
+							<input type="text" id="loginName" name="loginName" size="50" value="${user.loginName}" class="required"/>
+						</div>
+					</div>
+					
 					<div class="control-group">
 						<label for="password" class="control-label">密码</label>
 						<div class="controls">
-							<input type="password" id="password" name="password" size="50" value="${user.password}" class="required" minlength="3"/>
+							<input type="password" id="plainPassword" name="plainPassword" size="50" value="${user.plainPassword}" class="required" minlength="3"/>
 						</div>
 					</div>
 					
 					<div class="control-group">
-						<label for="passwordConfirm" class="control-label">确认密码</label>
+						<label for="confirmPassword" class="control-label">确认密码</label>
 						<div class="controls">
-							<input type="password" id="passwordConfirm" name="passwordConfirm" size="50" value="${user.password}" equalTo="#password"/>
+							<input type="password" id="confirmPassword" name="confirmPassword" size="50" value="${user.plainPassword}" equalTo="#plainPassword"/>
 						</div>
 					</div>
 					
-					<div class="control-group">
-						<label for="phonenum" class="control-label">联系电话</label>
-						<div class="controls">
-							<input type="text" id="phonenum" name="phonenum" size="50" value="${user.phonenum}" class=""/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="department" class="control-label">部门信息</label>
-						<div class="controls">
-							<select id="department"	name="department" class="input-large">
-								<c:forEach var="map" items="${departmentMap }">
-									<option value="	<c:out value='${map.key}'/>" 
-										<c:if test="${user.department == map.key }">
-											selected="selected"
-										</c:if>
-									>
-										<c:out value="${map.value}" />
-									</option>
-								</c:forEach>
-							</select>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="department" class="control-label">直属领导</label>
-						<div class="controls">
-
-							<select id="leaderId" name="leaderId" class="input-large">
-								<option value=""></option>
-								<c:forEach var="item" items="${leaderList }">
-									<option value="${item.id }" 
-										<c:if test="${user.leaderId == item.id }">
-											selected="selected"
-										</c:if>
-									>
-										${item.name } &minus;
-										<c:forEach var="map" items="${departmentMap }">
-											<c:if test="${item.department == map.key}">
-												<c:out value="${map.value}" />
-											</c:if>
-										</c:forEach>
-									</option>
-								</c:forEach>
-
-							</select>
-						</div>
-					</div>
-					 
 					<div class="control-group">
 						<label for="groupList" class="control-label ">权限组</label>
 						<div class="controls">

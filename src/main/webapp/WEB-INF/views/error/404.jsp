@@ -1,25 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%
-	response.setStatus(200);
-%>
+<%response.setStatus(200);%>
 
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<title>404 - 页面不存在</title>
-<%@ include file="/WEB-INF/layouts/meta.jsp"%>
+	<title>404 - 页面不存在</title>
 </head>
 
-<body style="text-align:center;">
-	<div class="container" style="margin-top:125px;">
-		<div id="content" class="span12">
-			<h3>您访问的页面不存在！</h3><br>
-			<div>
-				<a href="${ctx}/home/" class="btn btn-primary">返回首页</a>
-			</div>			
-		</div>
-	</div>
+<body>
+	<h2>404 - 页面不存在.</h2>
+	<p><a href="<c:url value="/"/>">返回首页</a></p>
 </body>
 </html>

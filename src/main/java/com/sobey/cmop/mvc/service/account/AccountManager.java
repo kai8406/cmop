@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.service.account;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -20,6 +21,8 @@ import com.sobey.cmop.mvc.dao.account.GroupDao;
 import com.sobey.cmop.mvc.dao.account.UserDao;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.framework.utils.Digests;
+import com.sobey.framework.utils.Encodes;
 
 /**
  * 安全相关实体的管理类,包括用户和权限组.
@@ -31,6 +34,10 @@ import com.sobey.cmop.mvc.entity.User;
 // 默认将类中的所有public函数纳入事务管理.
 @Transactional(readOnly = true)
 public class AccountManager {
+
+	public static final String HASH_ALGORITHM = "SHA-1";
+	public static final int HASH_INTERATIONS = 1024;
+	private static final int SALT_SIZE = 8;
 
 	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
 
@@ -59,27 +66,38 @@ public class AccountManager {
 		return userDao.findByEmail(subject.getPrincipal().toString()); // 当前登录用户
 
 	}
-
+	
 	/**
-	 * 保存用户
-	 * 
-	 * @param entity
+	 * 注册用户
+	 * @param user
 	 */
 	@Transactional(readOnly = false)
-	public void saveUser(User entity) {
-		entity.setCreateTime(new Date());
-		entity.setStatus(1);
-		userDao.save(entity);
-		shiroRealm.clearCachedAuthorizationInfo(entity.getEmail());
+	public void registerUser(User user) {
+		entryptPassword(user);
+		user.setCreateTime(new Date());
+		userDao.save(user);
+		shiroRealm.clearCachedAuthorizationInfo(user.getEmail());
 	}
 
+	@Transactional(readOnly = false)
+	public void updateUser(User user) {
+		if (StringUtils.isNotBlank(user.getPlainPassword())) {
+			entryptPassword(user);
+		}
+		userDao.save(user);
+		shiroRealm.clearCachedAuthorizationInfo(user.getEmail());
+	}
+	
+
 	/**
-	 * 获得部门领导列表 (根据Type字段区分用户类型.用户类型：1-管理员；2-申请人；3-审核人.)
-	 * 
-	 * @param type
+	 * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
 	 */
-	public List<User> getLeaderListByType(Integer type) {
-		return userDao.findByType(type);
+	private void entryptPassword(User user) {
+		byte[] salt = Digests.generateSalt(SALT_SIZE);
+		user.setSalt(Encodes.encodeHex(salt));
+
+		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, HASH_INTERATIONS);
+		user.setPassword(Encodes.encodeHex(hashPassword));
 	}
 
 	/**
@@ -116,11 +134,7 @@ public class AccountManager {
 
 	public Page<User> getAllUser(int page, int size, String name) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-		if ("".equals(name)) {
-			return userDao.findAll(pageable);
-		} else {
 			return userDao.findAllByNameLike("%" + name + "%", pageable);
-		}
 	}
 
 	public User findUserByEmail(String email) {

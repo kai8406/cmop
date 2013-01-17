@@ -14,12 +14,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.sobey.framework.exception.Exceptions;
-
 /**
  * 封装各种格式的编码解码工具类.
  * 
- * 1.Commons-Codec的 hex/base64 编码 2.自制的base62 编码 3.Commons-Lang的xml/html escape
+ * 1.Commons-Codec的 hex/base64 编码
+ * 2.自制的base62 编码
+ * 3.Commons-Lang的xml/html escape
  * 4.JDK提供的URLEncoder
  * 
  * @author calvin
@@ -108,7 +108,7 @@ public class Encodes {
 	}
 
 	/**
-	 * URL 编码, Encode默认为UTF-8.
+	 * URL 编码, Encode默认为UTF-8. 
 	 */
 	public static String urlEncode(String part) {
 		try {
@@ -119,7 +119,7 @@ public class Encodes {
 	}
 
 	/**
-	 * URL 解码, Encode默认为UTF-8.
+	 * URL 解码, Encode默认为UTF-8. 
 	 */
 	public static String urlDecode(String part) {
 

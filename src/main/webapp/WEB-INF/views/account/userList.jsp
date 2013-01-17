@@ -22,8 +22,8 @@
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>
 	</c:if>
 	
- 	<shiro:hasPermission name="user:edit">
 		<a class="btn btn-info pager" href="${ctx }/account/user/save/">创建用户</a>
+ 	<shiro:hasPermission name="user:edit">
 	</shiro:hasPermission>
 	
 		<form class="well well-small form-search" action="${ctx}/account/user/">
@@ -62,10 +62,10 @@
 					<td>${user.email}</td>
 					<td>${user.name}</td>
 					<td>${user.groupNames}</td>
-					<td><shiro:hasPermission name="user:edit">
+					<td>
 							<a href="${ctx }/account/user/update/${user.id}">修改</a>
 							<a href="delete/${user.id}">删除</a>
-						</shiro:hasPermission></td>	
+						</td>	
 				</tr>
 			</c:forEach>
 		</tbody>

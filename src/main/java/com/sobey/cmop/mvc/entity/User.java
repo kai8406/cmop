@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -34,16 +36,21 @@ public class User implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private String name;
+	private String loginName;
+	private String plainPassword;
 	private String password;
+	private String salt;
+	private String name;
 	private String email;
+	private Integer status;
+
 	private String phonenum;
-	private Integer department;
+	private Department department;
 	private Integer leaderId;
 	private Integer type;
 	private Date createTime;
 	private Date loginTime;
-	private Integer status;
+	private Integer redmineUserId;
 	private List<Group> groupList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
@@ -53,7 +60,7 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, Integer type, Date createTime, Integer status) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer type, Date createTime, Integer status) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -65,7 +72,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Integer department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
+			Integer redmineUserId) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -76,6 +84,34 @@ public class User implements java.io.Serializable {
 		this.createTime = createTime;
 		this.loginTime = loginTime;
 		this.status = status;
+		this.redmineUserId = redmineUserId;
+	}
+
+	@Column(name = "login_name", length = 45)
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	@Transient
+	public String getPlainPassword() {
+		return plainPassword;
+	}
+
+	public void setPlainPassword(String plainPassword) {
+		this.plainPassword = plainPassword;
+	}
+
+	@Column(name = "salt", length = 45)
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	// Property accessors
@@ -90,7 +126,7 @@ public class User implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 10)
+	@Column(name = "name", nullable = false, length = 15)
 	public String getName() {
 		return this.name;
 	}
@@ -99,7 +135,7 @@ public class User implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "password", nullable = false, length = 20)
+	@Column(name = "password", nullable = false, length = 45)
 	public String getPassword() {
 		return this.password;
 	}
@@ -117,7 +153,7 @@ public class User implements java.io.Serializable {
 		this.email = email;
 	}
 
-	@Column(name = "phonenum", nullable = false, length = 45)
+	@Column(name = "phonenum", length = 45)
 	public String getPhonenum() {
 		return this.phonenum;
 	}
@@ -126,12 +162,13 @@ public class User implements java.io.Serializable {
 		this.phonenum = phonenum;
 	}
 
-	@Column(name = "department", nullable = false)
-	public Integer getDepartment() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "department_id")
+	public Department getDepartment() {
 		return this.department;
 	}
 
-	public void setDepartment(Integer department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 
@@ -144,7 +181,7 @@ public class User implements java.io.Serializable {
 		this.leaderId = leaderId;
 	}
 
-	@Column(name = "type", nullable = false)
+	@Column(name = "type")
 	public Integer getType() {
 		return this.type;
 	}
@@ -153,7 +190,7 @@ public class User implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@Column(name = "create_time", nullable = false, length = 19)
+	@Column(name = "create_time", length = 19)
 	public Date getCreateTime() {
 		return this.createTime;
 	}
@@ -178,6 +215,15 @@ public class User implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@Column(name = "redmine_user_id")
+	public Integer getRedmineUserId() {
+		return this.redmineUserId;
+	}
+
+	public void setRedmineUserId(Integer redmineUserId) {
+		this.redmineUserId = redmineUserId;
 	}
 
 	// 多对多定义

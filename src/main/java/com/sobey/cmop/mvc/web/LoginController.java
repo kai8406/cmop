@@ -30,7 +30,7 @@ public class LoginController {
 		return FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME != null ? "signUp" : "login";
 	}
 
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
 		return "index";
 	}

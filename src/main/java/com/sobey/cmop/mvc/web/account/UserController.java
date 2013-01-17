@@ -2,10 +2,7 @@ package com.sobey.cmop.mvc.web.account;
 
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -50,9 +47,9 @@ public class UserController {
 	 * @param model
 	 * @return
 	 */
-	@RequiresPermissions("user:view")
-	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
+	@RequestMapping(value = {"list", ""})
+	public String list(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);
@@ -67,10 +64,8 @@ public class UserController {
 	 * @param model
 	 * @return
 	 */
-	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
-		model.addAttribute("user", new User());
 		model.addAttribute("allGroups", accountManager.getAllGroup());
 		return "account/userForm";
 	}
@@ -82,7 +77,6 @@ public class UserController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(User user, RedirectAttributes redirectAttributes) {
 
@@ -114,15 +108,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-		
-		System.out.println("user id:"+user.getId());
-		System.out.println("user getCreateTime:"+user.getCreateTime());
-		System.out.println("user getStatus:"+user.getStatus());
-		System.out.println("user getPlainPassword:"+user.getPlainPassword());
-		System.out.println("user getPassword:"+user.getPassword());
-		
 		accountManager.updateUser(user);
-
 		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
@@ -134,52 +120,15 @@ public class UserController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequiresPermissions("user:edit")
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
 		boolean falg = accountManager.deleteUser(id);
-		if (!falg) {
-			redirectAttributes.addFlashAttribute("message", "不能删除超级管理员");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "删除用户成功");
-		}
+		String message = falg ? "删除用户成功" : "不能删除超级管理员";
+		redirectAttributes.addFlashAttribute("message", message);
 		return REDIRECT_SUCCESS_URL;
 	}
 
-	/**
-	 * 跳转到注册页面
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/regist", method = RequestMethod.GET)
-	public String registForm() {
-		return "regist";
-	}
-
-	/**
-	 * 注册
-	 * 
-	 * @param user
-	 *            用户信息
-	 * @param redirectAttributes
-	 * @return
-	 */
-	@RequestMapping(value = "/regist", method = RequestMethod.POST)
-	public String regist(User user, RedirectAttributes redirectAttributes) {
-
-		// 保存用户信息
-		accountManager.registerUser(user);
-
-		// 用户登录
-		Subject subject = SecurityUtils.getSubject();
-		UsernamePasswordToken token = new UsernamePasswordToken(user.getEmail(), user.getPassword());
-		token.setRememberMe(true);
-		subject.login(token);
-
-		redirectAttributes.addFlashAttribute("message", "注册成功!");
-
-		return "redirect:/index/";
-	}
 
 	/**
 	 * 验证登陆邮箱是否唯一

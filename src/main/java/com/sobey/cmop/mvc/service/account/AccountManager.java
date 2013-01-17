@@ -37,7 +37,7 @@ public class AccountManager {
 
 	public static final String HASH_ALGORITHM = "SHA-1";
 	public static final int HASH_INTERATIONS = 1024;
-	private static final int SALT_SIZE = 8;
+	public static final int SALT_SIZE = 8;
 
 	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
 
@@ -66,9 +66,10 @@ public class AccountManager {
 		return userDao.findByEmail(subject.getPrincipal().toString()); // 当前登录用户
 
 	}
-	
+
 	/**
 	 * 注册用户
+	 * 
 	 * @param user
 	 */
 	@Transactional(readOnly = false)
@@ -87,7 +88,6 @@ public class AccountManager {
 		userDao.save(user);
 		shiroRealm.clearCachedAuthorizationInfo(user.getEmail());
 	}
-	
 
 	/**
 	 * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
@@ -134,11 +134,15 @@ public class AccountManager {
 
 	public Page<User> getAllUser(int page, int size, String name) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-			return userDao.findAllByNameLike("%" + name + "%", pageable);
+		return userDao.findAllByNameLike("%" + name + "%", pageable);
 	}
 
 	public User findUserByEmail(String email) {
 		return userDao.findByEmail(email);
+	}
+
+	public User findUserByLoginName(String loginName) {
+		return userDao.findByLoginName(loginName);
 	}
 
 	public Group findGroupByName(String name) {

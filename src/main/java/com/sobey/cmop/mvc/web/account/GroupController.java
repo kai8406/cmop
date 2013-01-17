@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.web.account;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -28,8 +27,7 @@ public class GroupController {
 	@Autowired
 	private AccountManager accountManager;
 
-	@RequiresPermissions("group:view")
-	@RequestMapping(value = { "list", "" })
+	@RequestMapping(value = {"list", ""})
 	public String list(@RequestParam(value = "page", required = false) Integer page, Model model) {
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<Group> groups = accountManager.getAllGroup(pageNum, DEFAULT_PAGE_SIZE);
@@ -37,7 +35,6 @@ public class GroupController {
 		return "account/groupList";
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
 		model.addAttribute("group", new Group());
@@ -45,7 +42,6 @@ public class GroupController {
 		return "account/groupForm";
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Group group, RedirectAttributes redirectAttributes) {
 		accountManager.saveGroup(group);
@@ -53,7 +49,6 @@ public class GroupController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("allPermissions", Permission.values());
@@ -61,7 +56,6 @@ public class GroupController {
 		return "account/groupForm";
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("group") Group group, RedirectAttributes redirectAttributes) {
 		accountManager.saveGroup(group);
@@ -69,7 +63,6 @@ public class GroupController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
@@ -82,7 +75,6 @@ public class GroupController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
-	@RequiresPermissions("group:edit")
 	@RequestMapping(value = "checkGroupName")
 	public @ResponseBody
 	String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {

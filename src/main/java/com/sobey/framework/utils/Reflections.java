@@ -39,7 +39,7 @@ public class Reflections {
 	 */
 	public static Object invokeGetter(Object obj, String propertyName) {
 		String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(propertyName);
-		return invokeMethod(obj, getterMethodName, new Class[] {}, new Object[] {});
+		return invokeMethod(obj, getterMethodName, new Class[]{}, new Object[]{});
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class Reflections {
 	 */
 	public static void invokeSetter(Object obj, String propertyName, Object value) {
 		String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(propertyName);
-		invokeMethodByName(obj, setterMethodName, new Object[] { value });
+		invokeMethodByName(obj, setterMethodName, new Object[]{value});
 	}
 
 	/**
@@ -88,8 +88,7 @@ public class Reflections {
 
 	/**
 	 * 直接调用对象方法, 无视private/protected修饰符.
-	 * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用.
-	 * 同时匹配方法名+参数类型，
+	 * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用. 同时匹配方法名+参数类型，
 	 */
 	public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes,
 			final Object[] args) {
@@ -136,7 +135,7 @@ public class Reflections {
 				Field field = superClass.getDeclaredField(fieldName);
 				makeAccessible(field);
 				return field;
-			} catch (NoSuchFieldException e) {//NOSONAR
+			} catch (NoSuchFieldException e) {// NOSONAR
 				// Field不在当前类定义,继续向上转型
 			}
 		}
@@ -144,11 +143,11 @@ public class Reflections {
 	}
 
 	/**
-	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
-	 * 如向上转型到Object仍无法找到, 返回null.
+	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null.
 	 * 匹配函数名+参数类型。
 	 * 
-	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object...
+	 * args)
 	 */
 	public static Method getAccessibleMethod(final Object obj, final String methodName,
 			final Class<?>... parameterTypes) {
@@ -168,11 +167,10 @@ public class Reflections {
 	}
 
 	/**
-	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
-	 * 如向上转型到Object仍无法找到, 返回null.
-	 * 只匹配函数名。
+	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null. 只匹配函数名。
 	 * 
-	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object...
+	 * args)
 	 */
 	public static Method getAccessibleMethodByName(final Object obj, final String methodName) {
 		Validate.notNull(obj, "object can't be null");
@@ -211,27 +209,29 @@ public class Reflections {
 	}
 
 	/**
-	 * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处
-	 * 如无法找到, 返回Object.class.
-	 * eg.
+	 * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处 如无法找到, 返回Object.class. eg.
 	 * public UserDao extends HibernateDao<User>
-	 *
-	 * @param clazz The class to introspect
-	 * @return the first generic declaration, or Object.class if cannot be determined
+	 * 
+	 * @param clazz
+	 *            The class to introspect
+	 * @return the first generic declaration, or Object.class if cannot be
+	 *         determined
 	 */
 	public static <T> Class<T> getClassGenricType(final Class clazz) {
 		return getClassGenricType(clazz, 0);
 	}
 
 	/**
-	 * 通过反射, 获得Class定义中声明的父类的泛型参数的类型.
-	 * 如无法找到, 返回Object.class.
+	 * 通过反射, 获得Class定义中声明的父类的泛型参数的类型. 如无法找到, 返回Object.class.
 	 * 
 	 * 如public UserDao extends HibernateDao<User,Long>
-	 *
-	 * @param clazz clazz The class to introspect
-	 * @param index the Index of the generic ddeclaration,start from 0.
-	 * @return the index generic declaration, or Object.class if cannot be determined
+	 * 
+	 * @param clazz
+	 *            clazz The class to introspect
+	 * @param index
+	 *            the Index of the generic ddeclaration,start from 0.
+	 * @return the index generic declaration, or Object.class if cannot be
+	 *         determined
 	 */
 	public static Class getClassGenricType(final Class clazz, final int index) {
 

@@ -23,6 +23,8 @@ public interface UserDao extends PagingAndSortingRepository<User, Integer> {
 	 */
 	User findByEmail(String email);
 
+	User findByLoginName(String loginName);
+
 	/**
 	 * 根据用户名查询
 	 * 

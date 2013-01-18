@@ -41,8 +41,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		if (user != null) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(),
-					ByteSource.Util.bytes(salt), getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -58,12 +57,17 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		User user = accountManager.findUserByLoginName(shiroUser.getName());
 
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		for (Group group : user.getGroupList()) {
-			// 基于Permission的权限信息
-			info.addStringPermissions(group.getPermissionList());
+		if (user != null) {
+			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+			for (Group group : user.getGroupList()) {
+				// 基于Permission的权限信息
+				info.addStringPermissions(group.getPermissionList());
+			}
+			return info;
+		} else {
+			return null;
 		}
-		return info;
+
 	}
 
 	/**
@@ -140,18 +144,23 @@ public class ShiroDbRealm extends AuthorizingRealm {
 		 */
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			ShiroUser other = (ShiroUser) obj;
 			if (loginName == null) {
-				if (other.loginName != null)
+				if (other.loginName != null) {
 					return false;
-			} else if (!loginName.equals(other.loginName))
+				}
+			} else if (!loginName.equals(other.loginName)) {
 				return false;
+			}
 			return true;
 		}
 

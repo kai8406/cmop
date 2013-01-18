@@ -2,7 +2,6 @@ package com.sobey.cmop.mvc.web.account;
 
 import java.util.List;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.AccountManager;
 
+/**
+ * UserController负责用户的管理
+ * @author liukai
+ *
+ */
 @Controller
 @RequestMapping(value = "/account/user")
 public class UserController {
@@ -47,9 +51,8 @@ public class UserController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
+	@RequestMapping(value = { "list", "" })
+	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);
@@ -67,6 +70,7 @@ public class UserController {
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
 		model.addAttribute("allGroups", accountManager.getAllGroup());
+		model.addAttribute("user", accountManager.getCurrentUser());
 		return "account/userForm";
 	}
 
@@ -128,7 +132,6 @@ public class UserController {
 		redirectAttributes.addFlashAttribute("message", message);
 		return REDIRECT_SUCCESS_URL;
 	}
-
 
 	/**
 	 * 验证登陆邮箱是否唯一

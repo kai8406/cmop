@@ -35,7 +35,7 @@
 	<mvc:default-servlet-handler />
 
 	<!-- 定义无需Controller的url<->view直接映射 -->
-	<mvc:view-controller path="/" view-name="redirect:/account/user/" />
+	<mvc:view-controller path="/" view-name="redirect:/" />
 
 	<!-- 定义JSP -->
 	<bean

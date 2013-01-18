@@ -15,11 +15,17 @@
 				rules: {
 					loginName: {
 						remote: "${ctx}/register/checkLoginName"
+					},
+					email: {
+						remote: "${ctx}/register/checkEmail"
 					}
 				},
 				messages: {
 					loginName: {
 						remote: "用户登录名已存在"
+					},
+					email: {
+						remote: "邮箱已存在"
 					}
 				}
 			});
@@ -29,7 +35,8 @@
 
 <body>
 	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal">
-	<input type="text" id="status" name="status" value="1">
+	
+	
 		<fieldset>
 			<legend><small>用户注册</small></legend>
 			<div class="control-group">

@@ -63,8 +63,7 @@ public class AccountManager {
 	 */
 	public User getCurrentUser() {
 		Subject subject = SecurityUtils.getSubject();
-		return userDao.findByEmail(subject.getPrincipal().toString()); // 当前登录用户
-
+		return userDao.findByLoginName(subject.getPrincipal().toString());
 	}
 
 	/**
@@ -74,10 +73,13 @@ public class AccountManager {
 	 */
 	@Transactional(readOnly = false)
 	public void registerUser(User user) {
+		//TODO 常量
+		user.setStatus(1);
+		
 		entryptPassword(user);
 		user.setCreateTime(new Date());
 		userDao.save(user);
-		shiroRealm.clearCachedAuthorizationInfo(user.getEmail());
+		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}
 
 	@Transactional(readOnly = false)
@@ -86,7 +88,7 @@ public class AccountManager {
 			entryptPassword(user);
 		}
 		userDao.save(user);
-		shiroRealm.clearCachedAuthorizationInfo(user.getEmail());
+		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}
 
 	/**

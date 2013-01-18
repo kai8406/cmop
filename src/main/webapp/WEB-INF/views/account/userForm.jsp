@@ -86,13 +86,12 @@
 							<input type="password" id="confirmPassword" name="confirmPassword" size="50" value="${user.plainPassword}" equalTo="#plainPassword"/>
 						</div>
 					</div>
-					
 					<div class="control-group">
 						<label for="groupList" class="control-label ">权限组</label>
 						<div class="controls">
 							<form:checkboxes path="groupList" items="${allGroups}" itemLabel="name" itemValue="id" />
 						</div>
-					</div>	
+					</div>
 					
 					<div class="form-actions">
 						<button class="btn btn-primary">保存</button>&nbsp;	

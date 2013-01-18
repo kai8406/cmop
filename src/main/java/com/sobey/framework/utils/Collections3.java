@@ -36,14 +36,12 @@ public class Collections3 {
 	 * @param valuePropertyName
 	 *            要提取为Map中的Value值的属性名.
 	 */
-	public static Map extractToMap(final Collection collection, final String keyPropertyName,
-			final String valuePropertyName) {
+	public static Map extractToMap(final Collection collection, final String keyPropertyName, final String valuePropertyName) {
 		Map map = new HashMap(collection.size());
 
 		try {
 			for (Object obj : collection) {
-				map.put(PropertyUtils.getProperty(obj, keyPropertyName),
-						PropertyUtils.getProperty(obj, valuePropertyName));
+				map.put(PropertyUtils.getProperty(obj, keyPropertyName), PropertyUtils.getProperty(obj, valuePropertyName));
 			}
 		} catch (Exception e) {
 			throw Reflections.convertReflectionExceptionToUnchecked(e);

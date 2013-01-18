@@ -20,9 +20,7 @@
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>	
 	</c:if>
 	
-	<shiro:hasPermission name="group:edit">
 		<a class="btn btn-info pager" href="${ctx }/account/group/save/">创建权限组</a>
-	</shiro:hasPermission>
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<colgroup>
@@ -42,9 +40,9 @@
 				<td>${group.name}</td>
 				<td>${group.permissionNames}</td>
 				<td>
-					<shiro:hasPermission name="group:edit">
 						<a href="update/${group.id}">修改</a> 
 						<a href="delete/${group.id}">删除</a>
+					<shiro:hasPermission name="group:edit">
 					</shiro:hasPermission>	
 				</td>
 			</tr>

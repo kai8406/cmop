@@ -27,7 +27,7 @@ public class GroupController {
 	@Autowired
 	private AccountManager accountManager;
 
-	@RequestMapping(value = {"list", ""})
+	@RequestMapping(value = { "list", "" })
 	public String list(@RequestParam(value = "page", required = false) Integer page, Model model) {
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<Group> groups = accountManager.getAllGroup(pageNum, DEFAULT_PAGE_SIZE);

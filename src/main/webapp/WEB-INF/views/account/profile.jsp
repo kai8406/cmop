@@ -11,7 +11,18 @@
 			//聚焦第一个输入框
 			$("#name").focus();
 			//为inputForm注册validate函数
-			$("#inputForm").validate();
+			$("#inputForm").validate({
+				rules: {
+					email: {
+						remote: "${ctx}/profile/checkEmail?oldEmail=${user.email}"
+					}
+				},
+				messages: {
+					email: {
+						remote: "邮箱已存在"
+					}
+				}
+			});
 		});
 	</script>
 </head>
@@ -25,6 +36,12 @@
 				<label for="name" class="control-label">用户名:</label>
 				<div class="controls">
 					<input type="text" id="name" name="name" value="${user.name}" class="input-large required"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">邮件:</label>
+				<div class="controls">
+					<input type="text" id="email" name="email" value="${user.email}" class="input-large required"/>
 				</div>
 			</div>
 			<div class="control-group">

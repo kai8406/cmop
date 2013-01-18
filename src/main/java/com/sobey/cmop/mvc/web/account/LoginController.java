@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * LoginController负责打开登录页面(GET请求)和登录出错页面(POST请求)，
-
- * 真正登录的POST请求由Filter完成,
  * 
- * @author calvin
+ * 真正登录的POST请求由Filter-->ShiroDbRealm.java中完成,
+ * 
+ * @author liukai
  */
 @Controller
 @RequestMapping(value = "/login")

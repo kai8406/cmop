@@ -2,13 +2,6 @@ package com.sobey.cmop.mvc.web.account;
 
 import javax.validation.Valid;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordService;
-import org.apache.shiro.crypto.hash.Sha1Hash;
-import org.apache.shiro.crypto.hash.Sha512Hash;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +16,7 @@ import com.sobey.cmop.mvc.service.account.AccountManager;
 /**
  * 用户注册的Controller.
  * 
- * @author calvin
+ * @author liukai
  */
 @Controller
 @RequestMapping(value = "/register")
@@ -32,37 +25,55 @@ public class RegisterController {
 	@Autowired
 	private AccountManager accountManager;
 
+	/**
+	 * 跳转到注册页面
+	 * 
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String registerForm() {
 		return "account/register";
 	}
 
+	/**
+	 * 注册用户
+	 * 
+	 * @param user
+	 * @param redirectAttributes
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(@Valid User user, RedirectAttributes redirectAttributes) {
+
 		accountManager.registerUser(user);
+
 		redirectAttributes.addFlashAttribute("username", user.getLoginName());
-		
-//		// // 用户登录
-//		 Subject subject = SecurityUtils.getSubject();
-//		 UsernamePasswordToken token = new  UsernamePasswordToken(user.getLoginName(), user.getPassword());
-//		 token.setRememberMe(true);
-//		 subject.login(token);
-
 		redirectAttributes.addFlashAttribute("message", "注册成功!");
-
-		return "redirect:/account/user/";
+		return "redirect:/";
 	}
 
 	/**
-	 * Ajax请求校验loginName是否唯一。
+	 * Ajax请求校验loginName是否唯一.
+	 * 
+	 * @param loginName
+	 * @return
 	 */
 	@RequestMapping(value = "checkLoginName")
 	@ResponseBody
 	public String checkLoginName(@RequestParam("loginName") String loginName) {
-		if (accountManager.findUserByLoginName(loginName) == null) {
-			return "true";
-		} else {
-			return "false";
-		}
+		return accountManager.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
+
+	/**
+	 * Ajax请求校验email是否唯一.
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@RequestMapping(value = "checkEmail")
+	@ResponseBody
+	public String checkEmail(@RequestParam("email") String email) {
+		return accountManager.findUserByEmail(email) == null ? "true" : "false";
+	}
+
 }

@@ -23,8 +23,6 @@
 	</c:if>
 	
 		<a class="btn btn-info pager" href="${ctx }/account/user/save/">创建用户</a>
- 	<shiro:hasPermission name="user:edit">
-	</shiro:hasPermission>
 	
 		<form class="well well-small form-search" action="${ctx}/account/user/">
 

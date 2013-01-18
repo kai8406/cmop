@@ -20,7 +20,7 @@
 		<aspectj.version>1.7.1</aspectj.version>
 		<activemq.version>5.7.0</activemq.version>
 		<quartz.version>2.1.6</quartz.version>
-		<ehcache.version>2.6.2</ehcache.version>
+		<ehcache.version>2.6.3</ehcache.version>
 		<spymemcached.version>2.8.9</spymemcached.version>
 		<hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
 		<jolokia.version>1.0.6</jolokia.version>

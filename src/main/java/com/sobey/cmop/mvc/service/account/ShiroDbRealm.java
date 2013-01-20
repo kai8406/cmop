@@ -26,8 +26,15 @@ import com.sobey.framework.utils.Encodes;
 
 /**
  * 自实现用户与权限查询.
+ * @author liukai
+ *
  */
 public class ShiroDbRealm extends AuthorizingRealm {
+
+	/**
+	 * 加密方式
+	 */
+	private static final String HASH_ALGORITHM = "SHA-1";
 
 	private AccountManager accountManager;
 
@@ -36,12 +43,15 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
+
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		User user = accountManager.findUserByLoginName(token.getUsername());
+		token.setRememberMe(true);//默认为自动登录.
 
 		if (user != null) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(), ByteSource.Util.bytes(salt), getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(),
+					ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -75,9 +85,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	@PostConstruct
 	public void initCredentialsMatcher() {
-		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(AccountManager.HASH_ALGORITHM);
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(HASH_ALGORITHM);
 		matcher.setHashIterations(AccountManager.HASH_INTERATIONS);
-
 		setCredentialsMatcher(matcher);
 	}
 

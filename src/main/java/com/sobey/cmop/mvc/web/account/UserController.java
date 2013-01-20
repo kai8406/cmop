@@ -56,6 +56,7 @@ public class UserController {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
 		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);
+		System.out.println("-->"+users.getSize());
 
 		model.addAttribute("page", users);
 		return "account/userList";

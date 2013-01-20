@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +24,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import com.sobey.framework.utils.Collections3;
 
@@ -60,7 +62,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String name, String password, String email, String phonenum, Department department, Integer type, Date createTime, Integer status) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer type,
+			Date createTime, Integer status) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -72,8 +75,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Department department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
-			Integer redmineUserId) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer leaderId,
+			Integer type, Date createTime, Date loginTime, Integer status, Integer redmineUserId) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -96,6 +99,7 @@ public class User implements java.io.Serializable {
 		this.loginName = loginName;
 	}
 
+	// 不持久化到数据库，也不显示在Restful接口的属性.
 	@Transient
 	public String getPlainPassword() {
 		return plainPassword;
@@ -162,7 +166,7 @@ public class User implements java.io.Serializable {
 		this.phonenum = phonenum;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	public Department getDepartment() {
 		return this.department;
@@ -190,6 +194,7 @@ public class User implements java.io.Serializable {
 		this.type = type;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	@Column(name = "create_time", length = 19)
 	public Date getCreateTime() {
 		return this.createTime;
@@ -228,7 +233,7 @@ public class User implements java.io.Serializable {
 
 	// 多对多定义
 	@ManyToMany
-	@JoinTable(name = "user_group", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id") })
+	@JoinTable(name = "user_group", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "group_id")})
 	// Fecth策略定义
 	@Fetch(FetchMode.SUBSELECT)
 	// 集合按id排序.
@@ -249,6 +254,7 @@ public class User implements java.io.Serializable {
 	// 非持久化属性.
 	@Transient
 	public String getGroupNames() {
+		// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
 		return Collections3.extractToString(groupList, "name", ",");
 	}
 

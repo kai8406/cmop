@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
 <html>
 <head>
@@ -40,32 +39,18 @@
 		</form>
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<colgroup>
-			<col class="span3">
-			<col class="span3">
-			<col class="span4">
-			<col class="span2">
-		</colgroup>
-		<thead>
-			<tr>
-				<th>登录邮箱</th>
-				<th>用户名</th>
-				<th>权限组
-				<th>操作</th>
-			</tr>
-		</thead>
+		<thead><tr><th>登录名</th><th>用户名</th><th>注册时间<th>管理</th></tr></thead>
 		<tbody>
-			<c:forEach items="${page.content}" var="user">
-				<tr>
-					<td>${user.email}</td>
-					<td>${user.name}</td>
-					<td>${user.groupNames}</td>
-					<td>
-							<a href="${ctx }/account/user/update/${user.id}">修改</a>
-							<a href="delete/${user.id}">删除</a>
-						</td>	
-				</tr>
-			</c:forEach>
+		<c:forEach items="${page.content}" var="user">
+			<tr>
+				<td><a href="${ctx}/account/user/update/${user.id}">${user.loginName}</a></td>
+				<td>${user.name}</td>
+				<td>
+					<fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />
+				</td>
+				<td><a href="${ctx}/account/user/delete/${user.id}">删除</a></td>
+			</tr>
+		</c:forEach>
 		</tbody>
 	</table>
 	

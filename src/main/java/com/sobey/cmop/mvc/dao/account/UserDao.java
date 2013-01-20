@@ -12,25 +12,10 @@ import com.sobey.cmop.mvc.entity.User;
  */
 public interface UserDao extends PagingAndSortingRepository<User, Integer> {
 
-	/**
-	 * 根据登录邮箱获得用户
-	 * 
-	 * @param email
-	 *            登录邮箱
-	 * @return
-	 */
 	User findByEmail(String email);
 
 	User findByLoginName(String loginName);
 
-	/**
-	 * 根据用户名查询
-	 * 
-	 * @param name
-	 *            用户名
-	 * @param pageable
-	 * @return
-	 */
 	Page<User> findAllByNameLike(String name, Pageable pageable);
 
 }

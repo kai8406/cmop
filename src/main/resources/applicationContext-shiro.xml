@@ -14,7 +14,7 @@
 
 	<!-- 项目自定义的Realm -->
 	<bean id="shiroDbRealm" class="com.sobey.cmop.mvc.service.account.ShiroDbRealm"
-		depends-on="userDao,groupDao">
+		depends-on="userDao,groupDao,departmentDao">
 		<property name="accountManager" ref="accountManager" />
 	</bean>
 
@@ -27,6 +27,7 @@
 			<value>
 				/login = authc
 				/logout = logout
+				/signIn = anon
 				/static/** = anon
 				/register/** = anon
 				/** = user

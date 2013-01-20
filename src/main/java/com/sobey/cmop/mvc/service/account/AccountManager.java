@@ -17,8 +17,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sobey.cmop.mvc.constant.ConstantAccount;
+import com.sobey.cmop.mvc.dao.account.DepartmentDao;
 import com.sobey.cmop.mvc.dao.account.GroupDao;
 import com.sobey.cmop.mvc.dao.account.UserDao;
+import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Digests;
@@ -35,7 +38,6 @@ import com.sobey.framework.utils.Encodes;
 @Transactional(readOnly = true)
 public class AccountManager {
 
-	public static final String HASH_ALGORITHM = "SHA-1";
 	public static final int HASH_INTERATIONS = 1024;
 	public static final int SALT_SIZE = 8;
 
@@ -43,6 +45,7 @@ public class AccountManager {
 
 	private UserDao userDao;
 	private GroupDao groupDao;
+	private DepartmentDao departmentDao;
 	private ShiroDbRealm shiroRealm;
 
 	// -- User Manager --//
@@ -73,9 +76,7 @@ public class AccountManager {
 	 */
 	@Transactional(readOnly = false)
 	public void registerUser(User user) {
-		//TODO 常量
-		user.setStatus(1);
-		
+		user.setStatus(ConstantAccount.userStatus.ENABLED.ordinal());
 		entryptPassword(user);
 		user.setCreateTime(new Date());
 		userDao.save(user);
@@ -136,7 +137,8 @@ public class AccountManager {
 
 	public Page<User> getAllUser(int page, int size, String name) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-		return userDao.findAllByNameLike("%" + name + "%", pageable);
+//		return userDao.findAllByNameLike("%" + name + "%", pageable);
+		return userDao.findAll(pageable);
 	}
 
 	public User findUserByEmail(String email) {
@@ -183,6 +185,12 @@ public class AccountManager {
 			return true;
 		}
 	}
+	// -- Department Manager --//
+	
+	public Department getDepartment(Integer id){
+		return departmentDao.findOne(id);
+	}
+	
 
 	@Autowired
 	public void setUserDao(UserDao userDao) {
@@ -192,6 +200,11 @@ public class AccountManager {
 	@Autowired
 	public void setGroupDao(GroupDao groupDao) {
 		this.groupDao = groupDao;
+	}
+
+	@Autowired
+	public void setDepartmentDao(DepartmentDao departmentDao) {
+		this.departmentDao = departmentDao;
 	}
 
 	@Autowired(required = false)

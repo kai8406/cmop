@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * LoginController负责打开登录页面(GET请求)和登录出错页面(POST请求)，
  * 
- * 真正登录的POST请求由Filter-->ShiroDbRealm.java中完成,
+ * 真正登录的POST请求由Filter-->ShiroDbRealm.java中完成.
+ * 
  * 
  * @author liukai
  */
@@ -18,15 +19,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/login")
 public class LoginController {
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping
 	public String login() {
 		return "account/login";
 	}
 
+	/**
+	 * 登录出错跳转页面. (登录成功将不会走此方法,而是通过Filter判断是否登录成功.具体配置可以通过
+	 * applicationContext-shiro.xml 文件中的"successUrl"参数指定)
+	 * 
+	 * @param userName
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
+	public String loginFail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
 		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, userName);
-		return "account/login";
+		return "account/signIn";
 	}
 
 }

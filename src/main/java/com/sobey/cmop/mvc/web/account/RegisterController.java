@@ -1,7 +1,5 @@
 package com.sobey.cmop.mvc.web.account;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,13 +41,16 @@ public class RegisterController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String register(@Valid User user, RedirectAttributes redirectAttributes) {
+	public String register(User user, RedirectAttributes redirectAttributes) {
+		
+		System.out.println("--->"+user.getDepartment());
+		System.out.println("--->"+user.getDepartment().getId());
 
 		accountManager.registerUser(user);
 
 		redirectAttributes.addFlashAttribute("username", user.getLoginName());
 		redirectAttributes.addFlashAttribute("message", "注册成功!");
-		return "redirect:/";
+		return "account/signIn";
 	}
 
 	/**

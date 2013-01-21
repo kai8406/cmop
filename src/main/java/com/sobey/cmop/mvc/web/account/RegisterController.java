@@ -2,6 +2,7 @@ package com.sobey.cmop.mvc.web.account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,15 +42,14 @@ public class RegisterController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String register(User user, RedirectAttributes redirectAttributes) {
-		
-		System.out.println("--->"+user.getDepartment());
-		System.out.println("--->"+user.getDepartment().getId());
+	public String register(User user, @RequestParam("departmentId") Integer departmentId, Model model) {
+
+		user.setDepartment(accountManager.getDepartment(departmentId));
 
 		accountManager.registerUser(user);
+		
+		model.addAttribute("message", "请输入登录名和登录密码.");
 
-		redirectAttributes.addFlashAttribute("username", user.getLoginName());
-		redirectAttributes.addFlashAttribute("message", "注册成功!");
 		return "account/signIn";
 	}
 

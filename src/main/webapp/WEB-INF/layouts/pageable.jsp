@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
 <div class="pagination pagination-right">
 	<ul>

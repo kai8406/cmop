@@ -21,8 +21,9 @@ import com.sobey.cmop.mvc.service.account.AccountManager;
 
 /**
  * UserController负责用户的管理
+ * 
  * @author liukai
- *
+ * 
  */
 @Controller
 @RequestMapping(value = "/account/user")
@@ -55,10 +56,11 @@ public class UserController {
 	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
 
 		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
+
 		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);
-		System.out.println("-->"+users.getSize());
 
 		model.addAttribute("page", users);
+
 		return "account/userList";
 	}
 
@@ -70,8 +72,10 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
+
 		model.addAttribute("allGroups", accountManager.getAllGroup());
 		model.addAttribute("user", accountManager.getCurrentUser());
+
 		return "account/userForm";
 	}
 
@@ -83,10 +87,14 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(User user, RedirectAttributes redirectAttributes) {
+	public String save(User user, @RequestParam("departmentId") Integer departmentId, RedirectAttributes redirectAttributes) {
+
+		user.setDepartment(accountManager.getDepartment(departmentId));
 
 		accountManager.registerUser(user);
+
 		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getName() + " 成功");
+
 		return REDIRECT_SUCCESS_URL;
 	}
 

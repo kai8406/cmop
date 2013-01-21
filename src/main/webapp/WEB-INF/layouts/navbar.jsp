@@ -1,4 +1,6 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
+
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container-fluid">
@@ -28,7 +30,7 @@
 					<ul class="nav pull-right">
 						<li class="divider-vertical"></li>
 						<li class="dropdown">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">个人信息 <b class="caret"></b></a>
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#"><shiro:principal property="name"/><b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="#">个人信息</a></li>
 								<li class="divider"></li>

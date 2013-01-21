@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
 
 <html>
@@ -15,42 +14,11 @@
 			$("#registerForm").validate({
 				rules: {
 					loginName: {
-						remote: "${ctx}/register/checkLoginName",
-						required: true,
-						maxlength:20
+						remote: "${ctx}/register/checkLoginName"
 					},
 					email: {
-						remote: "${ctx}/register/checkEmail",
-						required: true,
-						maxlength:20
-					},
-					plainPassword:{
-						required: true,
-						minlength:6,
-						maxlength:20
-					},
-					confirmPassword:{
-						required:true,
-						minlength:6,
-						maxlength:20,
-						equalTo:"#plainPassword"
-					},
-					phonenum:{
-						required: true,
-						maxlength:20
-					},
-					name:{
-						required: true,
-						maxlength:20
-					},
-					department:{
-						required: true
-					},
-					
-					leader:{
-						required: true
-					},
-				
+						remote: "${ctx}/register/checkEmail"
+					}
 				},
 				messages: {
 					loginName: {
@@ -92,51 +60,52 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="loginName">登录名</label>
+				<label class="control-label" for="loginName">登录名</label>	 
 				<div class="controls">
-					<input type="text" id="loginName" name="loginName" placeholder="...Login name">
+					<input type="text" id="loginName" name="loginName" class="required" maxlength="45" placeholder="...Login name">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="email">Email地址</label>
 				<div class="controls">
-					<input type="text" id="email" name="email" placeholder="...Email address">
+					<input type="text" id="email" name="email" class="required email" maxlength="45"  placeholder="...Email address">
 				</div>
 			</div>
 	
 			<div class="control-group">
 				<label class="control-label" for="plainPassword">密码</label>
 				<div class="controls">
-					<input type="password" id=plainPassword name="plainPassword" placeholder="...Password">
+					<input type="password" id=plainPassword name="plainPassword" class="required" minlength="6" maxlength="16" placeholder="...Password">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="email">确认密码</label>
 				<div class="controls">
-					<input type="password" id=confirmPassword name="confirmPassword" placeholder="...Confirm password">
+					<input type="password" id=confirmPassword name="confirmPassword" class="required"
+					 minlength="6" maxlength="16" equalTo="#plainPassword" placeholder="...Confirm password">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="phonenum">联系电话</label>
 				<div class="controls">
-					<input type="text" id="phonenum" name="phonenum" placeholder="...Phone number">
+					<input type="text" id="phonenum" name="phonenum" class="required" maxlength="45" placeholder="...Phone number">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="name">真实姓名</label>
 				<div class="controls">
-					<input type="text" id="name" name="name" placeholder="...Real Name">
+					<input type="text" id="name" name="name" class="required" maxlength="45" placeholder="...Real Name">
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="department">所属部门</label>
+				<label class="control-label" for="departmentId">所属部门</label>
 				<div class="controls">
-					<select id="department" name="department">
+					<select id="departmentId" name="departmentId" class="required">
 						<option value="1">新媒体事业部</option>
 						<option value="2">新媒体运维部</option>
 						<option value="3">新媒体产品部</option>
@@ -145,9 +114,9 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="leader">所属领导</label>
+				<label class="control-label" for="leaderId">所属领导</label>
 				<div class="controls">
-					<select id="leader" name="leader">
+					<select id="leaderId" name="leaderId" class="required">
 						<option value="1">毛泽东</option>
 						<option value="2">邓小平</option>
 						<option value="3">江泽民</option>

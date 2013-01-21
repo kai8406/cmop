@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
+
 <html>
 <head>
 	<title>帐号管理</title>

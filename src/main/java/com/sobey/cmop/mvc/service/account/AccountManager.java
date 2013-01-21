@@ -76,7 +76,7 @@ public class AccountManager {
 	 */
 	@Transactional(readOnly = false)
 	public void registerUser(User user) {
-		user.setStatus(ConstantAccount.userStatus.ENABLED.ordinal());
+		user.setStatus(ConstantAccount.userStatus.ENABLED.toInteger());
 		entryptPassword(user);
 		user.setCreateTime(new Date());
 		userDao.save(user);

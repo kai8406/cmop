@@ -1,7 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
 <html>
 <head>
@@ -48,14 +46,10 @@
 
 	<form id="signinForm" class="form-signin" action="${ctx}/login" method="post">
 		
-		<c:if test="${not empty message }">
-			<div class="alert fade in">
-	            <button data-dismiss="alert" class="close" type="button">×</button>
-	            <strong>${username }</strong> 欢迎你,请登录.
-	          </div>
-		</c:if>
-		
 		<p>
+		
+			<c:if test="${not empty message }"><span class="text-success">${message } </span></c:if>
+			
 			<%
 				String error = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 				if(error != null){
@@ -64,7 +58,9 @@
 			<%
 				}
 			%>
+			
 			<span class="pull-right"><a	href="${ctx}/register/">注册</a></span>
+			
 		</p>
 
 		<div class="control-group">

@@ -32,7 +32,7 @@
 						<li class="dropdown">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#"><shiro:principal property="name"/><b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">个人信息</a></li>
+								<li><a href="${ctx}/profile/">个人信息</a></li>
 								<li class="divider"></li>
 								<li><a href="${ctx}/logout">退出</a></li>
 							</ul>

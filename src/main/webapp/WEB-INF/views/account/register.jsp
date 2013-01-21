@@ -76,15 +76,14 @@
 			<div class="control-group">
 				<label class="control-label" for="plainPassword">密码</label>
 				<div class="controls">
-					<input type="password" id=plainPassword name="plainPassword" class="required" minlength="6" maxlength="16" placeholder="...Password">
+					<input type="password" id="plainPassword" name="plainPassword" class="required" minlength="6" maxlength="16" placeholder="...Password">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="email">确认密码</label>
 				<div class="controls">
-					<input type="password" id=confirmPassword name="confirmPassword" class="required"
-					 minlength="6" maxlength="16" equalTo="#plainPassword" placeholder="...Confirm password">
+					<input type="password" id="confirmPassword" class="required" minlength="6" maxlength="16" equalTo="#plainPassword" placeholder="...Confirm password">
 				</div>
 			</div>
 			

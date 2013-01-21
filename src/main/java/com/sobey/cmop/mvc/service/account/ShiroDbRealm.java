@@ -26,8 +26,9 @@ import com.sobey.framework.utils.Encodes;
 
 /**
  * 自实现用户与权限查询.
+ * 
  * @author liukai
- *
+ * 
  */
 public class ShiroDbRealm extends AuthorizingRealm {
 
@@ -46,12 +47,12 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		User user = accountManager.findUserByLoginName(token.getUsername());
-		token.setRememberMe(true);//默认为自动登录.
+		token.setRememberMe(true);// 默认为自动登录.
 
 		if (user != null) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getLoginName(), user.getName()), user.getPassword(),
-					ByteSource.Util.bytes(salt), getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getId(), user.getLoginName(), user.getName()),
+					user.getPassword(), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -65,7 +66,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
 
-		User user = accountManager.findUserByLoginName(shiroUser.getName());
+		User user = accountManager.findUserByLoginName(shiroUser.loginName);
 
 		if (user != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -120,10 +121,12 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	public static class ShiroUser implements Serializable {
 		private static final long serialVersionUID = -1181844008511965270L;
+		public Integer id;
 		public String loginName;
 		public String name;
 
-		public ShiroUser(String loginName, String name) {
+		public ShiroUser(Integer id, String loginName, String name) {
+			this.id = id;
 			this.loginName = loginName;
 			this.name = name;
 		}

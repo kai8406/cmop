@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.constant.ConstantAccount;
+import com.sobey.cmop.mvc.dao.account.AccountDao;
 import com.sobey.cmop.mvc.dao.account.DepartmentDao;
 import com.sobey.cmop.mvc.dao.account.GroupDao;
 import com.sobey.cmop.mvc.dao.account.UserDao;
@@ -45,6 +46,7 @@ public class AccountManager {
 
 	private UserDao userDao;
 	private GroupDao groupDao;
+	private AccountDao accountDao;
 	private DepartmentDao departmentDao;
 	private ShiroDbRealm shiroRealm;
 
@@ -137,7 +139,7 @@ public class AccountManager {
 
 	public Page<User> getAllUser(int page, int size, String name) {
 		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-//		return userDao.findAllByNameLike("%" + name + "%", pageable);
+		// return userDao.findAllByNameLike("%" + name + "%", pageable);
 		return userDao.findAll(pageable);
 	}
 
@@ -157,6 +159,27 @@ public class AccountManager {
 	// -- Group Manager --//
 	public Group getGroup(Integer id) {
 		return groupDao.findOne(id);
+	}
+
+	/**
+	 * 获得指定用户所拥有的权限组<br>
+	 * 如果指定用户没有权限组,则返回 null
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public Group findGroupByUserId(Integer userId) {
+
+		List list = accountDao.getUserGroupByUserId(userId);
+
+		if (!list.isEmpty()) {
+			Integer id = (Integer) list.get(0);
+			return this.getGroup(id);
+		}
+
+		return null;
+
 	}
 
 	public List<Group> getAllGroup() {
@@ -186,11 +209,10 @@ public class AccountManager {
 		}
 	}
 	// -- Department Manager --//
-	
-	public Department getDepartment(Integer id){
+
+	public Department getDepartment(Integer id) {
 		return departmentDao.findOne(id);
 	}
-	
 
 	@Autowired
 	public void setUserDao(UserDao userDao) {
@@ -203,6 +225,11 @@ public class AccountManager {
 	}
 
 	@Autowired
+	public void setAccountDao(AccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
+
+	@Autowired
 	public void setDepartmentDao(DepartmentDao departmentDao) {
 		this.departmentDao = departmentDao;
 	}
@@ -211,4 +238,5 @@ public class AccountManager {
 	public void setShiroRealm(ShiroDbRealm shiroRealm) {
 		this.shiroRealm = shiroRealm;
 	}
+
 }

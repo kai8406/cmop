@@ -33,4 +33,11 @@ public class GroupDaoImpl implements GroupDaoCustom {
 		em.remove(group);
 	}
 
+//	@Override
+//	public List getUserGroupByUserId(Integer userId) {
+//		String qlString = "SELECT group_id FROM user_group WHERE user_id = ?";
+//		return em.createQuery(qlString).setParameter(1, userId).getResultList();
+//	}
+
+
 }

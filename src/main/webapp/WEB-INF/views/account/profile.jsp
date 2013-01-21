@@ -1,15 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
+
 <html>
 <head>
-	<title>资料修改</title>
+	<title>个人信息修改</title>
 	
 	<script>
 		$(document).ready(function() {
-			//聚焦第一个输入框
-			$("#name").focus();
-			//为inputForm注册validate函数
-			$("#inputForm").validate({
+			
+			$("#email").focus();
+			
+			$("#profileForm").validate({
 				rules: {
 					email: {
 						remote: "${ctx}/profile/checkEmail?oldEmail=${user.email}"
@@ -19,6 +20,14 @@
 					email: {
 						remote: "邮箱已存在"
 					}
+				},
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight:function(element, errorClass, validClass) {
+					$(element).parents('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).parents('.control-group').removeClass('error');
 				}
 			});
 		});
@@ -26,38 +35,102 @@
 </head>
 
 <body>
-	<form id="inputForm" action="${ctx}/profile" method="post" class="form-horizontal">
-		<input type="hidden" name="id" value="${user.id}"/>
+<style type="text/css">
+	body {
+	  background-color: #f5f5f5;
+	}
+</style>
+
+	<form id="profileForm" action="${ctx}/profile" method="post" class="form-horizontal form-signin" style="max-width: 640px;">
+	
+		<input type="text" name="id" value="${user.id}">
+		<input type="text" name="status" value="${user.status}">
+		<input type="text" name="createTime" value="${user.createTime}">
+		<input type="text" name="groupId" value="${groupId}">
+		
+		<c:if test="${not empty message }">
+			<div class="alert alert-success fade in">
+	        	<button data-dismiss="alert" class="close" type="button">×</button>
+	       		<span>${message }</span>
+	      	</div>		
+		</c:if>
+		
 		<fieldset>
-			<legend><small>资料修改</small></legend>
+		
+			<legend><small>个人信息修改</small></legend>
+			
 			<div class="control-group">
-				<label for="name" class="control-label">用户名:</label>
+				<label class="control-label" for="loginName">登录名</label>	 
 				<div class="controls">
-					<input type="text" id="name" name="name" value="${user.name}" class="input-large required"/>
+					<input type="text" id="loginName" name="loginName" value="${user.loginName }" readonly="readonly" class="required" maxlength="45" placeholder="...Login name">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label for="name" class="control-label">邮件:</label>
+				<label class="control-label" for="email">Email地址</label>
 				<div class="controls">
-					<input type="text" id="email" name="email" value="${user.email}" class="input-large required"/>
+					<input type="text" id="email" name="email" value="${user.email }"  class="required email" maxlength="45"  placeholder="...Email address">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label for="plainPassword" class="control-label">密码:</label>
+				<label class="control-label" for="plainPassword">密码</label>
 				<div class="controls">
-					<input type="password" id="plainPassword" name="plainPassword" class="input-large" placeholder="...Leave it blank if no change"/>
+					<input type="password" id="plainPassword" name="plainPassword" class="required" minlength="6" maxlength="16" placeholder="...Password">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label for="confirmPassword" class="control-label">确认密码:</label>
+				<label class="control-label" for="email">确认密码</label>
 				<div class="controls">
-					<input type="password" id="confirmPassword" name="confirmPassword" class="input-large" equalTo="#plainPassword" />
+					<input type="password" id="confirmPassword"  class="required" minlength="6" maxlength="16" equalTo="#plainPassword" placeholder="...Confirm password">
 				</div>
 			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="phonenum">联系电话</label>
+				<div class="controls">
+					<input type="text" id="phonenum" name="phonenum" value="${user.phonenum }"  class="required" maxlength="45" placeholder="...Phone number">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="name">真实姓名</label>
+				<div class="controls">
+					<input type="text" id="name" name="name" value="${user.name }" class="required" maxlength="45" placeholder="...Real Name">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="departmentId">所属部门</label>
+				<div class="controls">
+					<select id="departmentId" name="departmentId" class="required">
+						<option value="1" <c:if test="${user.department.id == 1}">selected="selected"</c:if> >新媒体事业部</option>
+						<option value="2">新媒体运维部</option>
+						<option value="3">新媒体产品部</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="leaderId">所属领导</label>
+				<div class="controls">
+					<select id="leaderId" name="leaderId" class="required">
+						<option value="1" <c:if test="${user.leaderId == 1}">selected="selected"</c:if> >毛泽东</option>
+						<option value="2">邓小平</option>
+						<option value="3">江泽民</option>
+						<option value="4">胡景涛</option>
+						<option value="5">习近平</option>
+					</select>
+				</div>
+			</div>
+			
+			
 			<div class="form-actions">
-				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;	
-				<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
+				<input class="btn" type="button" value="返回" onclick="history.back()">
+				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
+			
 		</fieldset>
 	</form>
 </body>

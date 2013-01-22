@@ -62,8 +62,7 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String name, String password, String email, String phonenum, Department department, Integer type,
-			Date createTime, Integer status) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer type, Date createTime, Integer status) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -75,8 +74,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String password, String email, String phonenum, Department department, Integer leaderId,
-			Integer type, Date createTime, Date loginTime, Integer status, Integer redmineUserId) {
+	public User(String name, String password, String email, String phonenum, Department department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
+			Integer redmineUserId) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -233,7 +232,7 @@ public class User implements java.io.Serializable {
 
 	// 多对多定义
 	@ManyToMany
-	@JoinTable(name = "user_group", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "group_id")})
+	@JoinTable(name = "user_group", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "group_id") })
 	// Fecth策略定义
 	@Fetch(FetchMode.SUBSELECT)
 	// 集合按id排序.

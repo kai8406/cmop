@@ -6,7 +6,11 @@
 <title>主页</title>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$("#username").focus();//针对navbar.jsp中的登录form.
+		
+		//针对navbar.jsp中的登录form.
+		
+		$("#username").focus();
+		
 	});
 </script>
 </head>

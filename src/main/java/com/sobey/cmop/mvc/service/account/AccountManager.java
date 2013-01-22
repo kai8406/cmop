@@ -208,6 +208,7 @@ public class AccountManager {
 			return true;
 		}
 	}
+
 	// -- Department Manager --//
 
 	public Department getDepartment(Integer id) {

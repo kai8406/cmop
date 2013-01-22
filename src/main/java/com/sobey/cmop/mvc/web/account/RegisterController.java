@@ -48,12 +48,11 @@ public class RegisterController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(User user, @RequestParam("departmentId") Integer departmentId, Model model) {
 
-
 		List<Group> groupList = Lists.newArrayList();
-		
-		//TODO 暂时设置为admin,方便测试.
+
+		// TODO 暂时设置为admin,方便测试.
 		groupList.add(accountManager.getGroup(ConstantAccount.DefaultGroups.admin.toInteger()));
-		
+
 		user.setGroupList(groupList);
 
 		user.setDepartment(accountManager.getDepartment(departmentId));

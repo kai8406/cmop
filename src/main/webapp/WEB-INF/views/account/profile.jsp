@@ -43,10 +43,8 @@
 
 	<form id="profileForm" action="${ctx}/profile" method="post" class="form-horizontal form-signin" style="max-width: 640px;">
 	
-		<input type="text" name="id" value="${user.id}">
-		<input type="text" name="status" value="${user.status}">
-		<input type="text" name="createTime" value="${user.createTime}">
-		<input type="text" name="groupId" value="${groupId}">
+		<input type="hidden" name="id" value="${user.id}">
+		<input type="hidden" name="groupId" value="${groupId}">
 		
 		<c:if test="${not empty message }">
 			<div class="alert alert-success fade in">
@@ -124,7 +122,6 @@
 					</select>
 				</div>
 			</div>
-			
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">

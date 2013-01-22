@@ -8,6 +8,6 @@ import com.sobey.cmop.mvc.entity.Group;
  * 权限组对象的Dao interface.
  * 
  */
-public interface GroupDao extends PagingAndSortingRepository<Group, Integer>, GroupDaoCustom {
+public interface GroupDao extends PagingAndSortingRepository<Group, Integer> {
 	Group findByName(String name);
 }

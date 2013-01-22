@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 
-
 <html>
 <head>
 	<title>用户注册</title>
@@ -56,7 +55,7 @@
 			<legend><small>注册</small></legend>
 			
 			<div class="control-group">
-				<p class="pull-right">已有账号?<a href="./signin.html">登录</a></p>
+				<p class="pull-right">已有账号?<a href="${ctx}/login">登录</a></p>
 			</div>
 			
 			<div class="control-group">
@@ -126,9 +125,10 @@
 			</div>
 			
 			<div class="form-actions">
-				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>
-				<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
+				<input class="btn btn-primary" type="submit" value="提交">
+				<input class="btn" type="button" value="返回" onclick="history.back()">
 			</div>
+			
 		</fieldset>
 	</form>
 </body>

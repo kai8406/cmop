@@ -31,10 +31,10 @@ public class LightTest {
 			return String.valueOf(this.nCode);
 
 		}
-		
-		public Integer toInteger(){
+
+		public Integer toInteger() {
 			return this.nCode;
-			
+
 		}
 
 	}
@@ -45,28 +45,28 @@ public class LightTest {
 	 */
 
 	public static void main(String[] args) {
-		
+
 		System.out.println(Light.GREEN);
 		System.out.println(Light.GREEN.toInteger());
 		System.out.println(Light.GREEN.toString());
 
-//		// 1. 遍历枚举类型
-//
-//		System.out.println(" 演示枚举类型的遍历 ......");
-//
-//		testTraversalEnum();
-//
-//		// 2. 演示 EnumMap 对象的使用
-//
-//		System.out.println(" 演示 EnmuMap 对象的使用和遍历 .....");
-//
-//		testEnumMap();
-//
-//		// 3. 演示 EnmuSet 的使用
-//
-//		System.out.println(" 演示 EnmuSet 对象的使用和遍历 .....");
-//
-//		testEnumSet();
+		// // 1. 遍历枚举类型
+		//
+		// System.out.println(" 演示枚举类型的遍历 ......");
+		//
+		// testTraversalEnum();
+		//
+		// // 2. 演示 EnumMap 对象的使用
+		//
+		// System.out.println(" 演示 EnmuMap 对象的使用和遍历 .....");
+		//
+		// testEnumMap();
+		//
+		// // 3. 演示 EnmuSet 的使用
+		//
+		// System.out.println(" 演示 EnmuSet 对象的使用和遍历 .....");
+		//
+		// testEnumSet();
 
 	}
 

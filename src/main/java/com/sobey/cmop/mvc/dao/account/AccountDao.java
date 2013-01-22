@@ -2,6 +2,12 @@ package com.sobey.cmop.mvc.dao.account;
 
 import java.util.List;
 
+/**
+ * Account模块的自定义Dao
+ * 
+ * @author liukai
+ * 
+ */
 public interface AccountDao {
 
 	/**

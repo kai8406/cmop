@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.comm.BaseController;
@@ -47,6 +46,7 @@ public class RegisterController extends BaseController {
 		List<Group> groupList = Lists.newArrayList();
 
 		// TODO 暂时设置为admin,方便测试.
+		
 		groupList.add(comm.accountService.getGroup(ConstantAccount.DefaultGroups.admin.toInteger()));
 
 		user.setGroupList(groupList);
@@ -58,30 +58,6 @@ public class RegisterController extends BaseController {
 		model.addAttribute("message", "请输入登录名和登录密码.");
 
 		return "account/signIn";
-	}
-
-	/**
-	 * Ajax请求校验loginName是否唯一.
-	 * 
-	 * @param loginName
-	 * @return
-	 */
-	@RequestMapping(value = "checkLoginName")
-	@ResponseBody
-	public String checkLoginName(@RequestParam("loginName") String loginName) {
-		return comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
-	}
-
-	/**
-	 * Ajax请求校验email是否唯一.
-	 * 
-	 * @param email
-	 * @return
-	 */
-	@RequestMapping(value = "checkEmail")
-	@ResponseBody
-	public String checkEmail(@RequestParam("email") String email) {
-		return comm.accountService.findUserByEmail(email) == null ? "true" : "false";
 	}
 
 }

@@ -13,9 +13,9 @@
 
 <body>
 
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>	${message}</div></c:if>
+	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 
-	<form class="form-search" action="#">
+	<form class="form-search well well-small" action="#">
 
 		<div class="row">
 
@@ -29,6 +29,7 @@
 
 			<div class="span3">
 				<button class="btn" type="submit">Search</button>
+				<button class="btn" type="reset">Reset</button>
 			</div>
 
 		</div>

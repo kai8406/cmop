@@ -3,13 +3,11 @@ package com.sobey.cmop.mvc.web.account;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
@@ -31,30 +29,32 @@ public class ProfileController extends BaseController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String profileForm(Model model) {
 
-		User user = comm.accountService.getCurrentUser();
-
-		Group group = comm.accountService.findGroupByUserId(user.getId());
+		Group group = comm.accountService.findGroupByUserId(getCurrentUserId());
 
 		// 如果用户没有权限,则默认给该用户 2.apply 申请人 的权限.
 
 		Integer groupId = group == null ? ConstantAccount.DefaultGroups.apply.toInteger() : group.getId();
 
 		model.addAttribute("groupId", groupId);
-		model.addAttribute("user", user);
+		model.addAttribute("user", comm.accountService.getUser(getCurrentUserId()));
 
 		return "account/profile";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "plainPassword") String plainPassword,
-			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId,
-			@RequestParam(value = "departmentId") Integer departmentId, @RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email,
+			@RequestParam(value = "plainPassword") String plainPassword,
+			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name,
+			@RequestParam(value = "leaderId") Integer leaderId,
+			@RequestParam(value = "departmentId") Integer departmentId,
+			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		List<Group> groupList = Lists.newArrayList();
 
 		groupList.add(comm.accountService.getGroup(groupId));
 
 		User user = comm.accountService.getUser(id);
+
 		user.setEmail(email);
 		user.setPlainPassword(plainPassword);
 		user.setPhonenum(phonenum);
@@ -84,15 +84,4 @@ public class ProfileController extends BaseController {
 		user.name = userName;
 	}
 
-	/**
-	 * Ajax请求校验email是否唯一.
-	 * 
-	 * @param email
-	 * @return
-	 */
-	@RequestMapping(value = "checkEmail", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public String checkEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("email") String email) {
-		return email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null ? "true" : "false";
-	}
 }

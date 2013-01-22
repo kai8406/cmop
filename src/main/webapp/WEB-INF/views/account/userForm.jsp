@@ -16,7 +16,7 @@
 			$("#inputForm").validate({
 				rules: {
 					email: {
-						remote: "${ctx}/account/user/checkEmail?oldEmail=" + encodeURIComponent('${user.email}')
+						remote: "${ctx}/ajax/account/checkEmail?oldEmail=" + encodeURIComponent('${user.email}')
 					},
 					groupList:"required"
 				},

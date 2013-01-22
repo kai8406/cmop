@@ -30,6 +30,7 @@ public class Hibernates {
 		String jdbcUrl = getJdbcUrlFromDataSource(dataSource);
 
 		// 根据jdbc url判断dialect
+		
 		if (StringUtils.contains(jdbcUrl, ":h2:")) {
 			return H2Dialect.class.getName();
 		} else if (StringUtils.contains(jdbcUrl, ":mysql:")) {

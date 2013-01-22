@@ -29,15 +29,15 @@ public class ConstantAccount {
 
 	/**
 	 * 用户状态 <br>
-	 * 0:enabled 有效 <br>
-	 * 1:disabled 无效
+	 * 1:enabled 有效 <br>
+	 * 0:disabled 无效
 	 * 
 	 * @author liukai
 	 * 
 	 */
 	public enum UserStatus implements CommonEnum {
 
-		ENABLED(0), DISABLED(1);
+		ENABLED(1), DISABLED(0);
 
 		private int code;
 

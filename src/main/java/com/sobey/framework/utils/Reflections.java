@@ -135,7 +135,9 @@ public class Reflections {
 				makeAccessible(field);
 				return field;
 			} catch (NoSuchFieldException e) {// NOSONAR
+				
 				// Field不在当前类定义,继续向上转型
+				
 			}
 		}
 		return null;
@@ -158,7 +160,9 @@ public class Reflections {
 				makeAccessible(method);
 				return method;
 			} catch (NoSuchMethodException e) {
+				
 				// Method不在当前类定义,继续向上转型
+				
 			}
 		}
 		return null;

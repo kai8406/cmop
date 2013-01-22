@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import com.sobey.framework.utils.Digests;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Encodes;
 import com.sobey.framework.utils.SearchFilter;
+import com.sobey.framework.utils.SearchFilter.Operator;
 
 /**
  * 安全相关实体的管理类,包括用户和权限组.
@@ -69,8 +69,31 @@ public class AccountService extends BaseSevcie {
 	 * @return
 	 */
 	public User getCurrentUser() {
-		Subject subject = SecurityUtils.getSubject();
-		return userDao.findByLoginName(subject.getPrincipal().toString());
+		return userDao.findOne(getCurrentUserId());
+	}
+
+	/**
+	 * User的分页查询.
+	 * 
+	 * @param searchParams
+	 *            页面传递过来的参数
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<User> getUserPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		// User创建动态查询条件组合.
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("user.status",
+				new SearchFilter("status", Operator.EQ, ConstantAccount.UserStatus.ENABLED.toInteger()));
+		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
+
+		return userDao.findAll(spec, pageRequest);
 	}
 
 	/**
@@ -85,39 +108,6 @@ public class AccountService extends BaseSevcie {
 		user.setCreateTime(new Date());
 		userDao.save(user);
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
-	}
-
-	/**
-	 * 初始化所有User的密码和LoginName<br>
-	 * 将老系统的邮箱@前的字符串设置为新的loginName.
-	 */
-	@Transactional(readOnly = false)
-	public void initializeUser() {
-
-		// 默认初始密码
-
-		String defaultPassword = "111111";
-
-		List<User> users = (List<User>) userDao.findAll();
-
-		for (User user : users) {
-
-			String email = user.getEmail();
-			String loginName = "";
-
-			if (email.indexOf("@") == -1) { // 不包含@
-				loginName = email;
-			} else { // 包含@
-				loginName = email.substring(0, email.indexOf("@"));
-			}
-
-			user.setLoginName(loginName);
-			user.setPlainPassword(defaultPassword);
-			entryptPassword(user);
-			user.setCreateTime(new Date());
-			userDao.save(user);
-		}
-
 	}
 
 	@Transactional(readOnly = false)
@@ -166,35 +156,6 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * 判断是否是默认的Group
-	 * 
-	 * @param id
-	 *            groupId
-	 * @return
-	 */
-	private boolean isDefeatGroup(Integer id) {
-		return id == 1 || id == 2 || id == 3;
-	}
-
-	public Page<User> getUserPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-
-		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-
-		Specification<User> spec = buildSpecification(searchParams);
-
-		return userDao.findAll(spec, pageRequest);
-	}
-
-	/**
-	 * User创建动态查询条件组合.
-	 */
-	private Specification<User> buildSpecification(Map<String, Object> searchParams) {
-		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
-		return spec;
-	}
-
-	/**
 	 * 根据邮箱Email 获得所属的User
 	 * 
 	 * @param email
@@ -204,18 +165,57 @@ public class AccountService extends BaseSevcie {
 		return userDao.findByEmail(email);
 	}
 
+	/**
+	 * 根据登录名获得所属的User
+	 * 
+	 * @param loginName
+	 * @return
+	 */
 	public User findUserByLoginName(String loginName) {
 		return userDao.findByLoginName(loginName);
 	}
 
-	// -- Group Manager --//
+	/**
+	 * 初始化所有User的密码和LoginName<br>
+	 * 将老系统的邮箱@前的字符串设置为新的loginName.
+	 */
+	@Transactional(readOnly = false)
+	public void initializeUser() {
 
-	public Group findGroupByName(String name) {
-		return groupDao.findByName(name);
+		// 默认初始密码
+
+		String defaultPassword = "111111";
+
+		List<User> users = (List<User>) userDao.findAll();
+
+		for (User user : users) {
+
+			String email = user.getEmail();
+			String loginName = "";
+
+			if (email.indexOf("@") == -1) { // 不包含@
+				loginName = email;
+			} else { // 包含@
+				loginName = email.substring(0, email.indexOf("@"));
+			}
+
+			user.setLoginName(loginName);
+			user.setPlainPassword(defaultPassword);
+			entryptPassword(user);
+			user.setCreateTime(new Date());
+			userDao.save(user);
+		}
+
 	}
+
+	// -- Group Manager --//
 
 	public Group getGroup(Integer id) {
 		return groupDao.findOne(id);
+	}
+
+	public Group findGroupByName(String name) {
+		return groupDao.findByName(name);
 	}
 
 	/**
@@ -264,6 +264,22 @@ public class AccountService extends BaseSevcie {
 			shiroRealm.clearAllCachedAuthorizationInfo();
 			return true;
 		}
+	}
+
+	/**
+	 * 判断是否是默认的Group<br>
+	 * 1.admin <br>
+	 * 2.apply <br>
+	 * 3.audit <br>
+	 * 
+	 * @param id
+	 *            groupId
+	 * @return
+	 */
+	private boolean isDefeatGroup(Integer id) {
+		return id == ConstantAccount.DefaultGroups.admin.toInteger()
+				|| id == ConstantAccount.DefaultGroups.apply.toInteger()
+				|| id == ConstantAccount.DefaultGroups.audit.toInteger();
 	}
 
 	// -- Department Manager --//

@@ -28,8 +28,9 @@
 				/login = authc
 				/logout = logout
 				/signIn = anon
-				/static/** = anon
 				/register/** = anon
+				/ajax/** = anon
+				/static/** = anon
 				/** = user
 			</value>
 		</property>

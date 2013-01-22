@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
@@ -33,6 +32,9 @@ import com.sobey.framework.utils.Servlets;
 @RequestMapping(value = "/account/user")
 public class UserController extends BaseController {
 
+	/**
+	 * 重定向URL
+	 */
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
 
 	@Autowired
@@ -51,8 +53,10 @@ public class UserController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	@RequestMapping(value = {"list", ""})
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		// TODO 初始化所有User的密码和LoginName
 		// comm.accountService.initializeUser();
@@ -63,7 +67,7 @@ public class UserController extends BaseController {
 
 		model.addAttribute("page", users);
 
-		// 将搜索条件编码成字符串， 分页的URL
+		// 将搜索条件编码成字符串,分页的URL
 
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
 
@@ -93,7 +97,8 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(User user, @RequestParam("departmentId") Integer departmentId, RedirectAttributes redirectAttributes) {
+	public String save(User user, @RequestParam("departmentId") Integer departmentId,
+			RedirectAttributes redirectAttributes) {
 
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
 
@@ -144,24 +149,10 @@ public class UserController extends BaseController {
 
 		boolean falg = comm.accountService.deleteUser(id);
 		String message = falg ? "删除用户成功" : "不能删除超级管理员";
+
 		redirectAttributes.addFlashAttribute("message", message);
+
 		return REDIRECT_SUCCESS_URL;
 	}
 
-	/**
-	 * 验证登陆邮箱是否唯一
-	 * 
-	 * @param oldEmail
-	 * @param email
-	 * @return
-	 */
-	@RequestMapping(value = "checkEmail")
-	@ResponseBody
-	public String checkEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("email") String email) {
-
-		if (email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null) {
-			return "true";
-		}
-		return "false";
-	}
 }

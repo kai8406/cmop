@@ -13,7 +13,7 @@
 			$("#profileForm").validate({
 				rules: {
 					email: {
-						remote: "${ctx}/profile/checkEmail?oldEmail=${user.email}"
+						remote: "${ctx}/ajax/account/checkEmail?oldEmail=${user.email}"
 					}
 				},
 				messages: {
@@ -46,12 +46,7 @@
 		<input type="hidden" name="id" value="${user.id}">
 		<input type="hidden" name="groupId" value="${groupId}">
 		
-		<c:if test="${not empty message }">
-			<div class="alert alert-success fade in">
-	        	<button data-dismiss="alert" class="close" type="button">×</button>
-	       		<span>${message }</span>
-	      	</div>		
-		</c:if>
+		<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 		
 		<fieldset>
 		

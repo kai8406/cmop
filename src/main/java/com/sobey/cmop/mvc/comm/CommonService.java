@@ -5,6 +5,11 @@ import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.service.account.AccountService;
 
+/**
+ * Service公共类
+ * @author liukai
+ *
+ */
 @Service
 public class CommonService {
 

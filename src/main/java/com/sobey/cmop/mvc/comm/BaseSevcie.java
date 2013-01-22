@@ -8,6 +8,14 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
+/**
+ * Service的基类<br>
+ * 包含了常用的分页参数,当前用户ID,所有业务的Service注入等.<br>
+ * 建议每个Sevice都实现此类.
+ * 
+ * @author liukai
+ * 
+ */
 public class BaseSevcie {
 
 	/**

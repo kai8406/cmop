@@ -35,20 +35,30 @@ public class Servlets {
 	 * 设置客户端缓存过期时间 的Header.
 	 */
 	public static void setExpiresHeader(HttpServletResponse response, long expiresSeconds) {
+		
 		// Http 1.0 header, set a fix expires date.
+		
 		response.setDateHeader(HttpHeaders.EXPIRES, System.currentTimeMillis() + expiresSeconds * 1000);
+		
 		// Http 1.1 header, set a time after now.
+		
 		response.setHeader(HttpHeaders.CACHE_CONTROL, "private, max-age=" + expiresSeconds);
+		
 	}
 
 	/**
 	 * 设置禁止客户端缓存的Header.
 	 */
 	public static void setNoCacheHeader(HttpServletResponse response) {
+		
 		// Http 1.0 header
+		
 		response.setDateHeader(HttpHeaders.EXPIRES, 1L);
+		
 		response.addHeader(HttpHeaders.PRAGMA, "no-cache");
+		
 		// Http 1.1 header
+		
 		response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, max-age=0");
 	}
 
@@ -74,7 +84,8 @@ public class Servlets {
 	 * @param lastModified
 	 *            内容的最后修改时间.
 	 */
-	public static boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, long lastModified) {
+	public static boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response,
+			long lastModified) {
 		long ifModifiedSince = request.getDateHeader(HttpHeaders.IF_MODIFIED_SINCE);
 		if ((ifModifiedSince != -1) && (lastModified < ifModifiedSince + 1000)) {
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -125,15 +136,19 @@ public class Servlets {
 	 */
 	public static void setFileDownloadHeader(HttpServletResponse response, String fileName) {
 		try {
+			
 			// 中文文件名支持
+			
 			String encodedfileName = new String(fileName.getBytes(), "ISO8859-1");
+			
 			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedfileName + "\"");
+			
 		} catch (UnsupportedEncodingException e) {
 		}
 	}
 
 	/**
-	 * 取得带相同前缀的Request Parameters, copy from spring WebUtils.
+	 * 取得带相同前缀的Request Parameters, copy from spring WebUtils.<br>
 	 * 
 	 * 返回的结果的Parameter名已去除前缀.
 	 */
@@ -153,7 +168,9 @@ public class Servlets {
 				String[] values = request.getParameterValues(paramName);
 
 				if (values == null || values.length == 0) {
+					
 					// Do nothing, no values found at all.
+					
 				} else if (values.length > 1) {
 					params.put(unprefixed, values);
 				} else {

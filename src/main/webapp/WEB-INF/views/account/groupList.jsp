@@ -49,7 +49,6 @@
 		</c:forEach>
 	</table>
 
-	<%@ include file="/WEB-INF/layouts/pageable.jsp"%>
 
 </body>
 </html>

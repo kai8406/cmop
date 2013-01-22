@@ -15,7 +15,7 @@
 	<!-- 项目自定义的Realm -->
 	<bean id="shiroDbRealm" class="com.sobey.cmop.mvc.service.account.ShiroDbRealm"
 		depends-on="userDao,groupDao,departmentDao">
-		<property name="accountManager" ref="accountManager" />
+		<property name="accountService" ref="accountService"/>
 	</bean>
 
 	<!-- Shiro Filter -->

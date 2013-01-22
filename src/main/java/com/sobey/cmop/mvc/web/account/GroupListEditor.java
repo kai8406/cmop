@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sobey.cmop.mvc.entity.Group;
-import com.sobey.cmop.mvc.service.account.AccountManager;
+import com.sobey.cmop.mvc.service.account.AccountService;
 import com.sobey.framework.utils.Collections3;
 
 /**
@@ -20,7 +20,7 @@ import com.sobey.framework.utils.Collections3;
 public class GroupListEditor extends PropertyEditorSupport {
 
 	@Autowired
-	private AccountManager accountManager;
+	private AccountService accountService;
 
 	/**
 	 * Back From Page
@@ -30,7 +30,7 @@ public class GroupListEditor extends PropertyEditorSupport {
 		String[] ids = StringUtils.split(text, ",");
 		List<Group> groups = new ArrayList<Group>();
 		for (String id : ids) {
-			Group group = accountManager.getGroup(Integer.valueOf(id));
+			Group group = accountService.getGroup(Integer.valueOf(id));
 			groups.add(group);
 		}
 		setValue(groups);

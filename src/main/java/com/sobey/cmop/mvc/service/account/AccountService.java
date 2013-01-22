@@ -41,12 +41,9 @@ import com.sobey.framework.utils.SearchFilter;
 @Component
 // 默认将类中的所有public函数纳入事务管理.
 @Transactional(readOnly = true)
-public class AccountManager {
+public class AccountService {
 
-	public static final int HASH_INTERATIONS = 1024;
-	public static final int SALT_SIZE = 8;
-
-	private static Logger logger = LoggerFactory.getLogger(AccountManager.class);
+	private static Logger logger = LoggerFactory.getLogger(AccountService.class);
 
 	private UserDao userDao;
 	private GroupDao groupDao;
@@ -135,10 +132,10 @@ public class AccountManager {
 	 * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
 	 */
 	private void entryptPassword(User user) {
-		byte[] salt = Digests.generateSalt(SALT_SIZE);
+		byte[] salt = Digests.generateSalt(ConstantAccount.SALT_SIZE);
 		user.setSalt(Encodes.encodeHex(salt));
 
-		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, HASH_INTERATIONS);
+		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, ConstantAccount.HASH_INTERATIONS);
 		user.setPassword(Encodes.encodeHex(hashPassword));
 	}
 

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sobey.cmop.mvc.comm.BaseControl;
 import com.sobey.cmop.mvc.entity.User;
-import com.sobey.cmop.mvc.service.account.AccountManager;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -31,14 +31,9 @@ import com.sobey.framework.utils.Servlets;
  */
 @Controller
 @RequestMapping(value = "/account/user")
-public class UserController {
+public class UserController extends BaseControl {
 
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
-
-	private static final String PAGE_SIZE = "3";
-
-	@Autowired
-	private AccountManager accountManager;
 
 	@Autowired
 	private GroupListEditor groupListEditor;
@@ -60,17 +55,17 @@ public class UserController {
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
 
 		// TODO 初始化所有User的密码和LoginName
-		// accountManager.initializeUser();
+		// comm.accountService.initializeUser();
 
-		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
-		Page<User> users = accountManager.getUserPageable(searchParams, pageNumber, pageSize);
+		Page<User> users = comm.accountService.getUserPageable(searchParams, pageNumber, pageSize);
 
 		model.addAttribute("page", users);
 
 		// 将搜索条件编码成字符串， 分页的URL
 
-		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
 
 		return "account/userList";
 	}
@@ -84,8 +79,8 @@ public class UserController {
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
 
-		model.addAttribute("allGroups", accountManager.getAllGroup());
-		model.addAttribute("user", accountManager.getCurrentUser());
+		model.addAttribute("allGroups", comm.accountService.getAllGroup());
+		model.addAttribute("user", comm.accountService.getCurrentUser());
 
 		return "account/userForm";
 	}
@@ -100,9 +95,9 @@ public class UserController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(User user, @RequestParam("departmentId") Integer departmentId, RedirectAttributes redirectAttributes) {
 
-		user.setDepartment(accountManager.getDepartment(departmentId));
+		user.setDepartment(comm.accountService.getDepartment(departmentId));
 
-		accountManager.registerUser(user);
+		comm.accountService.registerUser(user);
 
 		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getName() + " 成功");
 
@@ -118,8 +113,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("allGroups", accountManager.getAllGroup());
-		model.addAttribute("user", accountManager.getUser(id));
+		model.addAttribute("allGroups", comm.accountService.getAllGroup());
+		model.addAttribute("user", comm.accountService.getUser(id));
 		return "account/userForm";
 	}
 
@@ -132,7 +127,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-		accountManager.updateUser(user);
+		comm.accountService.updateUser(user);
 		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}
@@ -147,7 +142,7 @@ public class UserController {
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
-		boolean falg = accountManager.deleteUser(id);
+		boolean falg = comm.accountService.deleteUser(id);
 		String message = falg ? "删除用户成功" : "不能删除超级管理员";
 		redirectAttributes.addFlashAttribute("message", message);
 		return REDIRECT_SUCCESS_URL;
@@ -164,7 +159,7 @@ public class UserController {
 	@ResponseBody
 	public String checkEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("email") String email) {
 
-		if (email.equals(oldEmail) || accountManager.findUserByEmail(email) == null) {
+		if (email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null) {
 			return "true";
 		}
 		return "false";

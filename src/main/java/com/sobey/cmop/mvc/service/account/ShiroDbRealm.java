@@ -20,6 +20,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
+import com.sobey.cmop.mvc.constant.ConstantAccount;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Encodes;
@@ -32,12 +33,12 @@ import com.sobey.framework.utils.Encodes;
  */
 public class ShiroDbRealm extends AuthorizingRealm {
 
-	/**
-	 * 加密方式
-	 */
-	private static final String HASH_ALGORITHM = "SHA-1";
+	private AccountService accountService;
 
-	private AccountManager accountManager;
+	@Autowired
+	public void setAccountService(AccountService accountService) {
+		this.accountService = accountService;
+	}
 
 	/**
 	 * 认证回调函数, 登录时调用.
@@ -46,7 +47,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
 
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		User user = accountManager.findUserByLoginName(token.getUsername());
+		User user = accountService.findUserByLoginName(token.getUsername());
 		token.setRememberMe(true);// 默认为自动登录.
 
 		if (user != null) {
@@ -65,7 +66,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
 
-		User user = accountManager.findUserByLoginName(shiroUser.loginName);
+		User user = accountService.findUserByLoginName(shiroUser.loginName);
 
 		if (user != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -85,8 +86,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	@PostConstruct
 	public void initCredentialsMatcher() {
-		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(HASH_ALGORITHM);
-		matcher.setHashIterations(AccountManager.HASH_INTERATIONS);
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(ConstantAccount.HASH_ALGORITHM);
+		matcher.setHashIterations(ConstantAccount.HASH_INTERATIONS);
 		setCredentialsMatcher(matcher);
 	}
 
@@ -108,11 +109,6 @@ public class ShiroDbRealm extends AuthorizingRealm {
 				cache.remove(key);
 			}
 		}
-	}
-
-	@Autowired
-	public void setAccountManager(AccountManager accountManager) {
-		this.accountManager = accountManager;
 	}
 
 	/**

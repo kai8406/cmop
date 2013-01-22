@@ -3,7 +3,6 @@ package com.sobey.cmop.mvc.web.account;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
+import com.sobey.cmop.mvc.comm.BaseControl;
 import com.sobey.cmop.mvc.constant.ConstantAccount;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
-import com.sobey.cmop.mvc.service.account.AccountManager;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -27,17 +26,14 @@ import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
  */
 @Controller
 @RequestMapping(value = "/profile")
-public class ProfileController {
-
-	@Autowired
-	private AccountManager accountManager;
+public class ProfileController extends BaseControl {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String profileForm(Model model) {
 
-		User user = accountManager.getCurrentUser();
+		User user = comm.accountService.getCurrentUser();
 
-		Group group = accountManager.findGroupByUserId(user.getId());
+		Group group = comm.accountService.findGroupByUserId(user.getId());
 
 		// 如果用户没有权限,则默认给该用户 2.apply 申请人 的权限.
 
@@ -56,18 +52,18 @@ public class ProfileController {
 
 		List<Group> groupList = Lists.newArrayList();
 
-		groupList.add(accountManager.getGroup(groupId));
+		groupList.add(comm.accountService.getGroup(groupId));
 
-		User user = accountManager.getUser(id);
+		User user = comm.accountService.getUser(id);
 		user.setEmail(email);
 		user.setPlainPassword(plainPassword);
 		user.setPhonenum(phonenum);
 		user.setName(name);
 		user.setLeaderId(leaderId);
-		user.setDepartment(accountManager.getDepartment(departmentId));
+		user.setDepartment(comm.accountService.getDepartment(departmentId));
 		user.setGroupList(groupList);
 
-		accountManager.updateUser(user);
+		comm.accountService.updateUser(user);
 
 		// 更新Shiro中当前用户的用户名.
 
@@ -97,6 +93,6 @@ public class ProfileController {
 	@RequestMapping(value = "checkEmail", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public String checkEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("email") String email) {
-		return email.equals(oldEmail) || accountManager.findUserByEmail(email) == null ? "true" : "false";
+		return email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null ? "true" : "false";
 	}
 }

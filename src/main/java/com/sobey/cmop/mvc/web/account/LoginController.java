@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sobey.cmop.mvc.comm.BaseControl;
+
 /**
  * LoginController负责打开登录页面(GET请求)和登录出错页面(POST请求)，
  * 
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping(value = "/login")
-public class LoginController {
+public class LoginController extends BaseControl {
 
 	@RequestMapping
 	public String login() {

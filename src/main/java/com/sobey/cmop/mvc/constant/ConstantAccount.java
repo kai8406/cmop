@@ -13,6 +13,21 @@ import com.google.common.collect.Maps;
 public class ConstantAccount {
 
 	/**
+	 * 加密方式 : SHA-1
+	 */
+	public static final String HASH_ALGORITHM = "SHA-1";
+
+	/**
+	 * 迭代次数 : 1024
+	 */
+	public static final int HASH_INTERATIONS = 1024;
+
+	/**
+	 * salt的数组大小 : 8
+	 */
+	public static final int SALT_SIZE = 8;
+
+	/**
 	 * 用户状态 <br>
 	 * 0:enabled 有效 <br>
 	 * 1:disabled 无效

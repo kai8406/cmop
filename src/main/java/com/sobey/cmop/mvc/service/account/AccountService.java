@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ConstantAccount;
 import com.sobey.cmop.mvc.dao.account.AccountDao;
 import com.sobey.cmop.mvc.dao.account.DepartmentDao;
@@ -41,7 +42,7 @@ import com.sobey.framework.utils.SearchFilter;
 @Component
 // 默认将类中的所有public函数纳入事务管理.
 @Transactional(readOnly = true)
-public class AccountService {
+public class AccountService extends BaseSevcie {
 
 	private static Logger logger = LoggerFactory.getLogger(AccountService.class);
 
@@ -144,13 +145,17 @@ public class AccountService {
 	 */
 	@Transactional(readOnly = false)
 	public boolean deleteUser(Integer id) {
+
+		boolean flag = false;
+
 		if (this.isSupervisor(id)) {
 			logger.warn("操作员{}尝试删除超级管理员用户", SecurityUtils.getSubject().getPrincipal());
-			return false;
 		} else {
 			userDao.delete(id);
-			return true;
+			flag = true;
 		}
+
+		return flag;
 	}
 
 	/**
@@ -181,14 +186,7 @@ public class AccountService {
 	}
 
 	/**
-	 * 创建分页请求.
-	 */
-	public PageRequest buildPageRequest(int pageNumber, int pagzSize) {
-		return new PageRequest(pageNumber - 1, pagzSize, new Sort(Direction.DESC, "id"));
-	}
-
-	/**
-	 * 创建动态查询条件组合.
+	 * User创建动态查询条件组合.
 	 */
 	private Specification<User> buildSpecification(Map<String, Object> searchParams) {
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
@@ -196,6 +194,12 @@ public class AccountService {
 		return spec;
 	}
 
+	/**
+	 * 根据邮箱Email 获得所属的User
+	 * 
+	 * @param email
+	 * @return
+	 */
 	public User findUserByEmail(String email) {
 		return userDao.findByEmail(email);
 	}
@@ -204,12 +208,12 @@ public class AccountService {
 		return userDao.findByLoginName(loginName);
 	}
 
+	// -- Group Manager --//
+
 	public Group findGroupByName(String name) {
 		return groupDao.findByName(name);
-
 	}
 
-	// -- Group Manager --//
 	public Group getGroup(Integer id) {
 		return groupDao.findOne(id);
 	}

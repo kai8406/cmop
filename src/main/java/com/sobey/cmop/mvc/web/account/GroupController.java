@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.cmop.mvc.comm.BaseControl;
+import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.Permission;
 
@@ -23,7 +23,7 @@ import com.sobey.cmop.mvc.entity.Permission;
  */
 @Controller
 @RequestMapping(value = "/account/group")
-public class GroupController extends BaseControl {
+public class GroupController extends BaseController {
 
 	private static final int DEFAULT_PAGE_NUM = 0;
 	private static final int DEFAULT_PAGE_SIZE = 8;

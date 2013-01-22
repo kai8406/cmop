@@ -13,7 +13,7 @@ import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
  * @author liukai
  * 
  */
-public class BaseControl {
+public class BaseController {
 
 	/**
 	 * 公共的Service

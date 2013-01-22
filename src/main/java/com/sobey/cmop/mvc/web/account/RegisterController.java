@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
-import com.sobey.cmop.mvc.comm.BaseControl;
+import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ConstantAccount;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
@@ -22,7 +22,7 @@ import com.sobey.cmop.mvc.entity.User;
  */
 @Controller
 @RequestMapping(value = "/register")
-public class RegisterController extends BaseControl {
+public class RegisterController extends BaseController {
 
 	/**
 	 * 跳转到注册页面

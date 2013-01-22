@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sobey.cmop.mvc.comm.BaseControl;
+import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Servlets;
 
@@ -31,7 +31,7 @@ import com.sobey.framework.utils.Servlets;
  */
 @Controller
 @RequestMapping(value = "/account/user")
-public class UserController extends BaseControl {
+public class UserController extends BaseController {
 
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
 

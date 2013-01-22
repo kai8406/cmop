@@ -46,9 +46,17 @@ public class LightTest {
 
 	public static void main(String[] args) {
 
-		System.out.println(Light.GREEN);
-		System.out.println(Light.GREEN.toInteger());
-		System.out.println(Light.GREEN.toString());
+		String s = "kai8406@gmail.com";
+		String s2 = "liukai";
+
+		System.out.println(s.indexOf("@"));
+		System.out.println(s2.indexOf("@"));
+
+		if (s.indexOf("@") == -1) { // 不存在@
+
+		} else { // 包含@
+			System.out.println(s.substring(0, s.indexOf("@")));
+		}
 
 		// // 1. 遍历枚举类型
 		//

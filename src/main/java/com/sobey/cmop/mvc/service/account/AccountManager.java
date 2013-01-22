@@ -89,6 +89,39 @@ public class AccountManager {
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}
 
+	/**
+	 * 初始化所有User的密码和LoginName<br>
+	 * 将老系统的邮箱@前的字符串设置为新的loginName.
+	 */
+	@Transactional(readOnly = false)
+	public void initializeUser() {
+
+		// 默认初始密码
+
+		String defaultPassword = "111111";
+
+		List<User> users = (List<User>) userDao.findAll();
+
+		for (User user : users) {
+
+			String email = user.getEmail();
+			String loginName = "";
+
+			if (email.indexOf("@") == -1) { // 不包含@
+				loginName = email;
+			} else { // 包含@
+				loginName = email.substring(0, email.indexOf("@"));
+			}
+
+			user.setLoginName(loginName);
+			user.setPlainPassword(defaultPassword);
+			entryptPassword(user);
+			user.setCreateTime(new Date());
+			userDao.save(user);
+		}
+
+	}
+
 	@Transactional(readOnly = false)
 	public void updateUser(User user) {
 		if (StringUtils.isNotBlank(user.getPlainPassword())) {

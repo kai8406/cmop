@@ -59,6 +59,9 @@ public class UserController {
 	@RequestMapping(value = { "list", "" })
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
 
+		// TODO 初始化所有User的密码和LoginName
+		// accountManager.initializeUser();
+
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
 
 		Page<User> users = accountManager.getUserPageable(searchParams, pageNumber, pageSize);

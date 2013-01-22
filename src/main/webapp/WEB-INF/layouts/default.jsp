@@ -63,15 +63,13 @@
 	<%@ include file="/WEB-INF/layouts/navbar.jsp"%>
 	
 	<div class="container">
-		
 		<div id="content">
 			<sitemesh:body/>
 		</div>
 	</div>
 	
-	<hr>
-	
 	<footer style="text-align: center;">
+		<hr>
 		<p>Copyright &copy; 2013 Sobey</p>
 	</footer>
 	

@@ -17,6 +17,8 @@ import com.google.common.collect.Lists;
 public class DynamicSpecifications {
 	public static <T> Specification<T> bySearchFilter(final Collection<SearchFilter> filters, final Class<T> clazz) {
 		return new Specification<T>() {
+			
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 				if (Collections3.isNotEmpty(filters)) {

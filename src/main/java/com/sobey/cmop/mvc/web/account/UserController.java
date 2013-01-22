@@ -1,6 +1,9 @@
 package com.sobey.cmop.mvc.web.account;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.AccountManager;
+import com.sobey.framework.utils.Servlets;
 
 /**
  * UserController负责用户的管理
@@ -29,9 +33,9 @@ import com.sobey.cmop.mvc.service.account.AccountManager;
 @RequestMapping(value = "/account/user")
 public class UserController {
 
-	private static final int DEFAULT_PAGE_NUM = 0;
-	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
+
+	private static final String PAGE_SIZE = "3";
 
 	@Autowired
 	private AccountManager accountManager;
@@ -53,13 +57,17 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "name", required = false, defaultValue = "") String name, Model model) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
 
-		int pageNum = page != null ? page : DEFAULT_PAGE_NUM;
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
 
-		Page<User> users = accountManager.getAllUser(pageNum, DEFAULT_PAGE_SIZE, name);
+		Page<User> users = accountManager.getUserPageable(searchParams, pageNumber, pageSize);
 
 		model.addAttribute("page", users);
+
+		// 将搜索条件编码成字符串， 分页的URL
+
+		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
 
 		return "account/userList";
 	}

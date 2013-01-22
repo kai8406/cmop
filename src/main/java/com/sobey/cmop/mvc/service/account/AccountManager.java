@@ -2,6 +2,7 @@ package com.sobey.cmop.mvc.service.account;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,9 @@ import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Digests;
+import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Encodes;
+import com.sobey.framework.utils.SearchFilter;
 
 /**
  * 安全相关实体的管理类,包括用户和权限组.
@@ -137,10 +141,29 @@ public class AccountManager {
 		return id == 1 || id == 2 || id == 3;
 	}
 
-	public Page<User> getAllUser(int page, int size, String name) {
-		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-		// return userDao.findAllByNameLike("%" + name + "%", pageable);
-		return userDao.findAll(pageable);
+	public Page<User> getUserPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Specification<User> spec = buildSpecification(searchParams);
+
+		return userDao.findAll(spec, pageRequest);
+	}
+
+	/**
+	 * 创建分页请求.
+	 */
+	public PageRequest buildPageRequest(int pageNumber, int pagzSize) {
+		return new PageRequest(pageNumber - 1, pagzSize, new Sort(Direction.DESC, "id"));
+	}
+
+	/**
+	 * 创建动态查询条件组合.
+	 */
+	private Specification<User> buildSpecification(Map<String, Object> searchParams) {
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
+		return spec;
 	}
 
 	public User findUserByEmail(String email) {

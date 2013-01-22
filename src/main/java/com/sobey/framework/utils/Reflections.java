@@ -213,6 +213,7 @@ public class Reflections {
 	 * @return the first generic declaration, or Object.class if cannot be
 	 *         determined
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T> Class<T> getClassGenricType(final Class clazz) {
 		return getClassGenricType(clazz, 0);
 	}
@@ -229,6 +230,7 @@ public class Reflections {
 	 * @return the index generic declaration, or Object.class if cannot be
 	 *         determined
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Class getClassGenricType(final Class clazz, final int index) {
 
 		Type genType = clazz.getGenericSuperclass();
@@ -252,6 +254,7 @@ public class Reflections {
 		return (Class) params[index];
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static Class<?> getUserClass(Object instance) {
 		Assert.notNull(instance, "Instance must not be null");
 		Class clazz = instance.getClass();

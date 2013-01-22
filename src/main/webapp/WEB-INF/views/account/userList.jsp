@@ -6,56 +6,62 @@
 <title>用户管理</title>
 <script>
 	$(document).ready(function() {
-		
-		//active tab
-		$("#user-tab").addClass("active");
-		
-		$("#message").fadeOut(5000);
-		
+
 	});
 </script>
 </head>
 
 <body>
-	
-	<c:if test="${not empty message}">
-		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>
-	</c:if>
-	
-		<a class="btn btn-info pager" href="${ctx }/account/user/save/">创建用户</a>
-	
-		<form class="well well-small form-search" action="${ctx}/account/user/">
 
-			<div class="row-fluid rowshow-grid">
+	<c:if test="${not empty message}"><div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>	${message}</div></c:if>
 
-				<div class="span3">
-					<label class="control-label">名称:</label> <input type="text" id="name" name="name"  class="input-medium">
-				</div>
+	<form class="form-search" action="#">
 
-				<div class="span3">
-					<button class="btn" type="submit">Search</button>
-				</div>
+		<div class="row">
 
+			<div class="span3">
+				<label class="control-label">登录名</label> <input type="text" name="search_EQ_loginName" class="input-medium" value="${param.search_EQ_loginName}">
 			</div>
-		</form>
-	
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th>登录名</th><th>用户名</th><th>注册时间<th>管理</th></tr></thead>
-		<tbody>
-		<c:forEach items="${page.content}" var="user">
+			
+			<div class="span3">
+				<label class="control-label">真实姓名</label> <input type="text" name="search_LIKE_name" class="input-medium" value="${param.search_LIKE_name}">
+			</div>
+
+			<div class="span3">
+				<button class="btn" type="submit">Search</button>
+			</div>
+
+		</div>
+
+	</form>
+
+	<table id="contentTable"
+		class="table table-striped table-bordered table-condensed">
+		<thead>
 			<tr>
-				<td><a href="${ctx}/account/user/update/${user.id}">${user.loginName}</a></td>
-				<td>${user.name}</td>
-				<td>
-					<fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />
-				</td>
-				<td><a href="${ctx}/account/user/delete/${user.id}">删除</a></td>
+				<th>登录名</th>
+				<th>用户名</th>
+				<th>权限组</th>
+				<th>注册时间</th>
+				<th>管理</th>
 			</tr>
-		</c:forEach>
+		</thead>
+		<tbody>
+			<c:forEach items="${page.content}" var="item">
+				<tr>
+					<td><a href="${ctx}/account/user/update/${item.id}">${item.loginName}</a></td>
+					<td>${item.name}</td>
+					<td>${item.groupNames}</td>
+					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
+					<td><a href="${ctx}/account/user/delete/${item.id}">删除</a></td>
+				</tr>
+			</c:forEach>
 		</tbody>
 	</table>
-	
-	<%@ include file="/WEB-INF/layouts/pageable.jsp"%>
-        
+
+	<tags:pagination page="${page}" />
+
+	<a class="btn" href="${ctx }/account/user/save/">创建用户</a>
+
 </body>
 </html>

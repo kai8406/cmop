@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,7 +94,7 @@ public class ProfileController {
 	 * @param email
 	 * @return
 	 */
-	@RequestMapping(value = "checkEmail")
+	@RequestMapping(value = "checkEmail", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public String checkEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("email") String email) {
 		return email.equals(oldEmail) || accountManager.findUserByEmail(email) == null ? "true" : "false";

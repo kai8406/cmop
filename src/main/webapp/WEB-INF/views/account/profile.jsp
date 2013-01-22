@@ -123,6 +123,13 @@
 				</div>
 			</div>
 			
+			<div class="control-group">
+				<label class="control-label" for="createTime">注册日期</label>
+				<div class="controls">
+					<p class="help-inline plain-text"><fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></p>
+				</div>
+			</div>
+			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

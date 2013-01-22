@@ -65,7 +65,7 @@
 
 		<div class="control-group">
 			<div class="controls">
-				<input type="text"  name="username" value="${username}" class="input-block-level" placeholder="Login name" >
+				<input type="text"  name="username" value="${username}" class="input-block-level" placeholder="Login name">
 			</div>
 		</div>
 		

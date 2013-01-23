@@ -2,53 +2,66 @@
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 <html>
 <head>
-	<title>帐号管理</title>
+
+	<title>权限管理</title>
+	
 	<script>
 		$(document).ready(function() {
-			
-			$("#group-tab").addClass("active");
-			
-			$("#message").fadeOut(5000);
-			
+			$("ul#navbar li#group").addClass("active");
 		});
 	</script>
 </head>
 
 <body>
 
-	<c:if test="${not empty message}">
-		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>	
-	</c:if>
+	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
-		<a class="btn btn-info pager" href="${ctx }/account/group/save/">创建权限组</a>
+	<form class="form-inline well well-small" action="#">
+
+		<div class="row">
+
+			<div class="span3">
+				<label class="control-label search-text">权限角色</label> <input type="text" name="search_LIKE_name" class="input-small" maxlength="45" 
+					value="${param.search_LIKE_name}">
+			</div>
+			
+			<div class="span2 pull-right">
+				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
+				<button class="btn tip-bottom reset" title="刷新" type="reset"><i class="icon-refresh"></i></button>
+				<button class="btn tip-bottom" title="更多搜索条件" type="button">More</button>
+			</div>
+
+		</div>
+
+	</form>
 	
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<colgroup>
-			<col class="span3">
-			<col class="span7">
-			<col class="span2">
-		</colgroup>
+	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>名称</th>
+				<th>权限角色</th>
 				<th>授权</th>
-				<th>操作</th>
+				<th>管理</th>
 			</tr>
 		</thead>
-		<c:forEach items="${page.content}" var="group">
-			<tr>
-				<td>${group.name}</td>
-				<td>${group.permissionNames}</td>
-				<td>
-						<a href="update/${group.id}">修改</a> 
-						<a href="delete/${group.id}">删除</a>
-					<shiro:hasPermission name="group:edit">
-					</shiro:hasPermission>	
-				</td>
-			</tr>
-		</c:forEach>
+		<tbody>
+			<c:forEach items="${page.content}" var="item">
+				<tr>
+					<td>${item.name}</td>
+					<td>${item.permissionNames}</td>
+					
+					<td>
+						<a href="update/${item.id}">修改</a> 
+						<a href="delete/${item.id}">删除</a>
+					</td>
+					
+				</tr>
+			</c:forEach>
+		</tbody>
 	</table>
+	
+	<tags:pagination page="${page}" />
 
+	<a class="btn" href="save/">创建用户</a>
 
 </body>
 </html>

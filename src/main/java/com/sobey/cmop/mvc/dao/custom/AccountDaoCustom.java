@@ -20,4 +20,14 @@ public interface AccountDaoCustom {
 	@SuppressWarnings("rawtypes")
 	public List getUserGroupByUserId(Integer userId);
 
+	/**
+	 * 根据groupId获得Group所拥有的授权.<br>
+	 * 在group_permission中间表通过group_id获得permission.<br>
+	 * permission是字符串,可以通过Enum对象 Permission来比较.<br>
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public List<String> getGroupPermissionByGroupId(Integer groupId);
+
 }

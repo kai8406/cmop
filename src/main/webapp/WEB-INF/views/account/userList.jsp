@@ -52,11 +52,11 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="${ctx}/account/user/update/${item.id}">${item.loginName}</a></td>
+					<td><a href="update/${item.id}">${item.loginName}</a></td>
 					<td>${item.name}</td>
 					<td>${item.groupNames}</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
-					<td><a href="${ctx}/account/user/delete/${item.id}">删除</a></td>
+					<td><a href="delete/${item.id}">删除</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -64,7 +64,7 @@
 
 	<tags:pagination page="${page}" />
 
-	<a class="btn" href="${ctx }/account/user/save/">创建用户</a>
+	<a class="btn" href="save/">创建用户</a>
 
 </body>
 </html>

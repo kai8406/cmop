@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
@@ -235,9 +234,32 @@ public class AccountService extends BaseSevcie {
 		return (List<Group>) groupDao.findAll((new Sort(Direction.ASC, "id")));
 	}
 
-	public Page<Group> getAllGroup(int page, int size) {
-		Pageable pageable = new PageRequest(page, size, new Sort(Direction.ASC, "id"));
-		return groupDao.findAll(pageable);
+	/**
+	 * 根据groupId获得Group所拥有的授权.
+	 * @param groupId
+	 * @return
+	 */
+	public List<String> getPermissionByGroupId(Integer groupId) {
+		return accountDao.getGroupPermissionByGroupId(groupId);
+	}
+
+	/**
+	 * User的分页查询.
+	 * 
+	 * @param searchParams
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Group> getGroupPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		Specification<Group> spec = DynamicSpecifications.bySearchFilter(filters.values(), Group.class);
+
+		return groupDao.findAll(spec, pageRequest);
 	}
 
 	@Transactional(readOnly = false)

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,9 +46,7 @@ public class UserController extends BaseController {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
-		Page<User> users = comm.accountService.getUserPageable(searchParams, pageNumber, pageSize);
-
-		model.addAttribute("page", users);
+		model.addAttribute("page", comm.accountService.getUserPageable(searchParams, pageNumber, pageSize));
 
 		// 将搜索条件编码成字符串,分页的URL
 

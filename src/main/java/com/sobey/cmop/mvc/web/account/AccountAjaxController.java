@@ -43,4 +43,17 @@ public class AccountAjaxController extends BaseController {
 		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
+	/**
+	 * Ajax请求校验GroupName是否唯一.
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "checkGroupName")
+	public @ResponseBody
+	String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		return name.equals(oldName) || comm.accountService.findGroupByName(name) == null ? "true" : "false";
+	}
+
 }

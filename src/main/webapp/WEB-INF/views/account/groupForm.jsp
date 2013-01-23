@@ -2,14 +2,14 @@
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 <html>
 <head>
-	<title>权限组管理</title>
+	<title>权限管理</title>
 	<script>
 		$(document).ready(function() {
-			//聚焦第一个输入框
+			
+			$("ul#navbar li#group").addClass("active");
+			
 			$("#name").focus();
 			
-			//active tab
-			$("#group-tab").addClass("active");
 			
 			//为inputForm注册validate函数
 			$("#inputForm").validate({
@@ -29,9 +29,9 @@
 </head>
 
 <body>
-	<form:form id="inputForm" modelAttribute="group" action="." method="post" cssClass="form-horizontal">
+	<form id="inputForm"   action="." method="post" class="form-horizontal">
 	
-		<input type="hidden" name="id" value="${group.id}"/>
+		<input type="hidden" name="id" value="${group.id}">
 		
 		<div class="tab-content">
 			<div class="span6 offset2">
@@ -50,18 +50,34 @@
 					
 					<div class="control-group">
 						<label for="permissionList" class="control-label">权限列表</label>
+						
+						
 						<div class="controls">
-							<form:checkboxes path="permissionList" items="${allPermissions}" itemLabel="displayName" itemValue="value" />
+						
+							<c:forEach var="item" items="${allPermissions }" >
+								<label class="checkbox">
+							  		<input type="checkbox" id="permissionArray" name="permissionArray" value="${item.value }"
+										 <c:forEach var="permission" items="${permissions }" >
+											<c:if test="${permission ==  item.value}"> 
+												checked="checked" 
+											</c:if>
+										</c:forEach>
+									>
+								  ${item.displayName }
+								</label>
+							
+							</c:forEach>
+							
 						</div>
 					</div>
 					
 					<div class="form-actions">
-						<input class="btn btn-primary" type="submit" value="保存"/>&nbsp;	
+						<input class="btn btn-primary" type="submit" value="保存"/> 
 						<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 					</div>
 				</fieldset>
 			</div>
 		</div>
-	</form:form>
+	</form>
 </body>
 </html>

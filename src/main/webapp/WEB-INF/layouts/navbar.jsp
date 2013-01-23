@@ -11,23 +11,23 @@
 				<span class="icon-bar"></span>
 			</a> 
 			
-			<a class="brand" href="${ctx}/">Sobey`CMOP</a>
+			<a class="brand tip-bottom" title="首页" href="${ctx}/">Sobey`CMOP</a>
 
 			<div class="nav-collapse collapse">
 
 				<shiro:user>
 				
-					<ul class="nav">
+					<ul id="navbar" class="nav">
 						<shiro:hasPermission name="user:view">
-							<li class="active"><a href="${ctx}/account/user/">用户管理</a></li>
+							<li id="user" class="tip-bottom" title="用户管理"><a href="${ctx}/account/user/">用户管理</a></li>
 						</shiro:hasPermission>
 
 						<shiro:hasPermission name="group:view">
-							<li class="active"><a href="${ctx}/account/group/">权限管理</a></li>
+							<li id="group" class="tip-bottom" title="权限管理"><a href="${ctx}/account/group/">权限管理</a></li>
 						</shiro:hasPermission>
 					</ul>
 
-					<ul class="nav pull-right">
+					<ul class="nav pull-right" >
 						<li class="divider-vertical"></li>
 						<li class="dropdown">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#"><shiro:principal property="name"/><b class="caret"></b></a>

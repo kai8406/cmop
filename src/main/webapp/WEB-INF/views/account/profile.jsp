@@ -35,13 +35,9 @@
 </head>
 
 <body>
-<style type="text/css">
-	body {
-	  background-color: #f5f5f5;
-	}
-</style>
+<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
-	<form id="inputForm" action="${ctx}/profile" method="post" class="form-horizontal form-signin" style="max-width: 640px;">
+	<form id="inputForm" action="${ctx}/profile" method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${user.id}">
 		<input type="hidden" name="groupId" value="${group.id}">

@@ -42,21 +42,13 @@
 
 
 <body>
-<style type="text/css">
-	body {
-	  background-color: #f5f5f5;
-	}
-</style>
+<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
-	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal form-signin " style="max-width: 640px;  margin: 0 auto 20px;">
+	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal input-form">
 	
 		<fieldset>
 		
-			<legend><small>注册</small></legend>
-			
-			<div class="control-group">
-				<p class="pull-right">已有账号?<a href="${ctx}/login">登录</a></p>
-			</div>
+			<legend><small>注册<span class="pull-right">已有账号?<a href="${ctx}/login">登录</a></span></small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="loginName">登录名</label>	 

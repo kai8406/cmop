@@ -20,8 +20,8 @@
 		<div class="row">
 
 			<div class="span3">
-				<label class="control-label search-text">登录名</label> <input type="text" name="search_EQ_loginName" class="input-small" maxlength="45" 
-					value="${param.search_EQ_loginName}">
+				<label class="control-label search-text">登录名</label> <input type="text" name="search_LIKE_loginName" class="input-small" maxlength="45" 
+					value="${param.search_LIKE_loginName}">
 			</div>
 			
 			<div class="span3">
@@ -32,10 +32,15 @@
 			<div class="span2 pull-right">
 				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
 				<button class="btn tip-bottom reset" title="刷新" type="reset"><i class="icon-refresh"></i></button>
-				<button class="btn tip-bottom" title="更多搜索条件" type="button">More</button>
+				<button class="btn tip-bottom options"  title="更多搜索条件" type="button"><i class="icon-resize-small"></i></button>
 			</div>
 
 		</div>
+		
+		<!-- 多个搜索条件的话,启用 div.options -->
+		<!-- 
+			<div class="row options" style="display: none;"></div>
+		 -->
 
 	</form>
 

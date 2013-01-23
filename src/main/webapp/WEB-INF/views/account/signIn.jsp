@@ -38,13 +38,9 @@
  
 </head>
 <body>
-<style type="text/css">
-	body {
-	  background-color: #f5f5f5;
-	}
-</style>
+<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
-	<form id="inputForm" class="form-signin" action="${ctx}/login" method="post">
+	<form id="inputForm" class="input-form" action="${ctx}/login" method="post" style="max-width: 300px;">
 		
 		<p>
 		

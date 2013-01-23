@@ -236,6 +236,7 @@ public class AccountService extends BaseSevcie {
 
 	/**
 	 * 根据groupId获得Group所拥有的授权.
+	 * 
 	 * @param groupId
 	 * @return
 	 */
@@ -263,8 +264,8 @@ public class AccountService extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveGroup(Group entity) {
-		groupDao.save(entity);
+	public void saveGroup(Group group) {
+		groupDao.save(group);
 		shiroRealm.clearAllCachedAuthorizationInfo();
 	}
 

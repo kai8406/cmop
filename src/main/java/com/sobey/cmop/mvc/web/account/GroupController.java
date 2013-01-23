@@ -1,6 +1,8 @@
 package com.sobey.cmop.mvc.web.account;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -60,11 +62,12 @@ public class GroupController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Group group, @RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
 
-		group.setPermissionList(Arrays.asList(permissionArray));
+		group.setPermissionList(getPermissionList(permissionArray));
 
 		comm.accountService.saveGroup(group);
 
-		redirectAttributes.addFlashAttribute("message", "创建权限组 " + group.getName() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "创建权限 " + group.getName() + " 成功");
+
 		return REDIRECT_SUCCESS_URL;
 	}
 
@@ -85,10 +88,32 @@ public class GroupController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("group") Group group, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam("id") Integer id, @RequestParam("name") String name, @RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
+
+		Group group = comm.accountService.getGroup(id);
+
+		group.setName(name);
+		group.setPermissionList(getPermissionList(permissionArray));
+
 		comm.accountService.saveGroup(group);
-		redirectAttributes.addFlashAttribute("message", "修改权限组 " + group.getName() + " 成功");
+
+		redirectAttributes.addFlashAttribute("message", "修改权限 " + group.getName() + " 成功");
+
 		return REDIRECT_SUCCESS_URL;
+	}
+
+	/**
+	 * 接收页面传递到后台类似:{"user:view","group:view"}的String[]数组.<br>
+	 * 将其转换成List类型的集合返回.<br>
+	 * 
+	 * 不能直接将asList转换成集合放入对象中,要将转换为ArrayList. 否则会报
+	 * {@link UnsupportedOperationException}的错误
+	 * 
+	 * @param permissionArray
+	 * @return
+	 */
+	private List<String> getPermissionList(String[] permissionArray) {
+		return new ArrayList<String>(Arrays.asList(permissionArray));
 	}
 
 	/**

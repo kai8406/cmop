@@ -19,8 +19,8 @@
 	<form class="form-inline well well-small" action="#">
 
 		<div class="row">
-
-			<div class="span3">
+		
+			<div class="span3 ">
 				<label class="control-label search-text">权限角色</label> <input type="text" name="search_LIKE_name" class="input-small" maxlength="45" 
 					value="${param.search_LIKE_name}">
 			</div>
@@ -28,9 +28,8 @@
 			<div class="span2 pull-right">
 				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
 				<button class="btn tip-bottom reset" title="刷新" type="reset"><i class="icon-refresh"></i></button>
-				<button class="btn tip-bottom" title="更多搜索条件" type="button">More</button>
 			</div>
-
+			
 		</div>
 
 	</form>
@@ -46,14 +45,11 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td>${item.name}</td>
+					<td><a href="update/${item.id}">${item.name}</a></td>
 					<td>${item.permissionNames}</td>
-					
 					<td>
-						<a href="update/${item.id}">修改</a> 
 						<a href="delete/${item.id}">删除</a>
 					</td>
-					
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -61,7 +57,7 @@
 	
 	<tags:pagination page="${page}" />
 
-	<a class="btn" href="save/">创建用户</a>
+	<a class="btn" href="save/">创建权限</a>
 
 </body>
 </html>

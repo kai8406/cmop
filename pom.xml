@@ -49,6 +49,13 @@
 	</properties>
 	<dependencies>
 
+		<!-- oneCMDB -->
+		<dependency>
+			<groupId>org.onecmdb</groupId>
+			<artifactId>onecmdb-core</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		
 		<!-- redmine -->
 		<dependency>
 			<groupId>com.taskadapter</groupId>

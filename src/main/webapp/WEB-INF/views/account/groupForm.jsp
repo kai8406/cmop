@@ -15,7 +15,7 @@
 			$("#inputForm").validate({
 				rules:{
 					name:{
-						remote: "${ctx}/account/group/checkGroupName?oldName="+encodeURIComponent('${group.name}')
+						remote: "${ctx}/ajax/account/checkGroupName?oldName="+encodeURIComponent('${group.name}')
 					},
 					permissionList:"required"
 				},
@@ -29,7 +29,7 @@
 </head>
 
 <body>
-	<form id="inputForm"   action="." method="post" class="form-horizontal">
+	<form id="inputForm"  action="." method="post" class="form-horizontal">
 	
 		<input type="hidden" name="id" value="${group.id}">
 		
@@ -75,6 +75,7 @@
 						<input class="btn btn-primary" type="submit" value="保存"/> 
 						<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 					</div>
+					
 				</fieldset>
 			</div>
 		</div>

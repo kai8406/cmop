@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.web.account;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -57,8 +58,12 @@ public class GroupController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Group group,@RequestParam("permissionArray")String[] permissionArray, RedirectAttributes redirectAttributes) {
+	public String save(Group group, @RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
+
+		group.setPermissionList(Arrays.asList(permissionArray));
+
 		comm.accountService.saveGroup(group);
+
 		redirectAttributes.addFlashAttribute("message", "创建权限组 " + group.getName() + " 成功");
 		return REDIRECT_SUCCESS_URL;
 	}

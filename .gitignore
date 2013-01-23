@@ -7,5 +7,6 @@ target
 .DS_Store
 .externalToolBuilders
 .gitattributes
+.svn
 *~
 /.git

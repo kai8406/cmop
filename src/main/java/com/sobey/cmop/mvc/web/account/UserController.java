@@ -5,12 +5,9 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,14 +35,6 @@ public class UserController extends BaseController {
 	 * 重定向URL
 	 */
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/account/user/";
-
-	@Autowired
-	private GroupListEditor groupListEditor;
-
-	@InitBinder
-	public void initBinder(WebDataBinder b) {
-		b.registerCustomEditor(List.class, "groupList", groupListEditor);
-	}
 
 	/**
 	 * 显示所有的user list

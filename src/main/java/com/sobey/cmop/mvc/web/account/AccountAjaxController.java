@@ -20,6 +20,7 @@ public class AccountAjaxController extends BaseController {
 	/**
 	 * Ajax请求校验email是否唯一.
 	 * 
+	 * @param oldEmail
 	 * @param email
 	 * @return
 	 */
@@ -32,13 +33,14 @@ public class AccountAjaxController extends BaseController {
 	/**
 	 * Ajax请求校验loginName是否唯一.
 	 * 
+	 * @param oldLoginName
 	 * @param loginName
 	 * @return
 	 */
 	@RequestMapping(value = "checkLoginName")
 	@ResponseBody
-	public String checkLoginName(@RequestParam("loginName") String loginName) {
-		return comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
+	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
+		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
 }

@@ -1,9 +1,13 @@
 package com.sobey.cmop.mvc.comm;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.Constant;
+import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -49,5 +53,18 @@ public class BaseController {
 	 * 静态常量引导类
 	 */
 	public static Constant constant;
+
+	/**
+	 * 根据groupId获得GroupList 集合.<br>
+	 * 
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public List<Group> getGroupListById(Integer groupId) {
+		List<Group> groupList = Lists.newArrayList();
+		groupList.add(comm.accountService.getGroup(groupId));
+		return groupList;
+	}
 
 }

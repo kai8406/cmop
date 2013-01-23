@@ -15,34 +15,36 @@
 
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 
-	<form class="form-search well well-small" action="#">
+	<form class="form-inline well well-small" action="#">
 
 		<div class="row">
 
 			<div class="span3">
-				<label class="control-label">登录名</label> <input type="text" name="search_EQ_loginName" class="input-medium" value="${param.search_EQ_loginName}">
+				<label class="control-label search-text">登录名</label> <input type="text" name="search_EQ_loginName" class="input-small" maxlength="45" 
+					value="${param.search_EQ_loginName}">
 			</div>
 			
 			<div class="span3">
-				<label class="control-label">真实姓名</label> <input type="text" name="search_LIKE_name" class="input-medium" value="${param.search_LIKE_name}">
+				<label class="control-label search-text">真实姓名</label> <input type="text" name="search_LIKE_name" class="input-small" maxlength="45" 
+					value="${param.search_LIKE_name}">
 			</div>
-
-			<div class="span3">
-				<button class="btn" type="submit">Search</button>
-				<button class="btn" type="reset">Reset</button>
+			
+			<div class="span2 pull-right">
+				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
+				<button class="btn tip-bottom reset" title="刷新" type="reset"><i class="icon-refresh"></i></button>
+				<button class="btn tip-bottom" title="更多搜索条件" type="button">More</button>
 			</div>
 
 		</div>
 
 	</form>
 
-	<table id="contentTable"
-		class="table table-striped table-bordered table-condensed">
+	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
 				<th>登录名</th>
 				<th>用户名</th>
-				<th>权限组</th>
+				<th>权限角色</th>
 				<th>注册时间</th>
 				<th>管理</th>
 			</tr>

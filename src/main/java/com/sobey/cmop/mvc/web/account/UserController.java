@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.AccountConstant;
+import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Servlets;
 
@@ -47,11 +49,6 @@ public class UserController extends BaseController {
 
 	/**
 	 * 显示所有的user list
-	 * 
-	 * @param page
-	 * @param name
-	 * @param model
-	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
@@ -74,82 +71,89 @@ public class UserController extends BaseController {
 
 	/**
 	 * 跳转到新增页面
-	 * 
-	 * @param model
-	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
-
-		model.addAttribute("allGroups", comm.accountService.getAllGroup());
-		model.addAttribute("user", comm.accountService.getCurrentUser());
-
 		return "account/userForm";
 	}
 
 	/**
 	 * 新增
-	 * 
-	 * @param user
-	 * @param redirectAttributes
-	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(User user, @RequestParam("departmentId") Integer departmentId, RedirectAttributes redirectAttributes) {
+	public String save(User user, @RequestParam("departmentId") Integer departmentId, @RequestParam("groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
+		user.setGroupList(getGroupListById(groupId));
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
+		user.setPlainPassword(AccountConstant.defaultPassword);
 
 		comm.accountService.registerUser(user);
 
-		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getName() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "创建用户 " + user.getLoginName() + " 成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}
 
 	/**
 	 * 跳转到修改页面
-	 * 
-	 * @param id
-	 * @param model
-	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("allGroups", comm.accountService.getAllGroup());
+
+		model.addAttribute("group", comm.accountService.findGroupByUserId(id));
 		model.addAttribute("user", comm.accountService.getUser(id));
+
 		return "account/userForm";
 	}
 
 	/**
 	 * 修改
-	 * 
-	 * @param user
-	 * @param redirectAttributes
-	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "phonenum") String phonenum,
+			@RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId, @RequestParam(value = "departmentId") Integer departmentId,
+			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+
+		User user = comm.accountService.getUser(id);
+		user.setEmail(email);
+		user.setPhonenum(phonenum);
+		user.setName(name);
+		user.setLeaderId(leaderId);
+		user.setDepartment(comm.accountService.getDepartment(departmentId));
+		user.setGroupList(getGroupListById(groupId));
+
 		comm.accountService.updateUser(user);
-		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getName() + " 成功");
+
+		redirectAttributes.addFlashAttribute("message", "修改用户 " + user.getLoginName() + " 成功");
+
 		return REDIRECT_SUCCESS_URL;
 	}
 
 	/**
 	 * 删除用户
-	 * 
-	 * @param id
-	 * @param redirectAttributes
-	 * @return
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
 		boolean falg = comm.accountService.deleteUser(id);
+
 		String message = falg ? "删除用户成功" : "不能删除超级管理员";
 
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return REDIRECT_SUCCESS_URL;
+	}
+
+	// ============== 所有RequestMapping方法调用前的Model准备方法 =============
+
+	/**
+	 * 返回所有的权限组.
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("allGroups")
+	public List<Group> allGroups() {
+		return comm.accountService.findAllGroup();
 	}
 
 }

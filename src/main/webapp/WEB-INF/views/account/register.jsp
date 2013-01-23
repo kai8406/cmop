@@ -10,7 +10,7 @@
 			
 			$("#loginName").focus();
 			
-			$("#registerForm").validate({
+			$("#inputForm").validate({
 				rules: {
 					loginName: {
 						remote: "${ctx}/ajax/account/checkLoginName"
@@ -48,7 +48,7 @@
 	}
 </style>
 
-	<form id="registerForm" action="${ctx}/register" method="post" class="form-horizontal form-signin " style="max-width: 640px;  margin: 0 auto 20px;">
+	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal form-signin " style="max-width: 640px;  margin: 0 auto 20px;">
 	
 		<fieldset>
 		

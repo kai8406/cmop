@@ -28,6 +28,11 @@ public class AccountConstant {
 	public static final int SALT_SIZE = 8;
 
 	/**
+	 * 默认密码:111111
+	 */
+	public static final String defaultPassword = "111111";
+
+	/**
 	 * 用户状态 <br>
 	 * 1:enabled 有效 <br>
 	 * 0:disabled 无效

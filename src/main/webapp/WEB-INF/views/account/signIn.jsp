@@ -10,7 +10,7 @@
 
 	$(document).ready(function(){
 		 
-		$("#signinForm").validate({
+		$("#inputForm").validate({
 			rules:{
 				username:{
 					required: true,
@@ -18,7 +18,7 @@
 				},
 				password:{
 					required:true,
-				//	minlength:6,
+				 	minlength:6,
 					maxlength:20
 				}
 			},
@@ -44,7 +44,7 @@
 	}
 </style>
 
-	<form id="signinForm" class="form-signin" action="${ctx}/login" method="post">
+	<form id="inputForm" class="form-signin" action="${ctx}/login" method="post">
 		
 		<p>
 		

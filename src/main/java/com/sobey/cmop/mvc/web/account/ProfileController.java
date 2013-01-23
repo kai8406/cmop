@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
@@ -26,21 +25,24 @@ import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 @RequestMapping(value = "/profile")
 public class ProfileController extends BaseController {
 
+	/**
+	 * 跳转到个人信息页面
+	 * 
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String profileForm(Model model) {
 
-		Group group = comm.accountService.findGroupByUserId(getCurrentUserId());
-
-		// 如果用户没有权限,则默认给该用户 2.apply 申请人 的权限.
-
-		Integer groupId = group == null ? AccountConstant.DefaultGroups.apply.toInteger() : group.getId();
-
-		model.addAttribute("groupId", groupId);
+		model.addAttribute("group", comm.accountService.findGroupByUserId(getCurrentUserId()));
 		model.addAttribute("user", comm.accountService.getUser(getCurrentUserId()));
 
 		return "account/profile";
 	}
 
+	/**
+	 * 修改
+	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "plainPassword") String plainPassword,
 			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId,
@@ -58,7 +60,7 @@ public class ProfileController extends BaseController {
 		user.setName(name);
 		user.setLeaderId(leaderId);
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
-		user.setGroupList(groupList);
+		user.setGroupList(getGroupListById(groupId));
 
 		comm.accountService.updateUser(user);
 

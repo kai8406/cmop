@@ -10,7 +10,7 @@
 			
 			$("#email").focus();
 			
-			$("#profileForm").validate({
+			$("#inputForm").validate({
 				rules: {
 					email: {
 						remote: "${ctx}/ajax/account/checkEmail?oldEmail=${user.email}"
@@ -41,10 +41,10 @@
 	}
 </style>
 
-	<form id="profileForm" action="${ctx}/profile" method="post" class="form-horizontal form-signin" style="max-width: 640px;">
+	<form id="inputForm" action="${ctx}/profile" method="post" class="form-horizontal form-signin" style="max-width: 640px;">
 	
 		<input type="hidden" name="id" value="${user.id}">
-		<input type="hidden" name="groupId" value="${groupId}">
+		<input type="hidden" name="groupId" value="${group.id}">
 		
 		<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 		
@@ -115,6 +115,13 @@
 						<option value="4">胡景涛</option>
 						<option value="5">习近平</option>
 					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="createTime">权限角色</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${group.name }</p>
 				</div>
 			</div>
 			

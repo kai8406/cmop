@@ -183,8 +183,6 @@ public class AccountService extends BaseSevcie {
 
 		// 默认初始密码
 
-		String defaultPassword = "111111";
-
 		List<User> users = (List<User>) userDao.findAll();
 
 		for (User user : users) {
@@ -199,7 +197,7 @@ public class AccountService extends BaseSevcie {
 			}
 
 			user.setLoginName(loginName);
-			user.setPlainPassword(defaultPassword);
+			user.setPlainPassword(AccountConstant.defaultPassword);
 			entryptPassword(user);
 			user.setCreateTime(new Date());
 			userDao.save(user);
@@ -219,7 +217,7 @@ public class AccountService extends BaseSevcie {
 
 	/**
 	 * 获得指定用户所拥有的权限组<br>
-	 * 如果指定用户没有权限组,则返回 null
+	 * 如果指定用户没有权限组,则返回默认权限:2.apply 申请人
 	 * 
 	 * @param userId
 	 * @return
@@ -229,16 +227,11 @@ public class AccountService extends BaseSevcie {
 
 		List list = accountDao.getUserGroupByUserId(userId);
 
-		if (!list.isEmpty()) {
-			Integer id = (Integer) list.get(0);
-			return this.getGroup(id);
-		}
-
-		return null;
+		return list.isEmpty() ? getGroup(AccountConstant.DefaultGroups.apply.toInteger()) : getGroup((Integer) list.get(0));
 
 	}
 
-	public List<Group> getAllGroup() {
+	public List<Group> findAllGroup() {
 		return (List<Group>) groupDao.findAll((new Sort(Direction.ASC, "id")));
 	}
 

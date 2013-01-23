@@ -17,3 +17,16 @@
 .plain-text {
 	padding:5px 0px;
 }
+
+.table th {
+	height: auto;
+	padding: 5px 10px 2px;
+	border-bottom: 0;
+	text-align: center;
+	color: #666666;
+}
+
+label.search-text{
+	width: 60px;
+}
+

@@ -25,8 +25,6 @@ public class RegisterController extends BaseController {
 
 	/**
 	 * 跳转到注册页面
-	 * 
-	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String registerForm() {
@@ -35,10 +33,6 @@ public class RegisterController extends BaseController {
 
 	/**
 	 * 注册用户
-	 * 
-	 * @param user
-	 * @param redirectAttributes
-	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(User user, @RequestParam("departmentId") Integer departmentId, Model model) {

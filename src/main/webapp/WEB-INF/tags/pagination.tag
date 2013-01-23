@@ -15,11 +15,9 @@ request.setAttribute("begin", begin);
 request.setAttribute("end", end);
 %>
 
-<div class="pagination">
+<div class="pagination pull-right" style="margin-top: 0px; margin-bottom: 0px;">
 	<ul>
 	
-		<li class="disabled"><a href='#'>共${page.totalElements}条</a></li>
-		
 		 <% if (page.hasPreviousPage()){%>
                	<li><a href="?page=1&${searchParams}">&lt;&lt;</a></li>
                 <li><a href="?page=${current-1}&${searchParams}">&lt;</a></li>
@@ -46,7 +44,9 @@ request.setAttribute("end", end);
                 <li class="disabled"><a href="#">&gt;</a></li>
                 <li class="disabled"><a href="#">&gt;&gt;</a></li>
          <%} %>
-
+         
+		<li class="disabled"><a href='#'>共${page.totalElements}条</a></li>
+		
 	</ul>
 </div>
 

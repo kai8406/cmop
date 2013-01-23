@@ -3,105 +3,152 @@
 
 <html>
 <head>
-	<title>帐号管理</title>
+
+	<title>用户管理</title>
+	
 	<script>
 		$(document).ready(function() {
-			//聚焦第一个输入框
-			$("#email").focus();
 			
-	 		//active tab
-	 		$("#user-tab").addClass("active");
+			$("ul#navbar li#user").addClass("active");
 			
-			//为inputForm注册validate函数
 			$("#inputForm").validate({
 				rules: {
-					email: {
-						remote: "${ctx}/ajax/account/checkEmail?oldEmail=" + encodeURIComponent('${user.email}')
+					loginName: {
+						remote: "${ctx}/ajax/account/checkLoginName?oldLoginName=${user.loginName}"
 					},
-					groupList:"required"
-				},
-				messages: {
 					email: {
-						remote: "登录邮箱已存在"
-					},
-					confirmPassword: {
-						equalTo: "输入与上面相同的密码"
+						remote: "${ctx}/ajax/account/checkEmail?oldEmail=${user.email}"
 					}
 				},
-				errorContainer: "#messageBox",
-				errorPlacement: function(error, element) {
-					if ( element.is(":checkbox") )
-						error.appendTo ( element.parent().next() );
-					else
-						error.insertAfter( element );
+				messages: {
+					loginName: {
+						remote: "用户登录名已存在"
+					},
+					email: {
+						remote: "邮箱已存在"
+					}
+				},
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight:function(element, errorClass, validClass) {
+					$(element).parents('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).parents('.control-group').removeClass('error');
 				}
 			});
+			 
 		});
 	</script>
+	
 </head>
 
 <body>
-	<form:form id="inputForm" modelAttribute="user" action="." method="post" cssClass="form-horizontal">
+<style type="text/css">
+	body {
+	  background-color: #f5f5f5;
+	}
+</style>
+
+	<form id="inputForm" action="." method="post" class="form-horizontal form-signin" style="max-width: 640px;">
 	
-		<input type="hidden" name="id" value="${user.id}"/>
+		<input type="hidden" name="id" value="${user.id}">
 		
-		<div class="tab-content">
-			<div class="span6 offset2">
-				<fieldset>
-					<legend><small>管理账号</small></legend>
-					
-					<div id="messageBox" class="alert alert-error" style="display:none">输入有误，请先更正。</div>
-					<input name="status" type="hidden" value="1">
-					<div class="control-group">
-						<label for="email" class="control-label">登录邮箱</label>
-						<div class="controls">
-							<input type="text" id="email" name="email" size="50" value="${user.email}" class="required email"/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="name" class="control-label">用户真实姓名</label>
-						<div class="controls">
-							<input type="text" id="name" name="name" size="50" value="${user.name}" class="required"/>
-						</div>
-					</div>
-					
-					
-					<div class="control-group">
-						<label for="name" class="control-label">登录名</label>
-						<div class="controls">
-							<input type="text" id="loginName" name="loginName" size="50" value="${user.loginName}" class="required"/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="password" class="control-label">密码</label>
-						<div class="controls">
-							<input type="password" id="plainPassword" name="plainPassword" size="50" value="${user.plainPassword}" class="required" minlength="3"/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label for="confirmPassword" class="control-label">确认密码</label>
-						<div class="controls">
-							<input type="password" id="confirmPassword" name="confirmPassword" size="50" value="${user.plainPassword}" equalTo="#plainPassword"/>
-						</div>
-					</div>
-					<div class="control-group">
-						<label for="groupList" class="control-label ">权限组</label>
-						<div class="controls">
-							<form:checkboxes path="groupList" items="${allGroups}" itemLabel="name" itemValue="id" />
-						</div>
-					</div>
-					
-					<div class="form-actions">
-						<button class="btn btn-primary">保存</button>&nbsp;	
-						<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
-					</div>
-	
-				</fieldset>
+		<fieldset>
+		
+			<legend><small>
+				<c:choose>
+					<c:when test="${not empty user }">修改用户</c:when>
+					<c:otherwise>创建用户</c:otherwise>
+				</c:choose>
+			</small></legend>
+			
+			<div class="control-group">
+				<label class="control-label" for="loginName">登录名</label>	 
+				<div class="controls">
+					<input type="text" id="loginName" name="loginName" value="${user.loginName }"
+					<c:if test="${not empty user }"> readonly="readonly"</c:if> class="required" maxlength="45" placeholder="...Login name">
+				</div>
 			</div>
-		</div>
-	</form:form>
+			
+			<div class="control-group">
+				<label class="control-label" for="email">Email地址</label>
+				<div class="controls">
+					<input type="text" id="email" name="email" value="${user.email }"  class="required email" maxlength="45"  placeholder="...Email address">
+				</div>
+			</div>
+			 
+			<div class="control-group">
+				<label class="control-label" for="phonenum">联系电话</label>
+				<div class="controls">
+					<input type="text" id="phonenum" name="phonenum" value="${user.phonenum }"  class="required" maxlength="45" placeholder="...Phone number">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="name">真实姓名</label>
+				<div class="controls">
+					<input type="text" id="name" name="name" value="${user.name }" class="required" maxlength="45" placeholder="...Real Name">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="departmentId">所属部门</label>
+				<div class="controls">
+					<select id="departmentId" name="departmentId" class="required">
+						<option value="1" <c:if test="${user.department.id == 1}">selected="selected"</c:if> >新媒体事业部</option>
+						<option value="2">新媒体运维部</option>
+						<option value="3">新媒体产品部</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="leaderId">所属领导</label>
+				<div class="controls">
+					<select id="leaderId" name="leaderId" class="required">
+						<option value="1" <c:if test="${user.leaderId == 1}">selected="selected"</c:if> >毛泽东</option>
+						<option value="2">邓小平</option>
+						<option value="3">江泽民</option>
+						<option value="4">胡景涛</option>
+						<option value="5">习近平</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="groupId">权限角色</label>
+				<div class="controls">	
+					<select id="groupId" name="groupId" class="required">
+						<c:forEach var="item" items="${allGroups }">
+							<option value="${item.id }"
+								<c:if test="${group.id==item.id }">
+									selected="selected"
+								</c:if>
+							>
+								${item.name}
+							</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<c:if test="${not empty user}">
+				<div class="control-group">
+					<label class="control-label" for="createTime">注册日期</label>
+					<div class="controls">
+						<p class="help-inline plain-text"><fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></p>
+					</div>
+				</div>
+			</c:if>
+			
+			<div class="form-actions">
+				<input class="btn" type="button" value="返回" onclick="history.back()">
+				<input class="btn btn-primary" type="submit" value="提交">
+			</div>
+			
+		</fieldset>
+		
+	</form>
 </body>
 </html>

@@ -16,6 +16,13 @@ $(document).ready(function() {
 	// === datepicker === //
 	
  	$('.datepicker').datepicker();
-	
+
+ 	// === reset ===//
+ 	
+ 	$("button.reset").click(function(){
+ 		var $form = $(this).closest("form"); 
+ 		$form.find("input[type=text]").val('');
+ 		$form.submit();
+ 	});
 	
 });

@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.dao.account;
+package com.sobey.cmop.mvc.dao.custom;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * @author liukai
  * 
  */
-public interface AccountDao {
+public interface AccountDaoCustom {
 
 	/**
 	 * 获得用户所拥有的权限组ID<br>

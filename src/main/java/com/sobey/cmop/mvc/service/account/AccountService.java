@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
-import com.sobey.cmop.mvc.constant.ConstantAccount;
-import com.sobey.cmop.mvc.dao.account.AccountDao;
-import com.sobey.cmop.mvc.dao.account.DepartmentDao;
-import com.sobey.cmop.mvc.dao.account.GroupDao;
-import com.sobey.cmop.mvc.dao.account.UserDao;
+import com.sobey.cmop.mvc.constant.AccountConstant;
+import com.sobey.cmop.mvc.dao.DepartmentDao;
+import com.sobey.cmop.mvc.dao.GroupDao;
+import com.sobey.cmop.mvc.dao.UserDao;
+import com.sobey.cmop.mvc.dao.custom.AccountDaoCustom;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
@@ -48,7 +48,7 @@ public class AccountService extends BaseSevcie {
 
 	private UserDao userDao;
 	private GroupDao groupDao;
-	private AccountDao accountDao;
+	private AccountDaoCustom accountDao;
 	private DepartmentDao departmentDao;
 	private ShiroDbRealm shiroRealm;
 
@@ -89,8 +89,7 @@ public class AccountService extends BaseSevcie {
 
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
 
-		filters.put("user.status",
-				new SearchFilter("status", Operator.EQ, ConstantAccount.UserStatus.ENABLED.toInteger()));
+		filters.put("user.status", new SearchFilter("status", Operator.EQ, AccountConstant.UserStatus.ENABLED.toInteger()));
 		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
 
 		return userDao.findAll(spec, pageRequest);
@@ -103,7 +102,7 @@ public class AccountService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void registerUser(User user) {
-		user.setStatus(ConstantAccount.UserStatus.ENABLED.toInteger());
+		user.setStatus(AccountConstant.UserStatus.ENABLED.toInteger());
 		entryptPassword(user);
 		user.setCreateTime(new Date());
 		userDao.save(user);
@@ -123,10 +122,10 @@ public class AccountService extends BaseSevcie {
 	 * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
 	 */
 	private void entryptPassword(User user) {
-		byte[] salt = Digests.generateSalt(ConstantAccount.SALT_SIZE);
+		byte[] salt = Digests.generateSalt(AccountConstant.SALT_SIZE);
 		user.setSalt(Encodes.encodeHex(salt));
 
-		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, ConstantAccount.HASH_INTERATIONS);
+		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, AccountConstant.HASH_INTERATIONS);
 		user.setPassword(Encodes.encodeHex(hashPassword));
 	}
 
@@ -277,9 +276,7 @@ public class AccountService extends BaseSevcie {
 	 * @return
 	 */
 	private boolean isDefeatGroup(Integer id) {
-		return id == ConstantAccount.DefaultGroups.admin.toInteger()
-				|| id == ConstantAccount.DefaultGroups.apply.toInteger()
-				|| id == ConstantAccount.DefaultGroups.audit.toInteger();
+		return id == AccountConstant.DefaultGroups.admin.toInteger() || id == AccountConstant.DefaultGroups.apply.toInteger() || id == AccountConstant.DefaultGroups.audit.toInteger();
 	}
 
 	// -- Department Manager --//
@@ -299,7 +296,7 @@ public class AccountService extends BaseSevcie {
 	}
 
 	@Autowired
-	public void setAccountDao(AccountDao accountDao) {
+	public void setAccountDao(AccountDaoCustom accountDao) {
 		this.accountDao = accountDao;
 	}
 

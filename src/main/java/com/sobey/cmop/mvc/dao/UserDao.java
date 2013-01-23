@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.dao.account;
+package com.sobey.cmop.mvc.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -53,10 +53,8 @@ public class UserController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
-			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
-			ServletRequest request) {
+	@RequestMapping(value = { "list", "" })
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
 
 		// TODO 初始化所有User的密码和LoginName
 		// comm.accountService.initializeUser();
@@ -97,8 +95,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(User user, @RequestParam("departmentId") Integer departmentId,
-			RedirectAttributes redirectAttributes) {
+	public String save(User user, @RequestParam("departmentId") Integer departmentId, RedirectAttributes redirectAttributes) {
 
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
 

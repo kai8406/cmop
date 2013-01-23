@@ -20,7 +20,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
-import com.sobey.cmop.mvc.constant.ConstantAccount;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Encodes;
@@ -52,8 +52,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		if (user != null) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getId(), user.getLoginName(), user.getName()),
-					user.getPassword(), ByteSource.Util.bytes(salt), getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getId(), user.getLoginName(), user.getName()), user.getPassword(), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -87,8 +86,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	 */
 	@PostConstruct
 	public void initCredentialsMatcher() {
-		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(ConstantAccount.HASH_ALGORITHM);
-		matcher.setHashIterations(ConstantAccount.HASH_INTERATIONS);
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(AccountConstant.HASH_ALGORITHM);
+		matcher.setHashIterations(AccountConstant.HASH_INTERATIONS);
 		setCredentialsMatcher(matcher);
 	}
 

@@ -147,14 +147,14 @@ public class Collections3 {
 		}
 
 		// 当类型为List时，直接取得最后一个元素 .
-		
+
 		if (collection instanceof List) {
 			List<T> list = (List<T>) collection;
 			return list.get(list.size() - 1);
 		}
 
 		// 其他类型通过iterator滚动到最后一个元素.
-		
+
 		Iterator<T> iterator = collection.iterator();
 		while (true) {
 			T current = iterator.next();

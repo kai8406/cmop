@@ -18,7 +18,7 @@ public class DynamicSpecifications {
 	public static <T> Specification<T> bySearchFilter(final Collection<SearchFilter> filters, final Class<T> clazz) {
 		return new Specification<T>() {
 
-			@SuppressWarnings({"rawtypes", "unchecked"})
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 				if (Collections3.isNotEmpty(filters)) {
@@ -36,31 +36,31 @@ public class DynamicSpecifications {
 						}
 
 						// logic operator
-						
+
 						switch (filter.operator) {
-							case EQ :
-								predicates.add(builder.equal(expression, filter.value));
-								break;
-							case LIKE :
-								predicates.add(builder.like(expression, "%" + filter.value + "%"));
-								break;
-							case GT :
-								predicates.add(builder.greaterThan(expression, (Comparable) filter.value));
-								break;
-							case LT :
-								predicates.add(builder.lessThan(expression, (Comparable) filter.value));
-								break;
-							case GTE :
-								predicates.add(builder.greaterThanOrEqualTo(expression, (Comparable) filter.value));
-								break;
-							case LTE :
-								predicates.add(builder.lessThanOrEqualTo(expression, (Comparable) filter.value));
-								break;
+						case EQ:
+							predicates.add(builder.equal(expression, filter.value));
+							break;
+						case LIKE:
+							predicates.add(builder.like(expression, "%" + filter.value + "%"));
+							break;
+						case GT:
+							predicates.add(builder.greaterThan(expression, (Comparable) filter.value));
+							break;
+						case LT:
+							predicates.add(builder.lessThan(expression, (Comparable) filter.value));
+							break;
+						case GTE:
+							predicates.add(builder.greaterThanOrEqualTo(expression, (Comparable) filter.value));
+							break;
+						case LTE:
+							predicates.add(builder.lessThanOrEqualTo(expression, (Comparable) filter.value));
+							break;
 						}
 					}
 
 					// 将所有条件用 and 联合起来
-					
+
 					if (predicates.size() > 0) {
 						return builder.and(predicates.toArray(new Predicate[predicates.size()]));
 					}

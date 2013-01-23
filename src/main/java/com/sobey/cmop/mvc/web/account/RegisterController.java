@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.ConstantAccount;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 
@@ -46,8 +46,8 @@ public class RegisterController extends BaseController {
 		List<Group> groupList = Lists.newArrayList();
 
 		// TODO 暂时设置为admin,方便测试.
-		
-		groupList.add(comm.accountService.getGroup(ConstantAccount.DefaultGroups.admin.toInteger()));
+
+		groupList.add(comm.accountService.getGroup(AccountConstant.DefaultGroups.admin.toInteger()));
 
 		user.setGroupList(groupList);
 

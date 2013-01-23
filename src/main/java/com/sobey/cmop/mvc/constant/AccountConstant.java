@@ -10,7 +10,7 @@ import com.google.common.collect.Maps;
  * @author liukai
  * 
  */
-public class ConstantAccount {
+public class AccountConstant {
 
 	/**
 	 * 加密方式 : SHA-1

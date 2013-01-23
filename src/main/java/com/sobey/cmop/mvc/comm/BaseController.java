@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.comm;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sobey.cmop.mvc.constant.Constant;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -43,5 +44,10 @@ public class BaseController {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
 		return user.id;
 	}
+
+	/**
+	 * 静态常量引导类
+	 */
+	public static Constant constant;
 
 }

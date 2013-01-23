@@ -25,8 +25,7 @@ public class AccountAjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "checkEmail")
 	@ResponseBody
-	public String checkEmail(@RequestParam(value = "oldEmail", required = false) String oldEmail,
-			@RequestParam("email") String email) {
+	public String checkEmail(@RequestParam(value = "oldEmail", required = false) String oldEmail, @RequestParam("email") String email) {
 		return email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null ? "true" : "false";
 	}
 

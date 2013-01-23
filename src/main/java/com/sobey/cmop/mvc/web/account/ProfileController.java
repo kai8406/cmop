@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.ConstantAccount;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
@@ -33,7 +33,7 @@ public class ProfileController extends BaseController {
 
 		// 如果用户没有权限,则默认给该用户 2.apply 申请人 的权限.
 
-		Integer groupId = group == null ? ConstantAccount.DefaultGroups.apply.toInteger() : group.getId();
+		Integer groupId = group == null ? AccountConstant.DefaultGroups.apply.toInteger() : group.getId();
 
 		model.addAttribute("groupId", groupId);
 		model.addAttribute("user", comm.accountService.getUser(getCurrentUserId()));
@@ -42,12 +42,9 @@ public class ProfileController extends BaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email,
-			@RequestParam(value = "plainPassword") String plainPassword,
-			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name,
-			@RequestParam(value = "leaderId") Integer leaderId,
-			@RequestParam(value = "departmentId") Integer departmentId,
-			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "plainPassword") String plainPassword,
+			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId,
+			@RequestParam(value = "departmentId") Integer departmentId, @RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		List<Group> groupList = Lists.newArrayList();
 

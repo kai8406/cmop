@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.dao.account;
+package com.sobey.cmop.mvc.dao.custom;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccountDaoImp implements AccountDao {
+public class AccountDaoCustomImp implements AccountDaoCustom {
 
 	@PersistenceContext
 	private EntityManager em;

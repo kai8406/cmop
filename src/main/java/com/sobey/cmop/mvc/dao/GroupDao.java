@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.dao.account;
+package com.sobey.cmop.mvc.dao;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;

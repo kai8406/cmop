@@ -5,6 +5,7 @@ $(document).ready(function() {
 	
 	 $("input:radio,input:checkbox,input:file").uniform();
 	
+	 
 	// === Tooltips === //
 	 
 	$('.tip').tooltip();	
@@ -13,10 +14,12 @@ $(document).ready(function() {
 	$('.tip-top').tooltip({ placement: 'top' });	
 	$('.tip-bottom').tooltip({ placement: 'bottom' });	
 	
+	
 	// === datepicker === //
 	
  	$('.datepicker').datepicker();
 
+ 	
  	// === Reset 点击reset按钮,form里的输入框情况,并提交form执行一次查询. ===//
  	
  	$("button.reset").click(function(){
@@ -24,6 +27,7 @@ $(document).ready(function() {
  		$form.find("input[type=text]").val('');
  		$form.submit();
  	});
+ 	
  	
  	// === option 点击More,得到更多的搜索条件===//
  	
@@ -40,5 +44,11 @@ $(document).ready(function() {
  		$options.toggle(300).find("input[type=text]").val('');
  	});
  	
+ 	
+ 	// === 所有类型为submit的控件点击后,将其设置为disabled不可用.===//
+ 	
+	$("input[type=submit]").click(function () {
+		  $(this).button('loading').addClass("disabled");
+	});
 	
 });

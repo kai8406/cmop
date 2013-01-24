@@ -1,6 +1,6 @@
 ﻿/* 显示纯文本的时候,匹配 .controls 的高度 */
 .plain-text {
-	padding:5px 0px;
+	padding: 5px 0px;
 }
 
 .table th {
@@ -11,8 +11,12 @@
 	color: #666666;
 }
 
-label.search-text{
+label.search-text {
 	width: 60px;
 }
 
+/* 高级搜索框*/
+div.options {
+	display: none;
+}
 

@@ -9,6 +9,7 @@
 	<script>
 		$(document).ready(function() {
 			
+			
 			$("ul#navbar li#group").addClass("active");
 			
 			$("#name").focus();

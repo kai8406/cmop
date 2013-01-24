@@ -38,9 +38,12 @@
 		</div>
 		
 		<!-- 多个搜索条件的话,启用 div.options -->
-		<!-- 
-			<div class="row options" style="display: none;"></div>
-		 -->
+		<div class="row options">
+			<div class="span3">
+				<label class="control-label search-text">真实姓名</label> 
+				<input type="text" class="input-small" maxlength="45" >
+			</div>
+		</div>
 
 	</form>
 
@@ -61,7 +64,19 @@
 					<td>${item.name}</td>
 					<td>${item.groupNames}</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
-					<td><a href="delete/${item.id}">删除</a></td>
+					<td>
+					
+						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
+						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" >
+							<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3>提示</h3></div>
+							<div class="modal-body">是否删除?</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+								<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+							</div>
+						</div>
+						
+					</td>
 				</tr>
 			</c:forEach>
 		</tbody>

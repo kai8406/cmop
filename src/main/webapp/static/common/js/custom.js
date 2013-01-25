@@ -22,7 +22,7 @@ $(document).ready(function() {
  	
  	// === Reset 点击reset按钮,form里的输入框情况,并提交form执行一次查询. ===//
  	
- 	$("button.reset").click(function(){
+ 	$("button.reset").on('click', function(){
  		var $form = $(this).closest("form"); 
  		$form.find("input[type=text]").val('');
  		$form.submit();
@@ -31,7 +31,7 @@ $(document).ready(function() {
  	
  	// === option 点击More,得到更多的搜索条件===//
  	
- 	$("button.options").click(function(){
+ 	$("button.options").on('click', function(){
  		
  		//图标切换
  		
@@ -42,14 +42,16 @@ $(document).ready(function() {
  		var $options =$("div.options"); 
  		$options.find("select option:first").prop('selected', true);
  		$options.toggle(300).find("input[type=text]").val('');
+ 		
  	});
  	
  	
- 	// === 所有类型为submit的控件点击后,将其设置为disabled不可用.===//
+ 	// === 所有input:submit的控件点击后,将其设置为disabled不可用,页面弹出遮罩层===//
  	
-	$("input[type=submit]").click(function () {
+	$("input[type=submit]").on('click', function(){
 		var $this = $(this);
-		$this.closest("form").valid() && $this.button('loading').addClass("disabled");
+		$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
 	});
+	
 	
 });

@@ -67,7 +67,7 @@
 					<td>
 					
 						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
-						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" >
+						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 							<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3>提示</h3></div>
 							<div class="modal-body">是否删除?</div>
 							<div class="modal-footer">

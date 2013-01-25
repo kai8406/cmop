@@ -6,8 +6,6 @@
 	<description>导入CMOP中的applicationContext文件列表</description>
 
 	<import resource="email/applicationContext-email.xml" />
-	<import resource="jms/applicationContext-jms-simple.xml" />
-	<import resource="jms/applicationContext-jms-advanced.xml" />
 	<import resource="security/applicationContext-shiro.xml" />
 	
 </beans>

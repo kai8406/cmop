@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.service.account.AccountService;
+import com.sobey.cmop.mvc.service.email.SimpleMailService;
+import com.sobey.cmop.mvc.service.email.TemplateMailService;
 
 /**
  * Service公共类
@@ -16,5 +18,11 @@ public class CommonService {
 
 	@Autowired
 	public AccountService accountService;
+
+	@Autowired
+	public TemplateMailService templateMailService;
+
+	@Autowired
+	public SimpleMailService simpleMailService;
 
 }

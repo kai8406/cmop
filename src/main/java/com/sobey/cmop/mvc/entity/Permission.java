@@ -40,7 +40,7 @@ public enum Permission {
 	public String getDisplayName() {
 		return displayName;
 	}
-	
+
 	public static void main(String[] args) {
 		for (Permission permission : Permission.values()) {
 			System.out.println("permission value:" + permission.value);

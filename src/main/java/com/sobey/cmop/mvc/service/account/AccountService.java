@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.jms.MapMessage;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -28,9 +26,6 @@ import com.sobey.cmop.mvc.dao.custom.AccountDaoCustom;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
-import com.sobey.cmop.mvc.utilities.jms.advanced.AdvancedNotifyMessageProducer;
-import com.sobey.cmop.mvc.utilities.jms.simple.NotifyMessageListener;
-import com.sobey.cmop.mvc.utilities.jms.simple.NotifyMessageProducer;
 import com.sobey.framework.utils.Digests;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Encodes;
@@ -55,11 +50,6 @@ public class AccountService extends BaseSevcie {
 	private AccountDaoCustom accountDao;
 	private DepartmentDao departmentDao;
 	private ShiroDbRealm shiroRealm;
-
-	private NotifyMessageProducer notifyProducer; // JMS消息发送
-	private AdvancedNotifyMessageProducer advancedNotifyMessageProducer; // 高级JMS消息发送
-
-	private NotifyMessageListener notifyMessageListener;
 
 	// -- User Manager --//
 	/**
@@ -120,35 +110,18 @@ public class AccountService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void updateUser(User user) {
+
 		if (StringUtils.isNotBlank(user.getPlainPassword())) {
 			entryptPassword(user);
 		}
 
-		// 发送JMS消息
-		sendNotifyMessage(user);
-
 		userDao.save(user);
 
+		// 发送邮件通知
+		comm.simpleMailService.sendNotificationMail("cmop_public@163.com", "sobey_public@163.com", "test", "I Love You!");
+		comm.templateMailService.sendUserNotificationMail(user);
+
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
-	}
-
-	private void sendNotifyMessage(User user) {
-
-		System.out.println("准备发送了哈.");
-
-		if (notifyProducer != null) {
-			try {
-				notifyProducer.sendQueue(user);
-				// notifyProducer.sendTopic(user);
-
-				// advancedNotifyMessageProducer.sendQueue(user);
-				// advancedNotifyMessageProducer.sendTopic(user);
-
-			} catch (Exception e) {
-				logger.error("消息发送失败", e);
-			}
-
-		}
 	}
 
 	/**
@@ -214,25 +187,21 @@ public class AccountService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void initializeUser() {
 
-		// 默认初始密码
-
 		List<User> users = (List<User>) userDao.findAll();
 
 		for (User user : users) {
 
 			String email = user.getEmail();
-			String loginName = "";
 
-			if (email.indexOf("@") == -1) { // 不包含@
-				loginName = email;
-			} else { // 包含@
-				loginName = email.substring(0, email.indexOf("@"));
-			}
+			// 如果email中包含@,取@前的字符串赋予给loginName
+
+			String loginName = email.indexOf("@") == -1 ? email : email.substring(0, email.indexOf("@"));
 
 			user.setLoginName(loginName);
 			user.setPlainPassword(AccountConstant.defaultPassword);
 			entryptPassword(user);
 			user.setCreateTime(new Date());
+
 			userDao.save(user);
 		}
 
@@ -358,21 +327,6 @@ public class AccountService extends BaseSevcie {
 	@Autowired(required = false)
 	public void setShiroRealm(ShiroDbRealm shiroRealm) {
 		this.shiroRealm = shiroRealm;
-	}
-
-	@Autowired(required = false)
-	public void setNotifyProducer(NotifyMessageProducer notifyProducer) {
-		this.notifyProducer = notifyProducer;
-	}
-
-	@Autowired(required = false)
-	public void setAdvancedNotifyMessageProducer(AdvancedNotifyMessageProducer advancedNotifyMessageProducer) {
-		this.advancedNotifyMessageProducer = advancedNotifyMessageProducer;
-	}
-
-	@Autowired(required = false)
-	public void setNotifyMessageListener(NotifyMessageListener notifyMessageListener) {
-		this.notifyMessageListener = notifyMessageListener;
 	}
 
 }

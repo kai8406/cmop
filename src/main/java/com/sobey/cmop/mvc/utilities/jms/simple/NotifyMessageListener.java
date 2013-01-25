@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sobey.cmop.mvc.utilities.email.MimeMailService;
 import com.sobey.cmop.mvc.utilities.email.SimpleMailService;
 
 /**
@@ -25,6 +26,9 @@ public class NotifyMessageListener implements MessageListener {
 	@Autowired(required = false)
 	private SimpleMailService simpleMailService;
 
+	@Autowired(required = false)
+	private MimeMailService mimeMailService;
+
 	/**
 	 * MessageListener回调函数.
 	 */
@@ -34,6 +38,15 @@ public class NotifyMessageListener implements MessageListener {
 			MapMessage mapMessage = (MapMessage) message;
 			// 打印消息详情
 			logger.info("Name:{}, Email:{}", mapMessage.getString("name"), mapMessage.getString("email"));
+
+			System.out.println("mimeMailService:" + mimeMailService);
+			System.out.println(mapMessage.getString("name"));
+			System.out.println("-----");
+
+			// 发送邮件
+			// if (mimeMailService != null) {
+			// mimeMailService.sendNotificationMail(mapMessage.getString("name"));
+			// }
 
 			// 发送邮件
 			if (simpleMailService != null) {

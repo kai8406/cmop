@@ -40,23 +40,28 @@ public class MimeMailService {
 	/**
 	 * 发送MIME格式的用户修改通知邮件.
 	 */
-	public void sendNotificationMail(String userName) {
+	public void sendNotificationMail(String name) {
 
 		try {
 			MimeMessage msg = mailSender.createMimeMessage();
+			
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setTo("sobey_public@163.com");
-			helper.setFrom("sobey_public@163.com");
+			
+			helper.setFrom("cmop_public@163.com"); // 发件人
+			helper.setTo("sobey_public@163.com"); // 收件人
 			helper.setSubject("用户修改通知");
-
-			String content = generateContent(userName);
+			
+			String content = generateContent(name);
+			System.out.println("content:"+content);
+			
 			helper.setText(content, true);
 
 			File attachment = generateAttachment();
 			helper.addAttachment("mailAttachment.txt", attachment);
-
+			
+			
 			mailSender.send(msg);
+			
 			logger.info("HTML版邮件已发送至sobey_public@163.com");
 		} catch (MessagingException e) {
 			logger.error("构造邮件失败", e);
@@ -69,11 +74,11 @@ public class MimeMailService {
 	 * 使用Freemarker生成html格式内容.
 	 */
 	@SuppressWarnings("rawtypes")
-	private String generateContent(String userName) throws MessagingException {
+	private String generateContent(String name) throws MessagingException {
 
 		try {
-			Map context = Collections.singletonMap("userName", userName);
-			context = Collections.singletonMap("Test", "TEST");
+			Map context = Collections.singletonMap("name", name);
+			context = Collections.singletonMap("test", "12345");
 			return FreeMarkerTemplateUtils.processTemplateIntoString(template, context);
 		} catch (IOException e) {
 			logger.error("生成邮件内容失败, FreeMarker模板不存在", e);

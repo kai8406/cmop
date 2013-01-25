@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.jms.MapMessage;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.utilities.jms.advanced.AdvancedNotifyMessageProducer;
+import com.sobey.cmop.mvc.utilities.jms.simple.NotifyMessageListener;
 import com.sobey.cmop.mvc.utilities.jms.simple.NotifyMessageProducer;
 import com.sobey.framework.utils.Digests;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -55,6 +58,8 @@ public class AccountService extends BaseSevcie {
 
 	private NotifyMessageProducer notifyProducer; // JMS消息发送
 	private AdvancedNotifyMessageProducer advancedNotifyMessageProducer; // 高级JMS消息发送
+
+	private NotifyMessageListener notifyMessageListener;
 
 	// -- User Manager --//
 	/**
@@ -134,10 +139,10 @@ public class AccountService extends BaseSevcie {
 		if (notifyProducer != null) {
 			try {
 				notifyProducer.sendQueue(user);
-				notifyProducer.sendTopic(user);
+				// notifyProducer.sendTopic(user);
 
-//				advancedNotifyMessageProducer.sendQueue(user);
-//				advancedNotifyMessageProducer.sendTopic(user);
+				// advancedNotifyMessageProducer.sendQueue(user);
+				// advancedNotifyMessageProducer.sendTopic(user);
 
 			} catch (Exception e) {
 				logger.error("消息发送失败", e);
@@ -355,14 +360,19 @@ public class AccountService extends BaseSevcie {
 		this.shiroRealm = shiroRealm;
 	}
 
-	@Autowired
+	@Autowired(required = false)
 	public void setNotifyProducer(NotifyMessageProducer notifyProducer) {
 		this.notifyProducer = notifyProducer;
 	}
 
-	@Autowired
+	@Autowired(required = false)
 	public void setAdvancedNotifyMessageProducer(AdvancedNotifyMessageProducer advancedNotifyMessageProducer) {
 		this.advancedNotifyMessageProducer = advancedNotifyMessageProducer;
+	}
+
+	@Autowired(required = false)
+	public void setNotifyMessageListener(NotifyMessageListener notifyMessageListener) {
+		this.notifyMessageListener = notifyMessageListener;
 	}
 
 }

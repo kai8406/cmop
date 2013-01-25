@@ -26,6 +26,8 @@ import com.sobey.cmop.mvc.dao.custom.AccountDaoCustom;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.utilities.jms.advanced.AdvancedNotifyMessageProducer;
+import com.sobey.cmop.mvc.utilities.jms.simple.NotifyMessageProducer;
 import com.sobey.framework.utils.Digests;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Encodes;
@@ -50,6 +52,9 @@ public class AccountService extends BaseSevcie {
 	private AccountDaoCustom accountDao;
 	private DepartmentDao departmentDao;
 	private ShiroDbRealm shiroRealm;
+
+	private NotifyMessageProducer notifyProducer; // JMS消息发送
+	private AdvancedNotifyMessageProducer advancedNotifyMessageProducer; // 高级JMS消息发送
 
 	// -- User Manager --//
 	/**
@@ -113,8 +118,32 @@ public class AccountService extends BaseSevcie {
 		if (StringUtils.isNotBlank(user.getPlainPassword())) {
 			entryptPassword(user);
 		}
+
+		// 发送JMS消息
+		sendNotifyMessage(user);
+
 		userDao.save(user);
+
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
+	}
+
+	private void sendNotifyMessage(User user) {
+
+		System.out.println("准备发送了哈.");
+
+		if (notifyProducer != null) {
+			try {
+				notifyProducer.sendQueue(user);
+				notifyProducer.sendTopic(user);
+
+//				advancedNotifyMessageProducer.sendQueue(user);
+//				advancedNotifyMessageProducer.sendTopic(user);
+
+			} catch (Exception e) {
+				logger.error("消息发送失败", e);
+			}
+
+		}
 	}
 
 	/**
@@ -324,6 +353,16 @@ public class AccountService extends BaseSevcie {
 	@Autowired(required = false)
 	public void setShiroRealm(ShiroDbRealm shiroRealm) {
 		this.shiroRealm = shiroRealm;
+	}
+
+	@Autowired
+	public void setNotifyProducer(NotifyMessageProducer notifyProducer) {
+		this.notifyProducer = notifyProducer;
+	}
+
+	@Autowired
+	public void setAdvancedNotifyMessageProducer(AdvancedNotifyMessageProducer advancedNotifyMessageProducer) {
+		this.advancedNotifyMessageProducer = advancedNotifyMessageProducer;
 	}
 
 }

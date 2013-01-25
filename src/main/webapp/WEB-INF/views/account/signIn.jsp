@@ -72,7 +72,7 @@
 		</div>
 		
 		<a class="btn" onclick="history.back()">返回</a>
-		<button class="btn btn-primary" type="submit">登录</button>
+		<input type="submit" class="btn btn-primary" value="登录">
 		
 	</form>
 	

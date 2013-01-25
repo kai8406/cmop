@@ -48,7 +48,8 @@ $(document).ready(function() {
  	// === 所有类型为submit的控件点击后,将其设置为disabled不可用.===//
  	
 	$("input[type=submit]").click(function () {
-		  $(this).button('loading').addClass("disabled");
+		var $this = $(this);
+		$this.closest("form").valid() && $this.button('loading').addClass("disabled");
 	});
 	
 });

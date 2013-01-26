@@ -1,12 +1,14 @@
 package com.sobey.cmop.mvc.comm;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.google.common.collect.Lists;
-import com.sobey.cmop.mvc.constant.Constant;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
@@ -41,8 +43,6 @@ public class BaseController {
 
 	/**
 	 * 获得当前登录用户的ID
-	 * 
-	 * @return
 	 */
 	public Integer getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
@@ -50,21 +50,24 @@ public class BaseController {
 	}
 
 	/**
-	 * 静态常量引导类
-	 */
-	public static Constant constant;
-
-	/**
 	 * 根据groupId获得GroupList 集合.<br>
-	 * 
-	 * 
-	 * @param groupId
-	 * @return
 	 */
 	public List<Group> getGroupListById(Integer groupId) {
 		List<Group> groupList = Lists.newArrayList();
 		groupList.add(comm.accountService.getGroup(groupId));
 		return groupList;
+	}
+
+	// =============== 返回页面的值 ===============
+
+	/**
+	 * 返回所有的用户类型
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("userTypeMap")
+	public Map<Integer, String> userTypeMap() {
+		return AccountConstant.UserTypes.map;
 	}
 
 }

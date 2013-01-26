@@ -97,13 +97,14 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "phonenum") String phonenum,
-			@RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId, @RequestParam(value = "departmentId") Integer departmentId,
-			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId, @RequestParam(value = "type") Integer type,
+			@RequestParam(value = "departmentId") Integer departmentId, @RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		User user = comm.accountService.getUser(id);
 		user.setEmail(email);
 		user.setPhonenum(phonenum);
 		user.setName(name);
+		user.setType(type);
 		user.setLeaderId(leaderId);
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
 		user.setGroupList(getGroupListById(groupId));

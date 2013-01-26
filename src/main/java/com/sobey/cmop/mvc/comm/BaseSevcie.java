@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.sobey.cmop.mvc.constant.Constant;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -24,11 +23,6 @@ public class BaseSevcie {
 	 */
 	@Autowired
 	public CommonService comm;
-
-	/**
-	 * 静态常量引导类
-	 */
-	public static Constant constant;
 
 	/**
 	 * 获得当前登录用户的ID

@@ -118,8 +118,9 @@ public class AccountService extends BaseSevcie {
 		userDao.save(user);
 
 		// 发送邮件通知
-		comm.simpleMailService.sendNotificationMail("cmop_public@163.com", "sobey_public@163.com", "test", "I Love You!");
-		comm.templateMailService.sendUserNotificationMail(user);
+		// comm.simpleMailService.sendNotificationMail("cmop_public@163.com",
+		// "sobey_public@163.com", "test", "I Love You!");
+		// comm.templateMailService.sendUserNotificationMail(user);
 
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}

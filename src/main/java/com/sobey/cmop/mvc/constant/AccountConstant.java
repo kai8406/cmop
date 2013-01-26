@@ -52,20 +52,21 @@ public class AccountConstant {
 			this.code = code;
 		}
 
-		// 该方法根据传入的参数,返回enum中的文本. 实现该方法后,需要声明一个private
+		// 该方法根据传入的参数,返回enum中的文本. 实现该方法后
 		// Map集合,将enum中的值迭代至Map集合中,key为enum的输入参数.value为enum的值.最后用Map集合的get方法获得获得value
+		// 也可以直接用 .map方法返回一个HashMap的返回值
 
-		private static final Map<Integer, String> lookup = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newHashMap();
 		static {
 			for (UserStatus status : UserStatus.values()) {
 
-				lookup.put(status.code, status.name());
+				map.put(status.code, status.name());
 
 			}
 		}
 
 		public static String get(Integer code) {
-			return lookup.get(code);
+			return map.get(code);
 		}
 
 		// 覆写toString 方法，在该方法中返回从构造函数中传入的参数
@@ -105,17 +106,17 @@ public class AccountConstant {
 			this.code = code;
 		}
 
-		private static final Map<Integer, String> lookup = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newHashMap();
 		static {
 			for (DefaultGroups group : DefaultGroups.values()) {
 
-				lookup.put(group.code, group.name());
+				map.put(group.code, group.name());
 
 			}
 		}
 
 		public static String get(Integer code) {
-			return lookup.get(code);
+			return map.get(code);
 		}
 
 		@Override
@@ -130,10 +131,64 @@ public class AccountConstant {
 
 	}
 
+	/**
+	 * 用户类型<br>
+	 * 
+	 * <pre>
+	 * 1-管理员 admin
+	 * 2-申请人 apply
+	 * 3-审核人 audit
+	 * 4-运维人 operation
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum UserTypes implements CommonEnum {
+
+		admin(1), apply(2), audit(3), operation(4);
+
+		private int code;
+
+		private UserTypes(int code) {
+			this.code = code;
+		}
+
+		public static final Map<Integer, String> map = Maps.newHashMap();
+		static {
+			for (UserTypes userTypes : UserTypes.values()) {
+
+				map.put(userTypes.code, userTypes.name());
+
+			}
+		}
+
+		public static String get(Integer code) {
+			return map.get(code);
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code;
+		}
+
+	}
+
+	/**
+	 * 枚举的示例
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		System.out.println(UserStatus.get(1));
-		System.out.println(DefaultGroups.get(3));
-		System.out.println(DefaultGroups.admin);
-		System.out.println(DefaultGroups.admin.name());
+		// System.out.println(UserStatus.get(1));
+		// System.out.println(UserStatus.get(3));
+		// System.out.println(UserStatus.admin);
+		// System.out.println(UserStatus.admin.name());
+		// System.out.println(UserStatus.map);
 	}
 }

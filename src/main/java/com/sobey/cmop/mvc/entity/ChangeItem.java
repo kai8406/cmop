@@ -1,0 +1,92 @@
+package com.sobey.cmop.mvc.entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+/**
+ * ServiceTag entity. @author MyEclipse Persistence Tools
+ */
+@Entity
+@Table(name = "change_item", catalog = "cmop")
+public class ChangeItem implements java.io.Serializable {
+
+	// Fields
+
+	private Integer id;
+	private Change change;
+	private String filedName;
+	private String oldValue;
+	private String newValue;
+
+	// Constructors
+
+	/** default constructor */
+	public ChangeItem() {
+	}
+
+	/** full constructor */
+	public ChangeItem(Change change, String filedName, String oldValue, String newValue) {
+		this.change = change;
+		this.filedName = filedName;
+		this.oldValue = oldValue;
+		this.newValue = newValue;
+	}
+
+	// Property accessors
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "change_id", nullable = false)
+	public Change getChange() {
+		return this.change;
+	}
+
+	public void setChange(Change change) {
+		this.change = change;
+	}
+
+	@Column(name = "filed_name", nullable = false, length = 45)
+	public String getFiledName() {
+		return this.filedName;
+	}
+
+	public void setFiledName(String filedName) {
+		this.filedName = filedName;
+	}
+
+	@Column(name = "old_value", nullable = false, length = 200)
+	public String getOldValue() {
+		return oldValue;
+	}
+
+	public void setOldValue(String oldValue) {
+		this.oldValue = oldValue;
+	}
+
+	@Column(name = "new_value", nullable = false, length = 200)
+	public String getNewValue() {
+		return newValue;
+	}
+
+	public void setNewValue(String newValue) {
+		this.newValue = newValue;
+	}
+
+}

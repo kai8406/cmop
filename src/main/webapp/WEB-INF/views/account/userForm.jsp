@@ -115,6 +115,23 @@
 			</div>
 			
 			<div class="control-group">
+				<label class="control-label" for="type">用户类型</label>
+				<div class="controls">	
+					<select id="type" name="type" class="required">
+						<c:forEach var="map" items="${userTypeMap }">
+							<option value="${map.key }"
+								<c:if test="${group.id==map.key }">
+									selected="selected"
+								</c:if>
+							>
+									${map.value }
+							</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<label class="control-label" for="groupId">权限角色</label>
 				<div class="controls">	
 					<select id="groupId" name="groupId" class="required">

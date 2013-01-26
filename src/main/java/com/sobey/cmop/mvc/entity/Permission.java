@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
  */
 public enum Permission {
 
-	USER_VIEW("user:view", "用戶模块"), GROUP_VIEW("group:view", "权限模块");
+	USER_VIEW("user:view", "用戶模块"), GROUP_VIEW("group:view", "权限模块"), APPLY_VIEW("apply:view", "申请模块"), ;
 
 	private static Map<String, Permission> valueMap = Maps.newHashMap();
 

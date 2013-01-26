@@ -39,11 +39,15 @@ public class RegisterController extends BaseController {
 
 		List<Group> groupList = Lists.newArrayList();
 
-		// TODO 暂时设置为admin,方便测试.
+		// 注册用户默认给予 2:apply 申请人 的权限角色.
 
-		groupList.add(comm.accountService.getGroup(AccountConstant.DefaultGroups.admin.toInteger()));
+		groupList.add(comm.accountService.getGroup(AccountConstant.DefaultGroups.apply.toInteger()));
 
 		user.setGroupList(groupList);
+
+		// 给予 2:apply 申请人 的用户类型
+
+		user.setType(AccountConstant.UserTypes.apply.toInteger());
 
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
 

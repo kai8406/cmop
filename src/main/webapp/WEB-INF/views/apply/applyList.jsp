@@ -6,15 +6,16 @@
 <title>服务申请管理</title>
 <script>
 	$(document).ready(function() {
+		
 		$("ul#navbar li#apply").addClass("active");
 		
-		//隐藏资源创建列表
-		$("#thumbnailsBtn").on('click', function(){
-		 		
-			$(this).find("i").toggleClass("icon-resize-small icon-resize-full").end().parents().find("div.quick-actions").toggle(300);
-		 		
-	 	});
-		 
+	    $('#createBtn').popover({
+	    	trigger: "hover",
+	    	placement: "bottom",
+	    	title: "Note",
+	    	content: "申请任何资源前,必须有一个服务申请单."
+	    });
+		
 	});
 </script>
 </head>
@@ -23,10 +24,7 @@
 
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
-	<p>
-		<a class="btn btn-large btn-primary" href="save/">创建申请单 &raquo;</a>
-		<a class="btn btn-large" href="#" id="thumbnailsBtn">申请单列表 <i class="icon-resize-full"></i></a>
-	</p>
+	<p><a id="createBtn" class="btn btn-large btn-primary" href="save/">创建申请单 &raquo;</a></p>
 	
 	<div class="row">
 		<div class="span12 quick-actions">
@@ -62,7 +60,7 @@
 			<div class="span3">
 				<label class="control-label search-text">状态</label> 
 				<select name="search_EQ_status" class="input-small">
-					<option value="" selected="selected">...Choose</option>
+					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${applyStatusMap }">
 						<option value="${map.key }" 
 							<c:if test="${map.key == param.search_EQ_status && param.search_EQ_status != '' }">
@@ -86,7 +84,7 @@
 			<div class="span3">
 				<label class="control-label search-text">优先级</label> 
 				<select name="search_EQ_priority" class="input-small">
-					<option value="" selected="selected">...Choose</option>
+					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${applyPriorityMap }">
 						<option value="${map.key }" 
 							<c:if test="${map.key == param.search_EQ_priority }">

@@ -19,6 +19,7 @@ $(document).ready(function() {
 	
  	$('.datepicker').datepicker();
  	
+ 	
  	// === Reset 点击reset按钮,form里的输入框情况,并提交form执行一次查询. ===//
  	
  	$("button.reset").on('click', function(){
@@ -61,27 +62,72 @@ $(document).ready(function() {
  * 如:
  * <pre>
  * getDatePlusMonthNum(0) 当前的时间 2013-01-28
- * getDatePlusMonthNum(3) 三月后的时间 2013-04-28
+ * getDatePlusMonthNum(3) 三月后的当前时间 2013-04-28
  * </pre>
  * @param monthNum  月期数
  * @returns {String}
  */
 function getDatePlusMonthNum(monthNum) {
-	var CurrentDate = new Date();
-	CurrentDate.setMonth(CurrentDate.getMonth() + monthNum);
-	var year = CurrentDate.getFullYear();
-	var month = CurrentDate.getMonth() + 1;
-	var day = CurrentDate.getDate();
-	if (month <= 9) {
-		month = "0" + month;
-	}
-	if (month == "00") {
-		month = "01";
-	}
-	if (day <= 9) {
-		day = "0" + day;
-	}
-	return year + "-" + month + "-" + day;
+    var CurrentDate = new Date();
+    CurrentDate.setMonth(CurrentDate.getMonth() + monthNum);
+    var year = CurrentDate.getFullYear();
+    var month = CurrentDate.getMonth() + 1;
+    var day = CurrentDate.getDate();
+    return year + "-" + (month <= 9 ? '0' + month : month) + "-" + (day <= 9 ? '0' + day : day);
 }
+
+/**
+ * 比较两个时间段,返回结果字符串.
+ * @param startTime
+ * @param endTime
+ * @returns {String}
+ */
+function checkTime(startTime, endTime) {
+
+ 	var currentTime = getDatePlusMonthNum(0);
+
+ 	if (startTime.length > 0 && endTime.length > 0) {
+
+ 		var startTmp = startTime.split("-");
+ 		var endTmp = endTime.split("-");
+ 		var currentTmp = currentTime.split("-");
+ 		var sd = new Date(startTmp[0], startTmp[1], startTmp[2]);
+ 		var ed = new Date(endTmp[0], endTmp[1], endTmp[2]);
+ 		var vd = new Date(currentTmp[0], currentTmp[1], currentTmp[2]);
+
+ 		if (sd.getTime() > ed.getTime()) {
+ 			return "服务开始日期不能大于结束日期";
+ 		}
+ 		if (vd.getTime() > sd.getTime()) {
+ 			return "服务开始日期不能小于当前日期";
+ 		}
+ 	}
+ 	return "";
+ }
+
+/**
+ * 两个指定元素 #serviceStart , #serviceEnd 比较的结果.返回报错的结果.
+ * @returns
+ */
+function checkTimeReset(){
+	  return checkTime($("#serviceStart").val(),$("#serviceEnd").val());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

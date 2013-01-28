@@ -4,34 +4,43 @@
 <html>
 <head>
 
-	<title>申请管理</title>
-	
-	<script>
-		$(document).ready(function() {
-			
-			$("ul#navbar li#apply").addClass("active");
-			
-			$("#serviceTag").focus();
-			
-			// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
-			
-			$("#serviceStart").val(getDatePlusMonthNum(0));
-			$("#serviceEnd").val(getDatePlusMonthNum(3));
-			 
-			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
-			
+<title>申请管理</title>
+
+<script>
+	$(document).ready(function() {
+		
+		$("ul#navbar li#apply").addClass("active");
+		
+		$("#serviceTag").focus();
+		
+		
+		// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
+		
+		$("#serviceStart").val(getDatePlusMonthNum(0));
+		$("#serviceEnd").val(getDatePlusMonthNum(3));
+		
+		$("#inputForm").validate({
+			groups:{
+				time:"serviceStart serviceEnd"
+			},
+			errorPlacement: function(error, element) {
+				  var reset = checkTimeReset();
+				  var $message = $("#message");
+				  reset.length == 0 ?  $message.removeClass("in"):$message.addClass("in").find("span").text(reset);
+				  //TODO JQuery.validate.js 中错误信息如何给个标示防止表单提交?现在虽然有提示信息.但是依然会提交.
+			  },
+			errorClass: "help-inline",
+			errorElement: "span",
+			highlight:function(element, errorClass, validClass) {
+		   		$(element).closest('.control-group').addClass('error');
+			},
+			unhighlight: function(element, errorClass, validClass) {
+				$(element).closest('.control-group').removeClass('error');
+			}
 		});
-	</script>
+		
+	});
+</script>
 </head>
 
 <body>
@@ -49,13 +58,35 @@
 				</c:choose>
 			</small></legend>
 			
+			<div id="message" class="alert alert-error fade"><span></span></div>
+			
 			<c:if test="${not empty apply}">
+			
 				<div class="control-group">
 					<label class="control-label" for="title">标题</label>
 					<div class="controls">
-						<input type="text"  value="${apply.title}" readonly="readonly">
+						<p class="help-inline plain-text">${apply.title}</p>
 					</div>
 				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="createTime">申请日期</label>
+					<div class="controls">
+						<p class="help-inline plain-text"><fmt:formatDate value="${apply.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></p>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="createTime">状态</label>
+					<div class="controls">
+						<p class="help-inline plain-text">
+						 <c:forEach var="map" items="${applyStatusMap }">
+						 	<c:if test="${map.key == apply.status }">${map.value }</c:if>
+						</c:forEach>
+						</p>
+					</div>
+				</div>
+				
 			</c:if>
 			
 			<div class="control-group">
@@ -101,15 +132,6 @@
 						maxlength="500" class="required ">${apply.description }</textarea>
 				</div>
 			</div>
-			
-			<c:if test="${not empty apply}">
-				<div class="control-group">
-					<label class="control-label" for="createTime">申请日期</label>
-					<div class="controls">
-						<p class="help-inline plain-text"><fmt:formatDate value="${apply.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></p>
-					</div>
-				</div>
-			</c:if>
 			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">

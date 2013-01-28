@@ -96,6 +96,7 @@ public class ApplyController extends BaseController {
 			RedirectAttributes redirectAttributes) {
 
 		Apply apply = comm.applyService.getApply(id);
+
 		apply.setServiceTag(serviceTag);
 		apply.setServiceStart(serviceStart);
 		apply.setServiceEnd(serviceEnd);
@@ -104,6 +105,19 @@ public class ApplyController extends BaseController {
 		comm.applyService.saveOrUpateApply(apply);
 
 		redirectAttributes.addFlashAttribute("message", "修改服务申请 " + apply.getTitle() + " 成功.");
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
+	/**
+	 * 删除
+	 */
+	@RequestMapping(value = "delete/{id}")
+	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
+		comm.applyService.deleteApply(id);
+
+		redirectAttributes.addFlashAttribute("message", "删除申请单成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}

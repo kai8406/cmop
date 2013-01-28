@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.sobey.cmop.mvc.entity.User;
 
 /**
- * 用户对象的Dao interface.
+ * 用户对象 User 的Dao interface.
  * 
  */
 public interface UserDao extends PagingAndSortingRepository<User, Integer>, JpaSpecificationExecutor<User> {

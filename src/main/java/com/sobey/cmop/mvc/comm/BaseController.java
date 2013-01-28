@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
+import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
@@ -68,6 +69,36 @@ public class BaseController {
 	@ModelAttribute("userTypeMap")
 	public Map<Integer, String> userTypeMap() {
 		return AccountConstant.UserTypes.map;
+	}
+
+	/**
+	 * 返回服务申请表的服务类型
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("applyServiceTypeMap")
+	public Map<Integer, String> applyServiceTypeMap() {
+		return ApplyConstant.ServiceType.map;
+	}
+
+	/**
+	 * 返回服务申请表的优先级
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("applyPriorityMap")
+	public Map<Integer, String> applyPriorityMap() {
+		return ApplyConstant.Priority.map;
+	}
+
+	/**
+	 * 返回服务申请表的状态
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("applyStatusMap")
+	public Map<Integer, String> applyStatusMap() {
+		return ApplyConstant.ApplyStatus.map;
 	}
 
 }

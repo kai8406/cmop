@@ -58,9 +58,9 @@ public class AccountConstant {
 
 		public static final Map<Integer, String> map = Maps.newHashMap();
 		static {
-			for (UserStatus status : UserStatus.values()) {
+			for (UserStatus e : UserStatus.values()) {
 
-				map.put(status.code, status.name());
+				map.put(e.code, e.name());
 
 			}
 		}
@@ -108,9 +108,9 @@ public class AccountConstant {
 
 		public static final Map<Integer, String> map = Maps.newHashMap();
 		static {
-			for (DefaultGroups group : DefaultGroups.values()) {
+			for (DefaultGroups e : DefaultGroups.values()) {
 
-				map.put(group.code, group.name());
+				map.put(e.code, e.name());
 
 			}
 		}
@@ -156,9 +156,9 @@ public class AccountConstant {
 
 		public static final Map<Integer, String> map = Maps.newHashMap();
 		static {
-			for (UserTypes userTypes : UserTypes.values()) {
+			for (UserTypes e : UserTypes.values()) {
 
-				map.put(userTypes.code, userTypes.name());
+				map.put(e.code, e.name());
 
 			}
 		}

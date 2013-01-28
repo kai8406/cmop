@@ -19,3 +19,13 @@ label.search-text {
 div.options {
 	display: none;
 }
+
+.quick-actions a {
+	line-height: 18px;
+	margin: 0 10px 10px;
+	padding: 0 10px;
+	min-width: 80px;
+	margin-left: 0px;
+	padding: 0;
+	padding: 10px 30px;
+}

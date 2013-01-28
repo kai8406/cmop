@@ -18,7 +18,6 @@ $(document).ready(function() {
 	// === datepicker === //
 	
  	$('.datepicker').datepicker();
-
  	
  	// === Reset 点击reset按钮,form里的输入框情况,并提交form执行一次查询. ===//
  	
@@ -55,3 +54,33 @@ $(document).ready(function() {
 	
 	
 });
+
+/**
+ * 获得当前年月份加上参数月的日期.
+ * 如:
+ * <pre>
+ * getDatePlusMonthNum(0) 当前的时间 2013-01-28
+ * getDatePlusMonthNum(3) 三月后的时间 2013-04-28
+ * </pre>
+ * @param monthNum  月期数
+ * @returns {String}
+ */
+function getDatePlusMonthNum(monthNum) {
+	var CurrentDate = new Date();
+	CurrentDate.setMonth(CurrentDate.getMonth() + monthNum);
+	var year = CurrentDate.getFullYear();
+	var month = CurrentDate.getMonth() + 1;
+	var day = CurrentDate.getDate();
+	if (month <= 9) {
+		month = "0" + month;
+	}
+	if (month == "00") {
+		month = "01";
+	}
+	if (day <= 9) {
+		day = "0" + day;
+	}
+	return year + "-" + month + "-" + day;
+}
+
+

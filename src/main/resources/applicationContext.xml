@@ -24,7 +24,7 @@
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
-		<property name="packagesToScan" value="com.sobey"/>
+		<property name="packagesToScan" value="com.sobey.cmop"/>
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>

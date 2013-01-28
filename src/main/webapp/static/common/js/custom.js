@@ -24,6 +24,7 @@ $(document).ready(function() {
  	$("button.reset").on('click', function(){
  		var $form = $(this).closest("form"); 
  		$form.find("input[type=text]").val('');
+ 		$form.find("select option:first").prop('selected', true);
  		$form.submit();
  	});
  	

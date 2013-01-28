@@ -35,7 +35,6 @@
 </head>
 
 <body>
-
 <link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
@@ -50,11 +49,19 @@
 				</c:choose>
 			</small></legend>
 			
+			<c:if test="${not empty apply}">
+				<div class="control-group">
+					<label class="control-label" for="title">标题</label>
+					<div class="controls">
+						<input type="text"  value="${apply.title}" readonly="readonly">
+					</div>
+				</div>
+			</c:if>
 			
 			<div class="control-group">
 				<label class="control-label" for="serviceTag">服务标签</label>
 				<div class="controls">
-					<input type="text" id="serviceTag" name="serviceTag" class="required" placeholder="...服务标签">
+					<input type="text" id="serviceTag" name="serviceTag" value="${apply.serviceTag }" class="required" maxlength="45" placeholder="...服务标签">
 				</div>
 			</div>
 		
@@ -62,9 +69,13 @@
 				<label class="control-label" for="priority">优先级</label>
 				<div class="controls">
 					<select id="priority" name="priority">
-						<option value="1">普通</option>
-						<option value="2">高</option>
-						<option value="3">紧急</option>
+						<c:forEach var="map" items="${applyPriorityMap }">
+							<option value="${map.key }" 
+								<c:if test="${map.key == apply.priority }">
+									selected="selected"
+								</c:if>
+							>${map.value }</option>
+						</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -72,26 +83,34 @@
 			<div class="control-group">
 				<label class="control-label" for="serviceStart">服务开始时间</label>
 				<div class="controls">
-					<input type="time" id="serviceStart" name="serviceStart" class="datepicker required"  placeholder="...服务开始时间">
+					<input type="time" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" readonly="readonly" class="datepicker required"  placeholder="...服务开始时间">
 				</div>
 			</div>
 		
 			<div class="control-group">
 				<label class="control-label" for="serviceEnd">服务结束时间</label>
 				<div class="controls">
-					<input type="time" id=serviceEnd name="serviceEnd" class="datepicker required"  placeholder="...服务结束时间">
+					<input type="time" id=serviceEnd name="serviceEnd" value="${apply.serviceEnd }" readonly="readonly" class="datepicker required"  placeholder="...服务结束时间">
 				</div>
 			</div>
 		
 			<div class="control-group">
-					<label class="control-label" for="description">用途描述</label>
+				<label class="control-label" for="description">用途描述</label>
 				<div class="controls">
 					<textarea rows="3" id="description" name="description" placeholder="...用途描述"
-						maxlength="500" class="required "></textarea>
+						maxlength="500" class="required ">${apply.description }</textarea>
 				</div>
 			</div>
-			 
 			
+			<c:if test="${not empty apply}">
+				<div class="control-group">
+					<label class="control-label" for="createTime">申请日期</label>
+					<div class="controls">
+						<p class="help-inline plain-text"><fmt:formatDate value="${apply.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></p>
+					</div>
+				</div>
+			</c:if>
+			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

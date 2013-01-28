@@ -10,8 +10,14 @@ import com.google.common.collect.Maps;
  * 确保数据库不能有Permission所没有的授权.
  */
 public enum Permission {
-
-	USER_VIEW("user:view", "用戶模块"), GROUP_VIEW("group:view", "权限模块"), APPLY_VIEW("apply:view", "申请模块"), ;
+	USER_VIEW("user:view", "用戶管理模块"), 
+	GROUP_VIEW("group:view", "权限管理模块"), 
+	APPLY_VIEW("apply:view", "服务申请模块"), 
+	AUDIT_VIEW("audit:view", "审批模块"), 
+	BASICDATA_VIEW("basicData:view", "基础数据模块"), 
+	OPERATE_VIEW("operate:view", "工单处理模块"), 
+	DEPARTMENT_VIEW("department:view", "部门管理模块"), 
+	SUMMARY_VIEW("summary:view", "资源汇总模块");
 
 	private static Map<String, Permission> valueMap = Maps.newHashMap();
 

@@ -7,6 +7,7 @@ import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -76,4 +78,35 @@ public class ApplyController extends BaseController {
 
 		return REDIRECT_SUCCESS_URL + "?applyId=" + apply.getId();
 	}
+
+	/**
+	 * 跳转到修改页面
+	 */
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String updateForm(@PathVariable("id") Integer id, Model model) {
+		model.addAttribute("apply", comm.applyService.getApply(id));
+		return "apply/applyForm";
+	}
+
+	/**
+	 * 修改
+	 */
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTag") String serviceTag, @RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "priority") Integer priority, @RequestParam(value = "description") String description,
+			RedirectAttributes redirectAttributes) {
+
+		Apply apply = comm.applyService.getApply(id);
+		apply.setServiceTag(serviceTag);
+		apply.setServiceStart(serviceStart);
+		apply.setServiceEnd(serviceEnd);
+		apply.setPriority(priority);
+		apply.setDescription(description);
+		comm.applyService.saveOrUpateApply(apply);
+
+		redirectAttributes.addFlashAttribute("message", "修改服务申请 " + apply.getTitle() + " 成功.");
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
 }

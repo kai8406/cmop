@@ -23,7 +23,6 @@
 
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
-	<p><h3>Apply</h3>创建任何资源前,必须有一个服务申请单</p>
 	<p>
 		<a class="btn btn-large btn-primary" href="save/">创建申请单 &raquo;</a>
 		<a class="btn btn-large" href="#" id="thumbnailsBtn">申请单列表 <i class="icon-resize-full"></i></a>
@@ -63,10 +62,10 @@
 			<div class="span3">
 				<label class="control-label search-text">状态</label> 
 				<select name="search_EQ_status" class="input-small">
-					<option value="">...Choose</option>
+					<option value="" selected="selected">...Choose</option>
 					<c:forEach var="map" items="${applyStatusMap }">
 						<option value="${map.key }" 
-							<c:if test="${map.key == param.search_EQ_status }">
+							<c:if test="${map.key == param.search_EQ_status && param.search_EQ_status != '' }">
 								selected="selected"
 							</c:if>
 						>${map.value }</option>
@@ -87,7 +86,7 @@
 			<div class="span3">
 				<label class="control-label search-text">优先级</label> 
 				<select name="search_EQ_priority" class="input-small">
-					<option value="">...Choose</option>
+					<option value="" selected="selected">...Choose</option>
 					<c:forEach var="map" items="${applyPriorityMap }">
 						<option value="${map.key }" 
 							<c:if test="${map.key == param.search_EQ_priority }">
@@ -117,7 +116,13 @@
 				<tr>
 					<td><a href="update/${item.id}">${item.title}</a></td>
 					<td>${item.serviceTag}</td>
-					<td>${item.priority}</td>
+					<td>
+						<c:forEach var="map" items="${applyPriorityMap }">
+							<c:if test="${map.key == item.priority }">
+								${map.value }
+							</c:if>
+						</c:forEach>
+					</td>
 					<td>
 						<c:forEach var="map" items="${applyStatusMap }">
 							<c:if test="${map.key == item.status }">

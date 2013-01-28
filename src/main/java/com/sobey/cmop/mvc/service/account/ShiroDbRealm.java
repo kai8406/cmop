@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.service.account;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -17,7 +18,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
 import com.sobey.cmop.mvc.constant.AccountConstant;
@@ -35,7 +35,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 	private AccountService accountService;
 
-	@Autowired
+	@Resource
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
 	}

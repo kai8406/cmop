@@ -3,8 +3,9 @@ package com.sobey.cmop.mvc.comm;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.shiro.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.google.common.collect.Lists;
@@ -26,7 +27,7 @@ public class BaseController {
 	/**
 	 * 公共的Service
 	 */
-	@Autowired
+	@Resource
 	public CommonService comm;
 
 	/**

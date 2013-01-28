@@ -34,6 +34,7 @@ public class ApplyService extends BaseSevcie {
 	private ApplyDao applyDao;
 
 	// -- Apply Manager --//
+
 	/**
 	 * 生成服务申请Apply的 Title.拼装格式为: 登录名+申请服务类型+申请时间<br>
 	 * eg:

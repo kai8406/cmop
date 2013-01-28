@@ -4,11 +4,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -305,27 +306,27 @@ public class AccountService extends BaseSevcie {
 		return departmentDao.findOne(id);
 	}
 
-	@Autowired
+	@Resource
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 
-	@Autowired
+	@Resource
 	public void setGroupDao(GroupDao groupDao) {
 		this.groupDao = groupDao;
 	}
 
-	@Autowired
+	@Resource
 	public void setAccountDao(AccountDaoCustom accountDao) {
 		this.accountDao = accountDao;
 	}
 
-	@Autowired
+	@Resource
 	public void setDepartmentDao(DepartmentDao departmentDao) {
 		this.departmentDao = departmentDao;
 	}
 
-	@Autowired(required = false)
+	@Resource
 	public void setShiroRealm(ShiroDbRealm shiroRealm) {
 		this.shiroRealm = shiroRealm;
 	}

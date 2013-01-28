@@ -1,7 +1,8 @@
 package com.sobey.cmop.mvc.comm;
 
+import javax.annotation.Resource;
+
 import org.apache.shiro.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -21,7 +22,7 @@ public class BaseSevcie {
 	/**
 	 * 公共的Service
 	 */
-	@Autowired
+	@Resource
 	public CommonService comm;
 
 	/**

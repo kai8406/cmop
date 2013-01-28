@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.comm;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.service.account.AccountService;
@@ -18,19 +19,19 @@ import com.sobey.cmop.mvc.service.servcieTag.ServiceTagService;
 @Service
 public class CommonService {
 
-	@Autowired
+	@Resource
 	public AccountService accountService;
 
-	@Autowired
+	@Resource
 	public ServiceTagService serviceTagService;
 
-	@Autowired
+	@Resource
 	public ApplyService applyService;
 
-	@Autowired
+	@Resource
 	public TemplateMailService templateMailService;
 
-	@Autowired
+	@Resource
 	public SimpleMailService simpleMailService;
 
 }

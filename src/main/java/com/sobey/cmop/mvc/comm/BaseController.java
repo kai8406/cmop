@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
@@ -102,4 +103,24 @@ public class BaseController {
 		return ApplyConstant.ApplyStatus.map;
 	}
 
+	/**
+	 * esg协议Map
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("esgProtocolMap")
+	public Map<String, String> esgProtocolMap() {
+		return ApplyConstant.EsgProtocol.map;
+	}
+
+	/**
+	 * 返回当前用户创建的所有可用于基础设施申请的申请单Apply List.
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("baseStationApplys")
+	public List<Apply> baseStationApplys() {
+		return comm.applyService.getBaseStationApplyList();
+
+	}
 }

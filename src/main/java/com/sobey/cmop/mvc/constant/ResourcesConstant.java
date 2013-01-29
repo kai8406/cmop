@@ -39,7 +39,7 @@ public class ResourcesConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (ServiceType e : ServiceType.values()) {
 
@@ -90,7 +90,7 @@ public class ResourcesConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (ResourcesStatus e : ResourcesStatus.values()) {
 

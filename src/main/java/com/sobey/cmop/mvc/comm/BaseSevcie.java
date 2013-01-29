@@ -34,7 +34,7 @@ public class BaseSevcie {
 	 */
 	public Integer getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-		return user.id;
+		return user != null ? user.id : null;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class BaseSevcie {
 
 	/**
 	 * 根据资源类型 serviceType 创建标识符 Identifier<br>
-	 * elb - hRfhDDvM<br>
+	 * elb-hRfhDDvM<br>
 	 * pcs-9V07luc3<br>
 	 * 
 	 * @param serviceType

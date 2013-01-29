@@ -49,7 +49,7 @@ public class EsgService extends BaseSevcie {
 		networkEsgItem.setUser(comm.accountService.getCurrentUser());
 		networkEsgItem.setDescription(description);
 		networkEsgItem.setIdentifier(identifier);
-		
+
 		networkEsgItemDao.save(networkEsgItem);
 
 		// ESG的规则保存

@@ -33,7 +33,7 @@ public class ApplyConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (ServiceType e : ServiceType.values()) {
 
@@ -78,7 +78,7 @@ public class ApplyConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (Priority e : Priority.values()) {
 
@@ -127,7 +127,7 @@ public class ApplyConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (ApplyStatus e : ApplyStatus.values()) {
 
@@ -150,6 +150,27 @@ public class ApplyConstant {
 			return String.valueOf(this.code);
 		}
 
+	}
+
+	/**
+	 * ESG的协议.<br>
+	 * 注意:返回的map key和value均为String类型
+	 * 
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum EsgProtocol {
+		TCP, UDP, ICMP, HTTP, HTTPS, SSH, DNS, MYSQL;
+
+		public static final Map<String, String> map = Maps.newLinkedHashMap();
+		static {
+			for (EsgProtocol e : EsgProtocol.values()) {
+
+				map.put(e.name(), e.name());
+
+			}
+		}
 	}
 
 }

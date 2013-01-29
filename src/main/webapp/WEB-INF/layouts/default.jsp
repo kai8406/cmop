@@ -36,6 +36,7 @@
 <link href="${ctx}/static/jquery-uniform/uniform.default.css" rel="stylesheet">
 <link href="${ctx}/static/jquery-ui/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
 <link href="${ctx}/static/common/css/style.css" rel="stylesheet">
+<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
 <!--[if lt IE 7 ]><![endif]-->
 <!--[if IE 8 ]><![endif]-->
@@ -52,6 +53,7 @@
  <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
  <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>
  <script src="${ctx}/static/common/js/custom.js"></script>
+ <script src="${ctx}/static/common/js/custom.wizard.js"></script>
 
 <!-- head Tag`s Template -->
 <sitemesh:head/>

@@ -38,7 +38,6 @@
  
 </head>
 <body>
-<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
 	<form id="inputForm" class="input-form" action="${ctx}/login" method="post" style="max-width: 300px;">
 		

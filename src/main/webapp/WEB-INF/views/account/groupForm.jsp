@@ -39,8 +39,6 @@
 
 <body>
 
-<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
-
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${group.id}">

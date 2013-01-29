@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.service.apply;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -100,6 +103,24 @@ public class ApplyService extends BaseSevcie {
 	@Transactional(readOnly = true)
 	public void deleteApply(Integer id) {
 		applyDao.delete(id);
+	}
+
+	/**
+	 * 获得登录用户所有的申请单 Apply.用于基础设施申请<br>
+	 * 1.申请单必须是服务类型ServiceType为 1.基础设施 的Apply<br>
+	 * 2.申请单状态为 0.已申请 和 3.已退回 ,以满足服务申请只有在"已申请"和"已退回"这两个状态下才能修改的业务要求.<br>
+	 * 
+	 * @return
+	 */
+	public List<Apply> getBaseStationApplyList() {
+
+		Integer serviceType = ApplyConstant.ServiceType.基础设施.toInteger();
+
+		List<Integer> status = new ArrayList<Integer>();
+		status.add(ApplyConstant.ApplyStatus.已申请.toInteger());
+		status.add(ApplyConstant.ApplyStatus.已退回.toInteger());
+
+		return applyDao.findByUserIdAndServiceTypeAndStatusIn(getCurrentUserId(), serviceType, status);
 	}
 
 }

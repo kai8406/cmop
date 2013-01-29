@@ -42,7 +42,6 @@
 
 
 <body>
-<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
 	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal input-form">
 	

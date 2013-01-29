@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.sobey.cmop.mvc.service.EsgService;
 import com.sobey.cmop.mvc.service.account.AccountService;
 import com.sobey.cmop.mvc.service.apply.ApplyService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
@@ -23,15 +24,18 @@ public class CommonService {
 	public AccountService accountService;
 
 	@Resource
-	public ServiceTagService serviceTagService;
-
-	@Resource
 	public ApplyService applyService;
 
 	@Resource
-	public TemplateMailService templateMailService;
+	public EsgService esgService;
+
+	@Resource
+	public ServiceTagService serviceTagService;
 
 	@Resource
 	public SimpleMailService simpleMailService;
+
+	@Resource
+	public TemplateMailService templateMailService;
 
 }

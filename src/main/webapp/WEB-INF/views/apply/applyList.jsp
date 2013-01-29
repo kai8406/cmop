@@ -11,7 +11,7 @@
 		
 	    $('#createBtn').popover({
 	    	trigger: "hover",
-	    	placement: "bottom",
+	    	placement: "right",
 	    	title: "Note",
 	    	content: "申请任何资源前,必须有一个服务申请单."
 	    });
@@ -34,7 +34,7 @@
 			<a href="#" class="btn span1">ELB &raquo;</a>
 			<a href="#" class="btn span1">EIP &raquo;</a>
 			<a href="#" class="btn span1">DNS &raquo;</a>
-			<a href="#" class="btn span1">ESG &raquo;</a>
+			<a href="${ctx}/apply/esg/save/" class="btn span1">ESG &raquo;</a>
 		</div>
 
 		<div class="span12 quick-actions">
@@ -112,7 +112,7 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="update/${item.id}">${item.title}</a></td>
+					<td>${item.title}</td>
 					<td>${item.serviceTag}</td>
 					<td>
 						<c:forEach var="map" items="${applyPriorityMap }">
@@ -130,7 +130,7 @@
 					</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
-					
+						<a href="update/${item.id}">修改</a>
 						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
 						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>

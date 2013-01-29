@@ -7,7 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
+import com.sobey.framework.utils.Identities;
 
 /**
  * Service的基类<br>
@@ -43,4 +45,16 @@ public class BaseSevcie {
 		return new PageRequest(pageNumber - 1, pagzSize, new Sort(Direction.DESC, "id"));
 	}
 
+	/**
+	 * 根据资源类型 serviceType 创建标识符 Identifier<br>
+	 * elb - hRfhDDvM<br>
+	 * pcs-9V07luc3<br>
+	 * 
+	 * @param serviceType
+	 * 
+	 * @return
+	 */
+	public String generateIdentifier(Integer serviceType) {
+		return ResourcesConstant.ServiceType.get(serviceType) + "-" + Identities.randomBase62(8);
+	}
 }

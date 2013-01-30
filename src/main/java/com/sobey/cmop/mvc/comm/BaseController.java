@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
@@ -64,9 +65,8 @@ public class BaseController {
 	// =============== 返回页面的值 ===============
 
 	/**
-	 * 返回所有的用户类型
 	 * 
-	 * @return
+	 * @return 所有的用户类型
 	 */
 	@ModelAttribute("userTypeMap")
 	public Map<Integer, String> userTypeMap() {
@@ -74,9 +74,8 @@ public class BaseController {
 	}
 
 	/**
-	 * 返回服务申请表的服务类型
 	 * 
-	 * @return
+	 * @return 服务申请表的服务类型
 	 */
 	@ModelAttribute("applyServiceTypeMap")
 	public Map<Integer, String> applyServiceTypeMap() {
@@ -84,9 +83,8 @@ public class BaseController {
 	}
 
 	/**
-	 * 返回服务申请表的优先级
 	 * 
-	 * @return
+	 * @return 服务申请表的优先级
 	 */
 	@ModelAttribute("applyPriorityMap")
 	public Map<Integer, String> applyPriorityMap() {
@@ -94,9 +92,7 @@ public class BaseController {
 	}
 
 	/**
-	 * 返回服务申请表的状态
-	 * 
-	 * @return
+	 * @return 服务申请表的状态
 	 */
 	@ModelAttribute("applyStatusMap")
 	public Map<Integer, String> applyStatusMap() {
@@ -104,9 +100,7 @@ public class BaseController {
 	}
 
 	/**
-	 * esg协议Map
-	 * 
-	 * @return
+	 * @returnesg 协议Map
 	 */
 	@ModelAttribute("esgProtocolMap")
 	public Map<String, String> esgProtocolMap() {
@@ -114,13 +108,50 @@ public class BaseController {
 	}
 
 	/**
-	 * 返回当前用户创建的所有可用于基础设施申请的申请单Apply List.
-	 * 
-	 * @return
+	 * @return当前用户创建的所有可用于基础设施申请的申请单Apply List.
 	 */
 	@ModelAttribute("baseStationApplys")
 	public List<Apply> baseStationApplys() {
 		return comm.applyService.getBaseStationApplyList();
+	}
 
+	/**
+	 * @return 计算资源类型Map
+	 */
+	@ModelAttribute("computeTypeMap")
+	public Map<Integer, String> ComputeTypeMap() {
+		return ComputeConstant.ComputeType.map;
+	}
+
+	/**
+	 * @return 操作系统类型Map
+	 */
+	@ModelAttribute("osTypeMap")
+	public Map<Integer, String> osTypeMap() {
+		return ComputeConstant.OS_TYPE_MAP;
+	}
+
+	/**
+	 * @return 操作系统位数Map
+	 */
+	@ModelAttribute("osBitMap")
+	public Map<Integer, String> osBitMap() {
+		return ComputeConstant.OS_BIT_MAP;
+	}
+
+	/**
+	 * @return PCS的服务器类型Map
+	 */
+	@ModelAttribute("pcsServerTypeMap")
+	public Map<Integer, String> pcsServerTypeMap() {
+		return ComputeConstant.PCSServerType.map;
+	}
+
+	/**
+	 * @return ECS的服务器类型Map
+	 */
+	@ModelAttribute("ecsServerTypeMap")
+	public Map<Integer, String> ecsServerTypeMap() {
+		return ComputeConstant.ECSServerType.map;
 	}
 }

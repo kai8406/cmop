@@ -28,17 +28,17 @@
 	
 	<div class="row">
 		<div class="span12 quick-actions">
-			<a href="#" class="btn span1">PCS &raquo;</a>
-			<a href="#" class="btn span1">ECS &raquo;</a>
-			<a href="#" class="btn span1">ES3 &raquo;</a>
-			<a href="#" class="btn span1">ELB &raquo;</a>
-			<a href="#" class="btn span1">EIP &raquo;</a>
-			<a href="#" class="btn span1">DNS &raquo;</a>
+			<a href="${ctx}/apply/compute/save/1/" class="btn span1">PCS &raquo;</a>
+			<a href="${ctx}/apply/compute/save/2/" class="btn span1">ECS &raquo;</a>
+			<a href="${ctx}/apply/es3/save/" class="btn span1">ES3 &raquo;</a>
+			<a href="${ctx}/apply/elb/save/" class="btn span1">ELB &raquo;</a>
+			<a href="${ctx}/apply/eip/save/" class="btn span1">EIP &raquo;</a>
+			<a href="${ctx}/apply/dns/save/" class="btn span1">DNS &raquo;</a>
 			<a href="${ctx}/apply/esg/save/" class="btn span1">ESG &raquo;</a>
 		</div>
 
 		<div class="span12 quick-actions">
-			<a href="#" class="btn span1">MDN &raquo;</a>
+			<a href="${ctx}/apply/mdn/save/" class="btn span1">MDN &raquo;</a>
 			<a href="#" class="btn span1">CP &raquo;</a>
 		</div>
 	</div>

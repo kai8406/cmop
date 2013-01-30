@@ -74,7 +74,7 @@ public class EsgService extends BaseSevcie {
 
 		// ESG的规则保存
 
-		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItem(networkEsgItem, protocols, portRanges, visitSources);
+		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItemToList(networkEsgItem, protocols, portRanges, visitSources);
 
 		esgRuleItemDao.save(esgRuleItems);
 
@@ -135,7 +135,7 @@ public class EsgService extends BaseSevcie {
 	 *            绑定规则的访问源，如：192.168.0.1/10，默认：0.0.0.0/0
 	 * @return
 	 */
-	public List<EsgRuleItem> wrapEsgRuleItem(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources) {
+	public List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources) {
 		List<EsgRuleItem> esgRuleItems = new ArrayList<EsgRuleItem>();
 		for (int i = 0; i < protocols.length; i++) {
 			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i]);

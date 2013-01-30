@@ -14,8 +14,7 @@
 		$("#description").focus();
 		
 		
-		//禁用回车提交form表单.
-		
+		/*禁用回车提交form表单.*/
 		$("#inputForm").keypress(function(e) {
 			if (e.which == 13) {return false;}
 		});
@@ -34,8 +33,7 @@
 		});
 		
 		
-		//点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.
-		
+		/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
 		$(document).on("click", "#createBtn", function() {
 
 			if (!$("#inputForm").valid()) {
@@ -78,8 +76,7 @@
 		});
 		
 		
-		//根据alert中的资源信息,组成汇总信息.
-		
+		/*根据alert中的资源信息,组成汇总信息.*/
 		$(".nextStep").click(function() {
 
 			var html = '<dl class="dl-horizontal">';

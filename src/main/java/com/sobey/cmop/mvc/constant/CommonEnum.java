@@ -11,7 +11,7 @@ package com.sobey.cmop.mvc.constant;
  * <code>                                                                                                       
  * public enum EnumTest{ <br>                                                                                   
  * 		ONE,TWO; <br>                                                                                           
- * 		public static final Map<Integer, String> map = Maps.newHashMap();<br>                               
+ * 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();<br>                               
  * 		static {<br>                                                                                            
  * 			for (EnumTest enumTest : EnumTest.values()) {<br>                                                   
  * 				map.put(enumTest.code, enumTest.name());<br>                                                 

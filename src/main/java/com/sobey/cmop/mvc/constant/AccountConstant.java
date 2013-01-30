@@ -56,7 +56,7 @@ public class AccountConstant {
 		// Map集合,将enum中的值迭代至Map集合中,key为enum的输入参数.value为enum的值.最后用Map集合的get方法获得获得value
 		// 也可以直接用 .map方法返回一个HashMap的返回值
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (UserStatus e : UserStatus.values()) {
 
@@ -106,7 +106,7 @@ public class AccountConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (DefaultGroups e : DefaultGroups.values()) {
 
@@ -154,7 +154,7 @@ public class AccountConstant {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newHashMap();
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
 			for (UserTypes e : UserTypes.values()) {
 

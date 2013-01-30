@@ -5,37 +5,35 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * Apply 模块的静态常量
+ * 计算资源 Compute 模块的静态常量
  * 
  * @author liukai
  * 
  */
-public class ApplyConstant {
+public class ComputeConstant {
 
 	/**
-	 * 服务申请表的服务类型
+	 * 计算资源类型.
 	 * <p>
-	 * 1-基础设施<br>
-	 * 2-MDN<br>
-	 * 3-云生产<br>
-	 * 4-监控<br>
+	 * 1-PCS<br>
+	 * 2-ECS<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum ServiceType implements CommonEnum {
-		基础设施(1), MDN(2), 云生产(3), 监控(4);
+	public enum ComputeType implements CommonEnum {
+		PCS(1), ECS(2);
 
 		private int code;
 
-		private ServiceType(int code) {
+		private ComputeType(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ServiceType e : ServiceType.values()) {
+			for (ComputeType e : ComputeType.values()) {
 
 				map.put(e.code, e.name());
 
@@ -59,28 +57,58 @@ public class ApplyConstant {
 	}
 
 	/**
-	 * 服务申请表的优先级
+	 * 操作系统类型<br>
+	 * 1.Windows2003R2<br>
+	 * 2.Windows2008R2<br>
+	 * 3.CentOS5.6<br>
+	 * 4.CentOS6.3<br>
+	 * 5.Windows7<br>
+	 */
+	public static final Map<Integer, String> OS_TYPE_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_TYPE_MAP.put(1, "Windows2003R2");
+		OS_TYPE_MAP.put(2, "Windows2008R2");
+		OS_TYPE_MAP.put(3, "CentOS5.6");
+		OS_TYPE_MAP.put(4, "CentOS6.3");
+		OS_TYPE_MAP.put(5, "Windows7");
+	}
+
+	/**
+	 * 操作系统位数
+	 */
+	public static final Map<Integer, String> OS_BIT_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_BIT_MAP.put(1, "32bit");
+		OS_BIT_MAP.put(2, "64bit");
+	}
+
+	/**
+	 * PCS的服务器类型
 	 * <p>
-	 * 2-普通<br>
-	 * 3-高<br>
-	 * 4-紧急<br>
+	 * 4-DELL_R410<br>
+	 * 5-DELL_R510<br>
+	 * 6-DELL_R710<br>
+	 * 7-DELL_C6100<br>
+	 * 8-HP_DL2000<br>
+	 * 9-Aisino_6510<br>
+	 * 10-SO_5201NR<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum Priority implements CommonEnum {
-		普通(2), 高(3), 紧急(4);
+	public enum PCSServerType implements CommonEnum {
+		DELL_R410(4), DELL_R510(5), DELL_R710(6), DELL_C6100(7), HP_DL2000(8), Aisino_6510(9), SO_5201NR(10);
 
 		private int code;
 
-		private Priority(int code) {
+		private PCSServerType(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (Priority e : Priority.values()) {
+			for (PCSServerType e : PCSServerType.values()) {
 
 				map.put(e.code, e.name());
 
@@ -104,32 +132,28 @@ public class ApplyConstant {
 	}
 
 	/**
-	 * 服务申请表的状态
+	 * ECS的服务器类型
 	 * <p>
-	 * 0-已申请<br>
-	 * 1-待审批<br>
-	 * 2-审批中<br>
-	 * 3-已退回<br>
-	 * 4-已审批<br>
-	 * 5-处理中<br>
-	 * 6-已创建<br>
+	 * 1-Small<br>
+	 * 2-Middle<br>
+	 * 3-Large<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum ApplyStatus implements CommonEnum {
-		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
+	public enum ECSServerType implements CommonEnum {
+		Small(1), Middle(2), Large(3);
 
 		private int code;
 
-		private ApplyStatus(int code) {
+		private ECSServerType(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ApplyStatus e : ApplyStatus.values()) {
+			for (ECSServerType e : ECSServerType.values()) {
 
 				map.put(e.code, e.name());
 
@@ -150,27 +174,6 @@ public class ApplyConstant {
 			return String.valueOf(this.code);
 		}
 
-	}
-
-	/**
-	 * ESG的协议.<br>
-	 * 注意:返回的map key和value均为String类型
-	 * 
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum EsgProtocol {
-		TCP, UDP, ICMP, HTTP, HTTPS, SSH, DNS, MYSQL;
-
-		public static final Map<String, String> map = Maps.newLinkedHashMap();
-		static {
-			for (EsgProtocol e : EsgProtocol.values()) {
-
-				map.put(e.name(), e.name());
-
-			}
-		}
 	}
 
 }

@@ -134,20 +134,6 @@
 				<!-- 错误提示 -->
 				<div id="message" class="alert alert-error fade"><span>错误信息</span></div>
 				
-				<c:if test="${empty esg }">
-					<div class="control-group">
-						<label class="control-label" for="description">所属服务申请</label>
-						<div class="controls">
-							<select id="applyId" name="applyId" class="required">
-								<c:forEach var="item" items="${baseStationApplys}">
-									<option value="${item.id }">${item.title }</option>
-								</c:forEach>
-							</select>
-						</div>
-					</div>
-				</c:if>
-				
-				
 				<c:if test="${not empty esg}">
 					<div class="control-group">
 						<label class="control-label" for="identifier">标题</label>
@@ -219,10 +205,6 @@
 			
 			</div>
 			
-			
-		
-		 
-		
 		</fieldset>
 		
 	</form>

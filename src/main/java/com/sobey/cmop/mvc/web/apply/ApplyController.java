@@ -73,7 +73,7 @@ public class ApplyController extends BaseController {
 
 		comm.applyService.saveOrUpateApply(apply);
 
-		redirectAttributes.addFlashAttribute("message", "创建服务申请 " + apply.getTitle() + " 成功.");
+		redirectAttributes.addFlashAttribute("message", "创建服务申请 " + apply.getTitle() + " 成功");
 
 		return REDIRECT_SUCCESS_URL + "?applyId=" + apply.getId();
 	}
@@ -104,7 +104,7 @@ public class ApplyController extends BaseController {
 		apply.setDescription(description);
 		comm.applyService.saveOrUpateApply(apply);
 
-		redirectAttributes.addFlashAttribute("message", "修改服务申请 " + apply.getTitle() + " 成功.");
+		redirectAttributes.addFlashAttribute("message", "修改服务申请 " + apply.getTitle() + " 成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}
@@ -132,6 +132,21 @@ public class ApplyController extends BaseController {
 
 		model.addAttribute("apply", comm.applyService.getApply(id));
 		return "apply/applyDetail";
+	}
+
+	/**
+	 * 服务申请Apply提交审批.
+	 */
+	@RequestMapping(value = "/audit/{id}", method = RequestMethod.GET)
+	public String audit(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
+		Apply apply = comm.applyService.getApply(id);
+
+		String message = comm.applyService.saveAuditByApply(apply);
+
+		redirectAttributes.addFlashAttribute("message", message);
+
+		return REDIRECT_SUCCESS_URL;
 	}
 
 }

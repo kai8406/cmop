@@ -115,6 +115,15 @@ public class ComputeConstant {
 			}
 		}
 
+		public static final Map<String, String> mapStr = Maps.newLinkedHashMap();
+		static {
+			for (PCSServerType e : PCSServerType.values()) {
+
+				mapStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
 		public static String get(Integer code) {
 			return map.get(code);
 		}
@@ -156,6 +165,14 @@ public class ComputeConstant {
 			for (ECSServerType e : ECSServerType.values()) {
 
 				map.put(e.code, e.name());
+
+			}
+		}
+		public static final Map<String, String> mapStr = Maps.newLinkedHashMap();
+		static {
+			for (ECSServerType e : ECSServerType.values()) {
+
+				mapStr.put(String.valueOf(e.code), e.name());
 
 			}
 		}

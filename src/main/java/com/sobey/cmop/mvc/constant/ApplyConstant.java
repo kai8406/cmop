@@ -87,6 +87,16 @@ public class ApplyConstant {
 			}
 		}
 
+		// 用于在Freemarker上遍历(Freemarker中,HashMap的key只能为String类型.我草!)
+		public static final Map<String, String> mapStr = Maps.newLinkedHashMap();
+		static {
+			for (Priority e : Priority.values()) {
+
+				mapStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
 		public static String get(Integer code) {
 			return map.get(code);
 		}

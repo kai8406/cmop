@@ -131,4 +131,14 @@ public class ComputeService extends BaseSevcie {
 	public void deleteCompute(Integer id) {
 		computeItemDao.delete(id);
 	}
+
+	/**
+	 * 获得指定服务申请单Apply下的所有实例Compute List.
+	 * 
+	 * @param applyId
+	 * @return
+	 */
+	public List<ComputeItem> getComputeListByApplyId(Integer applyId) {
+		return computeItemDao.findByApplyId(applyId);
+	}
 }

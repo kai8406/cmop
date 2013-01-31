@@ -19,6 +19,10 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.email.TemplateMailService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 
@@ -90,7 +94,7 @@ public class ApplyService extends BaseSevcie {
 	 * @param apply
 	 * @return
 	 */
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = false)
 	public Apply saveOrUpateApply(Apply apply) {
 		return applyDao.save(apply);
 	}
@@ -100,7 +104,7 @@ public class ApplyService extends BaseSevcie {
 	 * 
 	 * @param id
 	 */
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = false)
 	public void deleteApply(Integer id) {
 		applyDao.delete(id);
 	}
@@ -121,6 +125,65 @@ public class ApplyService extends BaseSevcie {
 		status.add(ApplyConstant.ApplyStatus.已退回.toInteger());
 
 		return applyDao.findByUserIdAndServiceTypeAndStatusIn(getCurrentUserId(), serviceType, status);
+	}
+
+	/**
+	 * 向第一位审批人发起审批邮件
+	 * 
+	 * @param apply
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public String saveAuditByApply(Apply apply) {
+
+		String message = "";
+		Integer applyId = apply.getId();
+		User user = apply.getUser();
+
+		// 如果审批人存在,则发送邮件,否则返回字符串提醒用户没有审批人存在.
+
+		if (user.getLeaderId() != null) {
+
+			try {
+
+				/* Step.1 获得第一个审批人 */
+
+				// 上级领导
+				User leader = comm.accountService.getUser(user.getLeaderId());
+
+				Integer flowType = 1;
+				AuditFlow auditFlow = comm.auditService.findAuditFlowByCurrentUser(leader.getId(), flowType);
+
+				logger.info("---> 审批人 auditFlow.getUser():" + auditFlow.getUser());
+
+				/* Step.2 获得该申请单下所有的资源. */
+
+				List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
+
+				/* Step.3 根据资源瓶装邮件内容并发送到上级领导的邮箱. */
+				logger.info("--->拼装邮件内容...");
+
+				comm.templateMailService.sendApplyMail(apply, auditFlow, computes);
+
+				/* Step.4 更新Apply状态和Apply的审批流程. */
+
+				apply.setAuditFlow(auditFlow);
+				apply.setStatus(ApplyConstant.ApplyStatus.待审批.toInteger());
+				this.saveOrUpateApply(apply);
+
+				message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
+
+			} catch (Exception e) {
+				message = "服务申请单提交审批失败";
+				e.printStackTrace();
+			}
+
+		} else {
+			message = "你没有下级审批人,请联系管理员";
+		}
+
+		return message;
+
 	}
 
 }

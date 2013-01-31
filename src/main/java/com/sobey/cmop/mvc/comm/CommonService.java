@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.service.ApplyService;
+import com.sobey.cmop.mvc.service.AuditService;
 import com.sobey.cmop.mvc.service.ComputeService;
 import com.sobey.cmop.mvc.service.EsgService;
 import com.sobey.cmop.mvc.service.ServiceTagService;
@@ -26,6 +27,9 @@ public class CommonService {
 
 	@Resource
 	public ApplyService applyService;
+
+	@Resource
+	public AuditService auditService;
 
 	@Resource
 	public ComputeService computeService;

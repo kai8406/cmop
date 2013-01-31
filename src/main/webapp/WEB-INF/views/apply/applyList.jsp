@@ -112,7 +112,7 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td>${item.title}</td>
+					<td><a href="detail/${item.id}">${item.title}</a></td>
 					<td>${item.serviceTag}</td>
 					<td>
 						<c:forEach var="map" items="${applyPriorityMap }">
@@ -131,6 +131,7 @@
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
 						<a href="update/${item.id}">修改</a>
+						
 						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
 						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
@@ -138,6 +139,16 @@
 							<div class="modal-footer">
 								<button class="btn" data-dismiss="modal">关闭</button>
 								<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+							</div>
+						</div>
+						
+						<a href="#auditModal${item.id}" data-toggle="modal">提交审批</a>
+						<div id="auditModal${item.id}" class="modal hide fade" tabindex="-1" data-width="250">
+							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+							<div class="modal-body">是否提交审批?</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal">关闭</button>
+								<a href="audit/${item.id}/" class="btn btn-primary">确定</a>
 							</div>
 						</div>
 						

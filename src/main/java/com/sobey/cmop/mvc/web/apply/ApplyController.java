@@ -122,4 +122,16 @@ public class ApplyController extends BaseController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
+	/**
+	 * 跳转到详情页面
+	 */
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public String detail(@PathVariable("id") Integer id, Model model) {
+
+		// TODO 后期应该还有MDN,和云生产的类容.
+
+		model.addAttribute("apply", comm.applyService.getApply(id));
+		return "apply/applyDetail";
+	}
+
 }

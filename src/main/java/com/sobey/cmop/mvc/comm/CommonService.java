@@ -4,13 +4,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.sobey.cmop.mvc.service.ApplyService;
 import com.sobey.cmop.mvc.service.ComputeService;
 import com.sobey.cmop.mvc.service.EsgService;
+import com.sobey.cmop.mvc.service.ServiceTagService;
 import com.sobey.cmop.mvc.service.account.AccountService;
-import com.sobey.cmop.mvc.service.apply.ApplyService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
-import com.sobey.cmop.mvc.service.servcieTag.ServiceTagService;
 
 /**
  * Service公共类
@@ -28,6 +28,9 @@ public class CommonService {
 	public ApplyService applyService;
 
 	@Resource
+	public ComputeService computeService;
+
+	@Resource
 	public EsgService esgService;
 
 	@Resource
@@ -38,8 +41,5 @@ public class CommonService {
 
 	@Resource
 	public TemplateMailService templateMailService;
-	
-	@Resource
-	public ComputeService computeService;
 
 }

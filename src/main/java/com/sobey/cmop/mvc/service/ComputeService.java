@@ -54,6 +54,7 @@ public class ComputeService extends BaseSevcie {
 	 *            关联ESG的id
 	 * @return
 	 */
+	@Transactional(readOnly = false)
 	public void saveComputeToApply(Integer computeType, Integer applyId, String[] osTypes, String[] osBits, String[] serverTypes, String[] remarks, String[] esgIds) {
 
 		Apply apply = comm.applyService.getApply(applyId);
@@ -62,6 +63,16 @@ public class ComputeService extends BaseSevcie {
 
 		computeItemDao.save(computes);
 
+	}
+
+	/**
+	 * 新增,更新computeItem
+	 * 
+	 * @param computeItem
+	 * @return
+	 */
+	public ComputeItem saveOrUpdate(ComputeItem computeItem) {
+		return computeItemDao.save(computeItem);
 	}
 
 	/**
@@ -114,5 +125,10 @@ public class ComputeService extends BaseSevcie {
 			computes.add(computeItem);
 		}
 		return computes;
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteCompute(Integer id) {
+		computeItemDao.delete(id);
 	}
 }

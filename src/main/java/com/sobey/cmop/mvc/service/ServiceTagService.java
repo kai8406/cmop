@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service.servcieTag;
+package com.sobey.cmop.mvc.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

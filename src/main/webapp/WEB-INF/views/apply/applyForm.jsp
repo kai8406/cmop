@@ -57,7 +57,7 @@
 				</c:choose>
 			</small></legend>
 			
-			<div id="message" class="alert alert-error fade"><span></span></div>
+			<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 			
 			<c:if test="${not empty apply}">
 			
@@ -76,7 +76,7 @@
 				</div>
 				
 				<div class="control-group">
-					<label class="control-label" for="createTime">状态</label>
+					<label class="control-label" for="status">状态</label>
 					<div class="controls">
 						<p class="help-inline plain-text">
 						 <c:forEach var="map" items="${applyStatusMap }">
@@ -131,9 +131,73 @@
 						maxlength="500" class="required ">${apply.description }</textarea>
 				</div>
 			</div>
-			 
+			
+			<dl class="dl-horizontal">
+			
+				<!-- 实例Compute -->
+				<c:if test="${not empty apply.computeItems}">
+					<hr>
+					<dt>PCS、ECS实例:</dt>
+					<c:forEach var="item" items="${apply.computeItems}">
+					
+						<dd><em>标识符</em>
+							&nbsp; ${item.identifier}(${item.remark})
+						</dd>
+						
+						<dd>
+							<em>基本信息</em>
+							&nbsp; <c:forEach var="map" items="${osTypeMap}"><c:if test="${item.osType == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp; <c:forEach var="map" items="${osBitMap}"><c:if test="${item.osBit == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp;
+							<c:if test="${item.computeType == 1}"><c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:if>
+							<c:if test="${item.computeType == 2}"><c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:if>
+						</dd>
+						
+						<dd>
+							<em>关联ESG</em> &nbsp; ${item.networkEsgItem.identifier}(${item.networkEsgItem.description})
+							
+							<span class="pull-right">
+								<a href="${ctx}/apply/compute/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否删除?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="${ctx}/apply/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</span>
+							
+						</dd>
+						
+						<br>
+						
+					</c:forEach>
+				</c:if>
+				
+				<!-- 存储空间ES3 -->
+				<c:if test="${not empty apply.storageItems}"></c:if>
+				
+				<!-- 负载均衡器ELB -->
+				<c:if test="${not empty apply.networkElbItems}"></c:if>
+				
+				<!-- IP地址EIP -->
+				<c:if test="${not empty apply.networkEipItems}"></c:if>
+				
+				<!-- DNS -->
+				<c:if test="${not empty apply.networkDnsItems}"></c:if>
+				
+				<!-- 服务器监控monitorCompute -->
+				<c:if test="${not empty apply.monitorComputes}"></c:if>
+				
+				<!-- ELB监控monitorElb -->
+				<c:if test="${not empty apply.monitorElbs}"></c:if>
+				
+			</dl>
+			
 			<div class="form-actions">
-				<input class="btn" type="button" value="返回" onclick="history.back()">
+				<a href="${ctx}/apply/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 		

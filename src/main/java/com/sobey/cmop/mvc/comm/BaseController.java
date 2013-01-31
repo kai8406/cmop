@@ -14,6 +14,7 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -116,10 +117,18 @@ public class BaseController {
 	}
 
 	/**
+	 * @return 当前用户创建的+公用的(user_id 为null) ESG列表.
+	 */
+	@ModelAttribute("esgList")
+	public List<NetworkEsgItem> esgList() {
+		return comm.esgService.getESGList();
+	}
+
+	/**
 	 * @return 计算资源类型Map
 	 */
 	@ModelAttribute("computeTypeMap")
-	public Map<Integer, String> ComputeTypeMap() {
+	public Map<Integer, String> computeTypeMap() {
 		return ComputeConstant.ComputeType.map;
 	}
 

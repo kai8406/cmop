@@ -8,5 +8,6 @@ target
 .externalToolBuilders
 .gitattributes
 .svn
+.mymetadata
 *~
 /.git

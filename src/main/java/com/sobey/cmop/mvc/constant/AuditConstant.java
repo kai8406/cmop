@@ -5,37 +5,34 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * Apply 模块的静态常量
+ * 审批表 Audit & 审批流程 AuditFlow 模块的静态常量
  * 
  * @author liukai
  * 
  */
-public class ApplyConstant {
+public class AuditConstant {
 
 	/**
-	 * 服务申请表的服务类型
+	 * 审批流程类型<br>
 	 * <p>
-	 * 1-基础设施<br>
-	 * 2-MDN<br>
-	 * 3-云生产<br>
-	 * 4-监控<br>
+	 * 1-资源申请/变更的审批流程<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum ServiceType implements CommonEnum {
-		基础设施(1), MDN(2), 云生产(3), 监控(4);
+	public enum FlowType implements CommonEnum {
+		资源申请_变更的审批流程(1);
 
 		private int code;
 
-		private ServiceType(int code) {
+		private FlowType(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ServiceType e : ServiceType.values()) {
+			for (FlowType e : FlowType.values()) {
 
 				map.put(e.code, e.name());
 
@@ -44,7 +41,7 @@ public class ApplyConstant {
 
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
-			for (ServiceType e : ServiceType.values()) {
+			for (FlowType e : FlowType.values()) {
 
 				mapKeyStr.put(String.valueOf(e.code), e.name());
 
@@ -68,38 +65,37 @@ public class ApplyConstant {
 	}
 
 	/**
-	 * 服务申请表的优先级
+	 * 审批结果<br>
 	 * <p>
-	 * 2-普通<br>
-	 * 3-高<br>
-	 * 4-紧急<br>
+	 * 1-同意<br>
+	 * 2-不同意但继续<br>
+	 * 3-不同意且退回<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum Priority implements CommonEnum {
-		普通(2), 高(3), 紧急(4);
+	public enum AuditResult implements CommonEnum {
+		同意(1), 不同意但继续(2), 不同意且退回(3);
 
 		private int code;
 
-		private Priority(int code) {
+		private AuditResult(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (Priority e : Priority.values()) {
+			for (AuditResult e : AuditResult.values()) {
 
 				map.put(e.code, e.name());
 
 			}
 		}
 
-		// 用于在Freemarker上遍历(Freemarker中,HashMap的key只能为String类型.我草!)
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
-			for (Priority e : Priority.values()) {
+			for (AuditResult e : AuditResult.values()) {
 
 				mapKeyStr.put(String.valueOf(e.code), e.name());
 
@@ -123,34 +119,38 @@ public class ApplyConstant {
 	}
 
 	/**
-	 * 服务申请表的状态
+	 * 审批状态<br>
 	 * <p>
-	 * 0-已申请<br>
-	 * 1-待审批<br>
-	 * 2-审批中<br>
-	 * 3-已退回<br>
-	 * 4-已审批<br>
-	 * 5-处理中<br>
-	 * 6-已创建<br>
+	 * 0-已过期<br>
+	 * 1-有效<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum ApplyStatus implements CommonEnum {
-		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
+	public enum AuditStatus implements CommonEnum {
+		已过期(0), 有效(1);
 
 		private int code;
 
-		private ApplyStatus(int code) {
+		private AuditStatus(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ApplyStatus e : ApplyStatus.values()) {
+			for (AuditStatus e : AuditStatus.values()) {
 
 				map.put(e.code, e.name());
+
+			}
+		}
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+		static {
+			for (AuditStatus e : AuditStatus.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
 
 			}
 		}

@@ -10,6 +10,7 @@ import com.sobey.cmop.mvc.entity.User;
 /**
  * 用户对象 User 的Dao interface.
  * 
+ * @author liukai
  */
 public interface UserDao extends PagingAndSortingRepository<User, Integer>, JpaSpecificationExecutor<User> {
 

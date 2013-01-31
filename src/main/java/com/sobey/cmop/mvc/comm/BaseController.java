@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
@@ -63,7 +64,7 @@ public class BaseController {
 		return groupList;
 	}
 
-	// =============== 返回页面的值 ===============
+	// =============== 返回页面参数 =============== //
 
 	/**
 	 * 
@@ -105,7 +106,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("esgProtocolMap")
 	public Map<String, String> esgProtocolMap() {
-		return ApplyConstant.EsgProtocol.map;
+		return NetworkConstant.EsgProtocol.map;
 	}
 
 	/**

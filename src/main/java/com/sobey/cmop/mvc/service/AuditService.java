@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
@@ -17,7 +17,7 @@ import com.sobey.cmop.mvc.entity.AuditFlow;
  * 
  * @author liukai
  */
-@Component
+@Service
 @Transactional(readOnly = true)
 public class AuditService extends BaseSevcie {
 

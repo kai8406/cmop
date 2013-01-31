@@ -5,7 +5,7 @@ package com.sobey.cmop.mvc.constant;
  * 
  * <strong> 注意:一定要在Enum内写一个static的get方法 </strong> 该方法根据传入的参数,返回enum中的文本. <br>
  * 实现该方法后,需要声明一个 Map集合,将enum中的值迭代至Map集合中,key为enum的输入参数.value为enum的值. <br>
- * 最后用Map集合的get方法获得获得value.同时该map方法也可以直接获得enum的Map mapStr方法主要是用于页面Freemarker
+ * 最后用Map集合的get方法获得获得value.同时该map方法也可以直接获得enum的Map mapKeyStr方法主要是用于页面Freemarker
  * 遍历的(Freemarker 遍历HashMap的数据,key不能为非String的值!)
  * <p>
  * eg: <br>

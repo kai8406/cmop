@@ -8,6 +8,7 @@ import com.sobey.cmop.mvc.entity.Group;
 /**
  * 权限组对象 Group 的Dao interface.
  * 
+ * @author liukai
  */
 public interface GroupDao extends PagingAndSortingRepository<Group, Integer>, JpaSpecificationExecutor<Group> {
 

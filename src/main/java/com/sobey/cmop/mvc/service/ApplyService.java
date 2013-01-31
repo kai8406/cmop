@@ -12,17 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.User;
-import com.sobey.cmop.mvc.service.email.TemplateMailService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 
@@ -31,7 +31,7 @@ import com.sobey.framework.utils.SearchFilter;
  * 
  * @author liukai
  */
-@Component
+@Service
 @Transactional(readOnly = true)
 public class ApplyService extends BaseSevcie {
 
@@ -140,30 +140,29 @@ public class ApplyService extends BaseSevcie {
 		Integer applyId = apply.getId();
 		User user = apply.getUser();
 
-		// 如果审批人存在,则发送邮件,否则返回字符串提醒用户没有审批人存在.
+		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
 
 		if (user.getLeaderId() != null) {
 
 			try {
 
-				/* Step.1 获得第一个审批人 */
-
-				// 上级领导
-				User leader = comm.accountService.getUser(user.getLeaderId());
-
-				Integer flowType = 1;
-				AuditFlow auditFlow = comm.auditService.findAuditFlowByCurrentUser(leader.getId(), flowType);
-
-				logger.info("---> 审批人 auditFlow.getUser():" + auditFlow.getUser());
-
-				/* Step.2 获得该申请单下所有的资源. */
+				/* Step.1 获得该申请单下所有的资源. */
 
 				List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
 
-				/* Step.3 根据资源瓶装邮件内容并发送到上级领导的邮箱. */
-				logger.info("--->拼装邮件内容...");
+				/* Step.2 获得第一个审批人和审批流程 */
 
-				comm.templateMailService.sendApplyMail(apply, auditFlow, computes);
+				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
+
+				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+				AuditFlow auditFlow = comm.auditService.findAuditFlowByCurrentUser(leader.getId(), flowType);
+
+				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
+
+				/* Step.3 根据资源瓶装邮件内容并发送到第一个审批人的邮箱. */
+
+				logger.info("--->拼装邮件内容...");
+				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow, computes);
 
 				/* Step.4 更新Apply状态和Apply的审批流程. */
 
@@ -173,13 +172,15 @@ public class ApplyService extends BaseSevcie {
 
 				message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
 
+				logger.info("--->服务申请邮件发送成功...");
+
 			} catch (Exception e) {
 				message = "服务申请单提交审批失败";
 				e.printStackTrace();
 			}
 
 		} else {
-			message = "你没有下级审批人,请联系管理员";
+			message = "你没有直属领导,请联系管理员添加";
 		}
 
 		return message;

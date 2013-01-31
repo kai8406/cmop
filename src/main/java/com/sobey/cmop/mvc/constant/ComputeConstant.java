@@ -40,6 +40,15 @@ public class ComputeConstant {
 			}
 		}
 
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+		static {
+			for (ComputeType e : ComputeType.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
 		public static String get(Integer code) {
 			return map.get(code);
 		}
@@ -74,12 +83,38 @@ public class ComputeConstant {
 	}
 
 	/**
+	 * 操作系统类型(key为String)<br>
+	 * 1.Windows2003R2<br>
+	 * 2.Windows2008R2<br>
+	 * 3.CentOS5.6<br>
+	 * 4.CentOS6.3<br>
+	 * 5.Windows7<br>
+	 */
+	public static final Map<String, String> OS_TYPE_STRING_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_TYPE_STRING_MAP.put("1", "Windows2003R2");
+		OS_TYPE_STRING_MAP.put("2", "Windows2008R2");
+		OS_TYPE_STRING_MAP.put("3", "CentOS5.6");
+		OS_TYPE_STRING_MAP.put("4", "CentOS6.3");
+		OS_TYPE_STRING_MAP.put("4", "Windows7");
+	}
+
+	/**
 	 * 操作系统位数
 	 */
 	public static final Map<Integer, String> OS_BIT_MAP = Maps.newLinkedHashMap();
 	static {
 		OS_BIT_MAP.put(1, "32bit");
 		OS_BIT_MAP.put(2, "64bit");
+	}
+
+	/**
+	 * 操作系统位数(key为String)<br>
+	 */
+	public static final Map<String, String> OS_BIT_STRING_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_BIT_STRING_MAP.put("1", "32bit");
+		OS_BIT_STRING_MAP.put("2", "64bit");
 	}
 
 	/**
@@ -115,11 +150,11 @@ public class ComputeConstant {
 			}
 		}
 
-		public static final Map<String, String> mapStr = Maps.newLinkedHashMap();
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (PCSServerType e : PCSServerType.values()) {
 
-				mapStr.put(String.valueOf(e.code), e.name());
+				mapKeyStr.put(String.valueOf(e.code), e.name());
 
 			}
 		}
@@ -168,11 +203,11 @@ public class ComputeConstant {
 
 			}
 		}
-		public static final Map<String, String> mapStr = Maps.newLinkedHashMap();
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (ECSServerType e : ECSServerType.values()) {
 
-				mapStr.put(String.valueOf(e.code), e.name());
+				mapKeyStr.put(String.valueOf(e.code), e.name());
 
 			}
 		}

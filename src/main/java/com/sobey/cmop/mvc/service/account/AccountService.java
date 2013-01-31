@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
@@ -39,7 +39,7 @@ import com.sobey.framework.utils.SearchFilter.Operator;
  * @author calvin
  */
 // Spring Bean的标识.
-@Component
+@Service
 // 默认将类中的所有public函数纳入事务管理.
 @Transactional(readOnly = true)
 public class AccountService extends BaseSevcie {
@@ -119,8 +119,9 @@ public class AccountService extends BaseSevcie {
 		userDao.save(user);
 
 		// 发送邮件通知
-//		comm.simpleMailService.sendNotificationMail("cmop_public@163.com", "sobey_public@163.com", "test", "I Love You!");
-//		comm.templateMailService.sendUserNotificationMail(user);
+		// comm.simpleMailService.sendNotificationMail("cmop_public@163.com",
+		// "sobey_public@163.com", "test", "I Love You!");
+		// comm.templateMailService.sendUserNotificationMail(user);
 
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}

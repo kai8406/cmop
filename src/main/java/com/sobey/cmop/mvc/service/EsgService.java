@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
@@ -25,7 +25,7 @@ import com.sobey.cmop.mvc.entity.User;
  * 
  * @author liukai
  */
-@Component
+@Service
 @Transactional(readOnly = true)
 public class EsgService extends BaseSevcie {
 
@@ -117,7 +117,7 @@ public class EsgService extends BaseSevcie {
 	 * @return
 	 */
 	public List<NetworkEsgItem> getESGList() {
-		return networkEsgItemDao.findByUserIdOrUserIdIsNull(getCurrentUserId());
+		return networkEsgItemDao.findByUserIdOrUserIdIsNullOrderByIdDesc(getCurrentUserId());
 	}
 
 	// -- EsgRuleItem Manager --//
@@ -141,6 +141,9 @@ public class EsgService extends BaseSevcie {
 			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i]);
 			esgRuleItems.add(esgRuleItem);
 		}
+
+		logger.info("组成EsgRuleItem对象数量-->" + esgRuleItems.size());
+
 		return esgRuleItems;
 
 	}

@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.framework.utils.PropertiesLoader;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -38,6 +39,10 @@ import freemarker.template.TemplateException;
 public class TemplateMailService {
 
 	private static final String DEFAULT_ENCODING = "utf-8";
+
+	// 加载propertie文件
+
+	public static PropertiesLoader loader = new PropertiesLoader("classpath:/config.properties");
 
 	private static Logger logger = LoggerFactory.getLogger(TemplateMailService.class);
 
@@ -65,9 +70,17 @@ public class TemplateMailService {
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 
-			String sendFrom = "cmop_public@163.com"; // 发件人.以后通过读取配置文件获得.
-			String sendTo = auditFlow.getUser().getEmail(); // 收件人
-			String sendSubject = "资源申请审批邮件"; // 邮件标题
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = loader.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = auditFlow.getUser().getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = loader.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源申请审批邮件";
 
 			Map<String, Object> map = Maps.newHashMap();
 
@@ -93,7 +106,8 @@ public class TemplateMailService {
 			// 邮件相关信息
 
 			helper.setFrom(sendFrom);
-			helper.setTo("sobey_public@163.com"); // 收件人.测试使用
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
 			helper.setSubject(sendSubject);
 
 			helper.setText(content, true);

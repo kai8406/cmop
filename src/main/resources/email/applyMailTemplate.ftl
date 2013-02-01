@@ -27,9 +27,9 @@
 		
 		
 		<!--实例Compute -->
-		<#if computes?exists>
+		<#if (computes?exists) && (computes?size > 0) >
 		<li>
-			<strong>实例信息(PCS,ECS)</strong>
+			<strong>计算资源(PCS,ECS)</strong>
 			<#list computes as compute>
 				<ul>
 				

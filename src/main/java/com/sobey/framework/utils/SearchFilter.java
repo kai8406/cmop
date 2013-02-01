@@ -32,6 +32,19 @@ public class SearchFilter {
 	public Object value;
 	public Operator operator;
 
+	/**
+	 * 关联路径转换.<br>
+	 * 如Apply下名为"user.name"的fileName,转换为 Apply.user.name 属性<br>
+	 * 当此对象作为Map中的value时:<br>
+	 * 
+	 * map.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id",
+	 * Operator.EQ, userId));<br>
+	 * key必须给出value的上级关联对象.
+	 * 
+	 * @param fieldName
+	 * @param operator
+	 * @param value
+	 */
 	public SearchFilter(String fieldName, Operator operator, Object value) {
 		this.fieldName = fieldName;
 		this.value = value;

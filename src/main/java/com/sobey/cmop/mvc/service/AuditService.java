@@ -2,11 +2,15 @@ package com.sobey.cmop.mvc.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,9 @@ import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.framework.utils.DynamicSpecifications;
+import com.sobey.framework.utils.SearchFilter;
+import com.sobey.framework.utils.SearchFilter.Operator;
 
 /**
  * 审批表 Audit & 审批流程 AuditFlow 相关的管理类.
@@ -56,6 +63,30 @@ public class AuditService extends BaseSevcie {
 	}
 
 	// ============ 审批流程 AuditFlow============ //
+
+	/**
+	 * 审批audit页面(Apply)的分页查询.<br>
+	 * <br>
+	 * <br>
+	 * 
+	 * @param searchParams
+	 *            页面传递过来的参数
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Audit> getAuditApplyPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id", Operator.EQ, getCurrentUserId()));
+
+		Specification<Audit> spec = DynamicSpecifications.bySearchFilter(filters.values(), Audit.class);
+
+		return auditDao.findAll(spec, pageRequest);
+	}
 
 	/**
 	 * 根据流程类型flowType 获得指定用户的审批流程
@@ -119,6 +150,23 @@ public class AuditService extends BaseSevcie {
 
 	}
 
+	/**
+	 * 服务申请Apply的审批.<br>
+	 * 
+	 * 首先根据审核结果的不同分为三种审批处理逻辑<br>
+	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. <br>
+	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象<br>
+	 * 3-审批退回. 发送退回邮件给Apply的申请人<br>
+	 * 
+	 * @param audit
+	 *            审批
+	 * @param applyId
+	 *            服务申请ApplyId
+	 * @param userId
+	 *            当前审批人
+	 * @return
+	 */
+	@Transactional(readOnly = false)
 	public boolean saveAuditToApply(Audit audit, Integer applyId, Integer userId) {
 
 		Apply apply = comm.applyService.getApply(applyId);
@@ -140,10 +188,6 @@ public class AuditService extends BaseSevcie {
 		audit.setCreateTime(new Date());
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
-		// TODO 拼装Apply下的资源信息
-
-		List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
-
 		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toInteger())) {
 
 			logger.info("--->审批退回...");
@@ -158,6 +202,10 @@ public class AuditService extends BaseSevcie {
 			comm.simpleMailService.sendNotificationMail(apply.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
 
 		} else {
+
+			// TODO 拼装Apply下的资源信息
+
+			List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
 
 			if (auditFlow.getIsFinal()) { // 终审人
 

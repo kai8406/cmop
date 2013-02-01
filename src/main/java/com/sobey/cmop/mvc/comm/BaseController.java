@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
@@ -165,4 +166,14 @@ public class BaseController {
 	public Map<Integer, String> ecsServerTypeMap() {
 		return ComputeConstant.ECSServerType.map;
 	}
+
+	/**
+	 * 
+	 * @return 审批结果
+	 */
+	@ModelAttribute("auditResultMap")
+	public Map<Integer, String> auditResultMap() {
+		return AuditConstant.AuditResult.map;
+	}
+
 }

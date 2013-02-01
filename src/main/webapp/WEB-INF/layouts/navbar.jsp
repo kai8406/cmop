@@ -18,10 +18,14 @@
 				<shiro:user>
 				
 					<ul id="navbar" class="nav">
+						
 						<shiro:hasPermission name="user:view">
 							<li id="apply" class="tip-bottom" title="服务申请管理"><a href="${ctx}/apply/">申请管理</a></li>
 						</shiro:hasPermission>
 						
+						<shiro:hasPermission name="user:view">
+							<li id="audit" class="tip-bottom" title="服务申请审批管理"><a href="${ctx}/audit/apply/">申请审批管理</a></li>
+						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="user:view">
 							<li id="user" class="tip-bottom" title="用户管理"><a href="${ctx}/account/user/">用户管理</a></li>

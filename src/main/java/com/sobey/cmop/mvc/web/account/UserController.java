@@ -122,9 +122,9 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
-		boolean falg = comm.accountService.deleteUser(id);
+		boolean flag = comm.accountService.deleteUser(id);
 
-		String message = falg ? "删除用户成功" : "不能删除超级管理员";
+		String message = flag ? "删除用户成功" : "不能删除超级管理员";
 
 		redirectAttributes.addFlashAttribute("message", message);
 

@@ -122,9 +122,9 @@ public class GroupController extends BaseController {
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
-		boolean falg = comm.accountService.deleteGroup(id);
+		boolean flag = comm.accountService.deleteGroup(id);
 
-		String message = falg ? "删除权限成功" : "不能删除默认权限组";
+		String message = flag ? "删除权限成功" : "不能删除默认权限组";
 
 		redirectAttributes.addFlashAttribute("message", message);
 

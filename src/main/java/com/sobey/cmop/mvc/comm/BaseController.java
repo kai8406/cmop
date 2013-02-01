@@ -13,6 +13,7 @@ import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
@@ -88,9 +89,9 @@ public class BaseController {
 	 * 
 	 * @return 服务申请表的优先级
 	 */
-	@ModelAttribute("applyPriorityMap")
-	public Map<Integer, String> applyPriorityMap() {
-		return ApplyConstant.Priority.map;
+	@ModelAttribute("priorityMap")
+	public Map<Integer, String> priorityMap() {
+		return RedmineConstant.Priority.map;
 	}
 
 	/**

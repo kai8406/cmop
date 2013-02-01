@@ -68,61 +68,6 @@ public class ApplyConstant {
 	}
 
 	/**
-	 * 服务申请表的优先级
-	 * <p>
-	 * 2-普通<br>
-	 * 3-高<br>
-	 * 4-紧急<br>
-	 * <p>
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum Priority implements CommonEnum {
-		普通(2), 高(3), 紧急(4);
-
-		private int code;
-
-		private Priority(int code) {
-			this.code = code;
-		}
-
-		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
-		static {
-			for (Priority e : Priority.values()) {
-
-				map.put(e.code, e.name());
-
-			}
-		}
-
-		// 用于在Freemarker上遍历(Freemarker中,HashMap的key只能为String类型.我草!)
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
-		static {
-			for (Priority e : Priority.values()) {
-
-				mapKeyStr.put(String.valueOf(e.code), e.name());
-
-			}
-		}
-
-		public static String get(Integer code) {
-			return map.get(code);
-		}
-
-		@Override
-		public Integer toInteger() {
-			return this.code;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(this.code);
-		}
-
-	}
-
-	/**
 	 * 服务申请表的状态
 	 * <p>
 	 * 0-已申请<br>

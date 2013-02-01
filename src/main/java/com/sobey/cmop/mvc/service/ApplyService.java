@@ -89,7 +89,7 @@ public class ApplyService extends BaseSevcie {
 	}
 
 	/**
-	 * 新增,更新Apply
+	 * 新增,更新服务申请Apply
 	 * 
 	 * @param apply
 	 * @return
@@ -155,7 +155,7 @@ public class ApplyService extends BaseSevcie {
 				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
 
 				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-				AuditFlow auditFlow = comm.auditService.findAuditFlowByCurrentUser(leader.getId(), flowType);
+				AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
 
 				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 

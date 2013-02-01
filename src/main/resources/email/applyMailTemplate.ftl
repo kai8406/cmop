@@ -79,9 +79,9 @@
 		<li>
 			<strong>审批操作</strong>
 			<ul>
-				<li><a href="#">1.同意</a></li>
-				<li><a href="#">2.不通过但继续</a></li>
-				<li><a href="#">3.不通过且退回</a></li>
+				<li><a href="${applyPassUrl}">1.同意</a></li>
+				<li><a href="${applyDisagreeContinueUrl}">2.不通过但继续</a></li>
+				<li><a href="${applyDisagreeReturnUrl}">3.不通过且退回</a></li>
 			</ul>
 		</li>
 		

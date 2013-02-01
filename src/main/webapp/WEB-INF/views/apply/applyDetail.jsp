@@ -44,7 +44,7 @@
 				
 				<dt>优先级</dt>
 				<dd>
-					<c:forEach var="map" items="${applyPriorityMap }">
+					<c:forEach var="map" items="${priorityMap }">
 					 	<c:if test="${map.key == apply.priority }">${map.value }</c:if>
 					</c:forEach>&nbsp;
 				</dd>

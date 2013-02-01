@@ -16,12 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.google.common.collect.Maps;
-import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
-import com.sobey.framework.utils.PropertiesLoader;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -36,13 +37,9 @@ import freemarker.template.TemplateException;
  */
 @Service
 @Transactional(readOnly = true)
-public class TemplateMailService {
+public class TemplateMailService extends BaseSevcie {
 
 	private static final String DEFAULT_ENCODING = "utf-8";
-
-	// 加载propertie文件
-
-	public static PropertiesLoader loader = new PropertiesLoader("classpath:/config.properties");
 
 	private static Logger logger = LoggerFactory.getLogger(TemplateMailService.class);
 
@@ -68,27 +65,28 @@ public class TemplateMailService {
 
 		MimeMessage msg = mailSender.createMimeMessage();
 		try {
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = Maps.newHashMap();
 
 			// 发件人.通过读取配置文件获得.
-			String sendFrom = loader.getProperty("SENDFROM_EMAIL");
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
 
 			// 收件人.生成环境使用
 			String sendTo = auditFlow.getUser().getEmail();
 
 			// 收件人.测试使用
-			String sendToTest = loader.getProperty("TEST_SENDTO_EMAIL");
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
 
 			// 邮件标题
 			String sendSubject = "资源申请审批邮件";
-
-			Map<String, Object> map = Maps.newHashMap();
 
 			// 服务申请Apply
 
 			map.put("apply", apply);
 			map.put("auditFlow", auditFlow);
-			map.put("priorityMap", ApplyConstant.Priority.mapKeyStr);
+			map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
 
 			// 实例Compute
 
@@ -101,15 +99,28 @@ public class TemplateMailService {
 
 			// 审批Audit
 
+			String applyPassUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+			String applyDisagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_CONTINUE_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+					+ AuditConstant.AuditResult.不同意但继续;
+			String applyDisagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_RETURN_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+					+ AuditConstant.AuditResult.不同意且退回;
+
+			map.put("applyPassUrl", applyPassUrl);
+			map.put("applyDisagreeContinueUrl", applyDisagreeContinueUrl);
+			map.put("applyDisagreeReturnUrl", applyDisagreeReturnUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
 			String content = this.generateMailContent(applyTemplate, map);
 
-			// 邮件相关信息
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 
 			helper.setFrom(sendFrom);
 			helper.setTo(sendToTest); // 测试环境使用.
 			// helper.setTo(sendTo); //生产环境使用.
 			helper.setSubject(sendSubject);
-
 			helper.setText(content, true);
 
 			mailSender.send(msg);

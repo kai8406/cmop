@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 import com.sobey.framework.utils.Identities;
+import com.sobey.framework.utils.PropertiesLoader;
 
 /**
  * Service的基类<br>
@@ -26,6 +27,11 @@ public class BaseSevcie {
 	 */
 	@Resource
 	public CommonService comm;
+
+	/**
+	 * 加载config.propertie文件
+	 */
+	public static PropertiesLoader CONFIG_LOADER = new PropertiesLoader("classpath:/config.properties");
 
 	/**
 	 * 获得当前登录用户的ID

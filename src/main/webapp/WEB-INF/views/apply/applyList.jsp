@@ -85,7 +85,7 @@
 				<label class="control-label search-text">优先级</label> 
 				<select name="search_EQ_priority" class="input-small">
 					<option value="" selected="selected">Choose...</option>
-					<c:forEach var="map" items="${applyPriorityMap }">
+					<c:forEach var="map" items="${priorityMap }">
 						<option value="${map.key }" 
 							<c:if test="${map.key == param.search_EQ_priority }">
 								selected="selected"
@@ -115,7 +115,7 @@
 					<td><a href="detail/${item.id}">${item.title}</a></td>
 					<td>${item.serviceTag}</td>
 					<td>
-						<c:forEach var="map" items="${applyPriorityMap }">
+						<c:forEach var="map" items="${priorityMap }">
 							<c:if test="${map.key == item.priority }">
 								${map.value }
 							</c:if>

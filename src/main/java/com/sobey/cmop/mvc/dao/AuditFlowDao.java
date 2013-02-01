@@ -17,11 +17,22 @@ public interface AuditFlowDao extends PagingAndSortingRepository<AuditFlow, Inte
 	 * 根据流程类型flowType 获得当前用户的审批流程
 	 * 
 	 * @param userId
-	 *            当前登录用户Id
+	 *            用户Id
 	 * @param flowType
 	 *            流程类型
 	 * @return
 	 */
 	AuditFlow findByUserIdAndFlowType(Integer userId, Integer flowType);
+
+	/**
+	 * 根据流程类型flowType和审批顺序获得审批流程
+	 * 
+	 * @param auditOrder
+	 *            审批顺序
+	 * @param flowType
+	 *            流程类型
+	 * @return
+	 */
+	AuditFlow findByAuditOrderAndFlowType(Integer auditOrder, Integer flowType);
 
 }

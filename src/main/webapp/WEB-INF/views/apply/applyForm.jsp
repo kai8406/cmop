@@ -99,7 +99,7 @@
 				<label class="control-label" for="priority">优先级</label>
 				<div class="controls">
 					<select id="priority" name="priority">
-						<c:forEach var="map" items="${applyPriorityMap }">
+						<c:forEach var="map" items="${priorityMap }">
 							<option value="${map.key }" 
 								<c:if test="${map.key == apply.priority }">
 									selected="selected"

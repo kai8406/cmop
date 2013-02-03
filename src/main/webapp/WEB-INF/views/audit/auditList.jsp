@@ -106,7 +106,7 @@
 					</td>
 					<td><fmt:formatDate value="${item.apply.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
-						<a href="update/${item.id}">审批</a>
+						<a href="${ctx}/audit/apply/${item.apply.id}">审批</a>
 					</td>
 				</tr>
 			</c:forEach>

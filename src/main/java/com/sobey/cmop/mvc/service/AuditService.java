@@ -62,6 +62,17 @@ public class AuditService extends BaseSevcie {
 		return auditDao.save(audit);
 	}
 
+	/**
+	 * 获得Apply的 审批 Audit列表.
+	 * 
+	 * @param applyId
+	 * @return
+	 */
+	public List<Audit> getAuditListByApplyId(Integer applyId) {
+		return auditDao.findByApplyId(applyId);
+
+	}
+
 	// ============ 审批流程 AuditFlow============ //
 
 	/**

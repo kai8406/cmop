@@ -7,7 +7,9 @@ import javax.servlet.ServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.common.collect.Maps;
@@ -83,6 +85,19 @@ public class AuditController extends BaseController {
 		model.addAttribute("message", message);
 
 		return "audit/auditOk";
+	}
+
+	/**
+	 * 跳转到Apply审批页面
+	 */
+	@RequestMapping(value = "/apply/{id}", method = RequestMethod.GET)
+	public String apply(@PathVariable("id") Integer id, Model model) {
+
+		model.addAttribute("apply", comm.applyService.getApply(id));
+
+		model.addAttribute("audits", comm.auditService.getAuditListByApplyId(id));
+
+		return "audit/auditForm";
 	}
 
 	/**

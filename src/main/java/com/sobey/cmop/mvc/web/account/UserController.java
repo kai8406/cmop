@@ -71,7 +71,7 @@ public class UserController extends BaseController {
 
 		user.setGroupList(getGroupListById(groupId));
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
-		user.setPlainPassword(AccountConstant.defaultPassword);
+		user.setPlainPassword(AccountConstant.DEFAULT_PASSWORD);
 
 		comm.accountService.registerUser(user);
 

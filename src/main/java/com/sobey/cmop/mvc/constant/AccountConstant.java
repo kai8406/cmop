@@ -30,7 +30,7 @@ public class AccountConstant {
 	/**
 	 * 默认密码:111111
 	 */
-	public static final String defaultPassword = "111111";
+	public static final String DEFAULT_PASSWORD = "111111";
 
 	/**
 	 * 用户状态 <br>

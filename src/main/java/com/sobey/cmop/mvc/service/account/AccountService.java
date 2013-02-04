@@ -200,7 +200,7 @@ public class AccountService extends BaseSevcie {
 			String loginName = email.indexOf("@") == -1 ? email : email.substring(0, email.indexOf("@"));
 
 			user.setLoginName(loginName);
-			user.setPlainPassword(AccountConstant.defaultPassword);
+			user.setPlainPassword(AccountConstant.DEFAULT_PASSWORD);
 			entryptPassword(user);
 			user.setCreateTime(new Date());
 

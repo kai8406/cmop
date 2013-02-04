@@ -18,16 +18,21 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant.ApplyStatus;
 import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.AuditDao;
 import com.sobey.cmop.mvc.dao.AuditFlowDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
 
 /**
  * 审批表 Audit & 审批流程 AuditFlow 相关的管理类.
@@ -253,9 +258,62 @@ public class AuditService extends BaseSevcie {
 
 				logger.info("--->终审审批...");
 
-				// TODO 1.拼装Redmine内容 2.创建工单Issue并写入到Redmine
-
 				apply.setStatus(ApplyConstant.ApplyStatus.已审批.toInteger());
+
+				logger.info("--->拼装Redmine内容...");
+
+				// TODO 1.拼装Redmine内容
+				String description = "";
+
+				// 写入工单Issue到Redmine
+
+				Issue issue = new Issue();
+
+				Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
+				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
+
+				issue.setTracker(tracker);
+				issue.setSubject(apply.getTitle());
+				issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
+				issue.setDescription(description);
+
+				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
+
+				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+
+				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
+
+				logger.info("--->Redmine isCreated?" + isCreated);
+
+				if (isCreated) { // 写入Redmine成功
+
+					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
+
+					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
+
+					logger.info("--->创建RedmineIssue...");
+
+					RedmineIssue redmineIssue = new RedmineIssue();
+
+					redmineIssue.setProjectId(projectId);
+					redmineIssue.setTrackerId(issue.getTracker().getId());
+					redmineIssue.setSubject(issue.getSubject());
+					redmineIssue.setAssignee(assignee);
+					redmineIssue.setStatus(RedmineConstant.RedmineIssueStatus.新建.toInteger());
+					redmineIssue.setIssueId(issue.getId());
+					redmineIssue.setApplyId(applyId);
+
+					comm.redmineIssueService.saveOrUpdate(redmineIssue);
+
+					// 指派人的User
+
+					User assigneeUser = comm.accountService.findUserByredmineUserId(assignee);
+
+					// TODO 发送工单处理邮件
+
+				} else {
+					return false;
+				}
 
 				// TODO 发送工单处理邮件
 

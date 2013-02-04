@@ -13,6 +13,60 @@ import com.google.common.collect.Maps;
 public class RedmineConstant {
 
 	/**
+	 * RedmineIssue 的 Status enum<br>
+	 * <p>
+	 * 1-新建<br>
+	 * 2-处理中<br>
+	 * 5-已关闭<br>
+	 * <p>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum RedmineIssueStatus implements CommonEnum {
+		新建(1), 处理中(2), 已关闭(5);
+
+		private int code;
+
+		private RedmineIssueStatus(int code) {
+			this.code = code;
+		}
+
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+		static {
+			for (RedmineIssueStatus e : RedmineIssueStatus.values()) {
+
+				map.put(e.code, e.name());
+
+			}
+		}
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+		static {
+			for (RedmineIssueStatus e : RedmineIssueStatus.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
+		public static String get(Integer code) {
+			return map.get(code);
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
+	}
+
+	/**
 	 * redmine_tracker<br>
 	 * <p>
 	 * 1-错误<br>

@@ -18,6 +18,8 @@ public interface UserDao extends PagingAndSortingRepository<User, Integer>, JpaS
 
 	User findByLoginName(String loginName);
 
+	User findByRedmineUserId(Integer redmineUserId);
+
 	Page<User> findAllByNameLike(String name, Pageable pageable);
 
 }

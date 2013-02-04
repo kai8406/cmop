@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
@@ -38,6 +39,16 @@ public class RedmineService extends BaseSevcie {
 	 * 解析redmine.properties 获得redmine api 配置信息
 	 */
 	public static String HOST = CONFIG_LOADER.getProperty("redmineHost");
+
+	/**
+	 * redmine第一接收人
+	 */
+	public static Integer FIRST_REDMINE_ASSIGNEE = RedmineConstant.Assignee.余波.toInteger();
+
+	/**
+	 * redmine第一接收人的RedmineManager
+	 */
+	public static RedmineManager FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(FIRST_REDMINE_ASSIGNEE));
 
 	/**
 	 * 默认完成度

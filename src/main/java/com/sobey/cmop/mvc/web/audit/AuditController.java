@@ -144,7 +144,7 @@ public class AuditController extends BaseController {
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
 
 		// 获得指定apply当前审批记录
-		
+
 		Audit audit = this.getCurrentAudit(userId, applyId);
 
 		audit.setOpinion(opinion);

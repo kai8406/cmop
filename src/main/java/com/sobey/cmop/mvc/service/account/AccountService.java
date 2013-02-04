@@ -183,6 +183,16 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
+	 * 获得指派人的User
+	 * 
+	 * @param redmineUserId
+	 * @return
+	 */
+	public User findUserByredmineUserId(Integer redmineUserId) {
+		return userDao.findByRedmineUserId(redmineUserId);
+	}
+
+	/**
 	 * 初始化所有User的密码和LoginName<br>
 	 * 将老系统的邮箱@前的字符串设置为新的loginName.
 	 */

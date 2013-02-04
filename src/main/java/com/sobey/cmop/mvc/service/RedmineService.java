@@ -51,11 +51,6 @@ public class RedmineService extends BaseSevcie {
 	public static RedmineManager FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(FIRST_REDMINE_ASSIGNEE));
 
 	/**
-	 * 默认完成度
-	 */
-	private static Integer DEFAULT_DONERATIO = 0;
-
-	/**
 	 * 创建Issue
 	 * 
 	 * @param mgr
@@ -68,8 +63,10 @@ public class RedmineService extends BaseSevcie {
 
 		try {
 
+			Integer default_doneratio = 0;
+
 			issue.setStatusName("新建"); // 默认：新建
-			issue.setDoneRatio(DEFAULT_DONERATIO);
+			issue.setDoneRatio(default_doneratio);
 			issue.setAssignee(mgr.getCurrentUser()); // 默认：登录者
 			issue.setAuthor(mgr.getCurrentUser()); // 默认：登录者
 			issue.setStartDate(new Date());

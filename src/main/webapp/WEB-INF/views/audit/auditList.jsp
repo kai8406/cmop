@@ -34,12 +34,12 @@
 			
 			
 			<div class="span3">
-				<label class="control-label search-text">状态</label> 
-				<select name="search_EQ_apply.status" class="input-small">
+				<label class="control-label search-text">审批结果</label> 
+				<select name="search_EQ_status" class="input-small">
 					<option value="" selected="selected">Choose...</option>
-					<c:forEach var="map" items="${auditApplyStatusMap }">
+					<c:forEach var="map" items="${auditResultMap }">
 						<option value="${map.key }" 
-							<c:if test="${map.key == param.search_EQ_apply.status && param.search_EQ_apply.status != '' }">
+							<c:if test="${map.key == param.search_EQ_status && param.search_EQ_status != '' }">
 								selected="selected"
 							</c:if>
 						>${map.value }</option>
@@ -57,6 +57,7 @@
 		
 		<!-- 多个搜索条件的话,启用 div.options-->
 		<div class="row options">
+		
 			<div class="span3">
 				<label class="control-label search-text">优先级</label> 
 				<select name="search_EQ_apply.priority" class="input-small">
@@ -70,6 +71,7 @@
 					</c:forEach>
 				</select>
 			</div>
+			
 		</div> 
 
 	</form>
@@ -80,8 +82,8 @@
 				<th>标题</th>
 				<th>服务标签</th>
 				<th>优先级</th>
-				<th>状态</th>
 				<th>申请时间</th>
+				<th>审批结果</th>
 				<th>管理</th>
 			</tr>
 		</thead>
@@ -97,16 +99,26 @@
 							</c:if>
 						</c:forEach>
 					</td>
-					<td>
-						<c:forEach var="map" items="${applyStatusMap }">
-							<c:if test="${map.key == item.apply.status }">
-								${map.value }
-							</c:if>
-						</c:forEach>
-					</td>
 					<td><fmt:formatDate value="${item.apply.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
-						<a href="${ctx}/audit/apply/${item.apply.id}">审批</a>
+						<c:forEach var="map" items="${auditResultMap}">
+							<c:if test="${map.key == item.result}">${map.value}</c:if>
+						</c:forEach>
+					</td>
+					<td>
+						
+						
+						<!-- 0.待审批 -->
+						<c:if test="${ empty item.result  }">
+							<a href="${ctx}/audit/apply/${item.apply.id}">审批</a>
+						</c:if>
+						
+						
+						<c:if test="${not empty item.result }">
+							<a href="${ctx}/audit/apply/${item.apply.id}">查看</a>
+						</c:if>
+						
+						
 					</td>
 				</tr>
 			</c:forEach>

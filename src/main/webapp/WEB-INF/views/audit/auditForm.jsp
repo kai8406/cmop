@@ -23,7 +23,7 @@
 			
 			$this.val() == 1 ? $opinion.removeClass("required"):$opinion.addClass("required")
 			
-			$("#result").val($this);
+			$("#result").val($this.val());
 			
 		});
 		
@@ -45,10 +45,11 @@
 
 <body>
 
-	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
+	<form id="inputForm" action="${ctx}/audit/apply/${apply.id}/" method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${apply.id}">
-		<input type="hidden" id="result" name="result" >
+		<input type="hidden" name="userId" value="${userId }">
+		<input type="hidden" id="result" name="result">
 		
 		<fieldset>
 			<legend><small>服务申请单详情</small></legend>
@@ -151,6 +152,7 @@
 					</thead>
 					<tbody>
 						<c:forEach items="${audits}" var="item">
+							<c:if test="${item.status != 0}">	
 							<tr>
 								<td>${item.auditFlow.user.name}</td>
 								<td>
@@ -163,6 +165,7 @@
 								<td>${item.opinion}</td>
 								<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 							</tr>
+							</c:if>
 						</c:forEach>
 					</tbody>
 				</table>

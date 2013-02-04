@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
+import com.sobey.framework.utils.SearchFilter.Operator;
 
 /**
  * 服务申请单相关的管理类.
@@ -79,9 +80,9 @@ public class ApplyService extends BaseSevcie {
 
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
 
-		// User创建动态查询条件组合.
-
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("apply.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
 
 		Specification<Apply> spec = DynamicSpecifications.bySearchFilter(filters.values(), Apply.class);
 
@@ -128,7 +129,8 @@ public class ApplyService extends BaseSevcie {
 	}
 
 	/**
-	 * 向第一位审批人发起审批邮件
+	 * 向第一位审批人发起审批邮件<br>
+	 * 同时向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
 	 * 
 	 * @param apply
 	 * @return
@@ -174,13 +176,35 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("--->服务申请邮件发送成功...");
 
+				/* Step.5 插入一条下级审批人所用到的audit. */
+
+				comm.auditService.saveSubAudit(user.getId(), apply);
+
 			} catch (Exception e) {
 				message = "服务申请单提交审批失败";
 				e.printStackTrace();
 			}
 
 		} else {
-			message = "你没有直属领导,请联系管理员添加";
+
+			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+			AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
+			if (auditFlow != null && auditFlow.getIsFinal()) {
+
+				// TODO 申请人即最终审批人.直接发送工单.
+
+				logger.info("--->申请人即最终审批人.直接发送工单....");
+
+				apply.setStatus(ApplyConstant.ApplyStatus.处理中.toInteger());
+				this.saveOrUpateApply(apply);
+
+			} else {
+
+				message = "你没有直属领导,请联系管理员添加";
+
+			}
+
 		}
 
 		return message;

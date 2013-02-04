@@ -131,6 +131,7 @@ public class ApplyController extends BaseController {
 		// TODO 后期应该还有MDN,和云生产的类容.
 
 		model.addAttribute("apply", comm.applyService.getApply(id));
+
 		return "apply/applyDetail";
 	}
 

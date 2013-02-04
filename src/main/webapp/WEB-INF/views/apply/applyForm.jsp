@@ -20,7 +20,7 @@
 		$("#serviceEnd").val(getDatePlusMonthNum(3));
 		
 		$("#inputForm").validate({
-			groups:{
+			/* groups:{
 				time:"serviceStart serviceEnd"
 			},
 			errorPlacement: function(error, element) {
@@ -28,7 +28,7 @@
 				  var $message = $("#message");
 				  reset.length == 0 ?  $message.removeClass("in"):$message.addClass("in").find("span").text(reset);
 				  //TODO JQuery.validate.js 中错误信息如何给个标示防止表单提交?现在虽然有提示信息.但是依然会提交.
-			  },
+			  }, */
 			errorClass: "help-inline",
 			errorElement: "span",
 			highlight:function(element, errorClass, validClass) {

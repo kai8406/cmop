@@ -53,11 +53,27 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
+	 * 根据 AuditFlow, Apply ,status 获得 审批记录Audit
+	 * 
+	 * @param applyId
+	 *            服务申请单
+	 * @param status
+	 *            审批记录状态
+	 * @param auditFlow
+	 *            服务审批流程
+	 * @return
+	 */
+	public Audit findAuditByApplyIdAndStatusAndAuditFlow(Integer applyId, Integer status, AuditFlow auditFlow) {
+		return auditDao.findByApplyIdAndStatusAndAuditFlow(applyId, status, auditFlow);
+	}
+
+	/**
 	 * 新增或更新Audit
 	 * 
 	 * @param audit
 	 * @return
 	 */
+	@Transactional(readOnly = false)
 	public Audit saveOrUpdateAudit(Audit audit) {
 		return auditDao.save(audit);
 	}
@@ -138,10 +154,19 @@ public class AuditService extends BaseSevcie {
 		boolean isAudited = false;
 
 		User user;
-		if (userId == 0) {// 通过页面审批
+
+		if (userId == 0) {
+
+			// 通过页面审批
+
 			user = comm.accountService.getCurrentUser();
-		} else {// 通过邮件直接审批同意
+
+		} else {
+
+			// 通过邮件直接审批同意
+
 			user = comm.accountService.getUser(userId);
+
 		}
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
@@ -182,15 +207,21 @@ public class AuditService extends BaseSevcie {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
-		// 1.取得User
 		User user;
-		if (userId == 0) {// 通过页面审批
+
+		if (userId == 0) {
+
+			// 通过页面审批
+
 			user = comm.accountService.getCurrentUser();
-		} else {// 通过邮件直接审批同意
+
+		} else {
+
+			// 通过邮件直接审批同意
+
 			user = comm.accountService.getUser(userId);
 		}
 
-		// 保存审批记录
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
 
@@ -199,7 +230,7 @@ public class AuditService extends BaseSevcie {
 		audit.setCreateTime(new Date());
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
-		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toInteger())) {
+		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
 
 			logger.info("--->审批退回...");
 
@@ -242,6 +273,11 @@ public class AuditService extends BaseSevcie {
 
 				// 发送邮件到下一个审批人
 				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow, computes);
+
+				/* 插入一条下级审批人所用到的audit. */
+
+				this.saveSubAudit(userId, apply);
+
 			}
 
 		}
@@ -251,6 +287,38 @@ public class AuditService extends BaseSevcie {
 		this.saveOrUpdateAudit(audit);
 
 		return true;
+
+	}
+
+	/**
+	 * 插入一条下级审批人所用到的audit.
+	 * 
+	 * @param userId
+	 *            当前审批人ID
+	 * @param apply
+	 *            服务申请
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public Audit saveSubAudit(Integer userId, Apply apply) {
+
+		User user = comm.accountService.getUser(userId);
+
+		// 上级领导
+
+		User leader = comm.accountService.getUser(user.getLeaderId());
+
+		// 上级领导的审批流程
+
+		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+		AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
+
+		Audit audit = new Audit();
+		audit.setApply(apply);
+		audit.setAuditFlow(auditFlow);
+		audit.setStatus(AuditConstant.AuditStatus.待审批.toInteger());
+
+		return this.saveOrUpdateAudit(audit);
 
 	}
 

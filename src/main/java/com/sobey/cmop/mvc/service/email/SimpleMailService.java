@@ -1,10 +1,11 @@
 package com.sobey.cmop.mvc.service.email;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,13 +40,13 @@ public class SimpleMailService extends BaseSevcie {
 
 		StringBuffer html = new StringBuffer();
 
-		// html.append("<html>");
-		// html.append("<html>");
-		// html.append("<head></head>");
-		// html.append("<body>");
+		html.append("<html>");
+		html.append("<html>");
+		html.append("<head></head>");
+		html.append("<body>");
 		html.append(contentText);
-		// html.append("</body>");
-		// html.append("</html>");
+		html.append("</body>");
+		html.append("</html>");
 
 		// 发件人.通过读取配置文件获得.
 		String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
@@ -53,19 +54,21 @@ public class SimpleMailService extends BaseSevcie {
 		// 收件人.测试使用
 		String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
 
-		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setFrom(sendFrom);
-		msg.setTo(sendToTest);
-		// msg.setTo(to);
-		msg.setSubject(subject);
-		msg.setText(html.toString());
-
 		try {
+
+			MimeMessage msg = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, TemplateMailService.DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(subject);
+			helper.setText(contentText, true);
 
 			mailSender.send(msg);
 
 			if (logger.isInfoEnabled()) {
-				logger.info("纯文本邮件已发送至{}", StringUtils.join(msg.getTo(), ","));
+				logger.info("纯文本邮件已发送至 " + sendToTest);
 			}
 
 		} catch (Exception e) {

@@ -39,7 +39,7 @@ import freemarker.template.TemplateException;
 @Transactional(readOnly = true)
 public class TemplateMailService extends BaseSevcie {
 
-	private static final String DEFAULT_ENCODING = "utf-8";
+	public static final String DEFAULT_ENCODING = "utf-8";
 
 	private static Logger logger = LoggerFactory.getLogger(TemplateMailService.class);
 
@@ -99,10 +99,10 @@ public class TemplateMailService extends BaseSevcie {
 
 			// 审批Audit
 
-			String applyPassUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
-			String applyDisagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_CONTINUE_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+			String applyPassUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+			String applyDisagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.不同意但继续;
-			String applyDisagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_RETURN_URL") + "applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+			String applyDisagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.不同意且退回;
 
 			map.put("applyPassUrl", applyPassUrl);

@@ -121,7 +121,8 @@ public class AuditConstant {
 	/**
 	 * 审批状态<br>
 	 * <p>
-	 * 0-已过期<br>
+	 * -1 - 已过期<br>
+	 * 0-待审批<br>
 	 * 1-有效<br>
 	 * <p>
 	 * 
@@ -129,7 +130,7 @@ public class AuditConstant {
 	 * 
 	 */
 	public enum AuditStatus implements CommonEnum {
-		已过期(0), 有效(1);
+		已过期(-1), 待审批(0), 有效(1);
 
 		private int code;
 

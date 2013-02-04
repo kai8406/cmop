@@ -297,7 +297,7 @@ public class AccountService extends BaseSevcie {
 	 * @return
 	 */
 	private boolean isDefeatGroup(Integer id) {
-		return id == AccountConstant.DefaultGroups.admin.toInteger() || id == AccountConstant.DefaultGroups.apply.toInteger() || id == AccountConstant.DefaultGroups.audit.toInteger();
+		return id.equals(AccountConstant.DefaultGroups.admin.toInteger()) || id.equals(AccountConstant.DefaultGroups.apply.toInteger()) || id.equals(AccountConstant.DefaultGroups.audit.toInteger());
 	}
 
 	// -- Department Manager --//

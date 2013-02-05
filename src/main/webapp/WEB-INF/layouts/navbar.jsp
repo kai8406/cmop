@@ -24,7 +24,11 @@
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="user:view">
-							<li id="audit" class="tip-bottom" title="服务申请审批管理"><a href="${ctx}/audit/apply/">申请审批管理</a></li>
+							<li id="audit" class="tip-bottom" title="服务申请审批管理"><a href="${ctx}/audit/apply/">申请审批</a></li>
+						</shiro:hasPermission>
+						
+						<shiro:hasPermission name="user:view">
+							<li id="operate" class="tip-bottom" title="工单处理"><a href="${ctx}/operate/">工单处理</a></li>
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="user:view">

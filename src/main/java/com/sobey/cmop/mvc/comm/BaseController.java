@@ -37,9 +37,9 @@ public class BaseController {
 	public CommonService comm;
 
 	/**
-	 * 分页:每页行数 : 3
+	 * 分页:每页行数 : 10
 	 */
-	public static final String PAGE_SIZE = "3";
+	public static final String PAGE_SIZE = "10";
 
 	/**
 	 * 查询前缀 :search_<br>
@@ -169,11 +169,38 @@ public class BaseController {
 
 	/**
 	 * 
-	 * @return 审批结果
+	 * @return 审批结果Map
 	 */
 	@ModelAttribute("auditResultMap")
 	public Map<Integer, String> auditResultMap() {
 		return AuditConstant.AuditResult.map;
+	}
+
+	/**
+	 * 
+	 * @return Redmine中的项目Map
+	 */
+	@ModelAttribute("projectMap")
+	public Map<Integer, String> projectMap() {
+		return RedmineConstant.Project.map;
+	}
+
+	/**
+	 * 
+	 * @return 工单RedmineIssue的状态
+	 */
+	@ModelAttribute("operateStatusMap")
+	public Map<Integer, String> operateStatusMap() {
+		return RedmineConstant.Status.map;
+	}
+
+	/**
+	 * 
+	 * @return redmine Tracker Map
+	 */
+	@ModelAttribute("trackerMap")
+	public Map<Integer, String> trackerMap() {
+		return RedmineConstant.Tracker.map;
 	}
 
 }

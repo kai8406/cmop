@@ -9,7 +9,7 @@ import com.sobey.cmop.mvc.service.AuditService;
 import com.sobey.cmop.mvc.service.ComputeService;
 import com.sobey.cmop.mvc.service.EsgService;
 import com.sobey.cmop.mvc.service.GenerateRedmineContextService;
-import com.sobey.cmop.mvc.service.RedmineIssueService;
+import com.sobey.cmop.mvc.service.OperateService;
 import com.sobey.cmop.mvc.service.RedmineService;
 import com.sobey.cmop.mvc.service.ServiceTagService;
 import com.sobey.cmop.mvc.service.account.AccountService;
@@ -41,7 +41,7 @@ public class CommonService {
 	public EsgService esgService;
 
 	@Resource
-	public RedmineIssueService redmineIssueService;
+	public OperateService operateService;
 
 	@Resource
 	public RedmineService redmineService;

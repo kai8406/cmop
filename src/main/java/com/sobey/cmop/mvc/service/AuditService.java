@@ -300,17 +300,19 @@ public class AuditService extends BaseSevcie {
 					redmineIssue.setTrackerId(issue.getTracker().getId());
 					redmineIssue.setSubject(issue.getSubject());
 					redmineIssue.setAssignee(assignee);
-					redmineIssue.setStatus(RedmineConstant.RedmineIssueStatus.新建.toInteger());
+					redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
 					redmineIssue.setIssueId(issue.getId());
 					redmineIssue.setApplyId(applyId);
 
-					comm.redmineIssueService.saveOrUpdate(redmineIssue);
+					comm.operateService.saveOrUpdate(redmineIssue);
 
 					// 指派人的User
 
 					User assigneeUser = comm.accountService.findUserByredmineUserId(assignee);
 
-					// TODO 发送工单处理邮件
+					// 发送工单处理邮件
+
+					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser, computes);
 
 				} else {
 					return false;

@@ -30,6 +30,9 @@ public class GenerateRedmineContextService extends BaseSevcie {
 	 */
 	private static final String NEWLINE = "\r\n";
 
+	/**
+	 * 生成满足redmine显示的文本.
+	 */
 	public String applyRedmineDesc(Apply apply, List<ComputeItem> computes) {
 		try {
 
@@ -48,7 +51,8 @@ public class GenerateRedmineContextService extends BaseSevcie {
 			content.append("</pre>");
 			content.append(NEWLINE);
 
-			// 拼装计算资源信息
+			// 拼装计算资源Compute信息
+
 			if (!computes.isEmpty()) {
 				content.append("# +*计算资源信息*+").append(NEWLINE);
 				content.append("<pre>").append(NEWLINE);
@@ -56,11 +60,13 @@ public class GenerateRedmineContextService extends BaseSevcie {
 					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
 					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
 					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
-					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) {
+
+					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
 						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
 					} else {
 						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
 					}
+
 					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
 				}
 				content.append("</pre>").append(NEWLINE);
@@ -69,9 +75,13 @@ public class GenerateRedmineContextService extends BaseSevcie {
 			return content.toString();
 
 		} catch (Exception e) {
+
 			e.printStackTrace();
+
 			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
+
 			return null;
+
 		}
 	}
 }

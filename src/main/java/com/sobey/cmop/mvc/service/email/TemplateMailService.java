@@ -23,6 +23,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.User;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -108,6 +109,75 @@ public class TemplateMailService extends BaseSevcie {
 			map.put("applyPassUrl", applyPassUrl);
 			map.put("applyDisagreeContinueUrl", applyDisagreeContinueUrl);
 			map.put("applyDisagreeReturnUrl", applyDisagreeReturnUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(applyTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	/**
+	 * 发送工单处理邮件
+	 */
+	public void sendApplyOperateNotificationMail(Apply apply, User assigneeUser, List<ComputeItem> computes) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = Maps.newHashMap();
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = assigneeUser.getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源申请审批邮件";
+
+			// 服务申请Apply
+
+			map.put("apply", apply);
+			map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
+
+			// 实例Compute
+
+			map.put("computes", computes);
+			map.put("osTypeMap", ComputeConstant.OS_TYPE_STRING_MAP);
+			map.put("osBitMap", ComputeConstant.OS_BIT_STRING_MAP);
+			map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
+			map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
+			map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
+
+			// 工单处理URL
+
+			String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+			map.put("operateUrl", operateUrl);
 
 			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
 

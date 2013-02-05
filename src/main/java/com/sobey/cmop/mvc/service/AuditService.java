@@ -241,7 +241,7 @@ public class AuditService extends BaseSevcie {
 
 			apply.setStatus(ApplyStatus.已退回.toInteger());
 
-			String contentText = "您的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
+			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
 
 			logger.info("--->退回原因:" + audit.getOpinion());
 
@@ -263,7 +263,8 @@ public class AuditService extends BaseSevcie {
 				logger.info("--->拼装Redmine内容...");
 
 				// TODO 1.拼装Redmine内容
-				String description = "";
+				String description = comm.generateRedmineContextService.applyRedmineDesc(apply, computes);
+				System.out.println(description);
 
 				// 写入工单Issue到Redmine
 

@@ -8,6 +8,7 @@ import com.sobey.cmop.mvc.service.ApplyService;
 import com.sobey.cmop.mvc.service.AuditService;
 import com.sobey.cmop.mvc.service.ComputeService;
 import com.sobey.cmop.mvc.service.EsgService;
+import com.sobey.cmop.mvc.service.GenerateRedmineContextService;
 import com.sobey.cmop.mvc.service.RedmineIssueService;
 import com.sobey.cmop.mvc.service.RedmineService;
 import com.sobey.cmop.mvc.service.ServiceTagService;
@@ -53,5 +54,8 @@ public class CommonService {
 
 	@Resource
 	public TemplateMailService templateMailService;
+
+	@Resource
+	public GenerateRedmineContextService generateRedmineContextService;
 
 }

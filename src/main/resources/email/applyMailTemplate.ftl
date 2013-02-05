@@ -1,5 +1,11 @@
 <html>
-<head>你好,请审批以下内容.</head>
+<head>
+	<#if operateUrl?exists>
+		您有新的服务申请处理工单.${operateUrl}
+	<#else>
+		你好,请审批以下内容.
+	</#if>
+</head>
 <body>
 
 	<ul>
@@ -33,8 +39,8 @@
 			<#list computes as compute>
 				<ul>
 				
-					<li><em>标识符</em>&nbsp;:${compute.identifier}(${compute.remark})</li>
-					
+					<li><em>标识符</em>&nbsp;:${compute.identifier}</li>
+					<li><em>用途信息</em>&nbsp;:${compute.remark}</li>
 					<li><em>基本信息</em>&nbsp;:
 					
 						<#list osTypeMap?keys as k >
@@ -76,15 +82,16 @@
 		</li>
 		</#if><!--实例Compute End-->
 		
-		<li>
-			<strong>审批操作</strong>
-			<ul>
-				<li><a href="${applyPassUrl}">1.同意</a></li>
-				<li><a href="${applyDisagreeContinueUrl}">2.不通过但继续</a></li>
-				<li><a href="${applyDisagreeReturnUrl}">3.不通过且退回</a></li>
-			</ul>
-		</li>
-		
+		<#if applyPassUrl?exists>
+			<li>
+				<strong>审批操作</strong>
+				<ul>
+					<li><a href="${applyPassUrl}">1.同意</a></li>
+					<li><a href="${applyDisagreeContinueUrl}">2.不通过但继续</a></li>
+					<li><a href="${applyDisagreeReturnUrl}">3.不通过且退回</a></li>
+				</ul>
+			</li>
+		</#if>
 	</ul>
 
 </body>

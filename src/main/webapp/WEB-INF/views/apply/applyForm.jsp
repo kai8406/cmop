@@ -141,7 +141,11 @@
 					<c:forEach var="item" items="${apply.computeItems}">
 					
 						<dd><em>标识符</em>
-							&nbsp; ${item.identifier}(${item.remark})
+							&nbsp; ${item.identifier}
+						</dd>
+						
+						<dd><em>用途信息</em>
+							&nbsp; ${item.remark}
 						</dd>
 						
 						<dd>

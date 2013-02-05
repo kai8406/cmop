@@ -17,7 +17,7 @@
 			$("#inputForm").validate({
 				rules:{
 					name:{
-						remote: "${ctx}/ajax/account/checkGroupName?oldName=${group.name}"
+						remote: "${ctx}/ajax/checkGroupName?oldName=${group.name}"
 					},
 					permissionArray:"required"
 				},

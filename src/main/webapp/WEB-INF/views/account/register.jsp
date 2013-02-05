@@ -13,10 +13,10 @@
 			$("#inputForm").validate({
 				rules: {
 					loginName: {
-						remote: "${ctx}/ajax/account/checkLoginName"
+						remote: "${ctx}/ajax/checkLoginName"
 					},
 					email: {
-						remote: "${ctx}/ajax/account/checkEmail"
+						remote: "${ctx}/ajax/checkEmail"
 					}
 				},
 				messages: {

@@ -113,14 +113,14 @@
 			<div class="control-group">
 				<label class="control-label" for="serviceStart">服务开始时间</label>
 				<div class="controls">
-					<input type="time" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" readonly="readonly" class="datepicker required"  placeholder="...服务开始时间">
+					<input type="text" id="serviceStart" name="serviceStart" value="${apply.serviceStart }" readonly="readonly" class="datepicker required"  placeholder="...服务开始时间">
 				</div>
 			</div>
 		
 			<div class="control-group">
 				<label class="control-label" for="serviceEnd">服务结束时间</label>
 				<div class="controls">
-					<input type="time" id=serviceEnd name="serviceEnd" value="${apply.serviceEnd }" readonly="readonly" class="datepicker required"  placeholder="...服务结束时间">
+					<input type="text" id=serviceEnd name="serviceEnd" value="${apply.serviceEnd }" readonly="readonly" class="datepicker required"  placeholder="...服务结束时间">
 				</div>
 			</div>
 		
@@ -201,7 +201,7 @@
 			</dl>
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/" class="btn">返回</a>
+				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 		

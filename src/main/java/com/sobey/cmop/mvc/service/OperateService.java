@@ -40,6 +40,16 @@ public class OperateService extends BaseSevcie {
 	}
 
 	/**
+	 * 根据issueId获得工单RedmineIssue
+	 * 
+	 * @param issueId
+	 * @return
+	 */
+	public RedmineIssue findByIssueId(Integer issueId) {
+		return redmineIssueDao.findByIssueId(issueId);
+	}
+
+	/**
 	 * 新增或更新工单 RedmineIssue
 	 * 
 	 * @param redmineIssue
@@ -97,5 +107,10 @@ public class OperateService extends BaseSevcie {
 		Specification<RedmineIssue> spec = DynamicSpecifications.bySearchFilter(filters.values(), RedmineIssue.class);
 
 		return redmineIssueDao.findAll(spec, pageRequest);
+	}
+
+	public String updateOperate(Integer id) {
+		return null;
+
 	}
 }

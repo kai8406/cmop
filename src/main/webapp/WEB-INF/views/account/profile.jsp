@@ -13,7 +13,7 @@
 			$("#inputForm").validate({
 				rules: {
 					email: {
-						remote: "${ctx}/ajax/account/checkEmail?oldEmail=${user.email}"
+						remote: "${ctx}/ajax/checkEmail?oldEmail=${user.email}"
 					}
 				},
 				messages: {

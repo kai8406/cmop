@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.web.account;
+package com.sobey.cmop.mvc.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sobey.cmop.mvc.comm.BaseController;
 
 /**
- * Account模块相关的ajax操作
+ * 页面AJAX操作相关的 Controller
  * 
  * @author liukai
  * 
  */
 @Controller
-@RequestMapping(value = "/ajax/account")
-public class AccountAjaxController extends BaseController {
+@RequestMapping(value = "/ajax")
+public class AjaxController extends BaseController {
 
 	/**
 	 * Ajax请求校验email是否唯一.

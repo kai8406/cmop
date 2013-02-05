@@ -13,4 +13,5 @@ import com.sobey.cmop.mvc.entity.RedmineIssue;
  */
 public interface RedmineIssueDao extends PagingAndSortingRepository<RedmineIssue, Integer>, JpaSpecificationExecutor<RedmineIssue> {
 
+	public RedmineIssue findByIssueId(Integer issueId);
 }

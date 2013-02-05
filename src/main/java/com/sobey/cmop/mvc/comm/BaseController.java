@@ -203,4 +203,22 @@ public class BaseController {
 		return RedmineConstant.Tracker.map;
 	}
 
+	/**
+	 * 
+	 * @return 分配人 Assignee Map
+	 */
+	@ModelAttribute("assigneeMap")
+	public Map<Integer, String> assigneeMap() {
+		return RedmineConstant.Assignee.map;
+	}
+
+	/**
+	 * 
+	 * @return 完成百分比( 0% - 100%) Map
+	 */
+	@ModelAttribute("doneRatioMap")
+	public Map<Integer, String> doneRatioMap() {
+		return RedmineConstant.REDMINE_DONERATIO_MAP;
+	}
+
 }

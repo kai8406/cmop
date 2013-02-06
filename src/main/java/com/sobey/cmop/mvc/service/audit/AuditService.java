@@ -24,7 +24,6 @@ import com.sobey.cmop.mvc.dao.AuditFlowDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
@@ -247,13 +246,10 @@ public class AuditService extends BaseSevcie {
 			logger.info("--->退回原因:" + audit.getOpinion());
 
 			// 发送退回通知邮件
+
 			comm.simpleMailService.sendNotificationMail(apply.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
 
 		} else {
-
-			// TODO 拼装Apply下的资源信息
-
-			List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
 
 			if (auditFlow.getIsFinal()) { // 终审人
 
@@ -263,8 +259,9 @@ public class AuditService extends BaseSevcie {
 
 				logger.info("--->拼装Redmine内容...");
 
-				// TODO 1.拼装Redmine内容
-				String description = comm.generateRedmineContextService.applyRedmineDesc(apply, computes);
+				// 拼装Redmine内容
+
+				String description = comm.generateRedmineContextService.applyRedmineDesc(apply);
 				System.out.println(description);
 
 				// 写入工单Issue到Redmine
@@ -313,19 +310,18 @@ public class AuditService extends BaseSevcie {
 
 					// 发送工单处理邮件
 
-					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser, computes);
+					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
 
 				} else {
 					return false;
 				}
-
-				// TODO 发送工单处理邮件
 
 			} else { // 不是终审人
 
 				logger.info("--->中间审批...");
 
 				// 当前审批人的的下一级审批人的审批顺序.如当前审批人的审批顺序是1的话,下一个就是2.
+
 				Integer auditOrder = auditFlow.getAuditOrder() + 1;
 
 				AuditFlow nextAuditFlow = this.findAuditFlowByAuditOrderAndFlowType(auditOrder, flowType);
@@ -334,9 +330,10 @@ public class AuditService extends BaseSevcie {
 				apply.setStatus(ApplyConstant.ApplyStatus.审批中.toInteger());
 
 				// 发送邮件到下一个审批人
-				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow, computes);
 
-				/* 插入一条下级审批人所用到的audit. */
+				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow);
+
+				// 插入一条下级审批人所用到的audit.
 
 				this.saveSubAudit(userId, apply);
 

@@ -60,6 +60,7 @@
 		    <div class="page-header"><em>操作历史:</em></div>
 		    
 		    <div class="span8">
+		    
 	    		<c:forEach var="journal" items="${issue.journals}" varStatus="status">
 	    			
 	    			<input type="hidden" id="operator" name="operator" value="${journal.user.id}"/>
@@ -111,7 +112,6 @@
 		    
 		    <div class="page-header"><em>操作:</em></div>
 		    
-		    <form id="inputForm" action="." method="post" class="form-horizontal">
 		
 				<div class="control-group">
 					<label class="control-label" for="Priority">Priority</label>
@@ -166,11 +166,9 @@
 				<div class="control-group">
 					<label class="control-label" for="note">Note</label>
 					<div class="controls">
-						<textarea rows="3" id="note" name="note" placeholder="...详细的操作描述"></textarea>
+						<textarea rows="3" id="note" name="note" class="required" placeholder="...详细的操作描述"></textarea>
 					</div>
 				</div>
-				
-		    </form>
 			
 			<div class="form-actions">
 				<a href="${ctx}/apply/" class="btn">返回</a>

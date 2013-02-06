@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * 审批表 Audit & 审批流程 AuditFlow 模块的静态常量
+ * 审批表 Audit & 审批流程 AuditFlow 模块的常量
  * 
  * @author liukai
  * 

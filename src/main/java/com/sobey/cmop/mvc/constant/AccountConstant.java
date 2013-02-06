@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * Account 模块的静态常量
+ * Account 模块的常量
  * 
  * @author liukai
  * 

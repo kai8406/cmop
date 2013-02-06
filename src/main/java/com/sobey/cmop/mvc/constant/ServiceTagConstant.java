@@ -5,46 +5,41 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * 存储空间 ES3 模块的常量
+ * 服务标签ServiceTag 的常量
  * 
  * @author liukai
  * 
  */
-public class StorageConstant {
+public class ServiceTagConstant {
 
 	/**
-	 * 存储类型
+	 * 服务标签状态
 	 * <p>
-	 * 1-Fimas_高吞吐量<br>
-	 * 2-Netapp_高IOPS<br>
+	 * -1-未变更<br>
+	 * 0-已变更<br>
+	 * 1-待审批<br>
+	 * 2-审批中<br>
+	 * 3-已退回<br>
+	 * 4-已审批<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum storageType implements CommonEnum {
-		Fimas_高吞吐量(1), Netapp_高IOPS(2);
+	public enum Status implements CommonEnum {
+		未变更(-1), 已变更(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4);
 
 		private int code;
 
-		private storageType(int code) {
+		private Status(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (storageType e : storageType.values()) {
+			for (Status e : Status.values()) {
 
 				map.put(e.code, e.name());
-
-			}
-		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
-		static {
-			for (storageType e : storageType.values()) {
-
-				mapKeyStr.put(String.valueOf(e.code), e.name());
 
 			}
 		}

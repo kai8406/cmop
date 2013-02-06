@@ -1,10 +1,13 @@
 <html>
 <head>
 	<#if operateUrl?exists>
-		您有新的服务申请处理工单.${operateUrl}
+		${operateUrl}
+	<#elseif operateDoneStr?exists>
+		${operateDoneStr}
 	<#else>
 		你好,请审批以下内容.
 	</#if>
+	
 </head>
 <body>
 
@@ -81,6 +84,12 @@
 			
 		</li>
 		</#if><!--实例Compute End-->
+		
+		<!--存储 storage  -->
+		<#if (storages?exists) && (storages?size > 0) >
+			我是存储~~
+		</#if>
+		<!--存储 storage End-->
 		
 		<#if applyPassUrl?exists>
 			<li>

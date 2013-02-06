@@ -1,7 +1,5 @@
 package com.sobey.cmop.mvc.service.redmine;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,7 +31,7 @@ public class RedmineUtilService extends BaseSevcie {
 	/**
 	 * 生成满足redmine显示的文本.
 	 */
-	public String applyRedmineDesc(Apply apply, List<ComputeItem> computes) {
+	public String applyRedmineDesc(Apply apply) {
 		try {
 
 			StringBuffer content = new StringBuffer();
@@ -53,10 +51,10 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装计算资源Compute信息
 
-			if (!computes.isEmpty()) {
+			if (!apply.getComputeItems().isEmpty()) {
 				content.append("# +*计算资源信息*+").append(NEWLINE);
 				content.append("<pre>").append(NEWLINE);
-				for (ComputeItem compute : computes) {
+				for (ComputeItem compute : apply.getComputeItems()) {
 					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
 					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
 					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");

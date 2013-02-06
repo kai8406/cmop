@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * 网络资源( ELB & EIP & DNS & ESG ) 模块的静态常量
+ * 网络资源( ELB & EIP & DNS & ESG ) 模块的常量
  * 
  * @author liukai
  * 

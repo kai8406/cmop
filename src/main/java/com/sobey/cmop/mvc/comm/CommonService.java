@@ -15,6 +15,7 @@ import com.sobey.cmop.mvc.service.iaas.EsgService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
+import com.sobey.cmop.mvc.service.resource.ResourcesService;
 import com.sobey.cmop.mvc.service.resource.ServiceTagService;
 
 /**
@@ -52,6 +53,9 @@ public class CommonService {
 
 	@Resource
 	public RedmineService redmineService;
+
+	@Resource
+	public ResourcesService resourcesService;
 
 	@Resource
 	public ServiceTagService serviceTagService;

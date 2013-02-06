@@ -13,4 +13,6 @@ import com.sobey.cmop.mvc.entity.ServiceTag;
  */
 public interface ServiceTagDao extends PagingAndSortingRepository<ServiceTag, Integer>, JpaSpecificationExecutor<ServiceTag> {
 
+	ServiceTag findByNameAndUserId(String name, Integer userId);
+
 }

@@ -21,7 +21,6 @@ import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
@@ -139,7 +138,6 @@ public class ApplyService extends BaseSevcie {
 	public String saveAuditByApply(Apply apply) {
 
 		String message = "";
-		Integer applyId = apply.getId();
 		User user = apply.getUser();
 
 		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
@@ -148,11 +146,7 @@ public class ApplyService extends BaseSevcie {
 
 			try {
 
-				/* Step.1 获得该申请单下所有的资源. */
-
-				List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
-
-				/* Step.2 获得第一个审批人和审批流程 */
+				/* Step.1 获得第一个审批人和审批流程 */
 
 				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
 
@@ -161,12 +155,12 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 
-				/* Step.3 根据资源瓶装邮件内容并发送到第一个审批人的邮箱. */
+				/* Step.2 根据资源瓶装邮件内容并发送到第一个审批人的邮箱. */
 
 				logger.info("--->拼装邮件内容...");
-				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow, computes);
+				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
 
-				/* Step.4 更新Apply状态和Apply的审批流程. */
+				/* Step.3 更新Apply状态和Apply的审批流程. */
 
 				apply.setAuditFlow(auditFlow);
 				apply.setStatus(ApplyConstant.ApplyStatus.待审批.toInteger());
@@ -176,12 +170,14 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("--->服务申请邮件发送成功...");
 
-				/* Step.5 插入一条下级审批人所用到的audit. */
+				/* Step.4 插入一条下级审批人所用到的audit. */
 
 				comm.auditService.saveSubAudit(user.getId(), apply);
 
 			} catch (Exception e) {
+
 				message = "服务申请单提交审批失败";
+
 				e.printStackTrace();
 			}
 

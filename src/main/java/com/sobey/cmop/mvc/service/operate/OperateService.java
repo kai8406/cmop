@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.service.operate;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -18,7 +17,6 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
@@ -125,7 +123,6 @@ public class OperateService extends BaseSevcie {
 	public boolean updateOperate(Issue issue) {
 
 		boolean result = false;
-		// TODO 数据插入oneCMDB
 
 		try {
 
@@ -150,19 +147,23 @@ public class OperateService extends BaseSevcie {
 
 				Apply apply = comm.applyService.getApply(applyId);
 
-				List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
-
 				if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
 
 					logger.info("---> 完成度 = 100%的工单处理...");
 
 					apply.setStatus(ApplyConstant.ApplyStatus.已创建.toInteger());
 
-					// TODO 向资源表 resources 写入记录
+					// 向资源表 resources 写入记录
+
+					comm.resourcesService.insertResourcesAfterOperate(apply);
 
 					// TODO 写入基础数据到OneCMDB
 
-					// TODO 工单处理完成，给申请人发送邮件
+					// 工单处理完成，给申请人发送邮件
+
+					comm.templateMailService.sendOperateDoneNotificationMail(apply);
+
+					logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
 
 				} else {
 
@@ -172,7 +173,7 @@ public class OperateService extends BaseSevcie {
 
 					User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
 
-					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser, computes);
+					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
 				}
 
 				comm.applyService.saveOrUpateApply(apply);

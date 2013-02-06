@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * 计算资源 Compute 模块的静态常量
+ * 计算资源 Compute 模块的常量
  * 
  * @author liukai
  * 

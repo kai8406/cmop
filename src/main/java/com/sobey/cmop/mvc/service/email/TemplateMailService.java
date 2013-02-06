@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.service.email;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -22,7 +21,6 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.User;
 
 import freemarker.template.Configuration;
@@ -60,43 +58,49 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
+	 * freemarker 中使用的常量的Map
+	 * 
+	 * @return
+	 */
+	private Map<String, Object> freemarkerParameterMap() {
+
+		Map<String, Object> map = Maps.newHashMap();
+
+		map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
+		map.put("osTypeMap", ComputeConstant.OS_TYPE_STRING_MAP);
+		map.put("osBitMap", ComputeConstant.OS_BIT_STRING_MAP);
+		map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
+		map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
+		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
+
+		return map;
+
+	}
+
+	/**
 	 * 发送MIME格式的服务申请审批通知邮件.
 	 */
-	public void sendApplyNotificationMail(Apply apply, AuditFlow auditFlow, List<ComputeItem> computes) {
+	public void sendApplyNotificationMail(Apply apply, AuditFlow auditFlow) {
 
 		MimeMessage msg = mailSender.createMimeMessage();
+
 		try {
 
 			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
 
-			Map<String, Object> map = Maps.newHashMap();
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = auditFlow.getUser().getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源申请审批邮件";
+			Map<String, Object> map = this.freemarkerParameterMap();
 
 			// 服务申请Apply
 
 			map.put("apply", apply);
-			map.put("auditFlow", auditFlow);
-			map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
 
-			// 实例Compute
-
-			map.put("computes", computes);
-			map.put("osTypeMap", ComputeConstant.OS_TYPE_STRING_MAP);
-			map.put("osBitMap", ComputeConstant.OS_BIT_STRING_MAP);
-			map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
-			map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
-			map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
+			map.put("computes", apply.getComputeItems());
+			map.put("storages", apply.getStorageItems());
+			map.put("elbs", apply.getNetworkElbItems());
+			map.put("eips", apply.getNetworkEipItems());
+			map.put("dnses", apply.getNetworkDnsItems());
+			map.put("monitorComputes", apply.getMonitorComputes());
+			map.put("monitorElbs", apply.getMonitorElbs());
 
 			// 审批Audit
 
@@ -115,6 +119,18 @@ public class TemplateMailService extends BaseSevcie {
 			String content = this.generateMailContent(applyTemplate, map);
 
 			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = auditFlow.getUser().getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源申请审批邮件";
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 
@@ -139,14 +155,39 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送工单处理邮件
 	 */
-	public void sendApplyOperateNotificationMail(Apply apply, User assigneeUser, List<ComputeItem> computes) {
+	public void sendApplyOperateNotificationMail(Apply apply, User assigneeUser) {
 
 		MimeMessage msg = mailSender.createMimeMessage();
+
 		try {
 
 			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
 
-			Map<String, Object> map = Maps.newHashMap();
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			// 服务申请Apply
+
+			map.put("apply", apply);
+
+			map.put("computes", apply.getComputeItems());
+			map.put("storages", apply.getStorageItems());
+			map.put("elbs", apply.getNetworkElbItems());
+			map.put("eips", apply.getNetworkEipItems());
+			map.put("dnses", apply.getNetworkDnsItems());
+			map.put("monitorComputes", apply.getMonitorComputes());
+			map.put("monitorElbs", apply.getMonitorElbs());
+
+			// 工单处理URL
+
+			String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			map.put("operateUrl", operateUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(applyTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
 
 			// 发件人.通过读取配置文件获得.
 			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
@@ -160,30 +201,78 @@ public class TemplateMailService extends BaseSevcie {
 			// 邮件标题
 			String sendSubject = "工单处理邮件";
 
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	/**
+	 * 发送工单处理结束,通知申请人邮件
+	 */
+	public void sendOperateDoneNotificationMail(Apply apply) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
 			// 服务申请Apply
 
 			map.put("apply", apply);
-			map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
+			map.put("computes", apply.getComputeItems());
+			map.put("storages", apply.getStorageItems());
+			map.put("elbs", apply.getNetworkElbItems());
+			map.put("eips", apply.getNetworkEipItems());
+			map.put("dnses", apply.getNetworkDnsItems());
+			map.put("monitorComputes", apply.getMonitorComputes());
+			map.put("monitorElbs", apply.getMonitorElbs());
 
 			// 实例Compute
 
-			map.put("computes", computes);
-			map.put("osTypeMap", ComputeConstant.OS_TYPE_STRING_MAP);
-			map.put("osBitMap", ComputeConstant.OS_BIT_STRING_MAP);
-			map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
-			map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
-			map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
+			map.put("computes", apply.getComputeItems());
+			map.put("storages", apply.getStorageItems());
 
-			// 工单处理URL
+			// 工单处理完成提示文字
 
-			String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-			map.put("operateUrl", operateUrl);
+			String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+
+			map.put("operateDoneStr", operateDoneStr);
 
 			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
 
 			String content = this.generateMailContent(applyTemplate, map);
 
 			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = apply.getUser().getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "服务申请工单处理邮件";
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 
@@ -218,6 +307,7 @@ public class TemplateMailService extends BaseSevcie {
 	 * @throws MessagingException
 	 */
 	private String generateMailContent(Template template, Map<String, Object> map) throws MessagingException {
+
 		try {
 
 			return FreeMarkerTemplateUtils.processTemplateIntoString(template, map);

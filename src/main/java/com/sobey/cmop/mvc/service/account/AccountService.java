@@ -188,7 +188,7 @@ public class AccountService extends BaseSevcie {
 	 * @param redmineUserId
 	 * @return
 	 */
-	public User findUserByredmineUserId(Integer redmineUserId) {
+	public User findUserByRedmineUserId(Integer redmineUserId) {
 		return userDao.findByRedmineUserId(redmineUserId);
 	}
 

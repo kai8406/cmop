@@ -158,7 +158,7 @@ public class TemplateMailService extends BaseSevcie {
 			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
 
 			// 邮件标题
-			String sendSubject = "资源申请审批邮件";
+			String sendSubject = "工单处理邮件";
 
 			// 服务申请Apply
 

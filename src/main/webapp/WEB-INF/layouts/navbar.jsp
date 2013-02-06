@@ -11,23 +11,25 @@
 				<span class="icon-bar"></span>
 			</a> 
 			
-			<a class="brand tip-bottom" title="首页" href="${ctx}/">Sobey`CMOP</a>
+			<a class="brand tip-bottom" title="首页" href="${ctx}/">CMOP</a>
 
 			<div class="nav-collapse collapse">
 
 				<shiro:user>
 				
 					<ul id="navbar" class="nav">
-						
-						<shiro:hasPermission name="user:view">
-							<li id="apply" class="tip-bottom" title="服务申请管理"><a href="${ctx}/apply/">申请管理</a></li>
+						<shiro:hasPermission name="apply:view">
+							<li id="apply" class="tip-bottom" title="服务申请"><a href="${ctx}/apply/">服务申请</a></li>
+							<li id="resource" class="tip-bottom" title="资源管理"><a href="${ctx}/resource/">资源管理</a></li>
+							<li id="fault" class="tip-bottom" title="故障申报"><a href="${ctx}/failure/">故障申报</a></li>
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="user:view">
-							<li id="audit" class="tip-bottom" title="服务申请审批管理"><a href="${ctx}/audit/apply/">申请审批</a></li>
+							<li id="applyAudit" class="tip-bottom" title="申请审批"><a href="${ctx}/audit/apply/">申请审批</a></li>
+							<li id="resourceAudit" class="tip-bottom" title="变更审批"><a href="${ctx}/audit/resource/">变更审批</a></li>
 						</shiro:hasPermission>
 						
-						<shiro:hasPermission name="user:view">
+						<shiro:hasPermission name="operate:view">
 							<li id="operate" class="tip-bottom" title="工单处理"><a href="${ctx}/operate/">工单处理</a></li>
 						</shiro:hasPermission>
 						
@@ -38,6 +40,15 @@
 						<shiro:hasPermission name="group:view">
 							<li id="group" class="tip-bottom" title="权限管理"><a href="${ctx}/account/group/">权限管理</a></li>
 						</shiro:hasPermission>
+
+						<shiro:hasPermission name="department:view">
+							<li id="department" class="tip-bottom" title="部门管理"><a href="${ctx}/department/">部门管理</a></li>
+						</shiro:hasPermission>
+						
+						<shiro:hasPermission name="basicData:view">
+							<li id="basicdata" class="tip-bottom" title="基础数据"><a href="${ctx}/basicdata/">基础数据</a></li>
+						</shiro:hasPermission>
+						
 					</ul>
 
 					<ul class="nav pull-right" >

@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.redmine;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
  */
 @Service
 @Transactional(readOnly = true)
-public class GenerateRedmineContextService extends BaseSevcie {
+public class RedmineUtilService extends BaseSevcie {
 
-	private static Logger logger = LoggerFactory.getLogger(GenerateRedmineContextService.class);
+	private static Logger logger = LoggerFactory.getLogger(RedmineUtilService.class);
 
 	/**
 	 * 换行

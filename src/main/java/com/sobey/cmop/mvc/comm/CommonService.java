@@ -4,17 +4,18 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.sobey.cmop.mvc.service.ApplyService;
-import com.sobey.cmop.mvc.service.AuditService;
-import com.sobey.cmop.mvc.service.ComputeService;
-import com.sobey.cmop.mvc.service.EsgService;
-import com.sobey.cmop.mvc.service.GenerateRedmineContextService;
-import com.sobey.cmop.mvc.service.OperateService;
-import com.sobey.cmop.mvc.service.RedmineService;
-import com.sobey.cmop.mvc.service.ServiceTagService;
 import com.sobey.cmop.mvc.service.account.AccountService;
+import com.sobey.cmop.mvc.service.apply.ApplyService;
+import com.sobey.cmop.mvc.service.audit.AuditService;
+import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
+import com.sobey.cmop.mvc.service.iaas.ComputeService;
+import com.sobey.cmop.mvc.service.iaas.EsgService;
+import com.sobey.cmop.mvc.service.operate.OperateService;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
+import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
+import com.sobey.cmop.mvc.service.resource.ServiceTagService;
 
 /**
  * Service公共类
@@ -38,7 +39,13 @@ public class CommonService {
 	public ComputeService computeService;
 
 	@Resource
+	public DepartmentService departmentService;
+
+	@Resource
 	public EsgService esgService;
+
+	@Resource
+	public RedmineUtilService generateRedmineContextService;
 
 	@Resource
 	public OperateService operateService;
@@ -54,8 +61,5 @@ public class CommonService {
 
 	@Resource
 	public TemplateMailService templateMailService;
-
-	@Resource
-	public GenerateRedmineContextService generateRedmineContextService;
 
 }

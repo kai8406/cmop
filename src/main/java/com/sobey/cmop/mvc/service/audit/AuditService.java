@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.audit;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +27,7 @@ import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
@@ -308,7 +309,7 @@ public class AuditService extends BaseSevcie {
 
 					// 指派人的User
 
-					User assigneeUser = comm.accountService.findUserByredmineUserId(assignee);
+					User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
 
 					// 发送工单处理邮件
 

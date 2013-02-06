@@ -1,5 +1,6 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.operate;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -13,13 +14,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
+import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
 
 /**
  * 工单RedmineIssue 相关的管理类.
@@ -109,8 +116,81 @@ public class OperateService extends BaseSevcie {
 		return redmineIssueDao.findAll(spec, pageRequest);
 	}
 
-	public String updateOperate(Integer id) {
-		return null;
+	/**
+	 * 更新工单
+	 * 
+	 * @param issue
+	 * @return
+	 */
+	public boolean updateOperate(Issue issue) {
+
+		boolean result = false;
+		// TODO 数据插入oneCMDB
+
+		try {
+
+			// 初始化第一接收人
+
+			User user = comm.accountService.getCurrentUser();
+			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(user.getRedmineUserId()));
+
+			// 更新redmine的数据
+			boolean isChanged = RedmineService.changeIssue(issue, mgr);
+
+			logger.info("---> Redmine isChanged?" + isChanged);
+
+			if (isChanged) {
+
+				// 设置工单的下一个接收人.
+
+				RedmineIssue redmineIssue = this.findByIssueId(issue.getId());
+				redmineIssue.setAssignee(issue.getAssignee().getId());
+
+				Integer applyId = redmineIssue.getApplyId();
+
+				Apply apply = comm.applyService.getApply(applyId);
+
+				List<ComputeItem> computes = comm.computeService.getComputeListByApplyId(applyId);
+
+				if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
+					logger.info("---> 完成度 = 100%的工单处理...");
+
+					apply.setStatus(ApplyConstant.ApplyStatus.已创建.toInteger());
+
+					// TODO 向资源表 resources 写入记录
+
+					// TODO 写入基础数据到OneCMDB
+
+					// TODO 工单处理完成，给申请人发送邮件
+
+				} else {
+
+					logger.info("---> 完成度 < 100%的工单处理...");
+
+					apply.setStatus(ApplyConstant.ApplyStatus.处理中.toInteger());
+
+					User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
+
+					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser, computes);
+				}
+
+				comm.applyService.saveOrUpateApply(apply);
+
+				logger.info("--->服务申请处理结束！");
+
+				result = true;
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			logger.error("--->工单更新处理失败：" + e.getMessage());
+
+		}
+
+		return result;
 
 	}
 }

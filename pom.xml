@@ -33,7 +33,7 @@
 		<junit.version>4.11</junit.version>
 		<spymemcached.version>2.8.9</spymemcached.version>
 		<mysql-connector.version>5.1.21</mysql-connector.version>
-		<redmine-java-api.version>1.17</redmine-java-api.version>
+		<redmine-java-api.version>1.18</redmine-java-api.version>
 
 		<!-- 		
 		<mockito.version>1.9.5</mockito.version>

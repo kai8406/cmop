@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

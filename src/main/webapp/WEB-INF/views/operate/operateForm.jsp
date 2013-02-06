@@ -30,7 +30,8 @@
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form" style="max-width: 800px">
 	
-		<input type="hidden" name="id" value="${apply.id}">
+		<input type="hidden" name="id" value="${issue.id}">
+		<input type="hidden" name="authorId" value="${redmineIssue.assignee}">
 		
 		<fieldset>
 			<legend><small>工单信息</small></legend>
@@ -120,7 +121,7 @@
 						</select>
 					</div>
 				</div>
-				
+				 
 				<div class="control-group">
 					<label class="control-label" for="assignTo">Assignee</label>
 					<div class="controls">
@@ -159,6 +160,13 @@
 					<label class="control-label" for="estimatedHours">Estimated time</label>
 					<div class="controls">
 						<input type="text" id="estimatedHours" name="estimatedHours" value="1" class="required number" min="0" placeholder="...预计完成时间">
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="note">Note</label>
+					<div class="controls">
+						<textarea rows="3" id="note" name="note" placeholder="...详细的操作描述"></textarea>
 					</div>
 				</div>
 				

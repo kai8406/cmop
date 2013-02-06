@@ -10,7 +10,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath*:/applicationContext.xml
-			classpath*:/applicationContext-cmop.xml
+			classpath*:/security/applicationContext-shiro.xml
+			classpath*:/email/applicationContext-email.xml
 		</param-value>
 	</context-param>
 

@@ -95,7 +95,7 @@ public class Audit implements java.io.Serializable {
 		this.auditFlow = auditFlow;
 	}
 
-	@Column(name = "create_time", nullable = false, length = 19)
+	@Column(name = "create_time", length = 19)
 	public Date getCreateTime() {
 		return this.createTime;
 	}
@@ -104,7 +104,7 @@ public class Audit implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	@Column(name = "result", nullable = false, length = 1)
+	@Column(name = "result", length = 1)
 	public String getResult() {
 		return this.result;
 	}

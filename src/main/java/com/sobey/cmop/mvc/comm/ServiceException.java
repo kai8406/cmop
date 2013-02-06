@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.comm;
 
 /**
  * Service层公用的Exception.

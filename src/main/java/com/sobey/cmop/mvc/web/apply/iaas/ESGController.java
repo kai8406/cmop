@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.web.apply;
+package com.sobey.cmop.mvc.web.apply.iaas;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

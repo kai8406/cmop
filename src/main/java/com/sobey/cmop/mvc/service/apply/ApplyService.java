@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.apply;
 
 import java.util.ArrayList;
 import java.util.List;

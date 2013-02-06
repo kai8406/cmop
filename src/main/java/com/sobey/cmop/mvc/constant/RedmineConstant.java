@@ -12,6 +12,8 @@ import com.google.common.collect.Maps;
  */
 public class RedmineConstant {
 
+	public static final Integer MAX_DONERATIO = 100;
+
 	/**
 	 * redmine_tracker<br>
 	 * <p>

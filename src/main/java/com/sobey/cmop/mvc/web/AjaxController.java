@@ -18,6 +18,19 @@ import com.sobey.cmop.mvc.comm.BaseController;
 public class AjaxController extends BaseController {
 
 	/**
+	 * Ajax请求校验部门名称是否唯一
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "checkDepartmentName")
+	public @ResponseBody
+	String checkDepartmentName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		return name.equals(oldName) || comm.departmentService.findDepartmentByName(name) == null ? "true" : "false";
+	}
+
+	/**
 	 * Ajax请求校验email是否唯一.
 	 * 
 	 * @param oldEmail
@@ -31,19 +44,6 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
-	 * Ajax请求校验loginName是否唯一.
-	 * 
-	 * @param oldLoginName
-	 * @param loginName
-	 * @return
-	 */
-	@RequestMapping(value = "checkLoginName")
-	@ResponseBody
-	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
-		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
-	}
-
-	/**
 	 * Ajax请求校验GroupName是否唯一.
 	 * 
 	 * @param oldName
@@ -54,6 +54,19 @@ public class AjaxController extends BaseController {
 	public @ResponseBody
 	String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.accountService.findGroupByName(name) == null ? "true" : "false";
+	}
+
+	/**
+	 * Ajax请求校验loginName是否唯一.
+	 * 
+	 * @param oldLoginName
+	 * @param loginName
+	 * @return
+	 */
+	@RequestMapping(value = "checkLoginName")
+	@ResponseBody
+	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
+		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
 }

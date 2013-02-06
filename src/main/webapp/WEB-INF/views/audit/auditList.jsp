@@ -7,7 +7,7 @@
 <script>
 	$(document).ready(function() {
 		
-		$("ul#navbar li#audit").addClass("active");
+		$("ul#navbar li#applyAudit").addClass("active");
 		
 	});
 </script>

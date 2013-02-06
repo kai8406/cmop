@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.service;
+package com.sobey.cmop.mvc.service.redmine;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
@@ -50,14 +51,14 @@ public class RedmineService extends BaseSevcie {
 	 */
 	public static RedmineManager FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(FIRST_REDMINE_ASSIGNEE));
 
+	/**
+	 * 根据issueId 获得redmine中的Issue对象.
+	 * 
+	 * @param issueId
+	 * @return
+	 */
 	public Issue getIssue(Integer issueId) {
-
-		// 此处若更新了Issue,则保存时将起作用.
-
-		Issue issue = getIssueById(issueId, FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER);
-
-		return issue;
-
+		return getIssueById(issueId, FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER);
 	}
 
 	/**

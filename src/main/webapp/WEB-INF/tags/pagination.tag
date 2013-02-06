@@ -52,6 +52,6 @@ request.setAttribute("end", end);
 		</div>
 	</c:when>
 	
-	<c:otherwise><div style="text-align: center;"><h3>未找到相关结果</h3></div></c:otherwise>
+	<c:otherwise><div style="text-align: center;"><h5>未查询到相关结果</h5></div></c:otherwise>
 	
 </c:choose>

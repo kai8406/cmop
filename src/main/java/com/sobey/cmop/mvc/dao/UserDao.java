@@ -14,12 +14,12 @@ import com.sobey.cmop.mvc.entity.User;
  */
 public interface UserDao extends PagingAndSortingRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
+	Page<User> findAllByNameLike(String name, Pageable pageable);
+
 	User findByEmail(String email);
 
 	User findByLoginName(String loginName);
 
 	User findByRedmineUserId(Integer redmineUserId);
-
-	Page<User> findAllByNameLike(String name, Pageable pageable);
 
 }

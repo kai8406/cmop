@@ -9,7 +9,7 @@
 <script>
 	$(document).ready(function() {
 		
-		$("ul#navbar li#audit").addClass("active");
+		$("ul#navbar li#applyAudit").addClass("active");
 		
 		//点击class为"auditResult" 的button触发审批意见的非空判断
 		
@@ -19,7 +19,7 @@
 			
 			var $opinion = $("#opinion");
 			
-			//选择 1.同意 去除class中的required.
+			//审批时,选择 1.同意 去除class中的required.
 			
 			$this.val() == 1 ? $opinion.removeClass("required"):$opinion.addClass("required")
 			
@@ -189,7 +189,6 @@
 				</div>
 				
 			</form>
-			
 		
 		</fieldset>
 		

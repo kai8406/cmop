@@ -20,13 +20,12 @@ $(document).ready(function() {
  	$('.datepicker').datepicker();
  	
  	
- 	// === Reset 点击reset按钮,form里的输入框情况,并提交form执行一次查询. ===//
+ 	// === Reset 点击reset按钮,form里的输入框清空,并提交form执行一次查询. ===//
  	
  	$("button.reset").on('click', function(){
- 		var $form = $(this).closest("form"); 
- 		$form.find("input[type=text]").val('');
- 		$form.find("select option:first").prop('selected', true);
- 		$form.submit();
+ 		
+ 		$(this).closest("form").find("input[type=text],select").val("").end().submit();
+ 		
  	});
  	
  	
@@ -34,15 +33,15 @@ $(document).ready(function() {
  	
  	$("button.options").on('click', function(){
  		
+ 		//搜索框切换+清空文本.
+ 		
+ 		$("div.options").toggle(300).find("input[type=text],select").val('');
+ 		
  		//图标切换
  		
  		$(this).find("i").toggleClass("icon-resize-small icon-resize-full");
  		
- 		//搜索框切换+清空文本.
  		
- 		var $options =$("div.options"); 
- 		$options.find("select option:first").prop('selected', true);
- 		$options.toggle(300).find("input[type=text]").val('');
  		
  	});
  	

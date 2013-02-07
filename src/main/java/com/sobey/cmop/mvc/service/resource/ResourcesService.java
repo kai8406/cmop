@@ -1,9 +1,13 @@
 package com.sobey.cmop.mvc.service.resource;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +19,9 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.framework.utils.DynamicSpecifications;
+import com.sobey.framework.utils.SearchFilter;
+import com.sobey.framework.utils.SearchFilter.Operator;
 
 /**
  * 资源Resources相关的管理类.
@@ -38,8 +45,31 @@ public class ResourcesService extends BaseSevcie {
 	 * @param resources
 	 * @return
 	 */
+	@Transactional(readOnly = false)
 	public Resources saveOrUpdate(Resources resources) {
 		return resourcesDao.save(resources);
+	}
+
+	/**
+	 * 资源Resources的分页
+	 * 
+	 * @param searchParams
+	 *            页面传递过来的参数
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Resources> getResourcesPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+
+		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
+
+		return resourcesDao.findAll(spec, pageRequest);
 	}
 
 	/**
@@ -51,9 +81,6 @@ public class ResourcesService extends BaseSevcie {
 	public void insertResourcesAfterOperate(Apply apply) {
 
 		Integer serviceType;
-		Integer serviceId;
-		String ipAddress;
-		String serviceIdentifier;
 		ServiceTag serviceTag = comm.serviceTagService.saveServiceTag(apply);
 
 		// Compute

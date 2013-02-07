@@ -65,7 +65,7 @@ public class ResourcesConstant {
 	}
 
 	/**
-	 * 服务申请表的状态
+	 * 资源Resources的状态
 	 * <p>
 	 * -1-未变更<br>
 	 * 0-已变更(未提交)<br>

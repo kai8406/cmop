@@ -15,6 +15,7 @@ import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
@@ -219,6 +220,24 @@ public class BaseController {
 	@ModelAttribute("doneRatioMap")
 	public Map<Integer, String> doneRatioMap() {
 		return RedmineConstant.REDMINE_DONERATIO_MAP;
+	}
+
+	/**
+	 * 
+	 * @return 资源Resources的服务类型Map
+	 */
+	@ModelAttribute("resourcesServiceTypeMap")
+	public Map<Integer, String> resourcesServiceTypeMap() {
+		return ResourcesConstant.ServiceType.map;
+	}
+
+	/**
+	 * 
+	 * @return 资源Resources的状态Map
+	 */
+	@ModelAttribute("resourcesStatusMap")
+	public Map<Integer, String> resourcesStatusMap() {
+		return ResourcesConstant.ResourcesStatus.map;
 	}
 
 }

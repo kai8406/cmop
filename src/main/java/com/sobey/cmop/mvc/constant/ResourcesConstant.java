@@ -31,7 +31,7 @@ public class ResourcesConstant {
 	 * 
 	 */
 	public enum ServiceType implements CommonEnum {
-		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(9);
+		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10);
 
 		private int code;
 

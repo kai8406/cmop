@@ -61,7 +61,7 @@ public class EsgService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public NetworkEsgItem saveESG(String description, String[] protocols, String[] portRanges, String[] visitSources) {
 
-		String identifier = generateIdentifier(ResourcesConstant.ServiceType.ESG.toInteger());
+		String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ESG.toInteger());
 
 		User user = this.getSpecifiedUserByDefaultGroups(comm.accountService.getCurrentUser());
 

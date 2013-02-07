@@ -7,11 +7,14 @@ import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -56,4 +59,44 @@ public class ResourcesController extends BaseController {
 		return "resource/resourceList";
 	}
 
+	/**
+	 * 跳转到变更页面
+	 */
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String updateForm(@PathVariable("id") Integer id, Model model) {
+
+		// TODO 获得审批历史
+
+		Resources resources = comm.resourcesService.getResources(id);
+
+		model.addAttribute("resources", resources);
+
+		String returnUrl = "";
+
+		// 资源单项服务的ID
+
+		Integer serviceId = resources.getServiceId();
+
+		// 服务类型
+
+		Integer serviceType = resources.getServiceType();
+
+		/**
+		 * 根据不同的服务类型返回不同的对象和页面.
+		 */
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
+			model.addAttribute("tags", comm.serviceTagService.getServiceTagList());
+
+			returnUrl = "resource/form/compute";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
+
+		} else {
+			returnUrl = "resource/resourceList";
+		}
+
+		return returnUrl;
+	}
 }

@@ -184,9 +184,9 @@
 				<div class="control-group">
 					<label class="control-label" for="applyId">所属服务申请</label>
 					<div class="controls">
-						<select id="applyId" name="applyId" class="required">
+						<select id="applyId" name="applyId" class="required input-xxlarge">
 							<c:forEach var="item" items="${baseStationApplys}">
-								<option value="${item.id }">${item.title }</option>
+								<option value="${item.id }">${item.title} ( ${item.description} )</option>
 							</c:forEach>
 						</select>
 					</div>

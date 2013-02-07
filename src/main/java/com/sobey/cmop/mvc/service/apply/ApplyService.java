@@ -18,11 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
+import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
 
@@ -39,6 +41,19 @@ public class ApplyService extends BaseSevcie {
 
 	@Resource
 	private ApplyDao applyDao;
+
+	/**
+	 * 根据资源类型 serviceType 创建标识符 Identifier<br>
+	 * elb-hRfhDDvM<br>
+	 * pcs-9V07luc3<br>
+	 * 
+	 * @param serviceType
+	 * 
+	 * @return
+	 */
+	public String generateIdentifier(Integer serviceType) {
+		return ResourcesConstant.ServiceType.get(serviceType) + "-" + Identities.randomBase62(8);
+	}
 
 	// -- Apply Manager --//
 

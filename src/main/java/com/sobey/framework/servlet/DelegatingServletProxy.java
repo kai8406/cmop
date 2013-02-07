@@ -15,12 +15,12 @@ public class DelegatingServletProxy extends GenericServlet {
 
 	private static final long serialVersionUID = 4688397586062144683L;
 
-	private String targetBean;
 	private Servlet proxy;
+	private String targetBean;
 
-	@Override
-	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-		proxy.service(req, res);
+	private void getServletBean() {
+		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		this.proxy = (Servlet) wac.getBean(targetBean);
 	}
 
 	@Override
@@ -30,9 +30,9 @@ public class DelegatingServletProxy extends GenericServlet {
 		proxy.init(getServletConfig());
 	}
 
-	private void getServletBean() {
-		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-		this.proxy = (Servlet) wac.getBean(targetBean);
+	@Override
+	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+		proxy.service(req, res);
 	}
 
 }

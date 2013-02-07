@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.resource;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -48,6 +49,17 @@ public class ServiceTagService extends BaseSevcie {
 	 */
 	public ServiceTag findServiceTagByNameAndUserId(String name, Integer userId) {
 		return serviceTagDao.findByNameAndUserId(name, userId);
+	}
+
+	/**
+	 * 当前用户拥有的服务标签ServiceTag
+	 * 
+	 * @return
+	 */
+	public List<ServiceTag> getServiceTagList() {
+
+		return serviceTagDao.findByUserId(getCurrentUserId());
+
 	}
 
 	/**

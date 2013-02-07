@@ -69,7 +69,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(User user, @RequestParam("departmentId") Integer departmentId, @RequestParam("groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
-		user.setGroupList(getGroupListById(groupId));
+		user.setGroupList(comm.accountService.getGroupListById(groupId));
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
 		user.setPlainPassword(AccountConstant.DEFAULT_PASSWORD);
 
@@ -107,7 +107,7 @@ public class UserController extends BaseController {
 		user.setType(type);
 		user.setLeaderId(leaderId);
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
-		user.setGroupList(getGroupListById(groupId));
+		user.setGroupList(comm.accountService.getGroupListById(groupId));
 
 		comm.accountService.updateUser(user);
 

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.dao.DepartmentDao;
@@ -260,7 +261,16 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * User的分页查询.
+	 * 根据groupId获得GroupList 集合.
+	 */
+	public List<Group> getGroupListById(Integer groupId) {
+		List<Group> groupList = Lists.newArrayList();
+		groupList.add(this.getGroup(groupId));
+		return groupList;
+	}
+
+	/**
+	 * Group的分页查询.
 	 * 
 	 * @param searchParams
 	 * @param pageNumber

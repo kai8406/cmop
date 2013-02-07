@@ -60,7 +60,7 @@ public class ProfileController extends BaseController {
 		user.setName(name);
 		user.setLeaderId(leaderId);
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
-		user.setGroupList(getGroupListById(groupId));
+		user.setGroupList(comm.accountService.getGroupListById(groupId));
 
 		comm.accountService.updateUser(user);
 

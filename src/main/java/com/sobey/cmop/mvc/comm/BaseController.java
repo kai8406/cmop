@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.google.common.collect.Lists;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
@@ -17,7 +16,6 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
@@ -56,15 +54,6 @@ public class BaseController {
 	public Integer getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
 		return user.id;
-	}
-
-	/**
-	 * 根据groupId获得GroupList 集合.<br>
-	 */
-	public List<Group> getGroupListById(Integer groupId) {
-		List<Group> groupList = Lists.newArrayList();
-		groupList.add(comm.accountService.getGroup(groupId));
-		return groupList;
 	}
 
 	// =============== 返回页面参数 =============== //

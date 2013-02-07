@@ -14,15 +14,6 @@ import org.hibernate.dialect.Oracle10gDialect;
 public class Hibernates {
 
 	/**
-	 * Initialize the lazy property value.
-	 * 
-	 * eg. Hibernates.initLazyProperty(user.getGroups());
-	 */
-	public static void initLazyProperty(Object proxyedPropertyValue) {
-		Hibernate.initialize(proxyedPropertyValue);
-	}
-
-	/**
 	 * 从DataSoure中取出connection, 根据connection的metadata中的jdbcUrl判断Dialect类型.
 	 * 仅支持Oracle, H2, MySql，如需更多数据库类型，请仿照此类自行编写。
 	 */
@@ -60,5 +51,14 @@ public class Hibernates {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Initialize the lazy property value.
+	 * 
+	 * eg. Hibernates.initLazyProperty(user.getGroups());
+	 */
+	public static void initLazyProperty(Object proxyedPropertyValue) {
+		Hibernate.initialize(proxyedPropertyValue);
 	}
 }

@@ -4,157 +4,156 @@
 <html>
 <head>
 
-<title>实例管理</title>
+	<title>实例管理</title>
 
-<script>
-	$(document).ready(function() {
+	<script>
+		$(document).ready(function() {
+			
+			$("ul#navbar li#apply").addClass("active");
+			
 		
-		$("ul#navbar li#apply").addClass("active");
-		
+			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
+			
+			$("#inputForm").validate({
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').removeClass('error');
+				}
 	
-		$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
-		
-		$("#inputForm").validate({
-			errorClass: "help-inline",
-			errorElement: "span",
-			highlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').addClass('error');
-			},
-			unhighlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').removeClass('error');
-			}
-
-		});
-		
-		 /*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
-		$(".serverTypeBtn").click(function() {
+			});
 			
-			var $parent = $(this).parent().parent();
-			
-			var osId = $parent.find("#osId").val();//操作系统ID
-			
-			var osNAME = $parent.find("span").text(); //操作系统名
-
-			var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val();//选中的位数Id
-
-			var osBitText =  $.trim($parent.find("input[name='osBit" + osId + "']:checked").closest("label").text()); //选中的位数文本.
-			
-			
-			//装入临时隐藏域
-			$("#osIdTmp").val(osId);
-			$("#osNameTmp").val(osNAME);
-			$("#bitValueTemp").val(osBitId);
-			$("#bitTextTmp").val(osBitText);
-			
-		});
-		
-		
-		 /*点击弹出窗口保存时.*/
-		 
-		$("#modalSave").click(function() {
-			
-			$("input[id^='inputCount']").each(function() { 
+			 /*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
+			$(".serverTypeBtn").click(function() {
 				
-				var $this = $(this);
+				var $parent = $(this).parent().parent();
 				
-				var nCount = $this.val();//数量输入框值
+				var osId = $parent.find("#osId").val();//操作系统ID
+				
+				var osNAME = $parent.find("span").text(); //操作系统名
+	
+				var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val();//选中的位数Id
+	
+				var osBitText =  $.trim($parent.find("input[name='osBit" + osId + "']:checked").closest("label").text()); //选中的位数文本.
 				
 				
-				//数量输入框不为空时
+				//装入临时隐藏域
+				$("#osIdTmp").val(osId);
+				$("#osNameTmp").val(osNAME);
+				$("#bitValueTemp").val(osBitId);
+				$("#bitTextTmp").val(osBitText);
 				
-				if (nCount != "") {
+			});
+			
+			
+			 /*点击弹出窗口保存时.*/
+			 
+			$("#modalSave").click(function() {
+				
+				$("input[id^='inputCount']").each(function() { 
 					
-					//输入框的ID是有字符串"inputCount"+规格ID组成的. 所以获得字符串"inputCount"的长度,用于截取规格的ID
+					var $this = $(this);
 					
-					var nLen = "inputCount".length;
-					
-					var serverTypeId = this.id.substring(nLen);
-					
-					var serverTypeText = $.trim($this.parent().parent().find("td:first").text());//规格名
-					
-					
-					//从隐藏域中取出之前选择的操作系统和位数.
-					
-					var osId = $("#osIdTmp").val();
-					var osNAME = $("#osNameTmp").val();
-					var osBitId = $("#bitValueTemp").val();
-					var osBitText = $("#bitTextTmp").val();
+					var nCount = $this.val();//数量输入框值
 					
 					
-					//页面已生成的实例个数.
+					//数量输入框不为空时
 					
-					var instanceCount = $("#resourcesDIV div.resources").size();
-					
-					
-					for (var i = 0; i < nCount; i++) {
+					if (nCount != "") {
 						
-						//获得页面已有的alert数量,再加上i.用于区别不同的remark,以便检验.
+						//输入框的ID是有字符串"inputCount"+规格ID组成的. 所以获得字符串"inputCount"的长度,用于截取规格的ID
 						
-						var loopId = instanceCount+ i; 
+						var nLen = "inputCount".length;
 						
-						var html = '<div class="resources alert alert-block alert-info fade in">';
-						html += '<button type="button" class="close" data-dismiss="alert">×</button>';
-						html += '<div class="row">';
-						html += '<div class="span5">'+osNAME+' &nbsp; '+osBitText+' &nbsp; '+serverTypeText+'</div>';
-						html += '<div class="span2 control-group" style="margin-bottom: 0px; margin-left: 0px;"><input type="text" id="remarks'+loopId+'" name="remarks" class="required input-small" maxlength="45" placeholder="...用途信息"></div>';
-						html += '<div class="span2"><select class="required input-medium" name="esgIds"><option value="1">ESG List</option></select></div>';
+						var serverTypeId = this.id.substring(nLen);
 						
-						html += '<input type="hidden" name="osTypes" value="'+osId+'">';
-						html += '<input type="hidden" name="osBits" value="'+osBitId+'">';
-						html += '<input type="hidden" name="serverTypes" value="'+serverTypeId+'">';
-						html += '</div>';
-						html += '</div>';
+						var serverTypeText = $.trim($this.parent().parent().find("td:first").text());//规格名
 						
-						$("#resourcesDIV").append(html);
+						
+						//从隐藏域中取出之前选择的操作系统和位数.
+						
+						var osId = $("#osIdTmp").val();
+						var osNAME = $("#osNameTmp").val();
+						var osBitId = $("#bitValueTemp").val();
+						var osBitText = $("#bitTextTmp").val();
+						
+						
+						//页面已生成的实例个数.
+						
+						var instanceCount = $("#resourcesDIV div.resources").size();
+						
+						
+						for (var i = 0; i < nCount; i++) {
+							
+							//获得页面已有的alert数量,再加上i.用于区别不同的remark,以便检验.
+							
+							var loopId = instanceCount+ i; 
+							
+							var html = '<div class="resources alert alert-block alert-info fade in">';
+							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+							html += '<div class="row">';
+							html += '<div class="span5">'+osNAME+' &nbsp; '+osBitText+' &nbsp; '+serverTypeText+'</div>';
+							html += '<div class="span2 control-group" style="margin-bottom: 0px; margin-left: 0px;"><input type="text" id="remarks'+loopId+'" name="remarks" class="required input-small" maxlength="45" placeholder="...用途信息"></div>';
+							html += '<div class="span2"><select class="required input-medium" name="esgIds"><option value="1">ESG List</option></select></div>';
+							
+							html += '<input type="hidden" name="osTypes" value="'+osId+'">';
+							html += '<input type="hidden" name="osBits" value="'+osBitId+'">';
+							html += '<input type="hidden" name="serverTypes" value="'+serverTypeId+'">';
+							html += '</div>';
+							html += '</div>';
+							
+							$("#resourcesDIV").append(html);
+						}
+						
 					}
 					
-				}
+					$this.val('');//清空数量框
+					
+				});
 				
-				$this.val('');//清空数量框
+			});
+			 
+			 
+			/*根据alert中的资源信息,组成汇总信息.*/
+			$(".nextStep").click(function() {
+	
+				var html = '<dl class="dl-horizontal">';
+				
+				html += ' <dt>所属服务申请</dt>';
+				
+				html += '<dd>' + $("#applyId>option:selected").text() + '</dd>';
+	
+				$("#resourcesDIV div.resources").each(function() {
+					
+					var $this = $(this);
+	
+					var basicInfo = $this.find("div.row").find("div:first").text();
+					var remark = $this.find("input").val();
+					var esg = $this.find("select>option:selected").text();
+					
+				    html += '<hr>';
+					html += '<dt>基本信息</dt>';
+					html += '<dd>' + basicInfo + '</dd>';
+					
+					html += '<dt>用途</dt>';
+					html += '<dd>' + remark + '</dd>';
+					html += '<dt>关联ESG</dt>';
+					html += '<dd>' + esg + '</dd>';  
+	
+				});
+	
+				html += '</dl>';
+	
+				$("#resourcesList").append(html);
 				
 			});
 			
 		});
-		 
-		 
-		/*根据alert中的资源信息,组成汇总信息.*/
-		$(".nextStep").click(function() {
-
-			var html = '<dl class="dl-horizontal">';
-			
-			html += ' <dt>所属服务申请</dt>';
-			
-			html += '<dd>' + $("#applyId>option:selected").text() + '</dd>';
-
-			$("#resourcesDIV div.resources").each(function() {
-				
-				var $this = $(this);
-
-				var basicInfo = $this.find("div.row").find("div:first").text();
-				var remark = $this.find("input").val();
-				var esg = $this.find("select>option:selected").text();
-				
-			    html += '<hr>';
-				html += '<dt>基本信息</dt>';
-				html += '<dd>' + basicInfo + '</dd>';
-				
-				html += '<dt>用途</dt>';
-				html += '<dd>' + remark + '</dd>';
-				html += '<dt>关联ESG</dt>';
-				html += '<dd>' + esg + '</dd>';  
-
-			});
-
-			html += '</dl>';
-
-			$("#resourcesList").append(html);
-			
-		});
-		
-		
-		
-	});
-</script>
+	</script>
+	
 </head>
 
 <body>
@@ -299,7 +298,7 @@
 				<button id="modalSave" class="btn btn-primary" data-dismiss="modal">确定</button>
 			</div>
 		</div>
-	</form>
+	</form><!-- 实例规格选择的Modal End -->
 	
 </body>
 </html>

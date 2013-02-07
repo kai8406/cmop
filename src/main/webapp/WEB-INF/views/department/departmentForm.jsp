@@ -3,7 +3,9 @@
 
 <html>
 <head>
+
 	<title>部门管理</title>
+	
 	<script>
 		$(document).ready(function() {
 			
@@ -30,15 +32,17 @@
 					$(element).closest('.control-group').removeClass('error');
 				}
 			});
+			
 		});
 	</script>
+	
 </head>
 
 <body>
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
-		<input type="hidden" name="id" value="${department.id}"/>
+		<input type="hidden" name="id" value="${department.id}">
 		
 		<fieldset>
 			<legend><small>

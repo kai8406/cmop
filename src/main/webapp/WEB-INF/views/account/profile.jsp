@@ -3,6 +3,7 @@
 
 <html>
 <head>
+
 	<title>个人信息修改</title>
 	
 	<script>
@@ -30,8 +31,10 @@
 					$(element).closest('.control-group').removeClass('error');
 				}
 			});
+			
 		});
 	</script>
+	
 </head>
 
 <body>

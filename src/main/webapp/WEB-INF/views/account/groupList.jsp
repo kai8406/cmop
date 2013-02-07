@@ -22,8 +22,8 @@
 		<div class="row">
 		
 			<div class="span3 ">
-				<label class="control-label search-text">权限角色</label> <input type="text" name="search_LIKE_name" class="span2" maxlength="45" 
-					value="${param.search_LIKE_name}">
+				<label class="control-label search-text">权限角色</label> 
+				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}" placeholder="...权限角色">
 			</div>
 			
 			<div class="span2 pull-right">

@@ -33,8 +33,10 @@
 					$(element).closest('.control-group').removeClass('error');
 				}
 			});
+			
 		});
 	</script>
+	
 </head>
 
 <body>

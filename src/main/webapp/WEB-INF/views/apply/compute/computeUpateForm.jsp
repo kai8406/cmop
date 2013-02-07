@@ -4,26 +4,26 @@
 <html>
 <head>
 
-<title>实例管理</title>
-
-<script>
-	$(document).ready(function() {
-		
-		$("ul#navbar li#apply").addClass("active");
-		
-		$("#inputForm").validate({
-			errorClass: "help-inline",
-			errorElement: "span",
-			highlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').addClass('error');
-			},
-			unhighlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').removeClass('error');
-			}
+	<title>实例管理</title>
+	
+	<script>
+		$(document).ready(function() {
+			
+			$("ul#navbar li#apply").addClass("active");
+			
+			$("#inputForm").validate({
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').removeClass('error');
+				}
+			});
+			
 		});
-		
-	});
-</script>
+	</script>
 </head>
 
 <body>

@@ -3,12 +3,15 @@
 
 <html>
 <head>
-<title>资源管理</title>
-<script>
-	$(document).ready(function() {
-		$("ul#navbar li#resource").addClass("active");
-	});
-</script>
+
+	<title>资源管理</title>
+	
+	<script>
+		$(document).ready(function() {
+			$("ul#navbar li#resource").addClass("active");
+		});
+	</script>
+	
 </head>
 
 <body>

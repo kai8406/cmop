@@ -3,14 +3,17 @@
 
 <html>
 <head>
-<title>工单管理</title>
-<script>
-	$(document).ready(function() {
-		
-		$("ul#navbar li#operate").addClass("active");
-		
-	});
-</script>
+
+	<title>工单管理</title>
+	
+	<script>
+		$(document).ready(function() {
+			
+			$("ul#navbar li#operate").addClass("active");
+			
+		});
+	</script>
+	
 </head>
 
 <body>

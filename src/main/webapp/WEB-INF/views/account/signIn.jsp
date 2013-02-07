@@ -4,37 +4,35 @@
 <html>
 <head>
 
-<title>登录</title>
+	<title>登录</title>
 
-<script type="text/javascript">
-
-	$(document).ready(function(){
-		 
-		$("#inputForm").validate({
-			rules:{
-				username:{
-					required: true,
-					maxlength:20
+	<script>
+		$(document).ready(function(){
+			 
+			$("#inputForm").validate({
+				rules:{
+					username:{
+						required: true,
+						maxlength:20
+					},
+					password:{
+						required:true,
+					 	minlength:6,
+						maxlength:20
+					}
 				},
-				password:{
-					required:true,
-				 	minlength:6,
-					maxlength:20
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight:function(element, errorClass, validClass) {
+					$(element).closest('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').removeClass('error');
 				}
-			},
-			errorClass: "help-inline",
-			errorElement: "span",
-			highlight:function(element, errorClass, validClass) {
-				$(element).closest('.control-group').addClass('error');
-			},
-			unhighlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').removeClass('error');
-			}
+			});
+			 
 		});
-		 
-	});
-	
- </script>
+	</script>
  
 </head>
 <body>

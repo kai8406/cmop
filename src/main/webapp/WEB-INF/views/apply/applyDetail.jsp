@@ -4,15 +4,16 @@
 <html>
 <head>
 
-<title>申请管理</title>
-
-<script>
-	$(document).ready(function() {
-		
-		$("ul#navbar li#apply").addClass("active");
-		
-	});
-</script>
+	<title>申请管理</title>
+	
+	<script>
+		$(document).ready(function() {
+			
+			$("ul#navbar li#apply").addClass("active");
+			
+		});
+	</script>
+	
 </head>
 
 <body>

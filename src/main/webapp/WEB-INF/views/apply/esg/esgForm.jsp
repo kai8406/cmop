@@ -4,111 +4,112 @@
 <html>
 <head>
 
-<title>安全组ESG管理</title>
+	<title>安全组ESG管理</title>
 
-<script>
-	$(document).ready(function() {
-		
-		$("ul#navbar li#apply").addClass("active");
-		
-		$("#description").focus();
-		
-		
-		/*禁用回车提交form表单.*/
-		$("#inputForm").keypress(function(e) {
-			if (e.which == 13) {return false;}
-		});
-		
-		$("#inputForm").validate({
-			errorClass: "help-inline",
-			errorElement: "span",
-			highlight: function(element, errorClass, validClass) {
-
-				$(element).closest('.control-group').addClass('error');
-			},
-			unhighlight: function(element, errorClass, validClass) {
-				$(element).closest('.control-group').removeClass('error');
-			}
-
-		});
-		
-		
-		/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
-		$(document).on("click", "#createBtn", function() {
-
-			if (!$("#inputForm").valid()) {
-				return false;
-			}
-
-			var protocol = $("#protocol").val();
-			var portRange = $("#portRange").val();
-			var visitSource = $("#visitSource").val();
-
-			if (!$("#inputForm").valid()) {
-				return false;
-			}
+	<script>
+		$(document).ready(function() {
 			
-
-			//如果重复,则删除重复的项.
+			$("ul#navbar li#apply").addClass("active");
 			
-			$("#resourcesDIV div.resources").each(function() {
-				var $this = $(this);
-				$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.remove();
+			$("#description").focus();
+			
+			
+			/*禁用回车提交form表单.*/
+			$("#inputForm").keypress(function(e) {
+				if (e.which == 13) {return false;}
 			});
 			
-
-			//拼装资源alert信息
+			$("#inputForm").validate({
+				errorClass: "help-inline",
+				errorElement: "span",
+				highlight: function(element, errorClass, validClass) {
+	
+					$(element).closest('.control-group').addClass('error');
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).closest('.control-group').removeClass('error');
+				}
+	
+			});
 			
-			var html = '<div class="resources alert alert-block alert-info fade in">';
-			html += '<button data-dismiss="alert" class="close" type="button">×</button>';
-			html += '<div class="row">';
-			html += '<span class="span1">' + protocol + '</span>';
-			html += '<span class="span2">' + portRange + '</span>';
-			html += '<span class="span3">' + visitSource + '</span>';
-			html += '<input type="hidden" value="' + protocol + '" name="protocols">';
-			html += '<input type="hidden" value="' + portRange + '" name="portRanges">';
-			html += '<input type="hidden" value="' + visitSource + '" name="visitSources">';
-			html += '</div>';
-			html += '</div>';
-
-			$("#resourcesDIV").append(html);
-
-		});
-		
-		
-		/*根据alert中的资源信息,组成汇总信息.*/
-		$(".nextStep").click(function() {
-
-			var html = '<dl class="dl-horizontal">';
-			html += ' <dt>安全组描述</dt>';
-			html += '<dd>' + $("#description").val() + '</dd>';
-
-			$("#resourcesDIV div.resources").each(function() {
+			
+			/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
+			$(document).on("click", "#createBtn", function() {
+	
+				if (!$("#inputForm").valid()) {
+					return false;
+				}
+	
+				var protocol = $("#protocol").val();
+				var portRange = $("#portRange").val();
+				var visitSource = $("#visitSource").val();
+	
+				if (!$("#inputForm").valid()) {
+					return false;
+				}
 				
-				var $this = $(this);
-
-				var protocol = $this.find("input[name='protocols']").val();
-				var portRange = $this.find("input[name='portRanges']").val();
-				var visitSource = $this.find("input[name='visitSources']").val();
-
-				html += '<hr>';
-				html += '<dt>协议</dt>';
-				html += '<dd>' + protocol + '</dd>';
-				html += '<dt>端口范围</dt>';
-				html += '<dd>' + portRange + '</dd>';
-				html += '<dt>访问源</dt>';
-				html += '<dd>' + visitSource + '</dd>';
-
+	
+				//如果重复,则删除重复的项.
+				
+				$("#resourcesDIV div.resources").each(function() {
+					var $this = $(this);
+					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.remove();
+				});
+				
+	
+				//拼装资源alert信息
+				
+				var html = '<div class="resources alert alert-block alert-info fade in">';
+				html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+				html += '<div class="row">';
+				html += '<span class="span1">' + protocol + '</span>';
+				html += '<span class="span2">' + portRange + '</span>';
+				html += '<span class="span3">' + visitSource + '</span>';
+				html += '<input type="hidden" value="' + protocol + '" name="protocols">';
+				html += '<input type="hidden" value="' + portRange + '" name="portRanges">';
+				html += '<input type="hidden" value="' + visitSource + '" name="visitSources">';
+				html += '</div>';
+				html += '</div>';
+	
+				$("#resourcesDIV").append(html);
+	
 			});
-
-			html += '</dl>';
-
-			$("#resourcesList").append(html);
+			
+			
+			/*根据alert中的资源信息,组成汇总信息.*/
+			$(".nextStep").click(function() {
+	
+				var html = '<dl class="dl-horizontal">';
+				html += ' <dt>安全组描述</dt>';
+				html += '<dd>' + $("#description").val() + '</dd>';
+	
+				$("#resourcesDIV div.resources").each(function() {
+					
+					var $this = $(this);
+	
+					var protocol = $this.find("input[name='protocols']").val();
+					var portRange = $this.find("input[name='portRanges']").val();
+					var visitSource = $this.find("input[name='visitSources']").val();
+	
+					html += '<hr>';
+					html += '<dt>协议</dt>';
+					html += '<dd>' + protocol + '</dd>';
+					html += '<dt>端口范围</dt>';
+					html += '<dd>' + portRange + '</dd>';
+					html += '<dt>访问源</dt>';
+					html += '<dd>' + visitSource + '</dd>';
+	
+				});
+	
+				html += '</dl>';
+	
+				$("#resourcesList").append(html);
+			});
+			 
+			
 		});
-		 
-		
-	});
-</script>
+	</script>
+	
 </head>
 
 <body>
@@ -187,7 +188,7 @@
 					<input class="btn btn-primary nextStep" type="button" value="下一步">
 				</div>
 			
-			</div>
+			</div><!-- Step.1 End -->
 			
 			<!-- Step.2 -->
 			<div class="step">
@@ -200,7 +201,7 @@
 					<input class="btn btn-primary" type="submit" value="提交">
 				</div>
 			
-			</div>
+			</div><!-- Step.2 End -->
 			
 		</fieldset>
 		

@@ -3,6 +3,7 @@
 
 <html>
 <head>
+
 	<title>用户注册</title>
 	
 	<script>
@@ -36,10 +37,11 @@
 					$(element).closest('.control-group').removeClass('error');
 				}
 			});
+			
 		});
 	</script>
+	
 </head>
-
 
 <body>
 

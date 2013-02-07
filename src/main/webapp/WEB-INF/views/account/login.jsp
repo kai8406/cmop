@@ -3,16 +3,19 @@
 
 <html>
 <head>
-<title>主页</title>
-<script type="text/javascript">
-	$(document).ready(function(){
-		
-		//针对navbar.jsp中的登录form.
-		
-		$("#username").focus();
-		
-	});
-</script>
+
+	<title>主页</title>
+	
+	<script>
+		$(document).ready(function(){
+			
+			//针对navbar.jsp中的登录form.
+			
+			$("#username").focus();
+			
+		});
+	</script>
+	
 </head>
 <body>
 

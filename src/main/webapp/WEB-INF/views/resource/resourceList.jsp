@@ -21,13 +21,13 @@
 
 			<div class="span3">
 				<label class="search-text">服务标签</label> 
-				<input type="text" name="search_LIKE_serviceTag.name" class="input-small" maxlength="45" 
+				<input type="text" name="search_LIKE_serviceTag.name" class="span2" maxlength="45" 
 					value="${param.search_LIKE_serviceTag.name}">
 			</div>
 			
 			<div class="span3">
 				<label class="search-text">状态</label> 
-				<select name="search_EQ_status" class="input-small">
+				<select name="search_EQ_status" class="span2">
 					<option value="" >Choose...</option>
 					<c:forEach var="map" items="${resourcesStatusMap}">
 						<option value="${map.key}" 
@@ -41,7 +41,7 @@
 			
 			<div class="span3">
 				<label class="search-text">IP地址</label> 
-				<input type="text" name="search_EQ_ipAddress" class="input-small" maxlength="45" 
+				<input type="text" name="search_EQ_ipAddress" class="span2" maxlength="45" 
 					value="${param.search_EQ_ipAddress}">
 			</div>
 			
@@ -58,14 +58,14 @@
 		
 			<div class="span3">
 				<label class="search-text">标识符</label> 
-				<input type="text" name="search_LIKE_serviceIdentifier" class="input-small" maxlength="45" 
+				<input type="text" name="search_LIKE_serviceIdentifier" class="span2" maxlength="45" 
 					value="${param.search_LIKE_serviceIdentifier}">
 			</div>
 			
 			
 			<div class="span3">
 				<label class="search-text">服务类型</label> 
-				<select name="search_EQ_serviceType" class="input-small">
+				<select name="search_EQ_serviceType" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${resourcesServiceTypeMap}">
 						<option value="${map.key }" 

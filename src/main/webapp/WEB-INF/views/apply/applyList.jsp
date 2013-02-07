@@ -48,18 +48,18 @@
 		<div class="row">
 
 			<div class="span3">
-				<label class="control-label search-text">标题</label> <input type="text" name="search_LIKE_title" class="input-small" maxlength="45" 
+				<label class="control-label search-text">标题</label> <input type="text" name="search_LIKE_title" class="span2" maxlength="45" 
 					value="${param.search_LIKE_title}">
 			</div>
 			
 			<div class="span3">
-				<label class="control-label search-text">服务标签</label> <input type="text" name="search_LIKE_serviceTag" class="input-small" maxlength="45" 
+				<label class="control-label search-text">服务标签</label> <input type="text" name="search_LIKE_serviceTag" class="span2" maxlength="45" 
 					value="${param.search_LIKE_serviceTag}">
 			</div>
 			
 			<div class="span3">
 				<label class="control-label search-text">状态</label> 
-				<select name="search_EQ_status" class="input-small">
+				<select name="search_EQ_status" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${applyStatusMap }">
 						<option value="${map.key }" 
@@ -83,7 +83,7 @@
 		<div class="row options">
 			<div class="span3">
 				<label class="control-label search-text">优先级</label> 
-				<select name="search_EQ_priority" class="input-small">
+				<select name="search_EQ_priority" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${priorityMap }">
 						<option value="${map.key }" 

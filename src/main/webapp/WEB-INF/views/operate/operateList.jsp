@@ -22,14 +22,14 @@
 		<div class="row">
 
 			<div class="span3">
-				<label class="control-label search-text">Subject</label> <input type="text" name="search_LIKE_subject" class="input-small" maxlength="45" 
+				<label class="control-label search-text">Subject</label> <input type="text" name="search_LIKE_subject" class="span2" maxlength="45" 
 					value="${param.search_LIKE_subject}">
 			</div>
 			
 			
 			<div class="span3">
 				<label class="control-label search-text">Tracker</label> 
-				<select name="search_EQ_trackerId" class="input-small">
+				<select name="search_EQ_trackerId" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${trackerMap}">
 						<option value="${map.key }" 
@@ -43,7 +43,7 @@
 			
 			<div class="span3">
 				<label class="control-label search-text">Status</label> 
-				<select name="search_EQ_status" class="input-small">
+				<select name="search_EQ_status" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${operateStatusMap}">
 						<option value="${map.key }" 

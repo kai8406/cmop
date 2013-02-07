@@ -73,6 +73,18 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 根据服务类型serviceType 获得资源的个数
+	 * 
+	 * @param serviceType
+	 *            服务类型 1.PCS;2.ECS;3.ES3 ... <br>
+	 *            用ResourcesConstant中的Enum : ServiceType
+	 * @return
+	 */
+	public Long getResourcesStatistics(Integer serviceType) {
+		return (long) resourcesDao.findByServiceTypeAndUserId(serviceType, getCurrentUserId()).size();
+	}
+
+	/**
 	 * 在工单100%处理完成后,将申请单里的资源插入Resources表中
 	 * 
 	 * @return

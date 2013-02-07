@@ -48,6 +48,8 @@ label.search-text {
 
 /* 资源管理的各个资源统计
 ----------------------------------*/
+
+/* widget */
 .widget-box {
 	background: none repeat scroll 0 0 #F9F9F9;
 	border-top: 1px solid #CDCDCD;
@@ -86,7 +88,7 @@ label.search-text {
 	background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(       startColorstr='#fdfdfd',
+	filter: progid:DXImageTransform.Microsoft.gradient(           startColorstr='#fdfdfd',
 		endColorstr='#eaeaea', GradientType=0 ); /* IE6-9 */
 	border-bottom: 1px solid #CDCDCD;
 	height: 36px;
@@ -173,6 +175,7 @@ label.search-text {
 	border-bottom: 1px solid #CDCDCD;
 }
 
+/* site */
 .site-stats {
 	margin: 0;
 	padding: 0;

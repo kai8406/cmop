@@ -18,6 +18,25 @@
 
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message}</span></div></c:if>
 
+
+<div class="widget-box">
+	<div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Site Statistics</h5><div class="buttons"><a class="btn btn-mini" href="#"><i class="icon-refresh"></i> Update stats</a></div></div>
+	<div class="widget-content">
+		<div class="row-fluid">
+		<div class="span4">
+			<ul class="site-stats">
+				<li><i class="icon-user"></i> <strong>1433</strong> <small>Total Users</small></li>
+				<li><i class="icon-arrow-right"></i> <strong>16</strong> <small>New Users (last week)</small></li>
+				<li class="divider"></li>
+				<li><i class="icon-shopping-cart"></i> <strong>259</strong> <small>Total Shop Items</small></li>
+				<li><i class="icon-tag"></i> <strong>8650</strong> <small>Total Orders</small></li>
+				<li><i class="icon-repeat"></i> <strong>29</strong> <small>Pending Orders</small></li>
+			</ul>
+		</div>
+		</div>							
+	</div>
+</div>
+
 	<form class="form-inline well well-small" action=".">
 
 		<div class="row">

@@ -158,6 +158,8 @@
 
 <body>
 
+	<style>body{background-color: #f5f5f5;}</style>
+
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" style="max-width: 960px;">
 		
 		<input type="hidden" id="computeType" name="computeType" value="${computeType}">

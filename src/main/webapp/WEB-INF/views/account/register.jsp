@@ -44,6 +44,8 @@
 </head>
 
 <body>
+	
+	<style>body{background-color: #f5f5f5;}</style>
 
 	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal input-form">
 	

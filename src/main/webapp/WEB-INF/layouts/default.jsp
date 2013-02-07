@@ -36,7 +36,6 @@
 <link href="${ctx}/static/jquery-uniform/css/uniform.default.min.css" rel="stylesheet">
 <link href="${ctx}/static/jquery-ui/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
 <link href="${ctx}/static/common/css/style.css" rel="stylesheet">
-<link href="${ctx}/static/common/css/inputForm.css" rel="stylesheet">
 
 <!--[if lt IE 7 ]><![endif]-->
 <!--[if IE 8 ]><![endif]-->

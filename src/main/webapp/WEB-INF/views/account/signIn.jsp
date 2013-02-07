@@ -36,6 +36,8 @@
  
 </head>
 <body>
+	
+	<style>body{background-color: #f5f5f5;}</style>
 
 	<form id="inputForm" class="input-form" action="${ctx}/login" method="post" style="max-width: 300px;">
 		

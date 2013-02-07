@@ -3,23 +3,8 @@
 	padding: 5px 0px;
 }
 
-.table th {
-	height: auto;
-	padding: 5px 10px 2px;
-	border-bottom: 0;
-/* 	text-align: center; */
-	color: #666666;
-}
-
-label.search-text {
-	width: 60px;
-}
-
-/* 高级搜索框*/
-div.options {
-	display: none;
-}
-
+/* 服务申请的资源按钮
+----------------------------------*/
 .quick-actions a {
 	line-height: 18px;
 	margin: 0 10px 10px;
@@ -28,4 +13,205 @@ div.options {
 	margin-left: 0px;
 	padding: 0;
 	padding: 10px 30px;
+}
+
+/* 高级搜索框
+----------------------------------*/
+
+/*搜索框默认隐藏 */
+div.options {
+	display: none;
+}
+
+/* 搜索框中文字的长度*/
+label.search-text {
+	width: 60px;
+}
+
+/*  新增,修改页面
+----------------------------------*/
+
+/* 输入form的宽度 和一些阴影效果*/
+.input-form {
+	max-width: 640px;
+	padding: 19px 29px 29px;
+	margin: 0 auto 20px;
+	background-color: #fff;
+	border: 1px solid #e5e5e5;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+/* 资源管理的各个资源统计
+----------------------------------*/
+.widget-box {
+	background: none repeat scroll 0 0 #F9F9F9;
+	border-top: 1px solid #CDCDCD;
+	border-left: 1px solid #CDCDCD;
+	border-right: 1px solid #CDCDCD;
+	clear: both;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	position: relative;
+}
+
+.widget-box.widget-calendar,.widget-box.widget-chat {
+	overflow: hidden !important;
+}
+
+.accordion .widget-box {
+	margin-top: -2px;
+	margin-bottom: 0;
+	border-radius: 0;
+}
+
+.widget-box.widget-plain {
+	background: transparent;
+	border: none;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.widget-title,.modal-header,.table th,div.dataTables_wrapper .ui-widget-header
+	{
+	background-color: #efefef;
+	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd),
+		to(#eaeaea) );
+	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(       startColorstr='#fdfdfd',
+		endColorstr='#eaeaea', GradientType=0 ); /* IE6-9 */
+	border-bottom: 1px solid #CDCDCD;
+	height: 36px;
+}
+
+.widget-title .nav-tabs {
+	border-bottom: 0 none;
+}
+
+.widget-title .nav-tabs li a {
+	border-bottom: medium none !important;
+	border-left: 1px solid #DDDDDD;
+	border-radius: 0 0 0 0;
+	border-right: 1px solid #DDDDDD;
+	border-top: medium none;
+	color: #999999;
+	margin: 0;
+	outline: medium none;
+	padding: 9px 10px 8px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.widget-title .nav-tabs li:first-child a {
+	border-left: medium none !important;
+}
+
+.widget-title .nav-tabs li a:hover {
+	background-color: transparent !important;
+	border-color: #D6D6D6;
+	border-width: 0 1px;
+	color: #666666;
+}
+
+.widget-title .nav-tabs li.active a {
+	background-color: #F9F9F9 !important;
+	color: #444444;
+}
+
+.widget-title span.icon {
+	border-right: 1px solid #cdcdcd;
+	padding: 9px 10px 7px 11px;
+	float: left;
+	opacity: .7;
+}
+
+.widget-title h5 {
+	color: #666666;
+	text-shadow: 0 1px 0 #ffffff;
+	float: left;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px;
+	line-height: 12px;
+	margin: 0;
+}
+
+.widget-title .buttons {
+	float: right;
+	margin: 8px 10px 0 0;
+}
+
+.widget-title .label {
+	padding: 3px 5px 2px;
+	float: right;
+	margin: 9px 15px 0 0;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0 1px 0 #ffffff;
+}
+
+.widget-calendar .widget-title .label {
+	margin-right: 190px;
+}
+
+.widget-content {
+	padding: 12px 15px;
+	border-bottom: 1px solid #cdcdcd;
+}
+
+.widget-box.widget-plain .widget-content {
+	padding: 12px 0 0;
+}
+
+.widget-box.collapsible .collapse.in .widget-content {
+	border-bottom: 1px solid #CDCDCD;
+}
+
+.site-stats {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.site-stats li {
+	background-color: #F5F5F5;
+	border: 1px solid #DDDDDD;
+	cursor: pointer;
+	margin: 0 0 10px;
+	padding: 13px 20px 10px;
+	position: relative;
+}
+
+.site-stats li:hover {
+	background-color: #EDEDED;
+}
+
+.site-stats li.divider {
+	padding: 0;
+	border-width: 1px 0 0;
+	border-color: #DDDDDD;
+	border-style: dashed;
+}
+
+.site-stats li i {
+	vertical-align: baseline;
+}
+
+.site-stats li strong {
+	font-weight: bold;
+	font-size: 20px;
+	margin-left: 5px;
+}
+
+.site-stats li small {
+	margin-left: 5px;
+	font-size: 12px;
+	color: #888888;
+	font-style: italic;
 }

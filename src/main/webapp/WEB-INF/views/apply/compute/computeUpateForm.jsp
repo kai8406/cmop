@@ -27,7 +27,9 @@
 </head>
 
 <body>
-
+	
+	<style>body{background-color: #f5f5f5;}</style>
+	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
 		<input type="hidden" name="applyId" value="${apply.id }">

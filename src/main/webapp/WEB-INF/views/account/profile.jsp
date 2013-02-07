@@ -39,6 +39,8 @@
 
 <body>
 
+	<style>body{background-color: #f5f5f5;}</style>
+
 	<form id="inputForm" action="${ctx}/profile" method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${user.id}">

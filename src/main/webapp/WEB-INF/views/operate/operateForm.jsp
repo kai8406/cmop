@@ -29,6 +29,8 @@
 
 <body>
 
+	<style>body{background-color: #f5f5f5;}</style>
+	
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form" style="max-width: 800px">
 	
 		<input type="hidden" name="id" value="${issue.id}">

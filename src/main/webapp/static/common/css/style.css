@@ -78,7 +78,7 @@ label.search-text {
 	margin-bottom: 0;
 }
 
-.widget-title,.modal-header,.table th,div.dataTables_wrapper .ui-widget-header
+.widget-title,.modal-header,div.dataTables_wrapper .ui-widget-header
 	{
 	background-color: #efefef;
 	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd),

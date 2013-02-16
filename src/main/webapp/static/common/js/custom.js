@@ -16,8 +16,7 @@ $(document).ready(function() {
 	
 	
 	// === datepicker === //
-	
- 	$('.datepicker').datepicker();
+ 	//$('.datepicker').datepicker();
  	
  	
  	// === Reset 点击reset按钮,form里的输入框清空,并提交form执行一次查询. ===//

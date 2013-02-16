@@ -19,16 +19,22 @@
 			$("#serviceStart").val(getDatePlusMonthNum(0));
 			$("#serviceEnd").val(getDatePlusMonthNum(3));
 			
+			$( "#serviceStart" ).datepicker({
+				changeMonth: true,
+				onClose: function( selectedDate ) {
+				$( "#serviceEnd" ).datepicker( "option", "minDate", selectedDate );
+				}
+			});
+			
+			$( "#serviceEnd" ).datepicker({
+				changeMonth: true,
+				onClose: function( selectedDate ) {
+				$( "#serviceStart" ).datepicker( "option", "maxDate", selectedDate );
+				}
+			});
+				
+			
 			$("#inputForm").validate({
-				/* groups:{
-					time:"serviceStart serviceEnd"
-				},
-				errorPlacement: function(error, element) {
-					  var reset = checkTimeReset();
-					  var $message = $("#message");
-					  reset.length == 0 ?  $message.removeClass("in"):$message.addClass("in").find("span").text(reset);
-					  //TODO JQuery.validate.js 中错误信息如何给个标示防止表单提交?现在虽然有提示信息.但是依然会提交.
-				  }, */
 				errorClass: "help-inline",
 				errorElement: "span",
 				highlight:function(element, errorClass, validClass) {

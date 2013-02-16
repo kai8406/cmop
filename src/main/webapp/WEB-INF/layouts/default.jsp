@@ -34,7 +34,7 @@
 <link href="${ctx}/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 <link href="${ctx}/static/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet">
 <link href="${ctx}/static/jquery-uniform/css/uniform.default.min.css" rel="stylesheet">
-<link href="${ctx}/static/jquery-ui/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
+<link href="${ctx}/static/jquery-ui/css/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
 <link href="${ctx}/static/common/css/style.css" rel="stylesheet">
 
 <!--[if lt IE 7 ]><![endif]-->
@@ -47,7 +47,7 @@
  <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
  <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
  <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modal.js"></script>
- <script src="${ctx}/static/jquery-ui/js/jquery-ui-1.8.21.custom.min.js"></script>
+ <script src="${ctx}/static/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
  <script src="${ctx}/static/jquery-ui/js/jquery.ui.datepicker-zh-CN.js"></script>
  <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
  <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>

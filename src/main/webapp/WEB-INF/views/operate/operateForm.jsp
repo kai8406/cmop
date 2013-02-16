@@ -22,6 +22,9 @@
 				}
 			});
 			
+			
+			$('.datepicker').datepicker();
+			
 		});
 	</script>
 	

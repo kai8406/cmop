@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -87,13 +88,24 @@ public class ComputeService extends BaseSevcie {
 
 		// 删除表里的老数据.
 
-		List<Application> applications = applicationDao.findByComputeItemId(computeItem.getId());
+		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
 
 		if (!applications.isEmpty()) {
 			applicationDao.delete(applications);
 		}
 
 		this.saveApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
+
+	}
+
+	/**
+	 * 获得指定compute下的所有应用application
+	 * 
+	 * @param computeItemId
+	 * @return
+	 */
+	public List<Application> getApplicationByComputeItemId(Integer computeItemId) {
+		return applicationDao.findByComputeItemId(computeItemId);
 
 	}
 
@@ -178,9 +190,9 @@ public class ComputeService extends BaseSevcie {
 
 		comm.changeServcie.saveOrUpdateChange(change);
 
-		// 比较实例资源computeItem 变更前和变更后的值.
-
 		ComputeItem computeItem = comm.computeService.getComputeItem(resources.getServiceId());
+
+		/* 比较实例资源computeItem 变更前和变更后的值. */
 
 		boolean isChange = this.compareCompute(resources, computeItem, change, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths);
 
@@ -197,9 +209,15 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setRemark(remark);
 		computeItem.setNetworkEsgItem(comm.esgService.getEsg(esgId));
 
+		// 更新compute
+
 		this.saveOrUpdate(computeItem);
 
+		// 更新application
+
 		this.updateApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
+
+		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
 
@@ -213,7 +231,7 @@ public class ComputeService extends BaseSevcie {
 	 * 如果有:取最新的数据,保存.<br>
 	 * 如果没有或者资源状态是 0:未变更;6:已创建. 新插入一条.
 	 */
-	public boolean compareCompute(Resources resources, ComputeItem computeItem, Change change, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+	private boolean compareCompute(Resources resources, ComputeItem computeItem, Change change, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
 			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
 
 		boolean isChange = false;
@@ -337,9 +355,114 @@ public class ComputeService extends BaseSevcie {
 
 		}
 
-		// TODO application
+		// application
+		if (this.compareApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.application.toString());
+
+			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
+			String newValue = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.application.toString(), oldValue, newValue));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(newValue);
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+		}
 
 		return isChange;
+
+	}
+
+	/**
+	 * 将application的数组参数转换成字符串(oldValue)
+	 * 
+	 * @param applicationNames
+	 * @param applicationVersions
+	 * @param applicationDeployPaths
+	 * @return
+	 */
+	private String wrapApplicationToString(String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < applicationNames.length; i++) {
+			sb.append(applicationNames[i]).append(",").append(applicationVersions[i]).append(",").append(applicationDeployPaths[i]).append("<br>");
+		}
+
+		return sb.toString();
+
+	}
+
+	/**
+	 * 将compute下的application List 转换成字符串(newValue)
+	 * 
+	 * @param computeItem
+	 * @return
+	 */
+	private String wrapApplicationFromComputeItemToString(ComputeItem computeItem) {
+
+		StringBuilder sb = new StringBuilder();
+		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
+		for (Application application : applications) {
+			sb.append(application.getName()).append(",").append(application.getVersion()).append(",").append(application.getDeployPath()).append("<br>");
+		}
+		return sb.toString();
+
+	}
+
+	/**
+	 * 比较应用Application<br>
+	 * true:有变更;false:未变更.<br>
+	 * 
+	 * @param computeItem
+	 * @param applicationNames
+	 * @param applicationVersions
+	 * @param applicationDeployPaths
+	 * @return
+	 */
+	private boolean compareApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
+
+		// === OldValue === //
+
+		List<String> oldNameList = new ArrayList<String>();
+		List<String> oldVersionList = new ArrayList<String>();
+		List<String> oldDeployPathList = new ArrayList<String>();
+
+		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
+
+		for (Application application : applications) {
+			oldNameList.add(application.getName());
+			oldNameList.add(application.getVersion());
+			oldNameList.add(application.getDeployPath());
+		}
+
+		// === NewValue === //
+
+		List<String> nameList = new ArrayList<String>();
+		List<String> versionList = new ArrayList<String>();
+		List<String> deployPathList = new ArrayList<String>();
+
+		for (int i = 0; i < applicationNames.length; i++) {
+			nameList.add(applicationNames[i]);
+			versionList.add(applicationVersions[i]);
+			deployPathList.add(applicationDeployPaths[i]);
+		}
+
+		// true:有变更;false:未变更.
+
+		return !CollectionUtils.isEqualCollection(nameList, oldNameList) || !CollectionUtils.isEqualCollection(versionList, oldVersionList)
+				|| !CollectionUtils.isEqualCollection(deployPathList, oldDeployPathList) ? true : false;
 
 	}
 

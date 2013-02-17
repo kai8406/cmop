@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.service.resource;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -72,6 +74,18 @@ public class ChangeServcie extends BaseSevcie {
 
 	public ChangeItem getChangeItem(Integer id) {
 		return changeItemDao.findOne(id);
+	}
+
+	/**
+	 * 根据changeId和fieldName获得变更详情ChangeItem list<br>
+	 * Order by id DESC 倒序排列
+	 * 
+	 * @param changeId
+	 * @param fieldName
+	 * @return
+	 */
+	public List<ChangeItem> getChangeItemListByChangeIdAndFieldName(Integer changeId, String fieldName) {
+		return changeItemDao.findByChangeIdAndFieldNameOrderByIdDesc(changeId, fieldName);
 	}
 
 }

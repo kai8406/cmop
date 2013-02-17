@@ -38,6 +38,9 @@ public class CommonService {
 	public AuditService auditService;
 
 	@Resource
+	public ChangeServcie changeServcie;
+
+	@Resource
 	public ComputeService computeService;
 
 	@Resource
@@ -66,8 +69,5 @@ public class CommonService {
 
 	@Resource
 	public TemplateMailService templateMailService;
-
-	@Resource
-	public ChangeServcie changeServcie;
 
 }

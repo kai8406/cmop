@@ -228,4 +228,15 @@ public class ComputeConstant {
 
 	}
 
+	/**
+	 * entity ComputeItem 里的参数<br>
+	 * 用于变更项的说明
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum CompateFieldName {
+		osType, osBit, serverType, remark, esg, application;
+	}
+
 }

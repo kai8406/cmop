@@ -72,6 +72,8 @@ public class ResourcesController extends BaseController {
 
 		model.addAttribute("resources", resources);
 
+		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
+
 		String returnUrl = "";
 
 		// 资源单项服务的ID

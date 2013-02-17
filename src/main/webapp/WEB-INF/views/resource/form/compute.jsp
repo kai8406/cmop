@@ -128,12 +128,26 @@
 			<table class="table table-bordered table-condensed"  >
 				<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th><th></th></tr></thead>
 				<tbody>
-					<tr class="clone">
-						<td><input type="text" name="applicationName" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
-						<td><input type="text" name="applicationVersion" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
-						<td><input type="text" name="applicationDeployPath" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
-						<td><a class="btn clone">添加</a><a class="btn clone disabled" >删除</a></td>
-					</tr>
+					<c:choose>
+						<c:when test="${not empty compute.applications }">
+							<c:forEach var="item" items="${compute.applications}">
+								<tr class="clone">
+									<td><input type="text" name="applicationName" value="${item.name}" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
+									<td><input type="text" name="applicationVersion" value="${item.version}" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
+									<td><input type="text" name="applicationDeployPath" value="${item.deployPath}" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
+									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr class="clone">
+								<td><input type="text" name="applicationName" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
+								<td><input type="text" name="applicationVersion" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
+								<td><input type="text" name="applicationDeployPath" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
+								<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
 				</tbody>
 			</table>	
 			
@@ -160,7 +174,7 @@
 					<select id="usedby" name="usedby" class="required">
 						<c:forEach var="map" items="${assigneeMap}">
 							<option value="${map.key}" 
-								<c:if test="${map.key == resources.serviceTag.id }">
+								<c:if test="${map.key == resources.usedby }">
 									selected="selected"
 								</c:if>
 							>${map.value}</option>
@@ -173,7 +187,7 @@
 				<label class="control-label" for="changeDescription">变更描述</label>
 				<div class="controls">
 					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
-						maxlength="200" class="required"></textarea>
+						maxlength="200" class="required">${change.description}</textarea>
 				</div>
 			</div>
 				 

@@ -144,17 +144,6 @@ public class ComputeService extends BaseSevcie {
 	}
 
 	/**
-	 * entity ComputeItem 里的参数<br>
-	 * 用于变更项的说明
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum CompateFieldName {
-		osType, osBit, serverType, remark, esg, application;
-	}
-
-	/**
 	 * 变更实例Compute
 	 * 
 	 * @param computeItem
@@ -167,17 +156,6 @@ public class ComputeService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveResourcesByCompute(Resources resources, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames, String[] applicationVersions,
 			String[] applicationDeployPaths, String changeDescription) {
-
-		Integer servcieId = resources.getServiceId();
-
-		/**
-		 * 资源信息是否更改. false:未更改;true 更改
-		 */
-		boolean isChange = false;
-
-		// 变更前的ComputeItem
-
-		ComputeItem computeItem = comm.computeService.getComputeItem(servcieId);
 
 		/**
 		 * 查找该资源的change.<br>
@@ -200,50 +178,18 @@ public class ComputeService extends BaseSevcie {
 
 		comm.changeServcie.saveOrUpdateChange(change);
 
-		/**
-		 * 插入变更明细.变更项（字段）名称以枚举CompateFieldName为准.
-		 */
-		// 操作系统
-		if (!computeItem.getOsType().equals(osType)) {
+		// 比较实例资源computeItem 变更前和变更后的值.
 
-			isChange = true;
-			comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, CompateFieldName.osType.toString(), computeItem.getOsType().toString(), osType.toString()));
+		ComputeItem computeItem = comm.computeService.getComputeItem(resources.getServiceId());
 
+		boolean isChange = this.compareCompute(resources, computeItem, change, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths);
+
+		if (isChange) {
+
+			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+
+			resources.setStatus(ResourcesConstant.ResourcesStatus.已变更.toInteger());
 		}
-
-		// 位数
-		if (!computeItem.getOsBit().equals(osBit)) {
-
-			isChange = true;
-			comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, CompateFieldName.osBit.toString(), computeItem.getOsBit().toString(), osBit.toString()));
-
-		}
-
-		// 规格
-		if (!computeItem.getServerType().equals(serverType)) {
-
-			isChange = true;
-			comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, CompateFieldName.serverType.toString(), computeItem.getServerType().toString(), serverType.toString()));
-
-		}
-
-		// ESG
-		if (!computeItem.getNetworkEsgItem().getId().equals(esgId)) {
-
-			isChange = true;
-			comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, CompateFieldName.esg.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString()));
-
-		}
-
-		// remark
-		if (!computeItem.getRemark().equals(remark)) {
-
-			isChange = true;
-			comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, CompateFieldName.remark.toString(), computeItem.getRemark().toString(), remark.toString()));
-
-		}
-
-		// TODO 还差个application
 
 		computeItem.setOsType(osType);
 		computeItem.setOsBit(osBit);
@@ -253,16 +199,147 @@ public class ComputeService extends BaseSevcie {
 
 		this.saveOrUpdate(computeItem);
 
-		this.saveApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
-
-		if (isChange) {
-
-			// 更改资源resources的状态
-
-			resources.setStatus(ResourcesConstant.ResourcesStatus.已变更.toInteger());
-		}
+		this.updateApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
 
 		comm.resourcesService.saveOrUpdate(resources);
+
+	}
+
+	/**
+	 * 比较实例资源computeItem 变更前和变更后的值,并保存于变更详情ChangeItem表中<br>
+	 * 如果新值和旧值不相同,则将其保存在变更详情ChangeItem中并返回true(只要有一项不同都会返回true).<br>
+	 * <br>
+	 * 根据变更项和changeId查询数据库中是否有变更详情ChangeItem. <br>
+	 * 如果有:取最新的数据,保存.<br>
+	 * 如果没有或者资源状态是 0:未变更;6:已创建. 新插入一条.
+	 */
+	public boolean compareCompute(Resources resources, ComputeItem computeItem, Change change, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
+
+		boolean isChange = false;
+
+		// 操作系统
+		if (!computeItem.getOsType().equals(osType)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osType.toString());
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				// 插入变更明细.变更项（字段）名称以枚举CompateFieldName为准.
+
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.osType.toString(), computeItem.getOsType().toString(), osType.toString()));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(osType.toString());
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+
+		}
+
+		// 位数
+		if (!computeItem.getOsBit().equals(osBit)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osBit.toString());
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.osBit.toString(), computeItem.getOsBit().toString(), osBit.toString()));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(osBit.toString());
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+
+		}
+
+		// 规格
+		if (!computeItem.getServerType().equals(serverType)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.serverType.toString());
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				comm.changeServcie
+						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.serverType.toString(), computeItem.getServerType().toString(), serverType.toString()));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(serverType.toString());
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+
+		}
+
+		// ESG
+		if (!computeItem.getNetworkEsgItem().getId().equals(esgId)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.esg.toString());
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				comm.changeServcie
+						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.esg.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString()));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(esgId.toString());
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+
+		}
+
+		// remark
+		if (!computeItem.getRemark().equals(remark)) {
+
+			isChange = true;
+
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.remark.toString());
+
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
+					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.remark.toString(), computeItem.getRemark().toString(), remark.toString()));
+
+			} else {
+
+				ChangeItem changeItem = changeItems.get(0);
+
+				changeItem.setNewValue(remark);
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+
+			}
+
+		}
+
+		// TODO application
+
+		return isChange;
 
 	}
 

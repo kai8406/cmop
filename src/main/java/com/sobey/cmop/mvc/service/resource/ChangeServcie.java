@@ -88,4 +88,14 @@ public class ChangeServcie extends BaseSevcie {
 		return changeItemDao.findByChangeIdAndFieldNameOrderByIdDesc(changeId, fieldName);
 	}
 
+	/**
+	 * 获得指定Change下的变更详情.
+	 * 
+	 * @param changeId
+	 * @return
+	 */
+	public List<ChangeItem> getChangeItemListByChangeId(Integer changeId) {
+		return changeItemDao.findByChangeId(changeId);
+	}
+
 }

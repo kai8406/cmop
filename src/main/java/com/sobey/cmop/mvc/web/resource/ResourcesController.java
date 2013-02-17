@@ -102,4 +102,44 @@ public class ResourcesController extends BaseController {
 		return returnUrl;
 	}
 
+	/**
+	 * 跳转到详情页面
+	 */
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public String detail(@PathVariable("id") Integer id, Model model) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+
+		model.addAttribute("resources", resources);
+
+		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
+
+		String returnUrl = "";
+
+		// 资源单项服务的ID
+
+		Integer serviceId = resources.getServiceId();
+
+		// 服务类型
+
+		Integer serviceType = resources.getServiceType();
+
+		/**
+		 * 根据不同的服务类型返回不同的对象和页面.
+		 */
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
+			model.addAttribute("tags", comm.serviceTagService.getServiceTagList());
+
+			returnUrl = "resource/detail/computeDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
+
+		} else {
+			returnUrl = "resource/resourceList";
+		}
+
+		return returnUrl;
+	}
 }

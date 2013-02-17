@@ -15,6 +15,8 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
  */
 public interface ChangeItemDao extends PagingAndSortingRepository<ChangeItem, Integer>, JpaSpecificationExecutor<ChangeItem> {
 
+	List<ChangeItem> findByChangeId(Integer changeId);
+
 	List<ChangeItem> findByChangeIdAndFieldNameOrderByIdDesc(Integer changeId, String fieldName);
 
 }

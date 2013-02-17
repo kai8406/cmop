@@ -24,6 +24,7 @@
 			
 		});
 	</script>
+	
 </head>
 
 <body>
@@ -123,6 +124,19 @@
 				</div>
 			</div>
 			
+			
+			<table class="table table-bordered table-condensed"  >
+				<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th><th></th></tr></thead>
+				<tbody>
+					<tr class="clone">
+						<td><input type="text" name="applicationName" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
+						<td><input type="text" name="applicationVersion" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
+						<td><input type="text" name="applicationDeployPath" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
+						<td><a class="btn clone">添加</a><a class="btn clone disabled" >删除</a></td>
+					</tr>
+				</tbody>
+			</table>	
+			
 			<hr>
 			
 			<div class="control-group">
@@ -152,6 +166,14 @@
 							>${map.value}</option>
 						</c:forEach>
 					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="changeDescription">变更描述</label>
+				<div class="controls">
+					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
+						maxlength="200" class="required"></textarea>
 				</div>
 			</div>
 				 

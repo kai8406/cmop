@@ -53,6 +53,10 @@ $(document).ready(function() {
 	});
 	
 	
+	//=== 复制tr.clone的table tr ===//
+	
+	cloneParamTable();
+	
 });
 
 /**
@@ -111,6 +115,33 @@ function checkTimeReset(){
 	  return checkTime($("#serviceStart").val(),$("#serviceEnd").val());
 }
 
+
+function cloneParamTable() {
+	 
+	$(document).on("click","a.clone" , function() {
+		
+		var $this = $(this);
+		var $tr = $this.closest('tr.clone');
+		
+		if ($this.hasClass("disabled")) {
+			if($("tr.clone").length === 1){
+				alert("至少要有一个信息");
+				return false;
+			}
+			 $tr.remove();
+		} else {
+			/*  
+			if(!$this.closest("form").valid()){
+	    		return false;
+	    	}
+			 */
+			var $clone = $tr.clone();
+			$clone.find('input[type=text]').val(''); //清空文本
+			$tr.after($clone);
+		}
+	});
+	
+}
 
 
 

@@ -22,7 +22,7 @@ public class ChangeItem implements java.io.Serializable {
 
 	private Integer id;
 	private Change change;
-	private String filedName;
+	private String fieldName;
 	private String oldValue;
 	private String newValue;
 
@@ -33,9 +33,9 @@ public class ChangeItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ChangeItem(Change change, String filedName, String oldValue, String newValue) {
+	public ChangeItem(Change change, String fieldName, String oldValue, String newValue) {
 		this.change = change;
-		this.filedName = filedName;
+		this.fieldName = fieldName;
 		this.oldValue = oldValue;
 		this.newValue = newValue;
 	}
@@ -62,13 +62,13 @@ public class ChangeItem implements java.io.Serializable {
 		this.change = change;
 	}
 
-	@Column(name = "filed_name", nullable = false, length = 45)
-	public String getFiledName() {
-		return this.filedName;
+	@Column(name = "field_name", nullable = false, length = 45)
+	public String getFieldName() {
+		return this.fieldName;
 	}
 
-	public void setFiledName(String filedName) {
-		this.filedName = filedName;
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	@Column(name = "old_value", nullable = false, length = 200)

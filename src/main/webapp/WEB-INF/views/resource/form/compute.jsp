@@ -31,9 +31,9 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 	
-	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
+	<form id="inputForm" action="${ctx}/resource/update/compute" method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="resourcesId" value="${resources.id }">
+		<input type="hidden" name="id" value="${resources.id }">
 		
 		<fieldset>
 			<legend><small>

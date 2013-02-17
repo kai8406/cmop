@@ -13,4 +13,5 @@ import com.sobey.cmop.mvc.entity.Change;
  */
 public interface ChangeDao extends PagingAndSortingRepository<Change, Integer>, JpaSpecificationExecutor<Change> {
 
+	Change findByResourcesId(Integer resourcesId);
 }

@@ -75,7 +75,7 @@
 					
 				  </li>
 					
-					<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})  <em>内网IP</em>&nbsp;:${compute.innerIp}</li>
+					<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})</li>
 					
 					<br>
 					

@@ -145,8 +145,10 @@ public class TemplateMailService extends BaseSevcie {
 			logger.info("HTML版邮件已发送至 " + sendTo);
 
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			logger.error("构造邮件失败", e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("发送邮件失败", e);
 		}
 
@@ -214,8 +216,10 @@ public class TemplateMailService extends BaseSevcie {
 			logger.info("HTML版邮件已发送至 " + sendTo);
 
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			logger.error("构造邮件失败", e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("发送邮件失败", e);
 		}
 
@@ -287,8 +291,10 @@ public class TemplateMailService extends BaseSevcie {
 			logger.info("HTML版邮件已发送至 " + sendTo);
 
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			logger.error("构造邮件失败", e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("发送邮件失败", e);
 		}
 

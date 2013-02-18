@@ -95,9 +95,9 @@
 				<label class="control-label" for="departmentId">所属部门</label>
 				<div class="controls">
 					<select id="departmentId" name="departmentId" class="required">
-						<option value="1" <c:if test="${user.department.id == 1}">selected="selected"</c:if> >新媒体事业部</option>
-						<option value="2">新媒体运维部</option>
-						<option value="3">新媒体产品部</option>
+						<c:forEach var="item" items="${allDepartments}">
+							<option value="${item.id }" <c:if test="${user.department.id == item.id}">selected="selected"</c:if> >${item.name }</option>							
+						</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -106,11 +106,9 @@
 				<label class="control-label" for="leaderId">所属领导</label>
 				<div class="controls">
 					<select id="leaderId" name="leaderId" class="required">
-						<option value="1" <c:if test="${user.leaderId == 1}">selected="selected"</c:if> >毛泽东</option>
-						<option value="2">邓小平</option>
-						<option value="3">江泽民</option>
-						<option value="4">胡景涛</option>
-						<option value="5">习近平</option>
+						<c:forEach var="item" items="${leaders}">
+							<option value="${item.id }" <c:if test="${user.leaderId == item.id}">selected="selected"</c:if> >${item.name }</option>							
+						</c:forEach>
 					</select>
 				</div>
 			</div>

@@ -46,9 +46,10 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="update/${item.id}">${item.name}</a></td>
+					<td>${item.name}</td>
 					<td>${item.permissionNames}</td>
 					<td>
+						<a href="update/${item.id}">修改</a>
 						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
 						<div id="deleteModal${item.id }" class="modal hide fade " tabindex="-1" data-width="250">
 							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>

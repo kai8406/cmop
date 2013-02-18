@@ -61,12 +61,12 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="email">Email地址</label>
+				<label class="control-label" for="email">Email地址</label>	 
 				<div class="controls">
-					<input type="text" id="email" name="email" class="required email" maxlength="45"  placeholder="...Email address">
+					<input type="text" id="email" name="email" class="required email" maxlength="45" placeholder="...Email address">
 				</div>
 			</div>
-	
+			
 			<div class="control-group">
 				<label class="control-label" for="plainPassword">密码</label>
 				<div class="controls">
@@ -84,14 +84,14 @@
 			<div class="control-group">
 				<label class="control-label" for="phonenum">联系电话</label>
 				<div class="controls">
-					<input type="text" id="phonenum" name="phonenum" class="required" maxlength="45" placeholder="...Phone number">
+					<input type="text" id="phonenum" name="phonenum" class="required" maxlength="45" placeholder="...联系电话">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="name">真实姓名</label>
 				<div class="controls">
-					<input type="text" id="name" name="name" class="required" maxlength="45" placeholder="...Real Name">
+					<input type="text" id="name" name="name" class="required" maxlength="45" placeholder="...真实姓名">
 				</div>
 			</div>
 			
@@ -99,9 +99,9 @@
 				<label class="control-label" for="departmentId">所属部门</label>
 				<div class="controls">
 					<select id="departmentId" name="departmentId" class="required">
-						<option value="1">新媒体事业部</option>
-						<option value="2">新媒体运维部</option>
-						<option value="3">新媒体产品部</option>
+						<c:forEach var="item" items="${allDepartments}">
+							<option value="${item.id }" <c:if test="${user.department.id == item.id}">selected="selected"</c:if> >${item.name }</option>							
+						</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -110,11 +110,9 @@
 				<label class="control-label" for="leaderId">所属领导</label>
 				<div class="controls">
 					<select id="leaderId" name="leaderId" class="required">
-						<option value="1">毛泽东</option>
-						<option value="2">邓小平</option>
-						<option value="3">江泽民</option>
-						<option value="4">胡景涛</option>
-						<option value="5">习近平</option>
+						<c:forEach var="item" items="${leaders}">
+							<option value="${item.id }" <c:if test="${user.leaderId == item.id}">selected="selected"</c:if> >${item.name }</option>							
+						</c:forEach>
 					</select>
 				</div>
 			</div>

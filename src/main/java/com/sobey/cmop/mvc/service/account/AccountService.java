@@ -119,11 +119,6 @@ public class AccountService extends BaseSevcie {
 
 		userDao.save(user);
 
-		// 发送邮件通知
-		// comm.simpleMailService.sendNotificationMail("cmop_public@163.com",
-		// "sobey_public@163.com", "test", "I Love You!");
-		// comm.templateMailService.sendUserNotificationMail(user);
-
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}
 
@@ -191,6 +186,17 @@ public class AccountService extends BaseSevcie {
 	 */
 	public User findUserByRedmineUserId(Integer redmineUserId) {
 		return userDao.findByRedmineUserId(redmineUserId);
+	}
+
+	/**
+	 * 根据Type字段获得用户List.<br>
+	 * 
+	 * type从 枚举 DefaultGroups 获得：1-管理员；2-申请人；3-审批人. 设置type为 3.审批人. 获得领导列表
+	 * 
+	 * @param type
+	 */
+	public List<User> getUserListByType(Integer type) {
+		return userDao.findByType(type);
 	}
 
 	/**

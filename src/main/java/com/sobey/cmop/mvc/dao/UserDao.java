@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.dao;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,5 +23,7 @@ public interface UserDao extends PagingAndSortingRepository<User, Integer>, JpaS
 	User findByLoginName(String loginName);
 
 	User findByRedmineUserId(Integer redmineUserId);
+
+	List<User> findByType(Integer type);
 
 }

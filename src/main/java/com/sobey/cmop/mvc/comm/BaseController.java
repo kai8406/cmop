@@ -16,7 +16,9 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
+import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -68,6 +70,17 @@ public class BaseController {
 	}
 
 	/**
+	 * @return 所有的上级领导列表
+	 */
+	@ModelAttribute("leaders")
+	public List<User> leaders() {
+
+		// type从 枚举 DefaultGroups 取 3.audit 审批人. 即上级领导.
+
+		return comm.accountService.getUserListByType(AccountConstant.DefaultGroups.audit.toInteger());
+	}
+
+	/**
 	 * 
 	 * @return 服务申请表的服务类型
 	 */
@@ -102,7 +115,7 @@ public class BaseController {
 	}
 
 	/**
-	 * @return当前用户创建的所有可用于基础设施申请的申请单Apply List.
+	 * @return 当前用户创建的所有可用于基础设施申请的申请单Apply List.
 	 */
 	@ModelAttribute("baseStationApplys")
 	public List<Apply> baseStationApplys() {
@@ -115,6 +128,14 @@ public class BaseController {
 	@ModelAttribute("esgList")
 	public List<NetworkEsgItem> esgList() {
 		return comm.esgService.getESGList();
+	}
+
+	/**
+	 * @return 所有的部门信息
+	 */
+	@ModelAttribute("allDepartments")
+	public List<Department> allDepartments() {
+		return comm.departmentService.getDepartmentList();
 	}
 
 	/**

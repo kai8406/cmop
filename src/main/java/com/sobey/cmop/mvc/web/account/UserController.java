@@ -117,6 +117,18 @@ public class UserController extends BaseController {
 	}
 
 	/**
+	 * 跳转到详情页面
+	 */
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public String detailForm(@PathVariable("id") Integer id, Model model) {
+
+		model.addAttribute("group", comm.accountService.findGroupByUserId(id));
+		model.addAttribute("user", comm.accountService.getUser(id));
+
+		return "account/userDetail";
+	}
+
+	/**
 	 * 删除用户
 	 */
 	@RequestMapping(value = "delete/{id}")

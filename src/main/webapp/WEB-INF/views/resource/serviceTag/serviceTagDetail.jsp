@@ -67,6 +67,11 @@
 						<p><strong>${resource.serviceIdentifier}</strong> &nbsp;${change.description }</p>
 						
 						<table class="table table-bordered ">
+							<colgroup>
+								<col class="span1">
+								<col class="span3">
+								<col class="span3">
+							</colgroup>
 				            <thead><tr><th>变更项</th><th>旧值</th><th>新值</th></tr></thead>
 				            <tbody>
 				            
@@ -97,7 +102,7 @@
 														<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
 													</c:when>
 													
-													<c:otherwise>${item.fieldName}</c:otherwise>
+													<c:otherwise>${item.oldValue}</c:otherwise>
 													
 												</c:choose>
 											

@@ -80,14 +80,14 @@
 			<div class="control-group">
 				<label class="control-label" for="phonenum">联系电话</label>
 				<div class="controls">
-					<input type="text" id="phonenum" name="phonenum" value="${user.phonenum }"  class="required" maxlength="45" placeholder="...Phone number">
+					<input type="text" id="phonenum" name="phonenum" value="${user.phonenum }"  class="required" maxlength="45" placeholder="...联系电话">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="name">真实姓名</label>
 				<div class="controls">
-					<input type="text" id="name" name="name" value="${user.name }" class="required" maxlength="45" placeholder="...Real Name">
+					<input type="text" id="name" name="name" value="${user.name }" class="required" maxlength="45" placeholder="...真实姓名">
 				</div>
 			</div>
 			

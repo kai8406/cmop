@@ -3,11 +3,13 @@
 <html>
 <head>
 
-	<title>权限管理</title>
+	<title>提交变更</title>
 	
 	<script>
 		$(document).ready(function() {
-			$("ul#navbar li#group").addClass("active");
+			
+			$("ul#navbar li#resource").addClass("active");
+			
 		});
 	</script>
 	
@@ -22,9 +24,24 @@
 		<div class="row">
 		
 			<div class="span3 ">
-				<label class="control-label search-text">权限角色</label> 
+				<label class="control-label search-text">标签名</label> 
 				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}">
 			</div>
+			
+			<div class="span3">
+				<label class="control-label search-text">优先级</label> 
+				<select name="search_EQ_priority" class="span2">
+					<option value="" selected="selected">Choose...</option>
+					<c:forEach var="map" items="${priorityMap }">
+						<option value="${map.key }" 
+							<c:if test="${map.key == param.search_EQ_priority }">
+								selected="selected"
+							</c:if>
+						>${map.value }</option>
+					</c:forEach>
+				</select>
+			</div>
+			
 			
 			<div class="span2 pull-right">
 				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
@@ -38,25 +55,32 @@
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>权限角色</th>
-				<th>授权</th>
+				<th>标签名</th>
+				<th>优先级</th>
+				<th>创建时间</th>
 				<th>管理</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td>${item.name}</td>
-					<td>${item.permissionNames}</td>
+					<td><a href="detail/${item.id}">${item.name}</a></td>
 					<td>
-						<a href="update/${item.id}">修改</a>
-						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
-						<div id="deleteModal${item.id }" class="modal hide fade " tabindex="-1" data-width="250">
+						<c:forEach var="map" items="${priorityMap }">
+							<c:if test="${map.key == item.priority }">
+								${map.value }
+							</c:if>
+						</c:forEach>
+					</td>
+					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
+					<td>
+						<a href="#commitModal${item.id}" data-toggle="modal">提交变更</a>
+						<div id="commitModal${item.id }" class="modal hide fade " tabindex="-1" data-width="250">
 							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
-							<div class="modal-body">是否删除?</div>
+							<div class="modal-body">是否提交变更?</div>
 							<div class="modal-footer">
 								<button class="btn" data-dismiss="modal">关闭</button>
-								<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+								<a href="commit/${item.id}" class="btn btn-primary">确定</a>
 							</div>
 						</div>
 					</td>
@@ -67,7 +91,7 @@
 	
 	<tags:pagination page="${page}" />
 
-	<a class="btn" href="save/">创建权限</a>
+	<a class="btn" href="#" onclick="history.back()">返回</a>
 
 </body>
 </html>

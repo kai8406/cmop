@@ -1,10 +1,14 @@
 package com.sobey.cmop.mvc.service.resource;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,6 +35,8 @@ import com.sobey.framework.utils.SearchFilter.Operator;
 @Service
 @Transactional(readOnly = true)
 public class ResourcesService extends BaseSevcie {
+
+	private static Logger logger = LoggerFactory.getLogger(ResourcesService.class);
 
 	@Resource
 	private ResourcesDao resourcesDao;
@@ -70,6 +76,20 @@ public class ResourcesService extends BaseSevcie {
 		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
 
 		return resourcesDao.findAll(spec, pageRequest);
+	}
+
+	/**
+	 * 获得等待提交变更的资源Resources列表.
+	 * 
+	 * @return
+	 */
+	public List<Resources> getCommitResourcesListByServiceTagId(Integer serviceTagId) {
+
+		List<Integer> status = new ArrayList<Integer>();
+		
+		status.add(ResourcesConstant.Status.已变更.toInteger());
+
+		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
 	}
 
 	/**
@@ -115,6 +135,7 @@ public class ResourcesService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
+	@Transactional(readOnly = false)
 	private Resources saveAndWrapResources(Apply apply, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, String ipAddress) {
 
 		Resources resources = new Resources();
@@ -125,7 +146,7 @@ public class ResourcesService extends BaseSevcie {
 		resources.setServiceId(serviceId);
 		resources.setServiceIdentifier(serviceIdentifier);
 		resources.setCreateTime(new Date());
-		resources.setStatus(ResourcesConstant.ResourcesStatus.未变更.toInteger());
+		resources.setStatus(ResourcesConstant.Status.未变更.toInteger());
 		resources.setIpAddress(ipAddress);
 
 		return saveOrUpdate(resources);

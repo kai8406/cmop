@@ -24,12 +24,12 @@
 
 			<div class="span3">
 				<label class="control-label search-text">登录名</label> 
-				<input type="text" name="search_LIKE_loginName" class="span2" maxlength="45" value="${param.search_LIKE_loginName}" placeholder="...登录名">
+				<input type="text" name="search_LIKE_loginName" class="span2" maxlength="45" value="${param.search_LIKE_loginName}">
 			</div>
 			
 			<div class="span3">
 				<label class="control-label search-text">真实姓名</label> 
-				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}" placeholder="...真实姓名">
+				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}">
 			</div>
 			
 			<div class="span2 pull-right">

@@ -1,6 +1,8 @@
 package com.sobey.cmop.mvc.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +34,7 @@ public class Resources implements java.io.Serializable {
 	private Integer status;
 	private String ipAddress;
 	private Integer usedby;
+	private Set<Change> changes = new HashSet<Change>(0);
 
 	// Constructors
 

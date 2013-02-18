@@ -47,9 +47,8 @@ public class ResourcesExtensionController extends BaseController {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		resources.setUsedby(usedby);
-		resources.setServiceTag(comm.serviceTagService.getServiceTag(serviceTagId));
 
-		comm.computeService.saveResourcesByCompute(resources, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
+		comm.computeService.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
 
 		redirectAttributes.addFlashAttribute("message", "修改服务申请成功");
 

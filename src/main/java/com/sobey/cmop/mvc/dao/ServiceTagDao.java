@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,5 +19,7 @@ public interface ServiceTagDao extends PagingAndSortingRepository<ServiceTag, In
 	ServiceTag findByNameAndUserId(String name, Integer userId);
 
 	List<ServiceTag> findByUserId(Integer userId);
+
+	List<ServiceTag> findByUserIdAndStatusInOrderByIdDesc(Integer userId, Collection<Integer> status);
 
 }

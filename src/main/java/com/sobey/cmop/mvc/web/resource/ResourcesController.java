@@ -89,7 +89,6 @@ public class ResourcesController extends BaseController {
 		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
-			model.addAttribute("tags", comm.serviceTagService.getServiceTagList());
 
 			returnUrl = "resource/form/compute";
 
@@ -130,7 +129,6 @@ public class ResourcesController extends BaseController {
 		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
-			model.addAttribute("tags", comm.serviceTagService.getServiceTagList());
 
 			returnUrl = "resource/detail/computeDetail";
 
@@ -142,4 +140,5 @@ public class ResourcesController extends BaseController {
 
 		return returnUrl;
 	}
+
 }

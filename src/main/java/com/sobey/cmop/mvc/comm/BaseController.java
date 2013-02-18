@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
@@ -78,6 +79,23 @@ public class BaseController {
 		// type从 枚举 DefaultGroups 取 3.audit 审批人. 即上级领导.
 
 		return comm.accountService.getUserListByType(AccountConstant.DefaultGroups.audit.toInteger());
+	}
+
+	/**
+	 * @return 当前用户创建的所有服务标签
+	 */
+	@ModelAttribute("allTags")
+	public List<ServiceTag> allTags() {
+		return comm.serviceTagService.getServiceTagList();
+	}
+
+	/**
+	 * 资源变更页面可选择的服务标签列表.<br>
+	 * 该服务标签是 可用的,没有在审批流程中的服务标签.<br>
+	 */
+	@ModelAttribute("tags")
+	public List<ServiceTag> tags() {
+		return comm.serviceTagService.getServiceTagToResourcesList();
 	}
 
 	/**
@@ -247,7 +265,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("resourcesStatusMap")
 	public Map<Integer, String> resourcesStatusMap() {
-		return ResourcesConstant.ResourcesStatus.map;
+		return ResourcesConstant.Status.map;
 	}
 
 }

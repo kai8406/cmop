@@ -171,7 +171,7 @@
 
 	<tags:pagination page="${page}" />
 
-	<a class="btn" href="save/">提交审批</a>
+	<a class="btn" href="${ctx}/serviceTag/">提交变更</a>
 
 </body>
 </html>

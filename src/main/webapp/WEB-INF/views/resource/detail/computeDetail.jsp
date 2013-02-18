@@ -129,7 +129,7 @@
 				<label class="control-label" for="serviceTagId">服务标签</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="item" items="${tags}"><c:if test="${item.id == resources.serviceTag.id }">${item.name}</c:if></c:forEach>
+						<c:forEach var="item" items="${allTags}"><c:if test="${item.id == resources.serviceTag.id }">${item.name}</c:if></c:forEach>
 					</p>
 				</div>
 			</div>

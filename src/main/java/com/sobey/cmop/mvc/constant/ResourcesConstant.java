@@ -65,7 +65,7 @@ public class ResourcesConstant {
 	}
 
 	/**
-	 * 资源Resources的状态
+	 * 资源Resources的状态,服务标签serviceTag也共用此状态
 	 * <p>
 	 * -1-未变更<br>
 	 * 0-已变更(未提交)<br>
@@ -81,18 +81,18 @@ public class ResourcesConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ResourcesStatus implements CommonEnum {
+	public enum Status implements CommonEnum {
 		未变更(-1), 已变更(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 创建中(5), 已创建(6), 回收中(7);
 
 		private int code;
 
-		private ResourcesStatus(int code) {
+		private Status(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ResourcesStatus e : ResourcesStatus.values()) {
+			for (Status e : Status.values()) {
 
 				map.put(e.code, e.name());
 

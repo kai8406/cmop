@@ -23,6 +23,7 @@ import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * 实例Compute相关的管理类.
@@ -166,8 +167,8 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByCompute(Resources resources, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames, String[] applicationVersions,
-			String[] applicationDeployPaths, String changeDescription) {
+	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
+			String[] applicationVersions, String[] applicationDeployPaths, String changeDescription) {
 
 		/**
 		 * 查找该资源的change.<br>
@@ -196,11 +197,17 @@ public class ComputeService extends BaseSevcie {
 
 		boolean isChange = this.compareCompute(resources, computeItem, change, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths);
 
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
 		if (isChange) {
 
 			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 
-			resources.setStatus(ResourcesConstant.ResourcesStatus.已变更.toInteger());
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+
+			resources.setServiceTag(serviceTag);
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
 		}
 
 		computeItem.setOsType(osType);
@@ -243,8 +250,7 @@ public class ComputeService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osType.toString());
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				// 插入变更明细.变更项（字段）名称以枚举CompateFieldName为准.
 
@@ -268,8 +274,7 @@ public class ComputeService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osBit.toString());
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.osBit.toString(), computeItem.getOsBit().toString(), osBit.toString()));
 
@@ -291,8 +296,7 @@ public class ComputeService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.serverType.toString());
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie
 						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.serverType.toString(), computeItem.getServerType().toString(), serverType.toString()));
@@ -315,8 +319,7 @@ public class ComputeService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.esg.toString());
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie
 						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.esg.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString()));
@@ -339,8 +342,7 @@ public class ComputeService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.remark.toString());
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.remark.toString(), computeItem.getRemark().toString(), remark.toString()));
 
@@ -365,8 +367,7 @@ public class ComputeService extends BaseSevcie {
 			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
 			String newValue = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.ResourcesStatus.未变更.toInteger())
-					|| resources.getStatus().equals(ResourcesConstant.ResourcesStatus.已创建.toInteger())) {
+			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.application.toString(), oldValue, newValue));
 

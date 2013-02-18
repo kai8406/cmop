@@ -46,7 +46,7 @@
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="basicData:view">
-							<li id="basicdata" class="tip-bottom" title="基础数据"><a href="${ctx}/basicdata/ippool">基础数据</a></li>
+							<li id="basicdata" class="tip-bottom" title="基础数据"><a href="${ctx}/basicdata/location/">基础数据</a></li>
 						</shiro:hasPermission>
 						
 					</ul>

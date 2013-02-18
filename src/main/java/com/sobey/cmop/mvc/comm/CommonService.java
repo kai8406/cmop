@@ -54,10 +54,22 @@ public class CommonService {
 	public EsgService esgService;
 
 	@Resource
-	public RedmineUtilService redmineUtilService;
+	public ImportService importService;
+
+	@Resource
+	public IpPoolService ipPoolService;
+
+	@Resource
+	public LocationService locationService;
+
+	@Resource
+	public OneCmdbUtilService oneCmdbUtilService;
 
 	@Resource
 	public OperateService operateService;
+
+	@Resource
+	public RedmineUtilService redmineUtilService;
 
 	@Resource
 	public ResourcesService resourcesService;
@@ -72,18 +84,6 @@ public class CommonService {
 	public TemplateMailService templateMailService;
 
 	@Resource
-	public ImportService importService;
-
-	@Resource
-	public OneCmdbUtilService oneCmdbUtilService;
-
-	@Resource
-	public LocationService locationService;
-
-	@Resource
 	public VlanService vlanService;
-
-	@Resource
-	public IpPoolService ipPoolService;
 
 }

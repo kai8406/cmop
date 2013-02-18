@@ -22,6 +22,7 @@ import com.sobey.framework.utils.SearchFilter;
 @Service
 @Transactional(readOnly = true)
 public class LocationService extends BaseSevcie {
+
 	private static Logger logger = LoggerFactory.getLogger(LocationService.class);
 
 	@Resource
@@ -51,6 +52,11 @@ public class LocationService extends BaseSevcie {
 		return locationDao.findByName(name);
 	}
 
+	/**
+	 * 获得所有的IDC
+	 * 
+	 * @return
+	 */
 	public List<Location> getLocationList() {
 		return (List<Location>) locationDao.findAll();
 	}

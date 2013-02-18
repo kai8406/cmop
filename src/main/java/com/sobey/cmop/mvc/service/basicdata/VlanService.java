@@ -22,23 +22,11 @@ import com.sobey.framework.utils.SearchFilter;
 @Service
 @Transactional(readOnly = true)
 public class VlanService extends BaseSevcie {
+	
 	private static Logger logger = LoggerFactory.getLogger(VlanService.class);
 
 	@Resource
 	private VlanDao vlanDao;
-
-	public Page<Vlan> getVlanPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-		Specification<Vlan> spec = DynamicSpecifications.bySearchFilter(filters.values(), Vlan.class);
-		return vlanDao.findAll(spec, pageRequest);
-	}
-
-	@Transactional(readOnly = false)
-	public Vlan saveVlan(Vlan vlan) {
-		// comm.oneCmdbUtilService.saveVlan(vlan);
-		return vlanDao.save(vlan);
-	}
 
 	@Transactional(readOnly = false)
 	public void deleteVlan(Integer id) {
@@ -51,16 +39,29 @@ public class VlanService extends BaseSevcie {
 		return vlanDao.findByName(name);
 	}
 
-	public Vlan findVlanById(Integer id) {
+	public Vlan getVlan(Integer id) {
 		return vlanDao.findOne(id);
+	}
+
+	public List<Vlan> getVlanList() {
+		return (List<Vlan>) vlanDao.findAll();
 	}
 
 	public List<Vlan> getVlanListByLocationId(Integer locationId) {
 		return vlanDao.findByLocationId(locationId);
 	}
 
-	public List<Vlan> getVlanList() {
-		return (List<Vlan>) vlanDao.findAll();
+	public Page<Vlan> getVlanPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+		Specification<Vlan> spec = DynamicSpecifications.bySearchFilter(filters.values(), Vlan.class);
+		return vlanDao.findAll(spec, pageRequest);
+	}
+
+	@Transactional(readOnly = false)
+	public Vlan saveOrUpdateVlan(Vlan vlan) {
+		// comm.oneCmdbUtilService.saveVlan(vlan);
+		return vlanDao.save(vlan);
 	}
 
 }

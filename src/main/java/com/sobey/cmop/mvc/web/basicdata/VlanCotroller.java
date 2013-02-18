@@ -35,17 +35,21 @@ public class VlanCotroller extends BaseController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
-		model.addAttribute("locationList", comm.locationService.getLocationList());
 		return "basicdata/vlan/vlanForm";
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Vlan vlan, @RequestParam("locationId") Integer locationId, RedirectAttributes redirectAttributes) {
+		
 		Location location = comm.locationService.findLocationById(locationId);
+		
 		String alias = "Vlan" + Identities.uuid2();
-		vlan.setLocation(location);
+		
 		vlan.setAlias(alias);
-		comm.vlanService.saveVlan(vlan);
+		vlan.setLocation(location);
+		
+		comm.vlanService.saveOrUpdateVlan(vlan);
+		
 		redirectAttributes.addFlashAttribute("message", "创建Vlan成功");
 
 		return REDIRECT_SUCCESS_URL;
@@ -53,17 +57,23 @@ public class VlanCotroller extends BaseController {
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("vlan", comm.vlanService.findVlanById(id));
-		model.addAttribute("locationList", comm.locationService.getLocationList());
+		
+		model.addAttribute("vlan", comm.vlanService.getVlan(id));
+		
 		return "basicdata/vlan/vlanForm";
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Vlan vlan, @RequestParam("locationId") Integer locationId, RedirectAttributes redirectAttributes) {
+		
 		Location location = comm.locationService.findLocationById(locationId);
+		
 		vlan.setLocation(location);
-		comm.vlanService.saveVlan(vlan);
+		
+		comm.vlanService.saveOrUpdateVlan(vlan);
+		
 		redirectAttributes.addFlashAttribute("message", "修改Vlan成功");
+		
 		return REDIRECT_SUCCESS_URL;
 	}
 

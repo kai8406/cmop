@@ -39,8 +39,11 @@ public class LocationCotroller extends BaseController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Location location, RedirectAttributes redirectAttributes) {
+		
 		String alias = "Location" + Identities.uuid2();
+		
 		location.setAlias(alias);
+		
 		comm.locationService.saveLocation(location);
 
 		redirectAttributes.addFlashAttribute("message", "创建IDC成功");

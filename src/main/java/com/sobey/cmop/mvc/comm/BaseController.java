@@ -12,14 +12,17 @@ import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Department;
+import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
@@ -96,6 +99,38 @@ public class BaseController {
 	@ModelAttribute("tags")
 	public List<ServiceTag> tags() {
 		return comm.serviceTagService.getServiceTagToResourcesList();
+	}
+
+	/**
+	 * @return 所有的IDC List
+	 */
+	@ModelAttribute("locationList")
+	public List<Location> locationList() {
+		return comm.locationService.getLocationList();
+	}
+
+	/**
+	 * @return Ip类型 Map
+	 */
+	@ModelAttribute("poolTypeMap")
+	public Map<Integer, String> poolTypeMap() {
+		return IpPoolConstant.PoolType.map;
+	}
+
+	/**
+	 * @return Ip状态Map
+	 */
+	@ModelAttribute("ipStausMap")
+	public Map<Integer, String> ipStausMap() {
+		return IpPoolConstant.IpStatus.map;
+	}
+
+	/**
+	 * @return 所有的VLAN List
+	 */
+	@ModelAttribute("vlanList")
+	public List<Vlan> getVlanList() {
+		return comm.vlanService.getVlanList();
 	}
 
 	/**

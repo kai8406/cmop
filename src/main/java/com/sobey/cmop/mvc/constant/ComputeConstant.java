@@ -236,7 +236,7 @@ public class ComputeConstant {
 	 * 
 	 */
 	public enum CompateFieldName {
-		osType, osBit, serverType, remark, esg, application;
+		操作系统, 操作位数, 规格, 用途信息, ESG, 应用信息;
 	}
 
 }

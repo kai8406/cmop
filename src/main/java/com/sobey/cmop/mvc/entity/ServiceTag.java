@@ -32,7 +32,6 @@ public class ServiceTag implements java.io.Serializable {
 	private Integer id;
 	private User user;
 	private String name;
-	private Integer serviceType;
 	private Integer priority;
 	private String description;
 	private String serviceStart;
@@ -53,10 +52,9 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ServiceTag(User user, String name, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+	public ServiceTag(User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
 		this.user = user;
 		this.name = name;
-		this.serviceType = serviceType;
 		this.priority = priority;
 		this.description = description;
 		this.serviceStart = serviceStart;
@@ -66,11 +64,10 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ServiceTag(User user, String name, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow,
-			String domain, String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
+	public ServiceTag(User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow, String domain,
+			String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
 		this.user = user;
 		this.name = name;
-		this.serviceType = serviceType;
 		this.priority = priority;
 		this.description = description;
 		this.serviceStart = serviceStart;
@@ -115,15 +112,6 @@ public class ServiceTag implements java.io.Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	@Column(name = "service_type", nullable = false)
-	public Integer getServiceType() {
-		return serviceType;
-	}
-
-	public void setServiceType(Integer serviceType) {
-		this.serviceType = serviceType;
 	}
 
 	@Column(name = "priority")

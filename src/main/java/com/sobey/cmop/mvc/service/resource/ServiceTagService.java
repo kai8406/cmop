@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.hibernate.mapping.Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -122,7 +121,6 @@ public class ServiceTagService extends BaseSevcie {
 
 			serviceTag.setUser(apply.getUser());
 			serviceTag.setName(apply.getServiceTag());
-			serviceTag.setServiceType(apply.getServiceType());
 			serviceTag.setPriority(apply.getPriority());
 			serviceTag.setDescription(apply.getDescription());
 			serviceTag.setServiceStart(apply.getServiceStart());

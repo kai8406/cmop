@@ -4,35 +4,12 @@
 <html>
 <head>
 
-	<title>权限管理</title>
+	<title>提交变更</title>
 	
 	<script>
 		$(document).ready(function() {
 			
-			
-			$("ul#navbar li#group").addClass("active");
-			
-			$("#name").focus();
-			
-			$("#inputForm").validate({
-				rules:{
-					name:{
-						remote: "${ctx}/ajax/checkGroupName?oldName=${group.name}"
-					},
-					permissionArray:"required"
-				},
-				messages:{
-					name:{remote:"权限角色已存在"}
-				},
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
+			$("ul#navbar li#resource").addClass("active");
 			
 		});
 	</script>
@@ -43,47 +20,107 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 
-	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
+	<form id="inputForm" action="#" method="post" class="form-horizontal input-form">
 	
-		<input type="hidden" name="id" value="${group.id}">
-		
 		<fieldset>
-			<legend><small>
-				<c:choose>
-					<c:when test="${not empty group }">修改权限</c:when>
-					<c:otherwise>创建权限</c:otherwise>
-				</c:choose>
-			</small></legend>
+			<legend><small>服务标签变更详情</small></legend>
 			
+			<dl class="dl-horizontal">
 			
-			<div class="control-group">
-				<label class="control-label" for="name">权限角色</label>
-				<div class="controls">
-					<input type="text" id="name" name="name" value="${group.name}" class="required" maxlength="45"  placeholder="...权限角色">
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="permissionArray" >授权列表</label>
-				<div class="controls">
-					<c:forEach var="item" items="${allPermissions }" >
-						<label class="checkbox">
-					  		<input type="checkbox" id="permissionArray" name="permissionArray" value="${item.value }"
-								 <c:forEach var="permission" items="${permissions }" >
-									<c:if test="${permission ==  item.value}"> 
-										checked="checked" 
-									</c:if>
-								</c:forEach>
-							>
-						  ${item.displayName }
-						</label>
+				<dt>标签名</dt>
+				<dd>${serviceTag.name}&nbsp;</dd>
+				
+				<dt>状态</dt>
+				<dd>
+					<c:forEach var="map" items="${resourcesStatusMap }">
+					 	<c:if test="${map.key == serviceTag.status }">${map.value }</c:if>
+					</c:forEach>&nbsp;
+				</dd>
+				
+				<dt>优先级</dt>
+				<dd>
+					<c:forEach var="map" items="${priorityMap }">
+					 	<c:if test="${map.key == serviceTag.priority }">${map.value }</c:if>
+					</c:forEach>&nbsp;
+				</dd>
+				
+				<dt>服务开始时间</dt>
+				<dd>${serviceTag.serviceStart}&nbsp;</dd>
+				
+				<dt>服务结束时间</dt>
+				<dd>${serviceTag.serviceEnd}&nbsp;</dd>
+				
+				<dt>用途描述</dt>
+				<dd>${serviceTag.description}&nbsp;</dd>
+				
+				<dt>创建日期</dt>
+				<dd><fmt:formatDate value="${serviceTag.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />&nbsp;</dd>
+				</dl>
+				
+				<hr>
+		
+				<!-- 实例Compute -->
+				<c:forEach var="resource" items="${resourcesList }">
+					
+					<c:forEach var="change" items="${resource.changes }">
+					
+						<p><strong>${resource.serviceIdentifier}</strong> &nbsp;${change.description }</p>
+						
+						<table class="table table-bordered ">
+				            <thead><tr><th>变更项</th><th>旧值</th><th>新值</th></tr></thead>
+				            <tbody>
+				            
+				            
+				            	<!-- 实例Compute -->
+				            	<c:if test="${resource.serviceType == 1 || resource.serviceType == 2 }">
+				            
+						            <c:forEach var="item" items="${change.changeItems }">
+										<tr>
+											<td>${item.fieldName}</td>
+											<td class="is-hidden">
+												
+												<c:choose>
+												
+													<c:when test="${item.fieldName == '操作系统'}">
+														<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+													</c:when>
+													
+													<c:when test="${item.fieldName == '操作位数'}">
+														<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+													</c:when>
+													
+													<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
+														<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+													</c:when>
+													
+													<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
+														<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+													</c:when>
+													
+													<c:otherwise>${item.fieldName}</c:otherwise>
+													
+												</c:choose>
+											
+											</td>
+											<td class="is-visible">${item.newValue}</td>
+										</tr>
+									</c:forEach>
+								
+				            	</c:if><!-- 实例Compute End -->
+								
+								
+				            </tbody>
+			            </table>
+					 
 					</c:forEach>
-				</div>
-			</div>
+					
+					<hr>
+					
+				</c:forEach>
 			
+			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 		
 		</fieldset>

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
-import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
@@ -29,7 +28,7 @@ import com.taskadapter.redmineapi.bean.User;
 @Transactional(readOnly = true)
 public class RedmineService extends BaseSevcie {
 
-	private static Logger logger = LoggerFactory.getLogger(ComputeService.class);
+	private static Logger logger = LoggerFactory.getLogger(RedmineService.class);
 
 	/**
 	 * 重置次数
@@ -57,8 +56,10 @@ public class RedmineService extends BaseSevcie {
 	 * @param issueId
 	 * @return
 	 */
-	public Issue getIssue(Integer issueId) {
-		return getIssueById(issueId, FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER);
+	public static Issue getIssue(Integer issueId) {
+		// 此处若更新了Issue,则保存时将起作用.
+		Issue issue = getIssueById(issueId, FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER);
+		return issue;
 	}
 
 	/**
@@ -69,13 +70,9 @@ public class RedmineService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public static boolean createIssue(Issue issue, String projectId, RedmineManager mgr) {
-
 		boolean result = false;
-
 		try {
-
 			Integer default_doneratio = 0;
-
 			issue.setStatusName("新建"); // 默认：新建
 			issue.setDoneRatio(default_doneratio);
 			issue.setAssignee(mgr.getCurrentUser()); // 默认：登录者
@@ -83,37 +80,21 @@ public class RedmineService extends BaseSevcie {
 			issue.setStartDate(new Date());
 			issue.setDueDate(new Date());
 			issue.setCreatedOn(new Date());
-
 			mgr.createIssue(projectId, issue);
-
 			result = true;
-
 			logger.info("--->创建Issue成功！");
-
 		} catch (RedmineException e) {
-
 			e.printStackTrace();
-
 			COUNT++;
-
 			// 重新连接
-
 			repeatConnect(mgr);
-
 			if (COUNT <= 3) {
-
 				result = createIssue(issue, projectId, mgr);
-
 			} else {
-
 				logger.info("--->创建Issue失败！");
-
 			}
-
 		}
-
 		COUNT = 0; // 重置次数
-
 		return result;
 	}
 

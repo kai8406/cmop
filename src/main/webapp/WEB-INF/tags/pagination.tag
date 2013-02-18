@@ -46,12 +46,22 @@ request.setAttribute("end", end);
 		                <li class="disabled"><a href="#">&gt;&gt;</a></li>
 		         <%} %>
 		         
-				<li class="disabled"><a href='#'>共${page.totalElements}条</a></li>
+				<li class="disabled"><a href='#'>共${page.totalElements}条 ${current}/${page.totalPages}页</a></li>
 				
 			</ul>
 		</div>
 	</c:when>
 	
-	<c:otherwise><div style="text-align: center;"><h5>未查询到相关结果</h5></div></c:otherwise>
+	<c:otherwise>
+		<div class="pagination pull-right" style="margin-top: 0px; margin-bottom: 0px;">
+			<ul>
+				<li class="disabled"><a href="#">&lt;&lt;</a></li>
+		        <li class="disabled"><a href="#">&lt;</a></li>
+		        <li class="disabled"><a href="#">&gt;</a></li>
+		        <li class="disabled"><a href="#">&gt;&gt;</a></li>
+				<li class="disabled"><a href='#'>共0条 0页</a></li>
+			</ul>
+		</div>
+	</c:otherwise>
 	
 </c:choose>

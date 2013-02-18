@@ -86,7 +86,7 @@ public class ResourcesService extends BaseSevcie {
 	public List<Resources> getCommitResourcesListByServiceTagId(Integer serviceTagId) {
 
 		List<Integer> status = new ArrayList<Integer>();
-		
+
 		status.add(ResourcesConstant.Status.已变更.toInteger());
 
 		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);

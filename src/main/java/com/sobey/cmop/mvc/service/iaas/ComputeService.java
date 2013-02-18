@@ -180,7 +180,8 @@ public class ComputeService extends BaseSevcie {
 
 		if (change == null) {
 
-			change = new Change(resources, comm.accountService.getCurrentUser(), new Date(), changeDescription);
+			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
+			change.setDescription(changeDescription);
 
 		} else {
 
@@ -248,13 +249,13 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osType.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.操作系统.toString());
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				// 插入变更明细.变更项（字段）名称以枚举CompateFieldName为准.
 
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.osType.toString(), computeItem.getOsType().toString(), osType.toString()));
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.操作系统.toString(), computeItem.getOsType().toString(), osType.toString()));
 
 			} else {
 
@@ -272,11 +273,11 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.osBit.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.操作位数.toString());
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.osBit.toString(), computeItem.getOsBit().toString(), osBit.toString()));
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.操作位数.toString(), computeItem.getOsBit().toString(), osBit.toString()));
 
 			} else {
 
@@ -294,12 +295,11 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.serverType.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.规格.toString());
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
-				comm.changeServcie
-						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.serverType.toString(), computeItem.getServerType().toString(), serverType.toString()));
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.规格.toString(), computeItem.getServerType().toString(), serverType.toString()));
 
 			} else {
 
@@ -317,12 +317,12 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.esg.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.ESG.toString());
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 				comm.changeServcie
-						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.esg.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString()));
+						.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.ESG.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString()));
 
 			} else {
 
@@ -340,11 +340,11 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.remark.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.用途信息.toString());
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.remark.toString(), computeItem.getRemark().toString(), remark.toString()));
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.用途信息.toString(), computeItem.getRemark().toString(), remark.toString()));
 
 			} else {
 
@@ -362,14 +362,14 @@ public class ComputeService extends BaseSevcie {
 
 			isChange = true;
 
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.application.toString());
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), ComputeConstant.CompateFieldName.应用信息.toString());
 
 			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
 			String newValue = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
 			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.application.toString(), oldValue, newValue));
+				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, ComputeConstant.CompateFieldName.应用信息.toString(), oldValue, newValue));
 
 			} else {
 

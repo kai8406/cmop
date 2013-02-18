@@ -1,11 +1,16 @@
 package com.sobey.cmop.mvc.web;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.Vlan;
 
 /**
  * 页面AJAX操作相关的 Controller
@@ -67,6 +72,42 @@ public class AjaxController extends BaseController {
 	@ResponseBody
 	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
 		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
+	}
+
+	@RequestMapping(value = "checkLocation")
+	public @ResponseBody
+	String checkLocation(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		if (name.equals(oldName) || comm.locationService.findLocationByName(name) == null) {
+			return "true";
+		}
+		return "false";
+	}
+
+	@RequestMapping(value = "checkVlan")
+	public @ResponseBody
+	String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		if (name.equals(oldName) || comm.vlanService.findVlanByName(name) == null) {
+			return "true";
+		}
+		return "false";
+	}
+
+	/**
+	 * 根据IDC获取VLAN
+	 * 
+	 * @param location
+	 * @return
+	 */
+	@RequestMapping(value = "getVlanByLocation")
+	@ResponseBody
+	public Map getVlanByLocation(@RequestParam("location") Integer location) {
+		Set<Vlan> vlans = comm.locationService.findLocationById(location).getVlans();
+		Map vlanMap = new HashMap();
+		for (Vlan vlan : vlans) {
+			vlanMap.put(vlan.getId(), vlan.getName());
+		}
+
+		return vlanMap;
 	}
 
 }

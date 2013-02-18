@@ -43,27 +43,19 @@ public class ServiceTagController extends BaseController {
 
 		return "resource/serviceTag/serviceTagList";
 	}
-	
-	
+
 	/**
 	 * 跳转到详情页面
 	 */
 	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
 	public String detailForm(@PathVariable("id") Integer id, Model model) {
-		
-		
+
 		model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(id));
-		
+
 		model.addAttribute("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(id));
-		
-		model.addAttribute("changes", "");
-		
-		
-		
-		
 
 		return "resource/serviceTag/serviceTagDetail";
-	}
 
+	}
 
 }

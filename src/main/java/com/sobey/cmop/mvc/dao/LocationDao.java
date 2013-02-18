@@ -13,4 +13,6 @@ import com.sobey.cmop.mvc.entity.Location;
  */
 public interface LocationDao extends PagingAndSortingRepository<Location, Integer>, JpaSpecificationExecutor<Location> {
 
+	Location findByName(String name);
+
 }

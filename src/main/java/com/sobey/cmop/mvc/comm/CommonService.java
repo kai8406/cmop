@@ -7,13 +7,17 @@ import org.springframework.stereotype.Service;
 import com.sobey.cmop.mvc.service.account.AccountService;
 import com.sobey.cmop.mvc.service.apply.ApplyService;
 import com.sobey.cmop.mvc.service.audit.AuditService;
+import com.sobey.cmop.mvc.service.basicdata.IpPoolService;
+import com.sobey.cmop.mvc.service.basicdata.LocationService;
+import com.sobey.cmop.mvc.service.basicdata.VlanService;
+import com.sobey.cmop.mvc.service.basicdata.imports.ImportService;
 import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
+import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
-import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
 import com.sobey.cmop.mvc.service.resource.ChangeServcie;
 import com.sobey.cmop.mvc.service.resource.ResourcesService;
@@ -50,13 +54,10 @@ public class CommonService {
 	public EsgService esgService;
 
 	@Resource
-	public RedmineUtilService generateRedmineContextService;
+	public RedmineUtilService redmineUtilService;
 
 	@Resource
 	public OperateService operateService;
-
-	@Resource
-	public RedmineService redmineService;
 
 	@Resource
 	public ResourcesService resourcesService;
@@ -69,5 +70,20 @@ public class CommonService {
 
 	@Resource
 	public TemplateMailService templateMailService;
+
+	@Resource
+	public ImportService importService;
+
+	@Resource
+	public OneCmdbUtilService oneCmdbUtilService;
+
+	@Resource
+	public LocationService locationService;
+
+	@Resource
+	public VlanService vlanService;
+
+	@Resource
+	public IpPoolService ipPoolService;
 
 }

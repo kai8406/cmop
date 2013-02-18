@@ -3,7 +3,10 @@ package com.sobey.cmop.mvc.entity;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -29,6 +33,7 @@ public class Change implements java.io.Serializable {
 	private User user;
 	private Date changeTime;
 	private String description;
+	private Set<ChangeItem> changeItems = new HashSet<ChangeItem>(0);
 
 	// Constructors
 
@@ -44,11 +49,12 @@ public class Change implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Change(Resources resources, User user, Date changeTime, String description) {
+	public Change(Resources resources, User user, Date changeTime, String description, Set<ChangeItem> changeItems) {
 		this.resources = resources;
 		this.user = user;
 		this.changeTime = changeTime;
 		this.description = description;
+		this.changeItems = changeItems;
 	}
 
 	// Property accessors
@@ -100,6 +106,15 @@ public class Change implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "change")
+	public Set<ChangeItem> getChangeItems() {
+		return changeItems;
+	}
+
+	public void setChangeItems(Set<ChangeItem> changeItems) {
+		this.changeItems = changeItems;
 	}
 
 }

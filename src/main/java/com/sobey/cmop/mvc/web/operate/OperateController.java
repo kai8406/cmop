@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Servlets;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
@@ -77,7 +78,7 @@ public class OperateController extends BaseController {
 	@RequestMapping(value = "update/{id}")
 	public String update(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 
-		Issue issue = comm.redmineService.getIssue(id);
+		Issue issue = RedmineService.getIssue(id);
 		model.addAttribute("issue", issue);
 
 		RedmineIssue redmineIssue = comm.operateService.findByIssueId(id);
@@ -110,7 +111,7 @@ public class OperateController extends BaseController {
 			@RequestParam(value = "estimatedHours") Integer estimatedHours, @RequestParam(value = "dueDate") String dueDate, @RequestParam(value = "note") String note,
 			RedirectAttributes redirectAttributes) {
 
-		Issue issue = comm.redmineService.getIssue(id);
+		Issue issue = RedmineService.getIssue(id);
 
 		// 此处的User是redmine中的User对象.
 

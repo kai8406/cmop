@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -54,7 +56,8 @@ public class Resources implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, Date createTime, Integer status, String ipAddress, Integer usedby) {
+	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, Date createTime, Integer status, String ipAddress, Integer usedby,
+			Set<Change> changes) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.serviceTag = serviceTag;
@@ -64,6 +67,7 @@ public class Resources implements java.io.Serializable {
 		this.status = status;
 		this.ipAddress = ipAddress;
 		this.usedby = usedby;
+		this.changes = changes;
 	}
 
 	// Property accessors
@@ -161,6 +165,15 @@ public class Resources implements java.io.Serializable {
 
 	public void setUsedby(Integer usedby) {
 		this.usedby = usedby;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "resources")
+	public Set<Change> getChanges() {
+		return changes;
+	}
+
+	public void setChanges(Set<Change> changes) {
+		this.changes = changes;
 	}
 
 }

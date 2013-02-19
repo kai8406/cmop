@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -334,7 +335,7 @@ public class AuditService extends BaseSevcie {
 
 				// 插入一条下级审批人所用到的audit.
 
-				this.saveSubAudit(userId, apply);
+				this.saveSubAudit(userId, apply, null);
 
 			}
 
@@ -349,16 +350,21 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 插入一条下级审批人所用到的audit.
+	 * 插入一条下级审批人所用到的audit.<br>
+	 * 服务申请时,Apply不能为null, ServiceTag 必须为null<br>
+	 * 资源变更时,ServiceTag不能为null, Apply 必须为null<br>
+	 * 
 	 * 
 	 * @param userId
 	 *            当前审批人ID
 	 * @param apply
 	 *            服务申请
+	 * @param serviceTag
+	 *            资源变更
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public Audit saveSubAudit(Integer userId, Apply apply) {
+	public Audit saveSubAudit(Integer userId, Apply apply, ServiceTag serviceTag) {
 
 		User user = comm.accountService.getUser(userId);
 
@@ -373,6 +379,7 @@ public class AuditService extends BaseSevcie {
 
 		Audit audit = new Audit();
 		audit.setApply(apply);
+		audit.setServiceTag(serviceTag);
 		audit.setAuditFlow(auditFlow);
 		audit.setStatus(AuditConstant.AuditStatus.待审批.toInteger());
 

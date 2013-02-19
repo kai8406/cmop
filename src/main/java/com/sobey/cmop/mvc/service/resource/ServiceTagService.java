@@ -16,10 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ServiceTagDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
@@ -160,4 +163,85 @@ public class ServiceTagService extends BaseSevcie {
 		return serviceTagDao.findAll(spec, pageRequest);
 	}
 
+	/**
+	 * 提交变更,向第一位审批人发起审批邮件<br>
+	 * 
+	 * 
+	 * @param serviceTag
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public String saveAuditByServiceTag(ServiceTag serviceTag) {
+
+		String message = "";
+
+		User user = serviceTag.getUser();
+
+		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
+
+		if (user.getLeaderId() != null) {
+
+			try {
+
+				/* Step.1 获得第一个审批人和审批流程 */
+
+				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
+
+				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+				AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
+
+				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
+
+				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
+
+				logger.info("--->拼装邮件内容...");
+
+				comm.templateMailService.sendServiceTagNotificationMail(serviceTag, auditFlow);
+
+				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. */
+
+				serviceTag.setAuditFlow(auditFlow);
+				serviceTag.setStatus(ResourcesConstant.Status.待审批.toInteger());
+				this.saveOrUpdate(serviceTag);
+
+				message = "服务标签 " + serviceTag.getName() + " 提交审批成功";
+
+				logger.info("--->资源变更邮件发送成功...");
+
+				/* Step.4 插入一条下级审批人所用到的audit. */
+
+				comm.auditService.saveSubAudit(user.getId(), null, serviceTag);
+
+			} catch (Exception e) {
+
+				message = "服务变更提交审批失败";
+
+				e.printStackTrace();
+			}
+
+		} else {
+
+			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+			AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
+			if (auditFlow != null && auditFlow.getIsFinal()) {
+
+				// TODO 申请人即最终审批人.直接发送工单.
+
+				logger.info("--->申请人即最终审批人.直接发送工单....");
+
+				serviceTag.setStatus(ResourcesConstant.Status.创建中.toInteger());
+				this.saveOrUpdate(serviceTag);
+
+			} else {
+
+				message = "你没有直属领导,请联系管理员添加";
+
+			}
+
+		}
+
+		return message;
+
+	}
 }

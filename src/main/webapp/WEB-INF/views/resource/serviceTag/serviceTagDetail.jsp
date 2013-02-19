@@ -59,60 +59,71 @@
 				
 				<hr>
 		
-				<!-- 实例Compute -->
 				<c:forEach var="resource" items="${resourcesList }">
 					
 					<c:forEach var="change" items="${resource.changes }">
 					
 						<p><strong>${resource.serviceIdentifier}</strong> &nbsp;${change.description }</p>
 						
-						<table class="table table-bordered ">
-							<colgroup>
-								<col class="span1">
-								<col class="span3">
-								<col class="span3">
-							</colgroup>
-				            <thead><tr><th>变更项</th><th>旧值</th><th>新值</th></tr></thead>
+						<table class="table table-bordered">
+				            <thead><tr><th class="span2">变更项</th><th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
 				            <tbody>
 				            
+				            <c:forEach var="item" items="${change.changeItems }">
 				            
-				            	<!-- 实例Compute -->
-				            	<c:if test="${resource.serviceType == 1 || resource.serviceType == 2 }">
-				            
-						            <c:forEach var="item" items="${change.changeItems }">
-										<tr>
-											<td>${item.fieldName}</td>
-											<td class="is-hidden">
-												
-												<c:choose>
-												
-													<c:when test="${item.fieldName == '操作系统'}">
-														<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-													</c:when>
-													
-													<c:when test="${item.fieldName == '操作位数'}">
-														<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-													</c:when>
-													
-													<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
-														<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-													</c:when>
-													
-													<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
-														<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-													</c:when>
-													
-													<c:otherwise>${item.oldValue}</c:otherwise>
-													
-												</c:choose>
-											
-											</td>
-											<td class="is-visible">${item.newValue}</td>
-										</tr>
-									</c:forEach>
+								<tr>
 								
-				            	</c:if><!-- 实例Compute End -->
+									<td>${item.fieldName}</td>
+									
+									<!-- 实例Compute -->
+	            					<c:if test="${resource.serviceType == 1 || resource.serviceType == 2 }">
+									
+										<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == '操作系统'}">
+													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '操作位数'}">
+													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
+													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
+													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '操作系统'}">
+													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '操作位数'}">
+													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
+													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
+													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
+									
+									</c:if><!-- 实例Compute End -->
+									
+									<!-- 存储 storage  -->
+					            	<c:if test="${resource.serviceType == 3 }">
+					            	
+					            	</c:if><!-- 存储 storage  End -->
+									
+								</tr>
 								
+							</c:forEach>
 								
 				            </tbody>
 			            </table>
@@ -123,7 +134,6 @@
 					
 				</c:forEach>
 			
-			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 			</div>

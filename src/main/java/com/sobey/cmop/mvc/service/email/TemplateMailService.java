@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 
 import freemarker.template.Configuration;
@@ -46,6 +47,8 @@ public class TemplateMailService extends BaseSevcie {
 
 	private Template applyTemplate;
 
+	private Template serviceTagTemplate;
+
 	/**
 	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板.<br>
 	 * 实现一个Template类,然后加载指定路劲(查看applicationContext-email.xml)的后缀为.ftl模板.<br>
@@ -55,6 +58,7 @@ public class TemplateMailService extends BaseSevcie {
 	public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) throws IOException {
 		// 根据freemarkerConfiguration的templateLoaderPath载入文件.
 		applyTemplate = freemarkerConfiguration.getTemplate("applyMailTemplate.ftl", DEFAULT_ENCODING);
+		serviceTagTemplate = freemarkerConfiguration.getTemplate("serviceTagMailTemplate.ftl", DEFAULT_ENCODING);
 	}
 
 	/**
@@ -102,17 +106,16 @@ public class TemplateMailService extends BaseSevcie {
 			map.put("monitorComputes", apply.getMonitorComputes());
 			map.put("monitorElbs", apply.getMonitorElbs());
 
-			// 审批Audit
+			// 申请 审批Audit
 
-			String applyPassUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
-			String applyDisagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+			String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+			String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.不同意但继续;
-			String applyDisagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-					+ AuditConstant.AuditResult.不同意且退回;
+			String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意且退回;
 
-			map.put("applyPassUrl", applyPassUrl);
-			map.put("applyDisagreeContinueUrl", applyDisagreeContinueUrl);
-			map.put("applyDisagreeReturnUrl", applyDisagreeReturnUrl);
+			map.put("passUrl", passUrl);
+			map.put("disagreeContinueUrl", disagreeContinueUrl);
+			map.put("disagreeReturnUrl", disagreeReturnUrl);
 
 			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
 
@@ -277,6 +280,78 @@ public class TemplateMailService extends BaseSevcie {
 
 			// 邮件标题
 			String sendSubject = "服务申请工单处理邮件";
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	/**
+	 * 发送MIME格式的资源变更审批通知邮件.
+	 */
+	public void sendServiceTagNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			// 服务标签ServiceTag
+
+			map.put("serviceTag", serviceTag);
+
+			map.put("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId()));
+
+			// 变更 审批Audit
+
+			String passUrl = CONFIG_LOADER.getProperty("SERVICETAG_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+					+ AuditConstant.AuditResult.同意;
+			String disagreeContinueUrl = CONFIG_LOADER.getProperty("SERVICETAG_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+					+ AuditConstant.AuditResult.不同意但继续;
+			String disagreeReturnUrl = CONFIG_LOADER.getProperty("SERVICETAG_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+					+ AuditConstant.AuditResult.不同意且退回;
+
+			map.put("passUrl", passUrl);
+			map.put("disagreeContinueUrl", disagreeContinueUrl);
+			map.put("disagreeReturnUrl", disagreeReturnUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(serviceTagTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = auditFlow.getUser().getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源申请审批邮件";
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 

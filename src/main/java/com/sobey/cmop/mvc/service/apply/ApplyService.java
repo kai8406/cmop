@@ -170,7 +170,7 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 
-				/* Step.2 根据资源瓶装邮件内容并发送到第一个审批人的邮箱. */
+				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
 
 				logger.info("--->拼装邮件内容...");
 				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
@@ -187,7 +187,7 @@ public class ApplyService extends BaseSevcie {
 
 				/* Step.4 插入一条下级审批人所用到的audit. */
 
-				comm.auditService.saveSubAudit(user.getId(), apply);
+				comm.auditService.saveSubAudit(user.getId(), apply, null);
 
 			} catch (Exception e) {
 

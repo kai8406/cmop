@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -56,6 +58,21 @@ public class ServiceTagController extends BaseController {
 
 		return "resource/serviceTag/serviceTagDetail";
 
+	}
+
+	/**
+	 * 服务标签ServiceTag 提交变更.
+	 */
+	@RequestMapping(value = "/commit/{id}", method = RequestMethod.GET)
+	public String commit(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(id);
+
+		String message = comm.serviceTagService.saveAuditByServiceTag(serviceTag);
+
+		redirectAttributes.addFlashAttribute("message", message);
+
+		return REDIRECT_SUCCESS_URL;
 	}
 
 }

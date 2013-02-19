@@ -1,16 +1,11 @@
 <html>
 <head>
-	<#if operateUrl?exists>
-		${operateUrl}
-	<#elseif operateDoneStr?exists>
-		${operateDoneStr}
-	<#else>
-		你好,请审批以下内容.
-	</#if>
-	
+
 </head>
 <body>
 
+	<p><#if operateUrl?exists>${operateUrl}<#elseif operateDoneStr?exists>${operateDoneStr}<#else>你好,请审批以下内容.</#if></p>
+	
 	<ul>
 		
 		<!--服务申请Apply -->
@@ -23,9 +18,7 @@
 				
 				<li><em>优先级</em>&nbsp;: 
 					<#list priorityMap?keys as k >
-						<#if apply.priority?string == k>
-							${priorityMap[k]}
-						</#if>
+						<#if apply.priority?string == k>${priorityMap[k]}</#if>
 					</#list>
 				</li>
 				
@@ -35,69 +28,61 @@
 		</li> <!--服务申请Apply End -->
 		
 		
-		<!--实例Compute -->
-		<#if (computes?exists) && (computes?size > 0) >
 		<li>
-			<strong>计算资源(PCS,ECS)</strong>
-			<#list computes as compute>
-				<ul>
+			<!-- 实例Compute -->
+			<#if (computes?exists) && (computes?size > 0) >
+				<strong>计算资源(PCS,ECS)</strong>
+				<#list computes as compute>
+					<ul>
+					
+						<li><em>标识符</em>&nbsp;:${compute.identifier}</li>
+						<li><em>用途信息</em>&nbsp;:${compute.remark}</li>
+						<li><em>基本信息</em>&nbsp;:
+						
+							<#list osTypeMap?keys as k >
+								<#if compute.osType?string == k>${osTypeMap[k]}</#if>
+							</#list>
+						
+							<#list osBitMap?keys as k >
+								<#if compute.osBit?string == k>${osBitMap[k]}</#if>
+							</#list>
+						
+							<!-- 规格 1.PCS 2.ECS -->
+							<#if compute.computeType == 1 >
+								<#list pcsServerTypeMap?keys as k >
+									<#if compute.serverType?string == k>${pcsServerTypeMap[k]}</#if>
+								</#list>
+							<#else>
+								<#list ecsServerTypeMap?keys as k >
+									<#if compute.serverType?string == k>${ecsServerTypeMap[k]}</#if>
+								</#list>
+							</#if>
+						
+					  </li>
+						
+						<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})</li>
+						
+						<br>
+						
+					</ul>
+				</#list>
 				
-					<li><em>标识符</em>&nbsp;:${compute.identifier}</li>
-					<li><em>用途信息</em>&nbsp;:${compute.remark}</li>
-					<li><em>基本信息</em>&nbsp;:
-					
-						<#list osTypeMap?keys as k >
-							<#if compute.osType?string == k>
-								${osTypeMap[k]}
-							</#if>
-						</#list>
-					
-						<#list osBitMap?keys as k >
-							<#if compute.osBit?string == k>
-								${osBitMap[k]}
-							</#if>
-						</#list>
-					
-						<!-- 规格 1.PCS 2.ECS -->
-						<#if compute.computeType == 1 >
-							<#list pcsServerTypeMap?keys as k >
-								<#if compute.serverType?string == k>
-									${pcsServerTypeMap[k]}
-								</#if>
-							</#list>
-						<#else>
-							<#list ecsServerTypeMap?keys as k >
-								<#if compute.serverType?string == k>
-									${ecsServerTypeMap[k]}
-								</#if>
-							</#list>
-						</#if>
-					
-				  </li>
-					
-					<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})</li>
-					
-					<br>
-					
-				</ul>
-			</#list>
+			</#if><!-- 实例Compute End-->
+		
+			<!-- 存储 storage  -->
+			<#if (storages?exists) && (storages?size > 0) >
+				我是存储~~
+			</#if><!-- 存储 storage End-->
 			
 		</li>
-		</#if><!--实例Compute End-->
 		
-		<!--存储 storage  -->
-		<#if (storages?exists) && (storages?size > 0) >
-			我是存储~~
-		</#if>
-		<!--存储 storage End-->
-		
-		<#if applyPassUrl?exists>
+		<#if passUrl?exists>
 			<li>
 				<strong>审批操作</strong>
 				<ul>
-					<li><a href="${applyPassUrl}">1.同意</a></li>
-					<li><a href="${applyDisagreeContinueUrl}">2.不通过但继续</a></li>
-					<li><a href="${applyDisagreeReturnUrl}">3.不通过且退回</a></li>
+					<li><a href="${passUrl}">1.同意</a></li>
+					<li><a href="${disagreeContinueUrl}">2.不通过但继续</a></li>
+					<li><a href="${disagreeReturnUrl}">3.不通过且退回</a></li>
 				</ul>
 			</li>
 		</#if>

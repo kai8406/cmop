@@ -96,7 +96,7 @@ public class ComputeConstant {
 		OS_TYPE_STRING_MAP.put("2", "Windows2008R2");
 		OS_TYPE_STRING_MAP.put("3", "CentOS5.6");
 		OS_TYPE_STRING_MAP.put("4", "CentOS6.3");
-		OS_TYPE_STRING_MAP.put("4", "Windows7");
+		OS_TYPE_STRING_MAP.put("5", "Windows7");
 	}
 
 	/**

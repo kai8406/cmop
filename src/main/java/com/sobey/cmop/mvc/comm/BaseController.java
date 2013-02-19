@@ -156,7 +156,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("applyStatusMap")
 	public Map<Integer, String> applyStatusMap() {
-		return ApplyConstant.ApplyStatus.map;
+		return ApplyConstant.Status.map;
 	}
 
 	/**

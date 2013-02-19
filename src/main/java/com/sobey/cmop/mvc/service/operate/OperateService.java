@@ -151,7 +151,7 @@ public class OperateService extends BaseSevcie {
 
 					logger.info("---> 完成度 = 100%的工单处理...");
 
-					apply.setStatus(ApplyConstant.ApplyStatus.已创建.toInteger());
+					apply.setStatus(ApplyConstant.Status.已创建.toInteger());
 
 					// 向资源表 resources 写入记录
 
@@ -161,7 +161,7 @@ public class OperateService extends BaseSevcie {
 
 					// 工单处理完成，给申请人发送邮件
 
-					comm.templateMailService.sendOperateDoneNotificationMail(apply);
+					comm.templateMailService.sendApplyOperateDoneNotificationMail(apply);
 
 					logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
 
@@ -169,7 +169,7 @@ public class OperateService extends BaseSevcie {
 
 					logger.info("---> 完成度 < 100%的工单处理...");
 
-					apply.setStatus(ApplyConstant.ApplyStatus.处理中.toInteger());
+					apply.setStatus(ApplyConstant.Status.处理中.toInteger());
 
 					User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
 

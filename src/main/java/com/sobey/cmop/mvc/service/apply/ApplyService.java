@@ -136,8 +136,8 @@ public class ApplyService extends BaseSevcie {
 		Integer serviceType = ApplyConstant.ServiceType.基础设施.toInteger();
 
 		List<Integer> status = new ArrayList<Integer>();
-		status.add(ApplyConstant.ApplyStatus.已申请.toInteger());
-		status.add(ApplyConstant.ApplyStatus.已退回.toInteger());
+		status.add(ApplyConstant.Status.已申请.toInteger());
+		status.add(ApplyConstant.Status.已退回.toInteger());
 
 		return applyDao.findByUserIdAndServiceTypeAndStatusIn(getCurrentUserId(), serviceType, status);
 	}
@@ -178,7 +178,7 @@ public class ApplyService extends BaseSevcie {
 				/* Step.3 更新Apply状态和Apply的审批流程. */
 
 				apply.setAuditFlow(auditFlow);
-				apply.setStatus(ApplyConstant.ApplyStatus.待审批.toInteger());
+				apply.setStatus(ApplyConstant.Status.待审批.toInteger());
 				this.saveOrUpateApply(apply);
 
 				message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
@@ -207,7 +207,7 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("--->申请人即最终审批人.直接发送工单....");
 
-				apply.setStatus(ApplyConstant.ApplyStatus.处理中.toInteger());
+				apply.setStatus(ApplyConstant.Status.处理中.toInteger());
 				this.saveOrUpateApply(apply);
 
 			} else {

@@ -24,10 +24,10 @@ import com.sobey.framework.utils.Servlets;
  * 
  */
 @Controller
-@RequestMapping(value = "/resource")
+@RequestMapping(value = "/resources")
 public class ResourcesController extends BaseController {
 
-	private static final String REDIRECT_SUCCESS_URL = "redirect:/resource/";
+	private static final String REDIRECT_SUCCESS_URL = "redirect:/resources/";
 
 	/**
 	 * 显示资源Resources的List

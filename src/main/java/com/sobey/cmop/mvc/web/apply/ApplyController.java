@@ -62,7 +62,7 @@ public class ApplyController extends BaseController {
 	public String save(RedirectAttributes redirectAttributes, Apply apply) {
 
 		Integer serviceType = ApplyConstant.ServiceType.基础设施.toInteger();
-		Integer status = ApplyConstant.ApplyStatus.已申请.toInteger();
+		Integer status = ApplyConstant.Status.已申请.toInteger();
 		String title = comm.applyService.generateApplyTitle(ApplyConstant.ServiceType.get(serviceType));
 
 		apply.setStatus(status);

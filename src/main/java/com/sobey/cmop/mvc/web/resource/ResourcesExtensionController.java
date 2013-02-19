@@ -17,10 +17,10 @@ import com.sobey.cmop.mvc.entity.Resources;
  * 
  */
 @Controller
-@RequestMapping(value = "/resource/update")
+@RequestMapping(value = "/resources/update")
 public class ResourcesExtensionController extends BaseController {
 
-	private static final String REDIRECT_SUCCESS_URL = "redirect:/resource/";
+	private static final String REDIRECT_SUCCESS_URL = "redirect:/resources/";
 
 	/**
 	 * 变更实例Compute

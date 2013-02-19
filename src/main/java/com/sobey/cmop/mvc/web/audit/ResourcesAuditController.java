@@ -51,8 +51,8 @@ public class ResourcesAuditController extends BaseController {
 	/**
 	 * 邮件里面执行审批操作(服务标签serviceTag)
 	 * 
-	 * @param applyId
-	 *            服务申请单ID
+	 * @param serviceTagId
+	 *            服务标签ID
 	 * @param userId
 	 *            审批人ID
 	 * @param result
@@ -68,19 +68,19 @@ public class ResourcesAuditController extends BaseController {
 
 		String message;
 
-		if (comm.auditService.isAudited(serviceTagId, userId)) { // 该服务申请已审批过.
+		if (comm.auditService.isResourcesAudited(serviceTagId, userId)) { // 该服务申请已审批过.
 
 			message = "你已审批";
 
 		} else {
 
-			// 获得指定apply当前审批记录
+			// 获得指定serviceTag当前审批记录
 
-			Audit audit = this.getCurrentAudit(userId, serviceTagId);
+			Audit audit = this.getCurrentResourcesAudit(userId, serviceTagId);
 			audit.setResult(result);
 			audit.setOpinion(opinion);
 
-			boolean flag = comm.auditService.saveAuditToApply(audit, serviceTagId, userId);
+			boolean flag = comm.auditService.saveAuditToResources(audit, serviceTagId, userId);
 
 			message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
 		}
@@ -91,7 +91,7 @@ public class ResourcesAuditController extends BaseController {
 	}
 
 	/**
-	 * 跳转到Apply审批页面.<br>
+	 * 跳转到Resources审批页面.<br>
 	 * 
 	 * @param userId
 	 *            通过userId来区分页面或邮件进入.<br>
@@ -102,7 +102,7 @@ public class ResourcesAuditController extends BaseController {
 
 		String returnUrl = "";
 
-		if (comm.auditService.isAudited(serviceTagId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
+		if (comm.auditService.isResourcesAudited(serviceTagId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
 
 			model.addAttribute("message", "你已审批");
 
@@ -114,9 +114,9 @@ public class ResourcesAuditController extends BaseController {
 
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
 
-			model.addAttribute("apply", comm.applyService.getApply(serviceTagId));
+			model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(serviceTagId));
 
-			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(serviceTagId));
+			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
 
 			returnUrl = "audit/resource/auditForm";
 
@@ -129,8 +129,8 @@ public class ResourcesAuditController extends BaseController {
 	/**
 	 * 审批
 	 * 
-	 * @param applyId
-	 *            applyId
+	 * @param serviceTagId
+	 *            服务标签ID
 	 * @param userId
 	 *            审批人Id
 	 * @param result
@@ -140,18 +140,18 @@ public class ResourcesAuditController extends BaseController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequestMapping(value = "/resources/{applyId}", method = RequestMethod.POST)
-	public String saveApply(@PathVariable(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
+	@RequestMapping(value = "/resources/{serviceTagId}", method = RequestMethod.POST)
+	public String saveApply(@PathVariable(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
 
 		// 获得指定apply当前审批记录
 
-		Audit audit = this.getCurrentAudit(userId, applyId);
+		Audit audit = this.getCurrentResourcesAudit(userId, serviceTagId);
 
 		audit.setOpinion(opinion);
 		audit.setResult(result);
 
-		boolean flag = comm.auditService.saveAuditToApply(audit, applyId, userId);
+		boolean flag = comm.auditService.saveAuditToResources(audit, serviceTagId, userId);
 
 		String message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
 
@@ -161,17 +161,17 @@ public class ResourcesAuditController extends BaseController {
 	}
 
 	/**
-	 * 获得指定apply当前审批记录<br>
-	 * 根据applyId,auditFlow获得状态为"待审批"的audit.<br>
+	 * 获得指定serviceTag当前审批记录<br>
+	 * 根据serviceTagId,auditFlow获得状态为"待审批"的audit.<br>
 	 * 此audit为申请人或上级审批人进行操作时,插入下级审批人的audit中的临时数据.<br>
 	 * 
 	 * @param userId
 	 *            审批人Id
-	 * @param applyId
-	 *            服务申请单Id
+	 * @param serviceTagId
+	 *            标签Id
 	 * @return
 	 */
-	private Audit getCurrentAudit(Integer userId, Integer applyId) {
+	private Audit getCurrentResourcesAudit(Integer userId, Integer serviceTagId) {
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
@@ -179,7 +179,7 @@ public class ResourcesAuditController extends BaseController {
 
 		Integer status = AuditConstant.AuditStatus.待审批.toInteger();
 
-		return comm.auditService.findAuditByApplyIdAndStatusAndAuditFlow(applyId, status, auditFlow);
+		return comm.auditService.findAuditByServiceTagIdAndStatusAndAuditFlow(serviceTagId, status, auditFlow);
 
 	}
 

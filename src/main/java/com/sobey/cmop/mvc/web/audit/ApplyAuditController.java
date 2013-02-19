@@ -68,7 +68,7 @@ public class ApplyAuditController extends BaseController {
 
 		String message;
 
-		if (comm.auditService.isAudited(applyId, userId)) { // 该服务申请已审批过.
+		if (comm.auditService.isApplyAudited(applyId, userId)) { // 该服务申请已审批过.
 
 			message = "你已审批";
 
@@ -76,7 +76,7 @@ public class ApplyAuditController extends BaseController {
 
 			// 获得指定apply当前审批记录
 
-			Audit audit = this.getCurrentAudit(userId, applyId);
+			Audit audit = this.getCurrentApplyAudit(userId, applyId);
 			audit.setResult(result);
 			audit.setOpinion(opinion);
 
@@ -102,7 +102,7 @@ public class ApplyAuditController extends BaseController {
 
 		String returnUrl = "";
 
-		if (comm.auditService.isAudited(applyId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
+		if (comm.auditService.isApplyAudited(applyId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
 
 			model.addAttribute("message", "你已审批");
 
@@ -146,7 +146,7 @@ public class ApplyAuditController extends BaseController {
 
 		// 获得指定apply当前审批记录
 
-		Audit audit = this.getCurrentAudit(userId, applyId);
+		Audit audit = this.getCurrentApplyAudit(userId, applyId);
 
 		audit.setOpinion(opinion);
 		audit.setResult(result);
@@ -171,7 +171,7 @@ public class ApplyAuditController extends BaseController {
 	 *            服务申请单Id
 	 * @return
 	 */
-	private Audit getCurrentAudit(Integer userId, Integer applyId) {
+	private Audit getCurrentApplyAudit(Integer userId, Integer applyId) {
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 

@@ -82,18 +82,18 @@ public class ApplyConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ApplyStatus implements CommonEnum {
+	public enum Status implements CommonEnum {
 		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
 
 		private int code;
 
-		private ApplyStatus(int code) {
+		private Status(int code) {
 			this.code = code;
 		}
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ApplyStatus e : ApplyStatus.values()) {
+			for (Status e : Status.values()) {
 
 				map.put(e.code, e.name());
 

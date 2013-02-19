@@ -18,5 +18,9 @@ public interface AuditDao extends PagingAndSortingRepository<Audit, Integer>, Jp
 
 	List<Audit> findByApplyId(Integer applyId);
 
+	List<Audit> findByServiceTagId(Integer serviceTagId);
+
 	Audit findByApplyIdAndStatusAndAuditFlow(Integer applyId, Integer status, AuditFlow auditFlow);
+
+	Audit findByServiceTagIdAndStatusAndAuditFlow(Integer serviceTagId, Integer status, AuditFlow auditFlow);
 }

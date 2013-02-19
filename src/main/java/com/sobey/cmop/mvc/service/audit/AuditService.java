@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
-import com.sobey.cmop.mvc.constant.ApplyConstant.ApplyStatus;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.AuditDao;
 import com.sobey.cmop.mvc.dao.AuditFlowDao;
 import com.sobey.cmop.mvc.entity.Apply;
@@ -75,6 +75,21 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
+	 * 根据 AuditFlow, ServiceTag ,status 获得 审批记录Audit
+	 * 
+	 * @param serviceTagId
+	 *            服务标签
+	 * @param status
+	 *            审批记录状态
+	 * @param auditFlow
+	 *            服务审批流程
+	 * @return
+	 */
+	public Audit findAuditByServiceTagIdAndStatusAndAuditFlow(Integer serviceTagId, Integer status, AuditFlow auditFlow) {
+		return auditDao.findByServiceTagIdAndStatusAndAuditFlow(serviceTagId, status, auditFlow);
+	}
+
+	/**
 	 * 新增或更新Audit
 	 * 
 	 * @param audit
@@ -93,15 +108,22 @@ public class AuditService extends BaseSevcie {
 	 */
 	public List<Audit> getAuditListByApplyId(Integer applyId) {
 		return auditDao.findByApplyId(applyId);
+	}
 
+	/**
+	 * 获得ServiceTag的 审批 Audit列表.
+	 * 
+	 * @param applyId
+	 * @return
+	 */
+	public List<Audit> getAuditListByServiceTagId(Integer serviceTagId) {
+		return auditDao.findByServiceTagId(serviceTagId);
 	}
 
 	// ============ 审批流程 AuditFlow============ //
 
 	/**
 	 * 审批audit页面(Apply)的分页查询.<br>
-	 * <br>
-	 * <br>
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数
@@ -126,8 +148,6 @@ public class AuditService extends BaseSevcie {
 
 	/**
 	 * 审批audit页面(resources)的分页查询.<br>
-	 * <br>
-	 * <br>
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数
@@ -180,29 +200,20 @@ public class AuditService extends BaseSevcie {
 	 * 校验服务申请Apply是否已审批
 	 * 
 	 * @param applyId
+	 *            服务申请ID
 	 * @param userId
+	 *            审批人ID
 	 * @return true :已审批<br>
 	 *         false:未审批
 	 */
-	public boolean isAudited(Integer applyId, Integer userId) {
+	public boolean isApplyAudited(Integer applyId, Integer userId) {
 
 		boolean isAudited = false;
 
-		User user;
-
-		if (AccountConstant.FROM_PAGE_USER_ID.equals(userId)) {
-
-			// 通过页面审批
-
-			user = comm.accountService.getCurrentUser();
-
-		} else {
-
-			// 通过邮件直接审批同意
-
-			user = comm.accountService.getUser(userId);
-
-		}
+		/*
+		 * true:通过页面审批 ;false :通过邮件直接审批同意
+		 */
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
@@ -212,7 +223,43 @@ public class AuditService extends BaseSevcie {
 
 		logger.info("--->user=" + user.getName() + "，apply.auditOrder=" + apply.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
 
-		if ((auditFlow.getAuditOrder() == 3 && apply.getStatus().equals(ApplyConstant.ApplyStatus.已退回.toInteger())) || (apply.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
+		if ((auditFlow.getAuditOrder() == 3 && apply.getStatus().equals(ApplyConstant.Status.已退回.toInteger())) || (apply.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
+			logger.info("--->isAudited...");
+			isAudited = true;
+		}
+
+		return isAudited;
+
+	}
+
+	/**
+	 * 校验服务变更Resources是否已审批
+	 * 
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @param userId
+	 *            审批人ID
+	 * @return true :已审批<br>
+	 *         false:未审批
+	 */
+	public boolean isResourcesAudited(Integer serviceTagId, Integer userId) {
+
+		boolean isAudited = false;
+
+		/*
+		 * true:通过页面审批 ;false :通过邮件直接审批同意
+		 */
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+
+		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+
+		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		logger.info("--->user=" + user.getName() + "，apply.auditOrder=" + serviceTag.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
+
+		if ((auditFlow.getAuditOrder() == 3 && serviceTag.getStatus().equals(ResourcesConstant.Status.已退回.toInteger())) || (serviceTag.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
 			logger.info("--->isAudited...");
 			isAudited = true;
 		}
@@ -242,20 +289,10 @@ public class AuditService extends BaseSevcie {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
-		User user;
-
-		if (AccountConstant.FROM_PAGE_USER_ID.equals(userId)) {
-
-			// 通过页面审批
-
-			user = comm.accountService.getCurrentUser();
-
-		} else {
-
-			// 通过邮件直接审批同意
-
-			user = comm.accountService.getUser(userId);
-		}
+		/*
+		 * true:通过页面审批 ;false :通过邮件直接审批同意
+		 */
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
@@ -269,7 +306,7 @@ public class AuditService extends BaseSevcie {
 
 			logger.info("--->审批退回...");
 
-			apply.setStatus(ApplyStatus.已退回.toInteger());
+			apply.setStatus(ApplyConstant.Status.已退回.toInteger());
 
 			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
 
@@ -285,13 +322,12 @@ public class AuditService extends BaseSevcie {
 
 				logger.info("--->终审审批...");
 
-				apply.setStatus(ApplyConstant.ApplyStatus.已审批.toInteger());
+				apply.setStatus(ApplyConstant.Status.已审批.toInteger());
 
 				logger.info("--->拼装Redmine内容...");
 
 				// 拼装Redmine内容
 				String description = comm.redmineUtilService.applyRedmineDesc(apply);
-				System.out.println(description);
 
 				// 写入工单Issue到Redmine
 
@@ -356,7 +392,7 @@ public class AuditService extends BaseSevcie {
 				AuditFlow nextAuditFlow = this.findAuditFlowByAuditOrderAndFlowType(auditOrder, flowType);
 
 				apply.setAuditFlow(nextAuditFlow);
-				apply.setStatus(ApplyConstant.ApplyStatus.审批中.toInteger());
+				apply.setStatus(ApplyConstant.Status.审批中.toInteger());
 
 				// 发送邮件到下一个审批人
 
@@ -371,6 +407,155 @@ public class AuditService extends BaseSevcie {
 		}
 
 		comm.applyService.saveOrUpateApply(apply);
+
+		this.saveOrUpdateAudit(audit);
+
+		return true;
+
+	}
+
+	/**
+	 * 资源变更Resources的审批.<br>
+	 * 
+	 * 首先根据审核结果的不同分为三种审批处理逻辑<br>
+	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. <br>
+	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象<br>
+	 * 3-审批退回. 发送退回邮件给资源变更Resources的申请人<br>
+	 * 
+	 * @param audit
+	 *            审批
+	 * @param serviceTagId
+	 *            服务标签serviceTagId
+	 * @param userId
+	 *            当前审批人
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public boolean saveAuditToResources(Audit audit, Integer serviceTagId, Integer userId) {
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		/*
+		 * true:通过页面审批 ;false :通过邮件直接审批同意
+		 */
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+
+		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
+		audit.setServiceTag(serviceTag);
+		audit.setAuditFlow(auditFlow);
+		audit.setCreateTime(new Date());
+		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
+
+		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
+
+			logger.info("--->审批退回...");
+
+			serviceTag.setStatus(ResourcesConstant.Status.已退回.toInteger());
+
+			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			logger.info("--->退回原因:" + audit.getOpinion());
+
+			// 发送退回通知邮件
+
+			comm.simpleMailService.sendNotificationMail(serviceTag.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
+
+		} else {
+
+			if (auditFlow.getIsFinal()) { // 终审人
+
+				logger.info("--->终审审批...");
+
+				serviceTag.setStatus(ResourcesConstant.Status.已审批.toInteger());
+
+				logger.info("--->拼装Redmine内容...");
+
+				// TODO
+				// 拼装Redmine内容
+				String description = "";
+				// String description =
+				// comm.redmineUtilService.applyRedmineDesc(apply);
+
+				// 写入工单Issue到Redmine
+
+				Issue issue = new Issue();
+
+				Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
+				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
+
+				issue.setTracker(tracker);
+				issue.setSubject(serviceTag.getName());
+				issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
+				issue.setDescription(description);
+
+				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
+
+				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+
+				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
+
+				logger.info("--->Redmine isCreated?" + isCreated);
+
+				if (isCreated) { // 写入Redmine成功
+
+					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
+
+					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
+
+					logger.info("--->创建RedmineIssue...");
+
+					RedmineIssue redmineIssue = new RedmineIssue();
+
+					redmineIssue.setProjectId(projectId);
+					redmineIssue.setTrackerId(issue.getTracker().getId());
+					redmineIssue.setSubject(issue.getSubject());
+					redmineIssue.setAssignee(assignee);
+					redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
+					redmineIssue.setIssueId(issue.getId());
+					redmineIssue.setServiceTagId(serviceTagId);
+
+					comm.operateService.saveOrUpdate(redmineIssue);
+
+					// 指派人的User
+
+					User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
+
+					// 发送工单处理邮件
+
+					comm.templateMailService.sendResourcesOperateNotificationMail(serviceTag, assigneeUser);
+
+				} else {
+					return false;
+				}
+
+			} else { // 不是终审人
+
+				logger.info("--->中间审批...");
+
+				// 当前审批人的的下一级审批人的审批顺序.如当前审批人的审批顺序是1的话,下一个就是2.
+
+				Integer auditOrder = auditFlow.getAuditOrder() + 1;
+
+				AuditFlow nextAuditFlow = this.findAuditFlowByAuditOrderAndFlowType(auditOrder, flowType);
+
+				serviceTag.setAuditFlow(nextAuditFlow);
+				serviceTag.setStatus(ResourcesConstant.Status.审批中.toInteger());
+
+				// 发送邮件到下一个审批人
+
+				comm.templateMailService.sendResourcesNotificationMail(serviceTag, nextAuditFlow);
+
+				// 插入一条下级审批人所用到的audit.
+
+				this.saveSubAudit(userId, null, serviceTag);
+
+			}
+
+		}
+
+		comm.serviceTagService.saveOrUpdate(serviceTag);
 
 		this.saveOrUpdateAudit(audit);
 

@@ -196,7 +196,7 @@ public class ServiceTagService extends BaseSevcie {
 
 				logger.info("--->拼装邮件内容...");
 
-				comm.templateMailService.sendServiceTagNotificationMail(serviceTag, auditFlow);
+				comm.templateMailService.sendResourcesNotificationMail(serviceTag, auditFlow);
 
 				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. */
 

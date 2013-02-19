@@ -26,7 +26,7 @@
 						
 						<shiro:hasPermission name="user:view">
 							<li id="applyAudit" class="tip-bottom" title="申请审批"><a href="${ctx}/audit/apply/">申请审批</a></li>
-							<li id="resourceAudit" class="tip-bottom" title="变更审批"><a href="${ctx}/audit/resource/">变更审批</a></li>
+							<li id="resourceAudit" class="tip-bottom" title="变更审批"><a href="${ctx}/audit/resources/">变更审批</a></li>
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="operate:view">

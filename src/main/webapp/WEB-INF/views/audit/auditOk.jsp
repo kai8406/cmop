@@ -10,8 +10,6 @@
 
 $(document).ready(function() {
 	
-	$("ul#navbar li#audit").addClass("active");
-	
 	alert('${message}');
 	window.opener = null; 
 	window.open("","_self");  

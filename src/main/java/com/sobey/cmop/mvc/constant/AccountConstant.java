@@ -33,6 +33,14 @@ public class AccountConstant {
 	public static final String DEFAULT_PASSWORD = "111111";
 
 	/**
+	 * 定义一个userId为0的常量,用以区分 通过邮件 还是 页面审批的情景.<br>
+	 * 如果是userId = 0 表示页面审批,取当前用户的ID.<br>
+	 * 如果userId > 0 表示邮件审批,取userId.
+	 * 
+	 */
+	public static final Integer FROM_PAGE_USER_ID = 0;
+
+	/**
 	 * 用户状态 <br>
 	 * 1:enabled 有效 <br>
 	 * 0:disabled 无效

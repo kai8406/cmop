@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant.ApplyStatus;
 import com.sobey.cmop.mvc.constant.AuditConstant;
@@ -116,6 +117,34 @@ public class AuditService extends BaseSevcie {
 
 		filters.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id", Operator.EQ, getCurrentUserId()));
 
+		filters.put("audit.apply.id", new SearchFilter("apply.id", Operator.NotNull, null));
+
+		Specification<Audit> spec = DynamicSpecifications.bySearchFilter(filters.values(), Audit.class);
+
+		return auditDao.findAll(spec, pageRequest);
+	}
+
+	/**
+	 * 审批audit页面(resources)的分页查询.<br>
+	 * <br>
+	 * <br>
+	 * 
+	 * @param searchParams
+	 *            页面传递过来的参数
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Audit> getAuditResourcesPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id", Operator.EQ, getCurrentUserId()));
+
+		filters.put("audit.serviceTag.id", new SearchFilter("serviceTag.id", Operator.NotNull, null));
+
 		Specification<Audit> spec = DynamicSpecifications.bySearchFilter(filters.values(), Audit.class);
 
 		return auditDao.findAll(spec, pageRequest);
@@ -161,7 +190,7 @@ public class AuditService extends BaseSevcie {
 
 		User user;
 
-		if (userId == 0) {
+		if (AccountConstant.FROM_PAGE_USER_ID.equals(userId)) {
 
 			// 通过页面审批
 
@@ -215,7 +244,7 @@ public class AuditService extends BaseSevcie {
 
 		User user;
 
-		if (userId == 0) {
+		if (AccountConstant.FROM_PAGE_USER_ID.equals(userId)) {
 
 			// 通过页面审批
 

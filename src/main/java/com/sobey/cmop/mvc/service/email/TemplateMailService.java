@@ -47,7 +47,7 @@ public class TemplateMailService extends BaseSevcie {
 
 	private Template applyTemplate;
 
-	private Template serviceTagTemplate;
+	private Template resourcesTemplate;
 
 	/**
 	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板.<br>
@@ -58,7 +58,7 @@ public class TemplateMailService extends BaseSevcie {
 	public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) throws IOException {
 		// 根据freemarkerConfiguration的templateLoaderPath载入文件.
 		applyTemplate = freemarkerConfiguration.getTemplate("applyMailTemplate.ftl", DEFAULT_ENCODING);
-		serviceTagTemplate = freemarkerConfiguration.getTemplate("serviceTagMailTemplate.ftl", DEFAULT_ENCODING);
+		resourcesTemplate = freemarkerConfiguration.getTemplate("resourcesMailTemplate.ftl", DEFAULT_ENCODING);
 	}
 
 	/**
@@ -306,7 +306,7 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送MIME格式的资源变更审批通知邮件.
 	 */
-	public void sendServiceTagNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow) {
+	public void sendResourcesNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow) {
 
 		MimeMessage msg = mailSender.createMimeMessage();
 
@@ -324,11 +324,11 @@ public class TemplateMailService extends BaseSevcie {
 
 			// 变更 审批Audit
 
-			String passUrl = CONFIG_LOADER.getProperty("SERVICETAG_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
+			String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.同意;
-			String disagreeContinueUrl = CONFIG_LOADER.getProperty("SERVICETAG_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+			String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.不同意但继续;
-			String disagreeReturnUrl = CONFIG_LOADER.getProperty("SERVICETAG_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+			String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 					+ AuditConstant.AuditResult.不同意且退回;
 
 			map.put("passUrl", passUrl);
@@ -337,7 +337,7 @@ public class TemplateMailService extends BaseSevcie {
 
 			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
 
-			String content = this.generateMailContent(serviceTagTemplate, map);
+			String content = this.generateMailContent(resourcesTemplate, map);
 
 			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
 

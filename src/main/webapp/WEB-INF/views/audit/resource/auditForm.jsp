@@ -9,7 +9,7 @@
 <script>
 	$(document).ready(function() {
 		
-		$("ul#navbar li#applyAudit").addClass("active");
+		$("ul#navbar li#resourceAudit").addClass("active");
 		
 		//点击class为"auditResult" 的button触发审批意见的非空判断
 		
@@ -186,7 +186,7 @@
 				<div class="form-actions">
 					<input class="btn" type="button" value="返回" onclick="history.back()">
 					<c:forEach var="map" items="${auditResultMap}">
-						<button class="auditResult btn btn-info" value="${map.key}">${map.value}</button>
+						<button class="auditResult btn btn-primary" value="${map.key}">${map.value}</button>
 					</c:forEach>
 				</div>
 				

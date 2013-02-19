@@ -22,7 +22,7 @@ import com.sobey.framework.utils.SearchFilter;
 @Service
 @Transactional(readOnly = true)
 public class VlanService extends BaseSevcie {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(VlanService.class);
 
 	@Resource

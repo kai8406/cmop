@@ -28,24 +28,15 @@ public class LocationService extends BaseSevcie {
 	@Resource
 	private LocationDao locationDao;
 
-	public Page<Location> getLocationPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-		Specification<Location> spec = DynamicSpecifications.bySearchFilter(filters.values(), Location.class);
-		return locationDao.findAll(spec, pageRequest);
-	}
-
-	@Transactional(readOnly = false)
-	public Location saveLocation(Location location) {
-		// comm.oneCmdbUtilService.saveLocation(location);
-		return locationDao.save(location);
-	}
-
 	@Transactional(readOnly = false)
 	public void deleteLocation(Integer id) {
 		Location location = locationDao.findOne(id);
 		// comm.oneCmdbUtilService.deleteLocation(location);
 		locationDao.delete(location);
+	}
+
+	public Location findLocationById(Integer id) {
+		return locationDao.findOne(id);
 	}
 
 	public Location findLocationByName(String name) {
@@ -61,8 +52,17 @@ public class LocationService extends BaseSevcie {
 		return (List<Location>) locationDao.findAll();
 	}
 
-	public Location findLocationById(Integer id) {
-		return locationDao.findOne(id);
+	public Page<Location> getLocationPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+		Specification<Location> spec = DynamicSpecifications.bySearchFilter(filters.values(), Location.class);
+		return locationDao.findAll(spec, pageRequest);
+	}
+
+	@Transactional(readOnly = false)
+	public Location saveLocation(Location location) {
+		// comm.oneCmdbUtilService.saveLocation(location);
+		return locationDao.save(location);
 	}
 
 }

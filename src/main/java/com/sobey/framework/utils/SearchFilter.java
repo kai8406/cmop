@@ -11,14 +11,15 @@ import com.google.common.collect.Maps;
  * 查询条件过滤器<br>
  * 
  * <pre>
- * EQ    等价于 SQL中的   … where x.lastname = ?1 and x.firstname = ?2
- * LIKE  等价于 SQL中的   … where x.firstname like ?1
- * GT    等价于 SQL中的   … where x.age > ?1
- * GTE   等价于 SQL中的   … where x.age >= ?1
- * LT    等价于 SQL中的   … where x.age < ?1
- * LTE   等价于 SQL中的   … where x.age =< ?1
- * NOT   等价于 SQL中的   … where x.lastname <> ?1
- * 
+ * EQ      等价于 SQL中的   … where x.lastname = ?1 and x.firstname = ?2
+ * LIKE    等价于 SQL中的   … where x.firstname like ?1
+ * GT      等价于 SQL中的   … where x.age > ?1
+ * GTE     等价于 SQL中的   … where x.age >= ?1
+ * LT      等价于 SQL中的   … where x.age < ?1
+ * LTE     等价于 SQL中的   … where x.age =< ?1
+ * NOT     等价于 SQL中的   … where x.lastname <> ?1
+ * IsNull  等价于 SQL中的   … where x.age is null
+ * NotNull 等价于 SQL中的   … where x.age not null
  * </pre>
  * 
  * @author liukai
@@ -26,8 +27,24 @@ import com.google.common.collect.Maps;
  */
 public class SearchFilter {
 
+	/**
+	 * <pre>
+	 * EQ      等价于 SQL中的   … where x.lastname = ?1 and x.firstname = ?2
+	 * LIKE    等价于 SQL中的   … where x.firstname like ?1
+	 * GT      等价于 SQL中的   … where x.age > ?1
+	 * GTE     等价于 SQL中的   … where x.age >= ?1
+	 * LT      等价于 SQL中的   … where x.age < ?1
+	 * LTE     等价于 SQL中的   … where x.age =< ?1
+	 * NOT     等价于 SQL中的   … where x.lastname <> ?1
+	 * IsNull  等价于 SQL中的   … where x.age is null
+	 * NotNull 等价于 SQL中的   … where x.age not null
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
 	public enum Operator {
-		EQ, LIKE, GT, LT, GTE, LTE, NOT
+		EQ, LIKE, GT, LT, GTE, LTE, NOT, IsNull, NotNull;
 	}
 
 	public String fieldName;

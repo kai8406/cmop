@@ -472,11 +472,7 @@ public class AuditService extends BaseSevcie {
 
 				logger.info("--->拼装Redmine内容...");
 
-				// TODO
-				// 拼装Redmine内容
-				String description = "";
-				// String description =
-				// comm.redmineUtilService.applyRedmineDesc(apply);
+				String description = comm.redmineUtilService.resourcesRedmineDesc(serviceTag);
 
 				// 写入工单Issue到Redmine
 

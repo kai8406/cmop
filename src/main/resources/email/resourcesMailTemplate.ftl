@@ -103,7 +103,7 @@ table {
 			
 				<#list resource.changes as change>
 				
-					<p><strong>${resource.serviceIdentifier}</strong> &nbsp;${change.description }</p>
+					<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述${change.description }</p>
 					
 					<table class="table table-bordered">
 						<thead>
@@ -140,6 +140,10 @@ table {
 											
 											<#list ecsServerTypeMap?keys as k ><#if item.oldValue?string == k>${ecsServerTypeMap[k]}</#if></#list>
 											
+										<#elseif item.fieldName == 'ESG'  >
+											
+											<#list allESGs  as esg ><#if item.oldValue?string == esg.id?string>${esg.identifier}(${esg.description})</#if></#list>
+											
 										<#else>${item.oldValue}</#if>
 										
 									</td>
@@ -161,6 +165,10 @@ table {
 										<#elseif item.fieldName == '规格' && resource.serviceType == 2 >
 											
 											<#list ecsServerTypeMap?keys as k ><#if item.newValue?string == k>${ecsServerTypeMap[k]}</#if></#list>
+											
+										<#elseif item.fieldName == 'ESG'  >
+											
+											<#list allESGs  as esg ><#if item.newValue?string == esg.id?string>${esg.identifier}(${esg.description})</#if></#list>
 											
 										<#else>${item.newValue}</#if>
 										 

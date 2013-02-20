@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.service.redmine;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -8,8 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
+import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * 生成满足 Redmine格式的文本(用于通过API插入redmine).
@@ -29,7 +37,17 @@ public class RedmineUtilService extends BaseSevcie {
 	private static final String NEWLINE = "\r\n";
 
 	/**
-	 * 生成满足redmine显示的文本.
+	 * 一个空格
+	 */
+	private static final String BLANK = " ";
+
+	/**
+	 * 箭头.用于资源变更时旧值和新值的比较
+	 */
+	private static final String RARR = BLANK + "→" + BLANK;
+
+	/**
+	 * 生成满足redmine显示的服务申请Apply文本.
 	 */
 	public String applyRedmineDesc(Apply apply) {
 		try {
@@ -69,6 +87,118 @@ public class RedmineUtilService extends BaseSevcie {
 				}
 				content.append("</pre>").append(NEWLINE);
 			}
+
+			return content.toString();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
+
+			return null;
+
+		}
+	}
+
+	/**
+	 * 生成满足redmine显示的资源变更Resources文本.
+	 */
+	public String resourcesRedmineDesc(ServiceTag serviceTag) {
+		try {
+
+			StringBuffer content = new StringBuffer();
+
+			content.append("*资源变更的详细信息*").append(NEWLINE + NEWLINE);
+			content.append("* +*服务标签基本信息*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			content.append("标签名: ").append(serviceTag.getName()).append(NEWLINE);
+			content.append("优先级: ").append(RedmineConstant.Priority.get(serviceTag.getPriority())).append(NEWLINE);
+			content.append("服务起止日期: ").append(serviceTag.getServiceStart()).append(" 至 ").append(serviceTag.getServiceEnd()).append(NEWLINE);
+			content.append("用途描述: ").append(serviceTag.getDescription()).append(NEWLINE);
+			content.append("申请人: ").append(serviceTag.getUser().getName()).append(NEWLINE);
+			content.append("</pre>");
+			content.append(NEWLINE + NEWLINE);
+			content.append("* +*资源变更信息*+").append(NEWLINE);
+
+			content.append("<pre>").append(NEWLINE);
+
+			List<Resources> resourcesList = comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId());
+
+			for (Resources resources : resourcesList) {
+
+				Integer serviceType = resources.getServiceType();
+
+				for (Change change : resources.getChanges()) {
+
+					// 资源标识符 + 变更说明
+
+					content.append("变更资源标识符:" + BLANK).append(resources.getServiceIdentifier()).append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
+					content.append("变更项:" + BLANK).append("旧值").append(RARR).append("新值").append(NEWLINE);
+
+					for (ChangeItem changeItem : change.getChangeItems()) {
+
+						String fieldName = changeItem.getFieldName();
+
+						// 拼装计算资源Compute信息
+						if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+							if (ComputeConstant.CompateFieldName.操作系统.toString().equals(fieldName)) {
+
+								content.append(ComputeConstant.CompateFieldName.操作系统 + ":" + BLANK).append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
+										.append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(fieldName)) {
+
+								content.append(ComputeConstant.CompateFieldName.操作位数 + ":" + BLANK).append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
+										.append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (ComputeConstant.CompateFieldName.规格.toString().equals(fieldName)) {
+
+								if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())) {
+
+									content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getOldValue())).append(RARR)
+											.append(ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getNewValue())).append(NEWLINE);
+
+								} else {
+
+									content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getOldValue())).append(RARR)
+											.append(ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getNewValue())).append(NEWLINE);
+
+								}
+
+							} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(fieldName)) {
+
+								content.append(ComputeConstant.CompateFieldName.用途信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(fieldName)) {
+
+								content.append(ComputeConstant.CompateFieldName.应用信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(fieldName)) {
+
+								NetworkEsgItem OldESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue()));
+
+								NetworkEsgItem NewESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getNewValue()));
+
+								content.append(ComputeConstant.CompateFieldName.ESG + ":" + BLANK).append(OldESG.getIdentifier() + "(" + OldESG.getDescription() + ")").append(RARR)
+										.append(NewESG.getIdentifier() + "(" + NewESG.getDescription() + ")").append(NEWLINE);
+
+							} else {
+
+							}
+
+						}
+
+					}
+
+				}
+
+				content.append(NEWLINE);
+
+			}
+
+			content.append("</pre>").append(NEWLINE);
 
 			return content.toString();
 

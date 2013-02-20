@@ -120,6 +120,15 @@ public class EsgService extends BaseSevcie {
 		return networkEsgItemDao.findByUserIdOrUserIdIsNullOrderByIdDesc(getCurrentUserId());
 	}
 
+	/**
+	 * 所有的ESG.
+	 * 
+	 * @return
+	 */
+	public List<NetworkEsgItem> getAllEsgList() {
+		return (List<NetworkEsgItem>) networkEsgItemDao.findAll();
+	}
+
 	// -- EsgRuleItem Manager --//
 
 	/**

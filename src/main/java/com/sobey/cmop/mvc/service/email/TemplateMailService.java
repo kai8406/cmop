@@ -76,6 +76,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
 		map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
 		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
+		map.put("allESGs", comm.esgService.getAllEsgList());
 
 		return map;
 

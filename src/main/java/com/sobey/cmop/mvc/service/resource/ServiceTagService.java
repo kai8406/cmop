@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ServiceTagDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -178,6 +179,15 @@ public class ServiceTagService extends BaseSevcie {
 		User user = serviceTag.getUser();
 
 		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
+
+		List<Resources> resourcesList = comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId());
+
+		for (Resources resources : resourcesList) {
+
+			resources.setStatus(ResourcesConstant.Status.待审批.toInteger());
+			comm.resourcesService.saveOrUpdate(resources);
+
+		}
 
 		if (user.getLeaderId() != null) {
 

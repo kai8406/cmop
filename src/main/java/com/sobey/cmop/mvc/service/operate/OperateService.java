@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.operate;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -15,9 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -120,6 +124,7 @@ public class OperateService extends BaseSevcie {
 	 * @param issue
 	 * @return
 	 */
+	@Transactional(readOnly = false)
 	public boolean updateOperate(Issue issue) {
 
 		boolean result = false;
@@ -143,42 +148,35 @@ public class OperateService extends BaseSevcie {
 				RedmineIssue redmineIssue = this.findByIssueId(issue.getId());
 				redmineIssue.setAssignee(issue.getAssignee().getId());
 
+				/**
+				 * applyId != null 表示服务申请.<br>
+				 * serviceTagId != null 表示资源变更.<br>
+				 * resourceId != null 表示资源回收.<br>
+				 */
+
 				Integer applyId = redmineIssue.getApplyId();
+				Integer serviceTagId = redmineIssue.getServiceTagId();
+				String recycleId = redmineIssue.getResourceId();
 
-				Apply apply = comm.applyService.getApply(applyId);
+				if (applyId != null) {
 
-				if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+					// 服务申请
 
-					logger.info("---> 完成度 = 100%的工单处理...");
+					this.applyOperate(issue, applyId);
 
-					apply.setStatus(ApplyConstant.Status.已创建.toInteger());
+				} else if (serviceTagId != null) {
 
-					// 向资源表 resources 写入记录
+					// 资源变更
 
-					comm.resourcesService.insertResourcesAfterOperate(apply);
+					this.resourcesOperate(issue, serviceTagId);
 
-					// TODO 写入基础数据到OneCMDB
+				} else if (recycleId != null) {
 
-					// 工单处理完成，给申请人发送邮件
+					// 资源回收
 
-					comm.templateMailService.sendApplyOperateDoneNotificationMail(apply);
-
-					logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
-
-				} else {
-
-					logger.info("---> 完成度 < 100%的工单处理...");
-
-					apply.setStatus(ApplyConstant.Status.处理中.toInteger());
-
-					User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-
-					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
 				}
 
-				comm.applyService.saveOrUpateApply(apply);
-
-				logger.info("--->服务申请处理结束！");
+				logger.info("--->工单处理结束！");
 
 				result = true;
 			}
@@ -194,4 +192,112 @@ public class OperateService extends BaseSevcie {
 		return result;
 
 	}
+
+	/**
+	 * 服务申请的工单处理.<br>
+	 * 包括邮件的发送;申请单状态的更改;工单处理完成后向resources表插入数据;数据同步至OneCMDB.
+	 * 
+	 */
+	@Transactional(readOnly = false)
+	private void applyOperate(Issue issue, Integer applyId) {
+
+		logger.info("--->服务申请处理...");
+
+		Apply apply = comm.applyService.getApply(applyId);
+
+		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
+			logger.info("---> 完成度 = 100%的工单处理...");
+
+			apply.setStatus(ApplyConstant.Status.已创建.toInteger());
+
+			// 向资源表 resources 写入记录
+
+			comm.resourcesService.insertResourcesAfterOperate(apply);
+
+			// TODO 写入基础数据到OneCMDB
+
+			// 工单处理完成，给申请人发送邮件
+
+			comm.templateMailService.sendApplyOperateDoneNotificationMail(apply);
+
+			logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
+
+		} else {
+
+			logger.info("---> 完成度 < 100%的工单处理...");
+
+			apply.setStatus(ApplyConstant.Status.处理中.toInteger());
+
+			// 发送邮件通知下个指派人
+
+			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
+
+			comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
+		}
+
+		comm.applyService.saveOrUpateApply(apply);
+
+	}
+
+	/**
+	 * 资源变更的工单处理.<br>
+	 * 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
+	 * 
+	 */
+	@Transactional(readOnly = false)
+	private void resourcesOperate(Issue issue, Integer serviceTagId) {
+
+		logger.info("--->服务变更处理...");
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		List<Resources> resourcesList = comm.resourcesService.getChangedResourcesListByServiceTagId(serviceTagId);
+
+		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
+			logger.info("---> 完成度 = 100%的工单处理...");
+
+			// 更改服务标签和资源的状态
+
+			serviceTag.setStatus(ResourcesConstant.Status.已创建.toInteger());
+
+			for (Resources resources : resourcesList) {
+				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
+				comm.resourcesService.saveOrUpdate(resources);
+			}
+
+			// TODO 同步数据至OneCMDB
+
+			// 工单处理完成，给申请人发送邮件
+
+			comm.templateMailService.sendResourcesOperateDoneNotificationMail(serviceTag);
+
+			logger.info("--->工单处理完成,发送邮件通知申请人:" + serviceTag.getUser().getName());
+
+		} else {
+
+			logger.info("---> 完成度 < 100%的工单处理...");
+
+			// 更改服务标签和资源的状态
+
+			serviceTag.setStatus(ResourcesConstant.Status.创建中.toInteger());
+
+			for (Resources resources : resourcesList) {
+				resources.setStatus(ResourcesConstant.Status.创建中.toInteger());
+				comm.resourcesService.saveOrUpdate(resources);
+			}
+
+			// 发送邮件通知下个指派人
+
+			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
+
+			comm.templateMailService.sendResourcesOperateNotificationMail(serviceTag, assigneeUser);
+
+		}
+
+		comm.serviceTagService.saveOrUpdate(serviceTag);
+
+	}
+
 }

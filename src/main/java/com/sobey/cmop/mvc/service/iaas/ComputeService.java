@@ -209,6 +209,7 @@ public class ComputeService extends BaseSevcie {
 
 			resources.setServiceTag(serviceTag);
 			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
 		}
 
 		computeItem.setOsType(osType);

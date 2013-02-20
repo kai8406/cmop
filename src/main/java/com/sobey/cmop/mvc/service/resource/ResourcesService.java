@@ -79,7 +79,9 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得等待提交变更的资源Resources列表.
+	 * 获得等待提交变更的资源Resources列表.<br>
+	 * 
+	 * Status: 0.已变更
 	 * 
 	 * @return
 	 */
@@ -88,6 +90,24 @@ public class ResourcesService extends BaseSevcie {
 		List<Integer> status = new ArrayList<Integer>();
 
 		status.add(ResourcesConstant.Status.已变更.toInteger());
+		status.add(ResourcesConstant.Status.待审批.toInteger());
+		status.add(ResourcesConstant.Status.审批中.toInteger());
+
+		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
+	}
+
+	/**
+	 * 获得在工单流程中的资源Resources列表.<br>
+	 * Status: 4.已审批 ; 5.创建中
+	 * 
+	 * @return
+	 */
+	public List<Resources> getChangedResourcesListByServiceTagId(Integer serviceTagId) {
+
+		List<Integer> status = new ArrayList<Integer>();
+
+		status.add(ResourcesConstant.Status.创建中.toInteger());
+		status.add(ResourcesConstant.Status.已审批.toInteger());
 
 		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
 	}

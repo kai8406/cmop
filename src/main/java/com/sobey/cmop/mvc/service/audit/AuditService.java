@@ -26,6 +26,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
@@ -435,6 +436,8 @@ public class AuditService extends BaseSevcie {
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
+		List<Resources> resourcesList = comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTagId);
+
 		/*
 		 * true:通过页面审批 ;false :通过邮件直接审批同意
 		 */
@@ -453,6 +456,10 @@ public class AuditService extends BaseSevcie {
 			logger.info("--->审批退回...");
 
 			serviceTag.setStatus(ResourcesConstant.Status.已退回.toInteger());
+			for (Resources resources : resourcesList) {
+				resources.setStatus(ResourcesConstant.Status.已退回.toInteger());
+				comm.resourcesService.saveOrUpdate(resources);
+			}
 
 			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
 
@@ -469,6 +476,10 @@ public class AuditService extends BaseSevcie {
 				logger.info("--->终审审批...");
 
 				serviceTag.setStatus(ResourcesConstant.Status.已审批.toInteger());
+				for (Resources resources : resourcesList) {
+					resources.setStatus(ResourcesConstant.Status.已审批.toInteger());
+					comm.resourcesService.saveOrUpdate(resources);
+				}
 
 				logger.info("--->拼装Redmine内容...");
 
@@ -538,6 +549,10 @@ public class AuditService extends BaseSevcie {
 
 				serviceTag.setAuditFlow(nextAuditFlow);
 				serviceTag.setStatus(ResourcesConstant.Status.审批中.toInteger());
+				for (Resources resources : resourcesList) {
+					resources.setStatus(ResourcesConstant.Status.审批中.toInteger());
+					comm.resourcesService.saveOrUpdate(resources);
+				}
 
 				// 发送邮件到下一个审批人
 

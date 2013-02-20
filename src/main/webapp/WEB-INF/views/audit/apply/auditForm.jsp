@@ -47,7 +47,7 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 
-	<form id="inputForm" action="${ctx}/audit/apply/${apply.id}/" method="post" class="form-horizontal input-form">
+	<form action="#" method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${apply.id}">
 		<input type="hidden" name="userId" value="${userId }">
@@ -174,7 +174,7 @@
 			</c:if>
 			
 			
-			<form id="inputForm" action="." method="post">
+			<form id="inputForm" action="${ctx}/audit/apply/${apply.id}" method="post">
 			
 				<div class="control-group">
 					<label class="control-label" for="opinion">审批意见</label>

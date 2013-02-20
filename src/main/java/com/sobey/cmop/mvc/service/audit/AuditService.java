@@ -457,9 +457,10 @@ public class AuditService extends BaseSevcie {
 
 			serviceTag.setStatus(ResourcesConstant.Status.已退回.toInteger());
 			for (Resources resources : resourcesList) {
-				
-				//TODO 资源的变更项还原至变更前
-				
+
+				// TODO 资源的变更项还原至变更前
+				resources = comm.resourcesService.restoreResources(resources);
+
 				resources.setStatus(ResourcesConstant.Status.已退回.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
 			}

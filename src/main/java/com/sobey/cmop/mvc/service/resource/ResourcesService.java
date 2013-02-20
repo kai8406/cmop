@@ -20,6 +20,8 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ResourcesDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
+import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -170,6 +172,64 @@ public class ResourcesService extends BaseSevcie {
 		resources.setIpAddress(ipAddress);
 
 		return saveOrUpdate(resources);
+
+	}
+
+	/**
+	 * 还原资源Resources变更项.<br>
+	 * 将ChangeItem中的旧值覆盖至各个资源的属性中,保存.
+	 * 
+	 * @param resources
+	 */
+	@Transactional(readOnly = false)
+	public Resources restoreResources(Resources resources) {
+
+		Integer serviceType = resources.getServiceType();
+		Integer serviceId = resources.getServiceId();
+
+		if (ResourcesConstant.ServiceType.PCS.toString().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toString().equals(serviceType)) {
+
+			ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+
+			for (Change change : resources.getChanges()) {
+
+				for (ChangeItem changeItem : change.getChangeItems()) {
+
+					if (ComputeConstant.CompateFieldName.操作系统.toString().equals(changeItem.getFieldName())) {
+
+						computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
+
+					} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(changeItem.getFieldName())) {
+
+						computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
+
+					} else if (ComputeConstant.CompateFieldName.规格.toString().equals(changeItem.getFieldName())) {
+
+						computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
+
+					} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(changeItem.getFieldName())) {
+
+						computeItem.setRemark(changeItem.getOldValue());
+
+					} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(changeItem.getFieldName())) {
+
+						computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue())));
+
+					} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(changeItem.getFieldName())) {
+
+						// TODO 应用信息无法还原.
+
+					}
+
+				}
+
+			}
+
+			comm.computeService.saveOrUpdate(computeItem);
+
+		}
+
+		return resources;
 
 	}
 

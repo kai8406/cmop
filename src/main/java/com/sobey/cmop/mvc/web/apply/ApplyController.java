@@ -1,6 +1,8 @@
 package com.sobey.cmop.mvc.web.apply;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -43,6 +45,14 @@ public class ApplyController extends BaseController {
 		// 将搜索条件编码成字符串,分页的URL
 
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
+
+		// 页面管理链接只能在该状态下显示.
+		List<Integer> allowStatus = new ArrayList<Integer>();
+
+		allowStatus.add(ApplyConstant.Status.已申请.toInteger());
+		allowStatus.add(ApplyConstant.Status.已退回.toInteger());
+
+		model.addAttribute("allowStatus", allowStatus);
 
 		return "apply/applyList";
 	}

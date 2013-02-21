@@ -38,6 +38,14 @@ td.is-hidden { /* 	color: #ccc; */
 	background-color: #f9f9f9 !important;
 }
 
+/* 状态颜色 */
+.status4 {
+	background-color: #2d6987;
+}
+
+.status5 {
+	background-color: #953b39;
+}
 /*  新增,修改页面
 ----------------------------------*/
 

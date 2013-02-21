@@ -351,17 +351,25 @@ public class OperateService extends BaseSevcie {
 
 			// TODO 同步数据至OneCMDB
 
-			// 删除资源.
-
+			// 收件人
 			User sendToUser = null;
 			for (Resources resources : resourcesList) {
 				sendToUser = resources.getUser();
-				comm.resourcesService.deleteResources(resources.getId());
+				if (sendToUser != null) {
+					break;
+				}
+
 			}
 
 			// 工单处理完成，给申请人发送邮件
 
 			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser, computeItems);
+
+			// 删除资源.
+			for (Resources resources : resourcesList) {
+				sendToUser = resources.getUser();
+				comm.resourcesService.deleteResources(resources.getId());
+			}
 
 			logger.info("--->资源回收处理完成");
 

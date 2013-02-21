@@ -212,4 +212,50 @@ public class RedmineUtilService extends BaseSevcie {
 
 		}
 	}
+
+	/**
+	 * 生成满足redmine显示的资源回收Resources文本.
+	 */
+	public String recycleResourcesRedmineDesc(List<ComputeItem> computeItems) {
+
+		try {
+
+			StringBuffer content = new StringBuffer();
+
+			// 拼装计算资源Compute信息
+
+			if (!computeItems.isEmpty()) {
+				content.append("# +*计算资源信息*+").append(NEWLINE);
+				content.append("<pre>").append(NEWLINE);
+				for (ComputeItem compute : computeItems) {
+					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
+					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
+					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
+
+					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
+						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
+					} else {
+						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
+					}
+
+					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
+				}
+				content.append("</pre>").append(NEWLINE);
+			}
+
+			// TODO 缺少其它资源
+
+			return content.toString();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
+
+			return null;
+
+		}
+	}
+
 }

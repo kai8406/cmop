@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.operate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -174,6 +176,7 @@ public class OperateService extends BaseSevcie {
 				} else if (recycleId != null) {
 
 					// 资源回收
+					this.recycleOperate(issue, recycleId);
 
 				}
 
@@ -304,6 +307,75 @@ public class OperateService extends BaseSevcie {
 		}
 
 		comm.serviceTagService.saveOrUpdate(serviceTag);
+
+	}
+
+	/**
+	 * 资源回收的工单处理.<br>
+	 * 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
+	 * 
+	 */
+	@Transactional(readOnly = false)
+	private void recycleOperate(Issue issue, String recycleId) {
+
+		logger.info("--->单个资源及其关联资源回收...");
+
+		// 拼装回收的资源resource,放入List中.
+
+		List<Resources> resourcesList = new ArrayList<Resources>();
+
+		for (String resourcesId : recycleId.split(",")) {
+			resourcesList.add(comm.resourcesService.getResources(Integer.valueOf(resourcesId)));
+		}
+
+		/* TODO 对resource做一些封装处理 */
+
+		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+
+		for (Resources resources : resourcesList) {
+
+			Integer serviceType = resources.getServiceType();
+			Integer serviceId = resources.getServiceId();
+
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+				computeItems.add(comm.computeService.getComputeItem(serviceId));
+			}
+
+			// TODO 其它资源处理
+
+		}
+
+		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
+			logger.info("---> 完成度 = 100%的工单处理...");
+
+			// TODO 同步数据至OneCMDB
+
+			// 删除资源.
+
+			User sendToUser = null;
+			for (Resources resources : resourcesList) {
+				sendToUser = resources.getUser();
+				comm.resourcesService.deleteResources(resources.getId());
+			}
+
+			// 工单处理完成，给申请人发送邮件
+
+			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser, computeItems);
+
+			logger.info("--->资源回收处理完成");
+
+		} else {
+
+			logger.info("---> 完成度 < 100%的工单处理...");
+
+			// 发送邮件通知下个指派人
+
+			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
+
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, assigneeUser);
+
+		}
 
 	}
 

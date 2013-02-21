@@ -124,9 +124,7 @@ public class GroupController extends BaseController {
 
 		boolean flag = comm.accountService.deleteGroup(id);
 
-		String message = flag ? "删除权限成功" : "不能删除默认权限组";
-
-		redirectAttributes.addFlashAttribute("message", message);
+		redirectAttributes.addFlashAttribute("message", flag ? "删除权限成功" : "不能删除默认权限组");
 
 		return REDIRECT_SUCCESS_URL;
 	}

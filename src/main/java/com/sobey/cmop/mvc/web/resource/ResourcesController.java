@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -99,6 +100,23 @@ public class ResourcesController extends BaseController {
 		}
 
 		return returnUrl;
+	}
+
+	/**
+	 * 资源回收.<br>
+	 * 1.根据ID查询该资源属于哪种类型(PCS,ECS,ES3...)并获得各个单元的对象.<br>
+	 * 2.查询该资源对象关联的所有资源(根据不同的资源关联的资源对象也不同),拼接成邮件,直接发送至redmine第一接收人处.<br>
+	 * 3.审批->工单处理完成后,再物理删除cmop本地的数据以及oneCMDB的数据(通过API实现).<br>
+	 */
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
+		boolean result = comm.resourcesService.recycleResources(id);
+
+		redirectAttributes.addFlashAttribute("message", result ? "资源回收中..." : "资源回收失败,请稍后重试");
+
+		return REDIRECT_SUCCESS_URL;
+
 	}
 
 	/**

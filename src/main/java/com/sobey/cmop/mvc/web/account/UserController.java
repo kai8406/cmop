@@ -136,9 +136,7 @@ public class UserController extends BaseController {
 
 		boolean flag = comm.accountService.deleteUser(id);
 
-		String message = flag ? "删除用户成功" : "不能删除超级管理员";
-
-		redirectAttributes.addFlashAttribute("message", message);
+		redirectAttributes.addFlashAttribute("message", flag ? "删除用户成功" : "不能删除超级管理员");
 
 		return REDIRECT_SUCCESS_URL;
 	}

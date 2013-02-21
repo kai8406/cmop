@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.email;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -21,6 +22,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 
@@ -49,6 +51,8 @@ public class TemplateMailService extends BaseSevcie {
 
 	private Template resourcesTemplate;
 
+	private Template recycleTemplate;
+
 	/**
 	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板.<br>
 	 * 实现一个Template类,然后加载指定路劲(查看applicationContext-email.xml)的后缀为.ftl模板.<br>
@@ -59,6 +63,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 根据freemarkerConfiguration的templateLoaderPath载入文件.
 		applyTemplate = freemarkerConfiguration.getTemplate("applyMailTemplate.ftl", DEFAULT_ENCODING);
 		resourcesTemplate = freemarkerConfiguration.getTemplate("resourcesMailTemplate.ftl", DEFAULT_ENCODING);
+		recycleTemplate = freemarkerConfiguration.getTemplate("recycleMailTemplate.ftl", DEFAULT_ENCODING);
 	}
 
 	/**
@@ -234,7 +239,7 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
-	 * 发送工单处理结束,通知申请人邮件
+	 * 工单处理结束,通知申请人邮件(服务申请Apply)
 	 */
 	public void sendApplyOperateDoneNotificationMail(Apply apply) {
 
@@ -450,7 +455,7 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
-	 * 发送工单处理结束,通知申请人邮件
+	 * 工单处理结束,通知申请人邮件(资源变更Resources)
 	 */
 	public void sendResourcesOperateDoneNotificationMail(ServiceTag serviceTag) {
 
@@ -491,6 +496,221 @@ public class TemplateMailService extends BaseSevcie {
 
 			// 邮件标题
 			String sendSubject = "资源变更处理邮件";
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	// ==========================//
+	// ========= Recycle ========//
+	// ==========================//
+
+	/**
+	 * 发送MIME格式的工单处理邮件(资源回收).
+	 */
+	public void sendRecycleResourcesNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			map.put("computes", computeItems);
+
+			// TODO 其它资源缺少
+
+			// map.put("storages", apply.getStorageItems());
+			// map.put("elbs", apply.getNetworkElbItems());
+			// map.put("eips", apply.getNetworkEipItems());
+			// map.put("dnses", apply.getNetworkDnsItems());
+			// map.put("monitorComputes", apply.getMonitorComputes());
+			// map.put("monitorElbs", apply.getMonitorElbs());
+
+			// 工单处理URL
+
+			String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			map.put("operateUrl", operateUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(recycleTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = assigneeUser.getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源回收工单处理邮件";
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	/**
+	 * 发送工单处理邮件(资源回收)
+	 */
+	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			map.put("computes", computeItems);
+
+			// TODO 其它资源缺少
+
+			// map.put("storages", apply.getStorageItems());
+			// map.put("elbs", apply.getNetworkElbItems());
+			// map.put("eips", apply.getNetworkEipItems());
+			// map.put("dnses", apply.getNetworkDnsItems());
+			// map.put("monitorComputes", apply.getMonitorComputes());
+			// map.put("monitorElbs", apply.getMonitorElbs());
+
+			// 工单处理URL
+
+			String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			map.put("operateUrl", operateUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(recycleTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = assigneeUser.getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源回收工单处理邮件";
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	/**
+	 * 工单处理结束,通知申请人邮件(资源回收)
+	 * 
+	 * @param sendToUser
+	 *            收件人.生成环境使用
+	 */
+	public void sendRecycleResourcesOperateDoneNotificationMail(User sendToUser, List<ComputeItem> computeItems) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			// TODO 其它资源缺少
+
+			// map.put("storages", apply.getStorageItems());
+			// map.put("elbs", apply.getNetworkElbItems());
+			// map.put("eips", apply.getNetworkEipItems());
+			// map.put("dnses", apply.getNetworkDnsItems());
+			// map.put("monitorComputes", apply.getMonitorComputes());
+			// map.put("monitorElbs", apply.getMonitorElbs());
+
+			// 工单处理完成提示文字
+
+			String operateDoneStr = "资源回收工单处理流程已完成.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+
+			map.put("operateDoneStr", operateDoneStr);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(recycleTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = sendToUser.getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源回收处理邮件";
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 

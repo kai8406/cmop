@@ -59,6 +59,11 @@ public class ChangeServcie extends BaseSevcie {
 		return changeDao.save(change);
 	}
 
+	@Transactional(readOnly = false)
+	public void deleteChange(Integer id) {
+		changeDao.delete(id);
+	}
+
 	// === 变更明细 ChangeItem ===//
 
 	/**

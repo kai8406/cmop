@@ -177,7 +177,8 @@ public class ResourcesService extends BaseSevcie {
 
 	/**
 	 * 还原资源Resources变更项.<br>
-	 * 将ChangeItem中的旧值覆盖至各个资源的属性中,保存.
+	 * 将ChangeItem中的旧值覆盖至各个资源的属性中,保存.<br>
+	 * 各个资源还原后,将服务变更Change删除.
 	 * 
 	 * @param resources
 	 */
@@ -211,11 +212,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(changeItem.getFieldName())) {
 
-					System.out.println("old:" + computeItem.getRemark());
-
 					computeItem.setRemark(changeItem.getOldValue());
-
-					System.out.println("new:" + computeItem.getRemark());
 
 				} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(changeItem.getFieldName())) {
 
@@ -231,7 +228,15 @@ public class ResourcesService extends BaseSevcie {
 
 			comm.computeService.saveOrUpdate(computeItem);
 
+		} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
+
+			// TODO 其它资源的还原
+
 		}
+
+		// 清除服务变更
+
+		comm.changeServcie.deleteChange(change.getId());
 
 		return resources;
 

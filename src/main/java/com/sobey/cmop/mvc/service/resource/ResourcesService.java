@@ -81,9 +81,9 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得等待提交变更的资源Resources列表.<br>
+	 * 获得等待提交变更和审批流程中的资源Resources列表.<br>
 	 * 
-	 * Status: 0.已变更
+	 * Status: 0.已变更 ; 1.待审批 ; 2.审批中
 	 * 
 	 * @return
 	 */
@@ -187,39 +187,43 @@ public class ResourcesService extends BaseSevcie {
 		Integer serviceType = resources.getServiceType();
 		Integer serviceId = resources.getServiceId();
 
-		if (ResourcesConstant.ServiceType.PCS.toString().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toString().equals(serviceType)) {
+		ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
 
-			ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
 
-			for (Change change : resources.getChanges()) {
+		List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeId(change.getId());
 
-				for (ChangeItem changeItem : change.getChangeItems()) {
+		if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
-					if (ComputeConstant.CompateFieldName.操作系统.toString().equals(changeItem.getFieldName())) {
+			for (ChangeItem changeItem : changeItems) {
 
-						computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
+				if (ComputeConstant.CompateFieldName.操作系统.toString().equals(changeItem.getFieldName())) {
 
-					} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(changeItem.getFieldName())) {
+					computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
 
-						computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
+				} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(changeItem.getFieldName())) {
 
-					} else if (ComputeConstant.CompateFieldName.规格.toString().equals(changeItem.getFieldName())) {
+					computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
 
-						computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
+				} else if (ComputeConstant.CompateFieldName.规格.toString().equals(changeItem.getFieldName())) {
 
-					} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(changeItem.getFieldName())) {
+					computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
 
-						computeItem.setRemark(changeItem.getOldValue());
+				} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(changeItem.getFieldName())) {
 
-					} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(changeItem.getFieldName())) {
+					System.out.println("old:" + computeItem.getRemark());
 
-						computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue())));
+					computeItem.setRemark(changeItem.getOldValue());
 
-					} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(changeItem.getFieldName())) {
+					System.out.println("new:" + computeItem.getRemark());
 
-						// TODO 应用信息无法还原.
+				} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(changeItem.getFieldName())) {
 
-					}
+					computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue())));
+
+				} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 应用信息无法还原.
 
 				}
 

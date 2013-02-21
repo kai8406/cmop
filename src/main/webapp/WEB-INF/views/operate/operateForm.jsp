@@ -158,14 +158,14 @@
 				<div class="control-group">
 					<label class="control-label" for="dueDate">Due Date</label>
 					<div class="controls">
-						 <input type="text" id="dueDate" name="dueDate" readonly="readonly" class="datepicker required"  placeholder="...服务开始时间">
+						 <input type="text" id="dueDate" name="dueDate" readonly="readonly" class="datepicker required"  placeholder="...Due Date">
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<label class="control-label" for="estimatedHours">Estimated time</label>
 					<div class="controls">
-						<input type="text" id="estimatedHours" name="estimatedHours" value="1" class="required number" min="0" placeholder="...预计完成时间">
+						<input type="text" id="estimatedHours" name="estimatedHours" value="1" class="required number" min="0" placeholder="...预计完成所需时间">
 					</div>
 				</div>
 				

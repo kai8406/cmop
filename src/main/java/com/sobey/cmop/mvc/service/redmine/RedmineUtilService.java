@@ -123,7 +123,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			content.append("<pre>").append(NEWLINE);
 
-			List<Resources> resourcesList = comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId());
+			List<Resources> resourcesList = comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId());
 
 			for (Resources resources : resourcesList) {
 

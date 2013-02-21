@@ -81,13 +81,31 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得等待提交变更和审批流程中的资源Resources列表.<br>
+	 * 获得等待提交变更资源Resources列表.<br>
 	 * 
-	 * Status: 0.已变更 ; 1.待审批 ; 2.审批中
+	 * Status: 0.已变更
 	 * 
 	 * @return
 	 */
-	public List<Resources> getCommitResourcesListByServiceTagId(Integer serviceTagId) {
+	public List<Resources> getCommitingResourcesListByServiceTagId(Integer serviceTagId) {
+
+		List<Integer> status = new ArrayList<Integer>();
+
+		status.add(ResourcesConstant.Status.已变更.toInteger());
+
+		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
+	}
+
+	/**
+	 * 等待提交变更资源Resources列表 和 资源变更业务的审批流程中资源Resources列表.<br>
+	 * 
+	 * Status: 0.已变更 ; 1.待审批 ; 2.审批中
+	 * 
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @return
+	 */
+	public List<Resources> getCommitedResourcesListByServiceTagId(Integer serviceTagId) {
 
 		List<Integer> status = new ArrayList<Integer>();
 
@@ -234,7 +252,7 @@ public class ResourcesService extends BaseSevcie {
 
 		}
 
-		// 清除服务变更
+		// 清除服务变更Change的内容
 
 		comm.changeServcie.deleteChange(change.getId());
 

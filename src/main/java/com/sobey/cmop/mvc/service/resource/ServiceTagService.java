@@ -180,14 +180,7 @@ public class ServiceTagService extends BaseSevcie {
 
 		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
 
-		List<Resources> resourcesList = comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId());
-
-		for (Resources resources : resourcesList) {
-
-			resources.setStatus(ResourcesConstant.Status.待审批.toInteger());
-			comm.resourcesService.saveOrUpdate(resources);
-
-		}
+		List<Resources> resourcesList = comm.resourcesService.getCommitingResourcesListByServiceTagId(serviceTag.getId());
 
 		if (user.getLeaderId() != null) {
 
@@ -208,11 +201,18 @@ public class ServiceTagService extends BaseSevcie {
 
 				comm.templateMailService.sendResourcesNotificationMail(serviceTag, auditFlow);
 
-				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. */
+				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. 将资源状态和服务标签状态同步 */
 
 				serviceTag.setAuditFlow(auditFlow);
 				serviceTag.setStatus(ResourcesConstant.Status.待审批.toInteger());
 				this.saveOrUpdate(serviceTag);
+
+				for (Resources resources : resourcesList) {
+
+					resources.setStatus(ResourcesConstant.Status.待审批.toInteger());
+					comm.resourcesService.saveOrUpdate(resources);
+
+				}
 
 				message = "服务标签 " + serviceTag.getName() + " 提交审批成功";
 

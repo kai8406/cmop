@@ -16,7 +16,6 @@ import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
 import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.Journal;
 import com.taskadapter.redmineapi.bean.User;
 
 /**
@@ -162,17 +161,6 @@ public class RedmineService extends BaseSevcie {
 		try {
 
 			issue = mgr.getIssueById(issueId, INCLUDE.journals);
-
-			if (issue != null) {
-
-				List<Journal> list = issue.getJournals();
-
-				if (list != null) { // 必须向下循环一次，否则将不会被更新。。。感觉是懒加载
-
-					System.out.println(list.size());
-				}
-
-			}
 
 			logger.info("--->获取Issue成功！");
 

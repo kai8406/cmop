@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -265,6 +266,12 @@ public class OperateService extends BaseSevcie {
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
+
+				// 清除服务变更Change的内容
+
+				Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+				comm.changeServcie.deleteChange(change.getId());
+
 			}
 
 			// TODO 同步数据至OneCMDB

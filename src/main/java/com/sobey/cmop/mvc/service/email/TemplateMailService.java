@@ -329,7 +329,7 @@ public class TemplateMailService extends BaseSevcie {
 
 			map.put("serviceTag", serviceTag);
 
-			map.put("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId()));
+			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
 			// 变更 审批Audit
 
@@ -401,7 +401,7 @@ public class TemplateMailService extends BaseSevcie {
 
 			map.put("serviceTag", serviceTag);
 
-			map.put("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId()));
+			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
 			// 工单处理URL
 
@@ -466,7 +466,7 @@ public class TemplateMailService extends BaseSevcie {
 
 			map.put("serviceTag", serviceTag);
 
-			map.put("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(serviceTag.getId()));
+			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
 			// 工单处理完成提示文字
 

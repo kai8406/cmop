@@ -445,8 +445,8 @@ public class ComputeService extends BaseSevcie {
 
 		for (Application application : applications) {
 			oldNameList.add(application.getName());
-			oldNameList.add(application.getVersion());
-			oldNameList.add(application.getDeployPath());
+			oldVersionList.add(application.getVersion());
+			oldDeployPathList.add(application.getDeployPath());
 		}
 
 		// === NewValue === //
@@ -461,10 +461,10 @@ public class ComputeService extends BaseSevcie {
 			deployPathList.add(applicationDeployPaths[i]);
 		}
 
-		// true:有变更;false:未变更.
+		// 比较OldValue和NewValue的List.
 
-		return !CollectionUtils.isEqualCollection(nameList, oldNameList) || !CollectionUtils.isEqualCollection(versionList, oldVersionList)
-				|| !CollectionUtils.isEqualCollection(deployPathList, oldDeployPathList) ? true : false;
+		return CollectionUtils.isEqualCollection(nameList, oldNameList) && CollectionUtils.isEqualCollection(versionList, oldVersionList)
+				&& CollectionUtils.isEqualCollection(deployPathList, oldDeployPathList) ? false : true;
 
 	}
 
@@ -511,8 +511,6 @@ public class ComputeService extends BaseSevcie {
 
 			computes.add(computeItem);
 		}
-
-		logger.info("组成Compute对象数量-->" + computes.size());
 
 		return computes;
 	}

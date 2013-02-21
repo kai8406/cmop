@@ -26,7 +26,7 @@ import com.sobey.framework.utils.Servlets;
 @RequestMapping(value = "/serviceTag")
 public class ServiceTagController extends BaseController {
 
-	private static final String REDIRECT_SUCCESS_URL = "redirect:/serviceTag/";
+	private static final String REDIRECT_SUCCESS_URL = "redirect:/resources/";
 
 	/**
 	 * 显示资源Resources的List
@@ -54,7 +54,7 @@ public class ServiceTagController extends BaseController {
 
 		model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(id));
 
-		model.addAttribute("resourcesList", comm.resourcesService.getCommitResourcesListByServiceTagId(id));
+		model.addAttribute("resourcesList", comm.resourcesService.getCommitingResourcesListByServiceTagId(id));
 
 		return "resource/serviceTag/serviceTagDetail";
 

@@ -151,8 +151,6 @@ public class EsgService extends BaseSevcie {
 			esgRuleItems.add(esgRuleItem);
 		}
 
-		logger.info("组成EsgRuleItem对象数量-->" + esgRuleItems.size());
-
 		return esgRuleItems;
 
 	}

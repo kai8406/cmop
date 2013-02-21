@@ -134,9 +134,20 @@
 					
 				</c:forEach>
 			
-			<div class="form-actions">
-				<input class="btn" type="button" value="返回" onclick="history.back()">
-			</div>
+				<div class="form-actions">
+					<input class="btn" type="button" value="返回" onclick="history.back()">
+					
+					<a class="btn btn-primary" href="#commitModal${item.id}" data-toggle="modal">提交变更</a>
+					<div id="commitModal${item.id }" class="modal hide fade " tabindex="-1" data-width="250">
+						<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+						<div class="modal-body">是否提交变更?</div>
+						<div class="modal-footer">
+							<button class="btn" data-dismiss="modal">关闭</button>
+							<a href="${ctx}/serviceTag/commit/${serviceTag.id}" class="btn btn-primary">确定</a>
+						</div>
+					</div>
+					
+				</div>
 		
 		</fieldset>
 		

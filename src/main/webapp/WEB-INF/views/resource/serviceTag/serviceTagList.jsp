@@ -91,7 +91,7 @@
 	
 	<tags:pagination page="${page}" />
 
-	<a class="btn" href="#" onclick="history.back()">返回</a>
+	<a class="btn" href="${ctx}/resources/">返回</a>
 
 </body>
 </html>

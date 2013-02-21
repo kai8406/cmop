@@ -50,7 +50,7 @@ public class ResourcesExtensionController extends BaseController {
 
 		comm.computeService.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
 
-		redirectAttributes.addFlashAttribute("message", "修改服务申请成功");
+		redirectAttributes.addFlashAttribute("message", "资源变更成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}

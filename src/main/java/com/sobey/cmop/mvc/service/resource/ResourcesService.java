@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
@@ -163,6 +165,48 @@ public class ResourcesService extends BaseSevcie {
 		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
 
 		return resourcesDao.findAll(spec, pageRequest);
+	}
+
+	/**
+	 * 根据条件获得当前用户的资源Resources List
+	 * 
+	 * @param serviceType
+	 *            服务类型
+	 * @param serviceTagName
+	 *            服务标签
+	 * @param ipAddress
+	 *            IP地址
+	 * @param serviceIdentifier
+	 *            资源标识符
+	 * @return
+	 */
+	public List<Resources> getResourcesListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
+
+		Map<String, SearchFilter> filters = Maps.newHashMap();
+
+		// 组装参数,写入filters.适用于多条件查询的情况.
+
+		filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+
+		if (serviceType != null) {
+			filters.put("resources.serviceType", new SearchFilter("serviceType", Operator.EQ, serviceType));
+		}
+
+		if (StringUtils.isNotBlank(serviceTagName)) {
+			filters.put("resources.serviceTag.name", new SearchFilter("serviceTag.name", Operator.LIKE, serviceIdentifier));
+		}
+
+		if (StringUtils.isNotBlank(ipAddress)) {
+			filters.put("resources.ipAddress", new SearchFilter("ipAddress", Operator.EQ, serviceIdentifier));
+		}
+
+		if (StringUtils.isNotBlank(serviceIdentifier)) {
+			filters.put("resources.serviceIdentifier", new SearchFilter("serviceIdentifier", Operator.LIKE, serviceIdentifier));
+		}
+
+		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
+
+		return resourcesDao.findAll(spec);
 	}
 
 	/**

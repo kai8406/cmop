@@ -13,14 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
-import com.sobey.cmop.mvc.dao.AuditDao;
 import com.sobey.cmop.mvc.dao.FailureDao;
-import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.Failure;
-import com.sobey.cmop.mvc.service.audit.AuditService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
-import com.sobey.framework.utils.SearchFilter.Operator;
 
 /**
  * 故障申报Failure相关的管理类.

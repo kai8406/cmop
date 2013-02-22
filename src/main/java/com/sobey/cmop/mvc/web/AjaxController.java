@@ -1,15 +1,18 @@
 package com.sobey.cmop.mvc.web;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
 
 /**
@@ -74,22 +77,50 @@ public class AjaxController extends BaseController {
 		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
+	/**
+	 * Ajax请求校验Location Name是否唯一.
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "checkLocation")
 	public @ResponseBody
 	String checkLocation(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
-		if (name.equals(oldName) || comm.locationService.findLocationByName(name) == null) {
-			return "true";
-		}
-		return "false";
+		return name.equals(oldName) || comm.locationService.findLocationByName(name) == null ? "true" : "false";
 	}
 
+	/**
+	 * Ajax请求校验Vlan Name是否唯一.
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "checkVlan")
 	public @ResponseBody
 	String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
-		if (name.equals(oldName) || comm.vlanService.findVlanByName(name) == null) {
-			return "true";
-		}
-		return "false";
+		return name.equals(oldName) || comm.vlanService.findVlanByName(name) == null ? "true" : "false";
+	}
+
+	/**
+	 * 根据条件返回Json格式的资源Resources List .
+	 * 
+	 * @param serviceType
+	 *            服务类型
+	 * @param serviceTagName
+	 *            服务标签
+	 * @param ipAddress
+	 *            IP地址
+	 * @param serviceIdentifier
+	 *            资源标识符
+	 * @return
+	 */
+	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
+	public @ResponseBody
+	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType, @RequestParam(value = "serviceTagName", required = false) String serviceTagName,
+			@RequestParam(value = "ipAddress", required = false) String ipAddress, @RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
+		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
 	}
 
 	/**
@@ -100,14 +131,13 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "getVlanByLocation")
 	@ResponseBody
-	public Map getVlanByLocation(@RequestParam("location") Integer location) {
+	public Map<Integer, String> getVlanByLocation(@RequestParam("location") Integer location) {
 		Set<Vlan> vlans = comm.locationService.findLocationById(location).getVlans();
-		Map vlanMap = new HashMap();
+		Map<Integer, String> map = Maps.newHashMap();
 		for (Vlan vlan : vlans) {
-			vlanMap.put(vlan.getId(), vlan.getName());
+			map.put(vlan.getId(), vlan.getName());
 		}
-
-		return vlanMap;
+		return map;
 	}
 
 }

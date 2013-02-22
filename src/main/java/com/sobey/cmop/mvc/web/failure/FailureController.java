@@ -1,8 +1,5 @@
 package com.sobey.cmop.mvc.web.failure;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -15,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.entity.Failure;
-import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Servlets;
 
 /**

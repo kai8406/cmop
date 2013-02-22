@@ -21,7 +21,7 @@
 						<shiro:hasPermission name="apply:view">
 							<li id="apply" class="tip-bottom" title="服务申请"><a href="${ctx}/apply/">服务申请</a></li>
 							<li id="resource" class="tip-bottom" title="资源管理"><a href="${ctx}/resources/">资源管理</a></li>
-							<li id="fault" class="tip-bottom" title="故障申报"><a href="${ctx}/failure/">故障申报</a></li>
+							<li id="failure" class="tip-bottom" title="故障申报"><a href="${ctx}/failure/">故障申报</a></li>
 						</shiro:hasPermission>
 						
 						<shiro:hasPermission name="user:view">

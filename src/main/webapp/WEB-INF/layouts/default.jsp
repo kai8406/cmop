@@ -44,6 +44,7 @@
  <!-- Le javascript  ================================================== -->
  <script src="${ctx}/static/jquery/jquery.min.js"></script>
  <script src="${ctx}/static/jquery-uniform/jquery.uniform.min.js"></script>
+ <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
  <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
  <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
  <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modal.js"></script>

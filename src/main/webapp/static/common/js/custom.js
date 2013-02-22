@@ -59,6 +59,39 @@ $(document).ready(function() {
 	
 });
 
+
+/**
+ * checkbox 全选和取消
+ */
+$(document).on("click","th input:checkbox",function(){
+	
+	var checkedStatus = this.checked;
+	
+	var $checkbox = $(this).closest('table').find('tr input:checkbox');
+	 
+	$checkbox.each(function() {
+		
+		//设置checkbox状态
+		
+		this.checked = checkedStatus;
+		
+		//uniform 的选中Class的处理
+		
+		$checker = $(this).closest('.checker > span');
+		
+		if (this.checked == checkedStatus) {
+			$checker.removeClass('checked');
+		}
+		
+		if (this.checked) {
+			$checker.addClass('checked');
+		}
+		
+	}); 
+	
+});
+
+
 /**
  * 获得当前年月份加上参数月的日期.
  * 如:

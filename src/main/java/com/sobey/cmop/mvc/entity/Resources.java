@@ -102,7 +102,6 @@ public class Resources implements java.io.Serializable {
 		this.serviceType = serviceType;
 	}
 
-	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "service_tag_id")
 	public ServiceTag getServiceTag() {

@@ -28,8 +28,10 @@
 			 
 		});
 		
-		
+		//查询resourceList		
 		function searchResources(){
+			
+			$("#resources-tbody").empty();
 			
 			//Post方法提交查询资源Resources.
 			$("#resourcesModal").ajaxSubmit({
@@ -37,7 +39,23 @@
 				type: "POST" ,
 				dataType: "json",
 				success : function(responseText, statusText, xhr, $form)  { 
-					alert(statusText);
+					
+					var html = '';
+					
+					for ( var i = 0; i < responseText.length; i++) {
+						
+						html += '<tr>';
+						html += '<td><input type="checkbox" name="resourcesId" value="'+responseText[i].id+'"></td>';
+						html += '<td>'+responseText[i].serviceIdentifier+'</td>';
+						html += '<td>'+responseText[i].serviceTag.name+'</td>';
+						html += '<td>'+ (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress ) +'</td>';
+						html += "<td id='resources-serviceType' class='hide'>" + responseText[i].serviceType + "</td>";
+						html += '</tr>';
+					
+					}
+					
+					$("#resources-tbody").append(html);
+					
 				}  
 			});
 			
@@ -139,7 +157,8 @@
 		<div class="modal-body">
 		
 		<form class="form-inline well well-small">
-
+			
+			<!-- 搜索 -->
 			<div class="row">
 			
 				<div class="span3">
@@ -181,6 +200,20 @@
 			</div>
 	
 		</form>
+		
+		<table class="table table-striped table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th><input type="checkbox"></th>
+					<th>标识符</th>
+					<th>服务标签</th>
+					<th>IP地址</th>
+				</tr>
+			</thead>
+			<tbody id="resources-tbody">
+			</tbody>
+		</table>
+		
 		
 		</div>
 		<div class="modal-footer">

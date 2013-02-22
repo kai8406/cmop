@@ -117,13 +117,7 @@
 				<tr>
 					<td><a href="detail/${item.id}">${item.title}</a></td>
 					<td>${item.serviceTag}</td>
-					<td>
-						<c:forEach var="map" items="${priorityMap }">
-							<c:if test="${map.key == item.priority }">
-								${map.value }
-							</c:if>
-						</c:forEach>
-					</td>
+					<td><c:forEach var="map" items="${priorityMap }"><c:if test="${map.key == item.priority }">${map.value }</c:if></c:forEach></td>
 					<td>
 						<c:forEach var="map" items="${applyStatusMap }">
 							<c:if test="${map.key == item.status }">

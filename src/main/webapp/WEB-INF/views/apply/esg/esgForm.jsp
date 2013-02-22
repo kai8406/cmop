@@ -176,7 +176,6 @@
 				</div>
 				
 				<div class="control-group">
-					<label class="control-label" for="createBtn"></label>
 					<div class="controls">
 						<input id="createBtn" type="button" class="btn" value="生成规则">
 					</div>

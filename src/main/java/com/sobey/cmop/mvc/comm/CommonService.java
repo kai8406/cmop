@@ -14,6 +14,7 @@ import com.sobey.cmop.mvc.service.basicdata.imports.ImportService;
 import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
+import com.sobey.cmop.mvc.service.failure.FailureService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
@@ -46,16 +47,19 @@ public class CommonService {
 	public ChangeServcie changeServcie;
 
 	@Resource
-	public Es3Service es3Service;
-
-	@Resource
 	public ComputeService computeService;
 
 	@Resource
 	public DepartmentService departmentService;
 
 	@Resource
+	public Es3Service es3Service;
+
+	@Resource
 	public EsgService esgService;
+
+	@Resource
+	public FailureService failureService;
 
 	@Resource
 	public ImportService importService;

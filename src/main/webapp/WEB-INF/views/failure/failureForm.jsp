@@ -43,7 +43,7 @@
 			
 			//Step.1
 			$("div.resources").each(function(){
-				selectedArray.push($(this).find("resourcesId").val());
+				selectedArray.push($(this).find("#resourcesId").val());
 			});
 			
 			//Step.2
@@ -54,8 +54,10 @@
 				
 				if($.inArray(resourcesId,selectedArray) == -1){
 					var serviceType = $(this).parent().parent().find('#resources-serviceType').text();
+					
+					//根据resourcesId生成HTML字符串,并拼装
+					
 					fGetUnitByResourcesId(resourcesId,serviceType);
-				
 				}
 				
 			});
@@ -86,7 +88,7 @@
 					for ( var i = 0; i < responseText.length; i++) {
 						
 						html += '<tr>';
-						html += '<td><input type="checkbox" id="resourcesId" name="resourcesId" value="'+responseText[i].id+'"></td>';
+						html += '<td><input type="checkbox" value="'+responseText[i].id+'"></td>';
 						html += '<td>'+responseText[i].serviceIdentifier+'</td>';
 						html += '<td>'+responseText[i].serviceTag.name+'</td>';
 						html += '<td>'+ (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress ) +'</td>';
@@ -115,24 +117,19 @@
 					dataType: "json",
 					success: function(data){
 						
-						alert(data.osType);
-						
 						var html = '';
-						
+						 
 						html += '<div class="resources alert alert-block alert-info fade in">';
 						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
-						html += '<div class="row">';
-						html += '';
-						html += '';
-						html += '';
-						html += '';
-						html += '';
-						html += '';
-						html += '</div>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="'+resourcesId+'">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>'+data.identifier+'</strong></dd>';
+						html += '<dd><em>用途信息</em>&nbsp;&nbsp;<strong>'+data.remark+'</strong></dd>';
+						html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>'+data.osType+'&nbsp;'+data.osBit+'&nbsp;'+data.serverType+'</strong></dd>';
+						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>'+data.networkEsgItem.identifier+'('+data.networkEsgItem.description+')</strong></dd>';
+						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>'+data.innerIp+'</strong></dd>';
 						html += '</div>';
 						
-						
-						$("#resourcesDIV").append(html);
+						$("#resourcesDIV dl").append(html);
 						
 					}		
 				});
@@ -218,21 +215,7 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV">
-			
-				<dl class="dl-horizontal">
-				
-					<div class="resources alert alert-block alert-info fade in">
-						<button data-dismiss="alert" class="close" type="button">×</button>
-							<dd><em>标识符</em>&nbsp;&nbsp;<strong>PCS-qg0o4w3s</strong></dd>
-							<dd><em>用途信息</em>&nbsp;&nbsp;<strong>444</strong></dd>
-							<dd><em>基本信息</em>&nbsp;&nbsp;<strong>CentOS6.3&nbsp; 32bit&nbsp;DELL_R410</strong></dd>
-							<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>ESG-lVK78ORN(标准模板ESG)</strong></dd>
-					</div>
-					
-				</dl>
-
-				
-			
+				<dl class="dl-horizontal"></dl>
 			</div>
 			 
 			

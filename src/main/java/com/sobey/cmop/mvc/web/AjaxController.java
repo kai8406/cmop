@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
+import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 
 /**
  * 页面AJAX操作相关的 Controller
@@ -121,6 +124,39 @@ public class AjaxController extends BaseController {
 	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType, @RequestParam(value = "serviceTagName", required = false) String serviceTagName,
 			@RequestParam(value = "ipAddress", required = false) String ipAddress, @RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
 		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
+	}
+
+	/**
+	 * Ajax请求根据computeId获得compute的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getCompute")
+	public @ResponseBody
+	ComputeJson getCompute(@RequestParam(value = "id") Integer id) {
+
+		ComputeItem computeItem = comm.computeService.getComputeItem(id);
+		ComputeJson json = new ComputeJson();
+		json.setIdentifier(computeItem.getIdentifier());
+		json.setComputeType(ComputeConstant.ComputeType.get(computeItem.getComputeType()));
+		json.setOsType(ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()));
+		json.setOsBit(ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()));
+
+		if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
+			json.setServerType(ComputeConstant.PCSServerType.get(computeItem.getServerType()));
+		} else {
+			json.setServerType(ComputeConstant.ECSServerType.get(computeItem.getServerType()));
+		}
+
+		json.setRemark(computeItem.getRemark());
+		json.setInnerIp(computeItem.getInnerIp());
+		json.setOldIp(computeItem.getOldIp());
+		json.setHostName(computeItem.getHostName());
+		json.setOsStorageAlias(computeItem.getOsStorageAlias());
+		json.setNetworkEsgItem(computeItem.getNetworkEsgItem());
+
+		return json;
 	}
 
 	/**

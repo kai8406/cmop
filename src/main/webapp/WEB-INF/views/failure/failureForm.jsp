@@ -24,8 +24,49 @@
 				}
 			});
 			
-			
 			 
+			 
+		});
+		
+		$(document).on("click", "#ModalSave", function() {
+			
+			
+			/**
+			1.每次点击确认时,遍历页面,将存在页面的resourcesId放入一个临时数组.
+			2.判断选中的资源是否在页面上.如果存在跳过,不存在生成该资源对应的resource代码插入页面
+			3.初始化临时数组和checkbox
+			**/
+			
+			var selectedArray = [];
+			var $ModalDiv = $(this).parent().parent();
+			var $CheckedIds = $ModalDiv.find("tbody input:checked");
+			
+			//Step.1
+			$("div.resources").each(function(){
+				selectedArray.push($(this).find("resourcesId").val());
+			});
+			
+			//Step.2
+			
+			$CheckedIds.each(function(){
+				
+				var resourcesId = $(this).val();
+				
+				if($.inArray(resourcesId,selectedArray) == -1){
+					var serviceType = $(this).parent().parent().find('#resources-serviceType').text();
+					fGetUnitByResourcesId(resourcesId,serviceType);
+				
+				}
+				
+			});
+			
+			//Step.3
+			
+			selectedArray = [];
+			$CheckedIds.removeAttr('checked');
+			$ModalDiv.find(".checker > span").removeClass("checked");
+			 
+			
 		});
 		
 		//查询resourceList		
@@ -45,7 +86,7 @@
 					for ( var i = 0; i < responseText.length; i++) {
 						
 						html += '<tr>';
-						html += '<td><input type="checkbox" name="resourcesId" value="'+responseText[i].id+'"></td>';
+						html += '<td><input type="checkbox" id="resourcesId" name="resourcesId" value="'+responseText[i].id+'"></td>';
 						html += '<td>'+responseText[i].serviceIdentifier+'</td>';
 						html += '<td>'+responseText[i].serviceTag.name+'</td>';
 						html += '<td>'+ (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress ) +'</td>';
@@ -63,6 +104,43 @@
 			
 		};
 		
+		function fGetUnitByResourcesId(resourcesId,serviceType){
+			
+			//TODO 生成资源的代码
+			
+			if(serviceType == 1 || serviceType == 2){ 
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getCompute?id="+resourcesId,
+					dataType: "json",
+					success: function(data){
+						
+						alert(data.osType);
+						
+						var html = '';
+						
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<div class="row">';
+						html += '';
+						html += '';
+						html += '';
+						html += '';
+						html += '';
+						html += '';
+						html += '</div>';
+						html += '</div>';
+						
+						
+						$("#resourcesDIV").append(html);
+						
+					}		
+				});
+			}
+			
+			
+			
+		};
 		
 	</script>
 	
@@ -139,7 +217,23 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"></div>
+			<div id="resourcesDIV">
+			
+				<dl class="dl-horizontal">
+				
+					<div class="resources alert alert-block alert-info fade in">
+						<button data-dismiss="alert" class="close" type="button">×</button>
+							<dd><em>标识符</em>&nbsp;&nbsp;<strong>PCS-qg0o4w3s</strong></dd>
+							<dd><em>用途信息</em>&nbsp;&nbsp;<strong>444</strong></dd>
+							<dd><em>基本信息</em>&nbsp;&nbsp;<strong>CentOS6.3&nbsp; 32bit&nbsp;DELL_R410</strong></dd>
+							<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>ESG-lVK78ORN(标准模板ESG)</strong></dd>
+					</div>
+					
+				</dl>
+
+				
+			
+			</div>
 			 
 			
 			<div class="form-actions">
@@ -210,18 +304,17 @@
 					<th>IP地址</th>
 				</tr>
 			</thead>
-			<tbody id="resources-tbody">
-			</tbody>
+			<tbody id="resources-tbody"></tbody>
 		</table>
 		
 		
 		</div>
 		<div class="modal-footer">
 			<button class="btn" data-dismiss="modal">关闭</button>
-			<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+			<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
 		</div>
+		
 	</div>
-						
 						
 </body>
 </html>

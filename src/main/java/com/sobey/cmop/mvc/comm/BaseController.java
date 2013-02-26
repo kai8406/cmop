@@ -16,6 +16,7 @@ import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Location;
@@ -301,6 +302,15 @@ public class BaseController {
 	@ModelAttribute("resourcesStatusMap")
 	public Map<Integer, String> resourcesStatusMap() {
 		return ResourcesConstant.Status.map;
+	}
+
+	/**
+	 * 
+	 * @return 存储类型Map
+	 */
+	@ModelAttribute("storageTypeMap")
+	public Map<Integer, String> storageTypeMap() {
+		return StorageConstant.storageType.map;
 	}
 
 }

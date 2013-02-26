@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>用户管理</title>
+	<title>故障申报</title>
 	
 	<script>
 		$(document).ready(function() {

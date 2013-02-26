@@ -12,6 +12,9 @@ import com.google.common.collect.Maps;
  */
 public class RedmineConstant {
 
+	/**
+	 * 100% 完成度.
+	 */
 	public static final Integer MAX_DONERATIO = 100;
 
 	/**

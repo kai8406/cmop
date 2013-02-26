@@ -52,11 +52,11 @@
 			
 			<div class="span3">
 				<label class="control-label search-text">Status</label> 
-				<select name="search_EQ_status" class="span2">
+				<select name="search_EQ_redmineIssue.status" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${operateStatusMap}">
 						<option value="${map.key }" 
-							<c:if test="${map.key == param.search_EQ_status }">
+							<c:if test="${map.key == param.search_EQ_redmineIssue.status }">
 								selected="selected"
 							</c:if>
 						>${map.value }</option>
@@ -90,7 +90,7 @@
 					<td><c:forEach var="map" items="${priorityMap }"><c:if test="${map.key == item.level }">${map.value }</c:if></c:forEach></td>
 					<td><c:forEach var="map" items="${applyServiceTypeMap }"><c:if test="${map.key == item.faultType }">${map.value }</c:if></c:forEach></td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
-					<td><c:forEach var="map" items="${operateStatusMap}"><c:if test="${item.status==map.key}">${map.value}</c:if></c:forEach></td>
+					<td><c:forEach var="map" items="${operateStatusMap}"><c:if test="${item.redmineIssue.status==map.key}">${map.value}</c:if></c:forEach></td>
 				</tr>
 			</c:forEach>
 		</tbody>

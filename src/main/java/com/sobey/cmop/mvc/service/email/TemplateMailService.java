@@ -17,12 +17,14 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 
@@ -53,6 +55,8 @@ public class TemplateMailService extends BaseSevcie {
 
 	private Template recycleTemplate;
 
+	private Template failureTemplate;
+
 	/**
 	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板.<br>
 	 * 实现一个Template类,然后加载指定路劲(查看applicationContext-email.xml)的后缀为.ftl模板.<br>
@@ -64,6 +68,7 @@ public class TemplateMailService extends BaseSevcie {
 		applyTemplate = freemarkerConfiguration.getTemplate("applyMailTemplate.ftl", DEFAULT_ENCODING);
 		resourcesTemplate = freemarkerConfiguration.getTemplate("resourcesMailTemplate.ftl", DEFAULT_ENCODING);
 		recycleTemplate = freemarkerConfiguration.getTemplate("recycleMailTemplate.ftl", DEFAULT_ENCODING);
+		failureTemplate = freemarkerConfiguration.getTemplate("failureMailTemplate.ftl", DEFAULT_ENCODING);
 	}
 
 	/**
@@ -82,6 +87,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
 		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
 		map.put("allESGs", comm.esgService.getAllEsgList());
+		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
 
 		return map;
 
@@ -711,6 +717,82 @@ public class TemplateMailService extends BaseSevcie {
 
 			// 邮件标题
 			String sendSubject = "资源回收处理邮件";
+
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
+
+			helper.setFrom(sendFrom);
+			helper.setTo(sendToTest); // 测试环境使用.
+			// helper.setTo(sendTo); //生产环境使用.
+			helper.setSubject(sendSubject);
+			helper.setText(content, true);
+
+			mailSender.send(msg);
+
+			logger.info("HTML版邮件已发送至 " + sendTo);
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("构造邮件失败", e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("发送邮件失败", e);
+		}
+
+	}
+
+	// ==========================//
+	// ========= Failure ========//
+	// ==========================//
+
+	/**
+	 * 发送MIME格式的工单处理邮件(故障申报Failure).
+	 */
+	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, User assigneeUser) {
+
+		MimeMessage msg = mailSender.createMimeMessage();
+
+		try {
+
+			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+
+			Map<String, Object> map = this.freemarkerParameterMap();
+
+			map.put("failure", failure);
+
+			map.put("computes", computeItems);
+
+			// TODO 其它资源缺少
+
+			// map.put("storages", apply.getStorageItems());
+			// map.put("elbs", apply.getNetworkElbItems());
+			// map.put("eips", apply.getNetworkEipItems());
+			// map.put("dnses", apply.getNetworkDnsItems());
+			// map.put("monitorComputes", apply.getMonitorComputes());
+			// map.put("monitorElbs", apply.getMonitorElbs());
+
+			// 工单处理URL
+
+			String operateUrl = "你有新的故障处理工单工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			map.put("operateUrl", operateUrl);
+
+			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
+
+			String content = this.generateMailContent(failureTemplate, map);
+
+			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+
+			// 发件人.通过读取配置文件获得.
+			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
+
+			// 收件人.生成环境使用
+			String sendTo = assigneeUser.getEmail();
+
+			// 收件人.测试使用
+			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
+
+			// 邮件标题
+			String sendSubject = "资源回收工单处理邮件";
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 

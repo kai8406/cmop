@@ -8,27 +8,34 @@
 	
 	<ul>
 		
-		<#if serviceTag?exists ><!-- 服务标签 ServiceTag -->
+		<#if failure?exists ><!-- 故障申报 Failure -->
 			<li>
-				<strong>服务标签基本信息</strong>
+				<strong>故障申报基本信息</strong>
 				<ul> 
-					<li><em>申请人</em>&nbsp;: ${serviceTag.user.name} </li>
-					<li><em>标签名</em>&nbsp;: ${serviceTag.name}</li>
-					<li><em>申请时间</em>&nbsp;: ${serviceTag.createTime}</li>
+					<li><em>申报人</em>&nbsp;: ${failure.user.name} </li>
+					<li><em>申报标题</em>&nbsp;: ${failure.title}</li>
+					<li><em>申报时间</em>&nbsp;: ${failure.createTime?string('yyyy-MM-dd HH:mm:ss')}</li>
+					
+					<li><em>故障类型</em>&nbsp;: 
+						<#list applyServiceTypeMap?keys as k >
+							<#if failure.faultType?string == k>
+								${applyServiceTypeMap[k]}
+							</#if>
+						</#list>
+					</li>
 					
 					<li><em>优先级</em>&nbsp;: 
 						<#list priorityMap?keys as k >
-							<#if serviceTag.priority?string == k>
+							<#if failure.level?string == k>
 								${priorityMap[k]}
 							</#if>
 						</#list>
 					</li>
 					
-					<li><em>服务起止日期</em>&nbsp;: ${serviceTag.serviceStart} <em>至</em>&nbsp; ${serviceTag.serviceEnd}</li>
-					<li><em>用途描述</em>&nbsp;: ${serviceTag.description}</li>
+					<li><em> 故障现象及描述</em>&nbsp;: ${failure.description}</li>
 				</ul>	
 			</li>
-		</#if> <!-- 服务标签 ServiceTag End -->
+		</#if> <!-- 故障申报 failure End -->
 		
 		<li>
 			<!-- 实例Compute -->
@@ -78,16 +85,6 @@
 			
 		</li>
 		
-		<#if passUrl?exists>
-			<li>
-				<strong>审批操作</strong>
-				<ul>
-					<li><a href="${passUrl}">1.同意</a></li>
-					<li><a href="${disagreeContinueUrl}">2.不通过但继续</a></li>
-					<li><a href="${disagreeReturnUrl}">3.不通过且退回</a></li>
-				</ul>
-			</li>
-		</#if>
 	</ul>
 
 </body>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -15,6 +16,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -92,9 +94,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
-
-			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
+			logger.error("--->服务申请Apply拼装Redmine内容出错：" + e.getMessage());
 
 			return null;
 
@@ -249,9 +249,61 @@ public class RedmineUtilService extends BaseSevcie {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			logger.error("--->资源变更Resources拼装Redmine内容出错：" + e.getMessage());
 
-			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
+			return null;
+
+		}
+	}
+
+	/**
+	 * 生成满足redmine显示的故障申报Failure文本.
+	 */
+	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems) {
+
+		try {
+
+			StringBuffer content = new StringBuffer();
+
+			content.append("# +*故障申报信息*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			content.append("申报人：").append(failure.getUser().getName()).append(NEWLINE);
+			content.append("申报标题：").append(failure.getTitle()).append(NEWLINE);
+			content.append("申报时间：").append(failure.getCreateTime()).append(NEWLINE);
+			content.append("故障类型：").append(ApplyConstant.ServiceType.get(failure.getFaultType())).append(NEWLINE);
+			content.append("优先级：").append(RedmineConstant.Priority.get(failure.getLevel())).append(NEWLINE);
+			content.append("受理人：").append(RedmineConstant.Assignee.get(failure.getAssignee())).append(NEWLINE);
+			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
+			content.append("</pre>");
+
+			// 拼装计算资源Compute信息
+
+			if (!computeItems.isEmpty()) {
+				content.append("# +*计算资源信息*+").append(NEWLINE);
+				content.append("<pre>").append(NEWLINE);
+				for (ComputeItem compute : computeItems) {
+					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
+					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
+					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
+
+					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
+						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
+					} else {
+						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
+					}
+
+					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
+				}
+				content.append("</pre>").append(NEWLINE);
+			}
+
+			// TODO 缺少其它资源
+
+			return content.toString();
+
+		} catch (Exception e) {
+
+			logger.error("--->故障申报Failure拼装Redmine内容出错：" + e.getMessage());
 
 			return null;
 

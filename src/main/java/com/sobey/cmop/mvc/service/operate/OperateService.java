@@ -176,9 +176,22 @@ public class OperateService extends BaseSevcie {
 				} else if (recycleId != null) {
 
 					// 资源回收
+
 					this.recycleOperate(issue, recycleId);
 
+				} else {
+
+					// 故障申报
+
+					this.failureOperate(issue);
 				}
+
+				// 更新RedmineIssue状态
+
+				Integer status = RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio()) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
+				redmineIssue.setStatus(status);
+
+				this.saveOrUpdate(redmineIssue);
 
 				logger.info("--->工单处理结束！");
 
@@ -384,6 +397,45 @@ public class OperateService extends BaseSevcie {
 			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, assigneeUser);
 
 		}
+
+	}
+
+	/**
+	 * 故障申报的工单处理.<br>
+	 * 
+	 */
+	@Transactional(readOnly = false)
+	private void failureOperate(Issue issue) {
+
+		logger.info("--->故障申报处理...");
+
+		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
+			logger.info("---> 完成度 = 100%的工单处理...");
+
+			// 获得故障申报人的邮箱.
+
+			String loginName = issue.getSubject().substring(0, issue.getSubject().indexOf("-"));
+			User user = comm.accountService.findUserByLoginName(loginName);
+
+			// 工单处理完成，给申请人发送邮件
+
+			comm.simpleMailService.sendNotificationMail(user.getEmail(), issue.getSubject() + " 故障处理流程已完成", "故障处理流程已完成");
+
+		} else {
+
+			logger.info("---> 完成度 < 100%的工单处理...");
+
+			String contentText = "你有新的故障处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+			User assigneeUser = comm.accountService.getUser(issue.getAssignee().getId());
+
+			// 工单处理完成，给申请人发送邮件
+
+			comm.simpleMailService.sendNotificationMail(assigneeUser.getEmail(), "故障申报工单处理邮件", contentText);
+		}
+
+		logger.info("--->故障申报处理结束！");
 
 	}
 

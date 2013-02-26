@@ -1,19 +1,28 @@
 package com.sobey.cmop.mvc.web.failure;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Servlets;
+import com.taskadapter.redmineapi.bean.Issue;
 
 /**
  * FailureController负责故障申报的管理
@@ -54,28 +63,74 @@ public class FailureController extends BaseController {
 
 	/**
 	 * 新增 故障申报
+	 * 
+	 * @param resourcesId
+	 *            故障相关资源的Id
+	 * @param fileNames
+	 * @param fileDescs
+	 * @param failure
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam("resId") String resId, @RequestParam(value = "fileName", required = false) String fileNames, @RequestParam(value = "fileDesc", required = false) String fileDescs,
-			Failure failure, Model model, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam("resourcesId") String resourcesId, @RequestParam(value = "fileName", required = false) String fileNames,
+			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure, RedirectAttributes redirectAttributes) {
 
-		// User user = accountManager.getCurrentUser();
-		// // 将关联的资源也保存.
-		// System.out.println("resId:" + resId);
-		// failure.setRelatedId(resId);
-		// failure.setCreateTime(new Date());
-		// failure.setUser(user);
-		//
-		// // 保存故障申报
-		// boolean result = failureManager.saveFailure(failure, fileNames,
-		// fileDescs);
-		// if (result) {
-		// redirectAttributes.addFlashAttribute("message", "故障申报成功！");
-		// } else {
-		// redirectAttributes.addFlashAttribute("message", "故障申报失败，请稍后重试！");
-		// }
+		failure.setRelatedId(resourcesId);
+		failure.setCreateTime(new Date());
+		failure.setUser(comm.accountService.getCurrentUser());
+		failure.setTitle(comm.applyService.generateApplyTitle("bug"));
+
+		boolean result = comm.failureService.saveFailure(failure, fileNames, fileDescs);
+
+		redirectAttributes.addFlashAttribute("message", result ? "故障申报成功" : "故障申报失败,请稍后重试");
 
 		return "redirect:/failure/";
+	}
+
+	/**
+	 * 查看详情
+	 * 
+	 * @param id
+	 *            故障申报的ID
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public String detail(@PathVariable("id") Integer id, Model model) {
+
+		Failure failure = comm.failureService.getFailure(id);
+
+		Integer issueId = failure.getRedmineIssue().getIssueId();
+
+		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+
+		String[] resourcesIds = failure.getRelatedId().split(",");
+		for (String resourcesId : resourcesIds) {
+
+			Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
+			Integer serviceType = resources.getServiceType();
+			Integer serviceId = resources.getServiceId();
+
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+				computeItems.add(comm.computeService.getComputeItem(serviceId));
+			}
+
+			// TODO 其它资源处理
+
+		}
+
+		Issue issue = RedmineService.getIssue(issueId);
+
+		if (issue == null) { // 查询Redmine中的Issue信息失败
+			model.addAttribute("message", "查询工单信息失败，请稍后重试！");
+		}
+
+		model.addAttribute("issue", issue);
+		model.addAttribute("failure", failure);
+		model.addAttribute("computeItems", computeItems);
+
+		return "failure/failureDetail";
 	}
 
 }

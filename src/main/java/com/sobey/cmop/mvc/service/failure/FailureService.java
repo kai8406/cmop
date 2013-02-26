@@ -1,9 +1,12 @@
 package com.sobey.cmop.mvc.service.failure;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,10 +16,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
 
 /**
  * 故障申报Failure相关的管理类.
@@ -42,6 +55,117 @@ public class FailureService extends BaseSevcie {
 	@Transactional(readOnly = true)
 	public Failure saveOrUpdate(Failure failure) {
 		return failureDao.save(failure);
+	}
+
+	/**
+	 * 提交一个故障申报
+	 * 
+	 * @param failure
+	 * @param fileNames
+	 * @param fileDescs
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public boolean saveFailure(Failure failure, String fileNames, String fileDescs) {
+
+		logger.info("--->故障申报处理...");
+
+		try {
+
+			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+
+			String[] resourcesIds = failure.getRelatedId().split(",");
+			for (String resourcesId : resourcesIds) {
+				Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
+
+				Integer serviceType = resources.getServiceType();
+				Integer serviceId = resources.getServiceId();
+
+				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+					computeItems.add(comm.computeService.getComputeItem(serviceId));
+				} else {
+					// TODO 其它资源
+				}
+
+			}
+
+			logger.info("--->拼装邮件内容...");
+
+			// 拼装Redmine内容
+
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems);
+
+			if (StringUtils.isBlank(description)) { // 拼装失败
+
+				return false;
+			}
+
+			Issue issue = new Issue();
+
+			Integer trackerId = RedmineConstant.Tracker.错误.toInteger();
+			Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
+
+			issue.setTracker(tracker);
+			issue.setSubject(failure.getTitle());
+			issue.setPriorityId(failure.getLevel());
+			issue.setDescription(description);
+
+			Integer projectId = RedmineConstant.Project.SobeyCloud问题库.toInteger();
+
+			// 初始化第一接收人
+
+			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(failure.getAssignee()));
+
+			boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
+
+			logger.info("--->Redmine isCreated?" + isCreated);
+
+			if (isCreated) { // 写入Redmine成功
+
+				issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
+
+				logger.info("--->创建RedmineIssue...");
+
+				RedmineIssue redmineIssue = new RedmineIssue();
+
+				redmineIssue.setProjectId(projectId);
+				redmineIssue.setTrackerId(issue.getTracker().getId());
+				redmineIssue.setSubject(issue.getSubject());
+				redmineIssue.setAssignee(failure.getAssignee());
+				redmineIssue.setStatus(issue.getStatusId());
+				redmineIssue.setIssueId(issue.getId());
+
+				comm.operateService.saveOrUpdate(redmineIssue);
+
+				logger.info("--->写入故障申报表...");
+
+				failure.setRedmineIssue(redmineIssue);
+
+				this.saveOrUpdate(failure);
+
+				logger.info("--->故障申报表保存成功");
+
+				// TODO 附件添加
+
+				// 指派人的User
+
+				User assigneeUser = comm.accountService.findUserByRedmineUserId(failure.getAssignee());
+
+				// 发送工单处理邮件
+
+				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, assigneeUser);
+
+			} else {
+				return false;
+			}
+
+			return true;
+
+		} catch (Exception e) {
+			logger.error("--->故障申报处理失败：" + e.getMessage());
+			return false;
+		}
+
 	}
 
 	/**

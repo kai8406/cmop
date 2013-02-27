@@ -114,7 +114,7 @@
 		
 		<fieldset>
 		
-			<legend><small>修改ES3</small></legend>
+			<legend><small>创建ES3存储空间</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="applyId">所属服务申请</label>

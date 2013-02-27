@@ -53,7 +53,6 @@ public class ComputeController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 		model.addAttribute("compute", comm.computeService.getComputeItem(id));
-		model.addAttribute("apply", comm.applyService.getApply(applyId));
 		return "apply/compute/computeUpateForm";
 	}
 

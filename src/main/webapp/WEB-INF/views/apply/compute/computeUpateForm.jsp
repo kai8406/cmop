@@ -32,7 +32,7 @@
 	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${apply.id }">
+		<input type="hidden" name="applyId" value="${compute.apply.id }">
 		
 		<fieldset>
 			<legend><small>
@@ -45,7 +45,7 @@
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${apply.title}</p>
+					<p class="help-inline plain-text">${compute.apply.title}</p>
 				</div>
 			</div>
 			

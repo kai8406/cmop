@@ -32,15 +32,15 @@
 	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${apply.id }">
+		<input type="hidden" name="applyId" value="${storage.apply.id }">
 		
 		<fieldset>
-			<legend><small>修改ES3</small></legend>
+			<legend><small>修改ES3存储空间</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${apply.title}</p>
+					<p class="help-inline plain-text">${storage.apply.title}</p>
 				</div>
 			</div>
 			
@@ -67,9 +67,15 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="remark">容量空间</label>
+				<label class="control-label" for="space">容量空间(GB)</label>
 				<div class="controls">
-					<input type="text" id="space" name="space" value="${storage.space }" class="required digits" maxlength="6" placeholder="...容量空间">
+					<input type="text" id="space" name="space" value="${storage.space}" class="required digits" maxlength="6" placeholder="...容量空间">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="controls">
+					 <a id="addComputeBtn" class="btn" data-toggle="modal" href="#computeModal" >实例相关资源</a>
 				</div>
 			</div>
 				 

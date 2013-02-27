@@ -1,5 +1,8 @@
 package com.sobey.cmop.mvc.web.apply.iaas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
  * 负责实例ES3存储Storage的管理
@@ -49,9 +54,8 @@ public class ES3Controller extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
-		model.addAttribute("compute", comm.computeService.getComputeItem(id));
-		model.addAttribute("apply", comm.applyService.getApply(applyId));
-		return "apply/compute/computeUpateForm";
+		model.addAttribute("storage", comm.es3Service.getStorageItem(id));
+		return "apply/es3/es3UpateForm";
 	}
 
 	/**
@@ -59,9 +63,21 @@ public class ES3Controller extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeId") String[] computeId, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
-		// redirectAttributes.addFlashAttribute("message", "修改ES3 " +
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+
+		for (String computeId : computeIds) {
+			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+		}
+
+		StorageItem storageItem = comm.es3Service.getStorageItem(id);
+		storageItem.setSpace(space);
+		storageItem.setStorageType(storageType);
+		storageItem.setComputeItemList(computeItemList);
+		comm.es3Service.saveOrUpdate(storageItem);
+
+		// redirectAttributes.addFlashAttribute("message", "ES3存储空间 " +
 		// storageItem.getIdentifier() + " 成功");
 
 		return REDIRECT_SUCCESS_URL;

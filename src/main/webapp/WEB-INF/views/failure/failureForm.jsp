@@ -23,13 +23,10 @@
 					$(element).closest('.control-group').removeClass('error');
 				}
 			});
-			
-			 
 			 
 		});
 		
 		$(document).on("click", "#ModalSave", function() {
-			
 			
 			/**
 			1.每次点击确认时,遍历页面,将存在页面的resourcesId放入一个临时数组.
@@ -67,7 +64,6 @@
 			selectedArray = [];
 			$CheckedIds.removeAttr('checked');
 			$ModalDiv.find(".checker > span").removeClass("checked");
-			 
 			
 		});
 		
@@ -134,8 +130,6 @@
 					}		
 				});
 			}
-			
-			
 			
 		};
 		
@@ -214,9 +208,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV">
-				<dl class="dl-horizontal"></dl>
-			</div>
+			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 			 
 			
 			<div class="form-actions">

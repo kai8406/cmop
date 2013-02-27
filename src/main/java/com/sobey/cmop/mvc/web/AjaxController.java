@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
@@ -135,28 +135,30 @@ public class AjaxController extends BaseController {
 	@RequestMapping(value = "getCompute")
 	public @ResponseBody
 	ComputeJson getCompute(@RequestParam(value = "id") Integer id) {
+		return comm.computeService.convertComputeJsonToComputeItem(comm.computeService.getComputeItem(id));
+	}
 
-		ComputeItem computeItem = comm.computeService.getComputeItem(id);
-		ComputeJson json = new ComputeJson();
-		json.setIdentifier(computeItem.getIdentifier());
-		json.setComputeType(ComputeConstant.ComputeType.get(computeItem.getComputeType()));
-		json.setOsType(ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()));
-		json.setOsBit(ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()));
+	/**
+	 * Ajax请求获得当前登录用户创建的所有ComputeJson对象.
+	 * 
+	 * @return ComputeJson List
+	 */
+	@RequestMapping(value = "getComputeList")
+	public @ResponseBody
+	List<ComputeJson> getComputeList() {
 
-		if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
-			json.setServerType(ComputeConstant.PCSServerType.get(computeItem.getServerType()));
-		} else {
-			json.setServerType(ComputeConstant.ECSServerType.get(computeItem.getServerType()));
+		List<ComputeItem> computeItems = comm.computeService.getComputeList();
+
+		List<ComputeJson> computeJsons = new ArrayList<ComputeJson>();
+
+		for (ComputeItem computeItem : computeItems) {
+
+			ComputeJson json = comm.computeService.convertComputeJsonToComputeItem(computeItem);
+
+			computeJsons.add(json);
 		}
 
-		json.setRemark(computeItem.getRemark());
-		json.setInnerIp(computeItem.getInnerIp());
-		json.setOldIp(computeItem.getOldIp());
-		json.setHostName(computeItem.getHostName());
-		json.setOsStorageAlias(computeItem.getOsStorageAlias());
-		json.setNetworkEsgItem(computeItem.getNetworkEsgItem());
-
-		return json;
+		return computeJsons;
 	}
 
 	/**

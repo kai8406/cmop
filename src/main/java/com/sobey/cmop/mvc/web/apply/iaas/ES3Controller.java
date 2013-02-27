@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 
 /**
  * 负责实例ES3存储Storage的管理
@@ -35,13 +34,12 @@ public class ES3Controller extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(  @RequestParam(value = "applyId") Integer applyId, 
-			@RequestParam(value = "spaces") String[] spaces,
-			@RequestParam(value = "storageTypes") String[] storageTypes,
+	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "spaces") String[] spaces, @RequestParam(value = "storageTypes") String[] storageTypes,
 			RedirectAttributes redirectAttributes) {
 
-//		comm.computeService.saveComputeToApply(computeType, applyId, osTypes, osBits, serverTypes, remarks, esgIds);
-//
+		// comm.computeService.saveComputeToApply(computeType, applyId, osTypes,
+		// osBits, serverTypes, remarks, esgIds);
+		//
 		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
 
 		return REDIRECT_SUCCESS_URL;
@@ -61,16 +59,11 @@ public class ES3Controller extends BaseController {
 	 * 修改实例信息后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id,
-			@RequestParam("applyId") Integer applyId, 
-			@RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType,
-			@RequestParam(value = "computeId") String[] computeId,
-			RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
+			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeId") String[] computeId, RedirectAttributes redirectAttributes) {
 
-
-
-		//		redirectAttributes.addFlashAttribute("message", "修改ES3 " + storageItem.getIdentifier() + " 成功");
+		// redirectAttributes.addFlashAttribute("message", "修改ES3 " +
+		// storageItem.getIdentifier() + " 成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}

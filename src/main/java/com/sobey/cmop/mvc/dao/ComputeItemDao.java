@@ -16,4 +16,6 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 public interface ComputeItemDao extends PagingAndSortingRepository<ComputeItem, Integer>, JpaSpecificationExecutor<ComputeItem> {
 
 	List<ComputeItem> findByApplyId(Integer applyId);
+
+	List<ComputeItem> findByApplyUserId(Integer userId);
 }

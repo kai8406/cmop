@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>实例管理</title>
+	<title>ES3管理</title>
 	
 	<script>
 		$(document).ready(function() {

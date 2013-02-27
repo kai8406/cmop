@@ -24,6 +24,7 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 
 /**
  * 实例Compute相关的管理类.
@@ -530,4 +531,56 @@ public class ComputeService extends BaseSevcie {
 		return computeItemDao.findByApplyId(applyId);
 	}
 
+	/**
+	 * 将ComputeItem转化成ComputeJson格式.<br>
+	 * <br>
+	 * ComputeItem中的比如操作系统等字段是用Integer类型保存的.<br>
+	 * 为了方便页面显示,在此处将操作系统的ID字段转化成字符串后封装成ComputeJson.
+	 * 
+	 * @param computeItem
+	 * @return
+	 */
+	public ComputeJson convertComputeJsonToComputeItem(ComputeItem computeItem) {
+
+		ComputeJson json = new ComputeJson();
+
+		json.setId(computeItem.getId());
+		json.setIdentifier(computeItem.getIdentifier());
+		json.setComputeType(ComputeConstant.ComputeType.get(computeItem.getComputeType()));
+		json.setOsType(ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()));
+		json.setOsBit(ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()));
+
+		if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
+
+			// PCS
+
+			json.setServerType(ComputeConstant.PCSServerType.get(computeItem.getServerType()));
+
+		} else {
+
+			// ECS
+
+			json.setServerType(ComputeConstant.ECSServerType.get(computeItem.getServerType()));
+
+		}
+
+		json.setRemark(computeItem.getRemark());
+		json.setInnerIp(computeItem.getInnerIp());
+		json.setOldIp(computeItem.getOldIp());
+		json.setHostName(computeItem.getHostName());
+		json.setOsStorageAlias(computeItem.getOsStorageAlias());
+		json.setNetworkEsgItem(computeItem.getNetworkEsgItem());
+
+		return json;
+
+	}
+
+	/**
+	 * 获得当前用户的所有实例Compute
+	 * 
+	 * @return
+	 */
+	public List<ComputeItem> getComputeList() {
+		return computeItemDao.findByApplyUserId(getCurrentUserId());
+	}
 }

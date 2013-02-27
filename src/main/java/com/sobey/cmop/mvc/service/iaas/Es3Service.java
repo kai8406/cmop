@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.StorageItemDao;
-import com.sobey.cmop.mvc.dao.custom.UnitDaoCustom;
+import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
@@ -30,7 +30,7 @@ public class Es3Service extends BaseSevcie {
 	private StorageItemDao storageItemDao;
 
 	@Resource
-	private UnitDaoCustom unitDao;
+	private BasicUnitDaoCustom basicUnitDao;
 
 	public StorageItem getStorageItem(Integer id) {
 		return storageItemDao.findOne(id);
@@ -83,7 +83,7 @@ public class Es3Service extends BaseSevcie {
 
 					// 将存储空间和选中的计算资源进行关联(挂载)
 
-					unitDao.saveComputeAndStorageRelevance(computeId, storageItem.getId());
+					basicUnitDao.saveComputeAndStorageRelevance(computeId, storageItem.getId());
 				}
 
 			}

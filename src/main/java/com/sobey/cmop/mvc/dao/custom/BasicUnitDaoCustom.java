@@ -6,7 +6,7 @@ package com.sobey.cmop.mvc.dao.custom;
  * @author liukai
  * 
  */
-public interface UnitDaoCustom {
+public interface BasicUnitDaoCustom {
 
 	/**
 	 * 将存储空间挂靠在计算资源上

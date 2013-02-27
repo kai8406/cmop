@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UnitDaoCustomImp implements UnitDaoCustom {
+public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 
-	private static Logger logger = LoggerFactory.getLogger(UnitDaoCustomImp.class);
+	private static Logger logger = LoggerFactory.getLogger(BasicUnitDaoCustomImp.class);
 
 	@PersistenceContext
 	private EntityManager em;
@@ -26,6 +26,7 @@ public class UnitDaoCustomImp implements UnitDaoCustom {
 		Query query = em.createNativeQuery(sqlString);
 		query.setParameter(1, computeId);
 		query.setParameter(2, storageItemId);
+
 		query.executeUpdate();
 
 	}

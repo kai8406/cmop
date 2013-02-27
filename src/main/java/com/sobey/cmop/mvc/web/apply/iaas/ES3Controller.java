@@ -35,11 +35,10 @@ public class ES3Controller extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "spaces") String[] spaces, @RequestParam(value = "storageTypes") String[] storageTypes,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
-		// comm.computeService.saveComputeToApply(computeType, applyId, osTypes,
-		// osBits, serverTypes, remarks, esgIds);
-		//
+		comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes, computeIds);
+
 		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
 
 		return REDIRECT_SUCCESS_URL;

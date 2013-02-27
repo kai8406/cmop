@@ -118,7 +118,7 @@ public class ComputeService extends BaseSevcie {
 	}
 
 	/**
-	 * 保存实例的服务申请.(在服务申请时调用,)
+	 * 保存实例的服务申请.(在服务申请时调用)
 	 * 
 	 * @param computeType
 	 *            计算资源类型
@@ -496,7 +496,7 @@ public class ComputeService extends BaseSevcie {
 
 			// 区分PCS和ECS然后生成标识符identifier
 
-			Integer serviceType = computeType.equals(ComputeConstant.ComputeType.PCS.toInteger()) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
+			Integer serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(computeType) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
 			String identifier = comm.applyService.generateIdentifier(serviceType);
 
 			ComputeItem computeItem = new ComputeItem();

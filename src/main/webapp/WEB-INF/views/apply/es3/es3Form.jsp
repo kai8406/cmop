@@ -63,7 +63,8 @@
 			var html = '';
 			var computeIds = "";
 			var computeIdentifier = "";
-			var storageType = $("#storageType>option:selected").text();
+			var storageType = $("#storageType").val();
+			var storageTypeText = $("#storageType>option:selected").text();
 			var space = $("#space").val();
 			
 			//遍历挂载Compute的Id和identifier.
@@ -80,8 +81,10 @@
 			
 			html +='<div class="resources alert alert-block alert-info fade in">';
 			html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-			html +='<input type="hidden" value="'+computeIds+'" name="computeIds" id="computeIds">';
-			html +='<dd><em>存储类型</em>&nbsp;&nbsp;<strong>'+storageType+'</strong></dd>';
+			html +='<input type="hidden" value="'+computeIds+'" name="computeIds">';
+			html +='<input type="hidden" value="'+space+'" name="spaces">';
+			html +='<input type="hidden" value="'+storageType+'" name="storageTypes">';
+			html +='<dd><em>存储类型</em>&nbsp;&nbsp;<strong>'+storageTypeText+'</strong></dd>';
 			html +='<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>'+space+'</strong></dd>';
 			html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
 			html +='</div> ';

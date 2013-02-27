@@ -77,10 +77,9 @@ public class ES3Controller extends BaseController {
 		storageItem.setComputeItemList(computeItemList);
 		comm.es3Service.saveOrUpdate(storageItem);
 
-		// redirectAttributes.addFlashAttribute("message", "ES3存储空间 " +
-		// storageItem.getIdentifier() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "修改ES3存储空间 " + storageItem.getIdentifier() + " 成功");
 
-		return REDIRECT_SUCCESS_URL;
+		return "redirect:/apply/update/" + applyId;
 	}
 
 	/**
@@ -89,9 +88,9 @@ public class ES3Controller extends BaseController {
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
 
-		comm.computeService.deleteCompute(id);
+		comm.es3Service.deleteStorageItem(id);
 
-		redirectAttributes.addFlashAttribute("message", "删除实例成功");
+		redirectAttributes.addFlashAttribute("message", "删除ES3存储空间成功");
 
 		return "redirect:/apply/update/" + applyId;
 	}

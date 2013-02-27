@@ -41,6 +41,11 @@ public class Es3Service extends BaseSevcie {
 		return storageItemDao.save(storageItem);
 	}
 
+	@Transactional(readOnly = false)
+	public void deleteStorageItem(Integer id) {
+		storageItemDao.delete(id);
+	}
+
 	/**
 	 * 保存ES3的服务申请.(在服务申请时调用)
 	 * 

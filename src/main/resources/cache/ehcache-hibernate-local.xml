@@ -16,4 +16,9 @@
 		overflowToDisk="true" maxEntriesLocalDisk="1000" />
 	<cache name="com.sobey.cmop.mvc.entity.Group.permissionList" maxEntriesLocalHeap="100"
 		eternal="true" overflowToDisk="true" maxEntriesLocalDisk="1000" />
+		
+	<cache name="com.sobey.cmop.mvc.entity.StorageItem" maxEntriesLocalHeap="1000" eternal="true"
+		overflowToDisk="true" maxEntriesLocalDisk="10000" />
+	<cache name="com.sobey.cmop.mvc.entity.StorageItem.computeItemList" maxEntriesLocalHeap="1000" eternal="true"
+		overflowToDisk="true" maxEntriesLocalDisk="10000" />
 </ehcache>

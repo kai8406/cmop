@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
@@ -245,6 +247,11 @@ public class ComputeItem implements java.io.Serializable {
 
 	public void setApplications(Set<Application> applications) {
 		this.applications = applications;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

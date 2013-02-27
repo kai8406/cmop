@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -7,8 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.google.common.collect.Lists;
+import com.sobey.framework.utils.Collections3;
 
 /**
  * StorageItem entity. @author MyEclipse Persistence Tools
@@ -27,6 +42,7 @@ public class StorageItem implements java.io.Serializable {
 	private String controllerAlias;
 	private String volume;
 	private String mountPoint;
+	private List<ComputeItem> computeItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -127,6 +143,37 @@ public class StorageItem implements java.io.Serializable {
 
 	public void setMountPoint(String mountPoint) {
 		this.mountPoint = mountPoint;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "compute_storage_item", joinColumns = { @JoinColumn(name = "storage_item_id") }, inverseJoinColumns = { @JoinColumn(name = "compute_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.JOIN)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<ComputeItem> getComputeItemList() {
+		return computeItemList;
+	}
+
+	public void setComputeItemList(List<ComputeItem> computeItemList) {
+		this.computeItemList = computeItemList;
+	}
+
+	/**
+	 * ES3关联的实例Compute标识符字符串, 多个字符串用','分隔.
+	 */
+	// 非持久化属性.
+	@Transient
+	public String getMountComputes() {
+		return Collections3.extractToString(computeItemList, "identifier", ",");
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

@@ -10,6 +10,25 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import javax.xml.ws.BindingProvider;
 
+import com.vmware.vim25.DynamicProperty;
+import com.vmware.vim25.ManagedObjectReference;
+import com.vmware.vim25.ObjectContent;
+import com.vmware.vim25.ObjectSpec;
+import com.vmware.vim25.PropertyFilterSpec;
+import com.vmware.vim25.PropertySpec;
+import com.vmware.vim25.RetrieveOptions;
+import com.vmware.vim25.RetrieveResult;
+import com.vmware.vim25.SelectionSpec;
+import com.vmware.vim25.ServiceContent;
+import com.vmware.vim25.TraversalSpec;
+import com.vmware.vim25.VimPortType;
+import com.vmware.vim25.VimService;
+import com.vmware.vim25.VirtualDevice;
+import com.vmware.vim25.VirtualDisk;
+import com.vmware.vim25.VirtualHardware;
+import com.vmware.vim25.VirtualMachineConfigInfo;
+import com.vmware.vim25.VirtualMachineRuntimeInfo;
+
 public class HostTree {
 
 	private static List<PropertyFilterSpec> createHostFilterSpec(ManagedObjectReference mObj) {

@@ -26,44 +26,31 @@
 				<li><em>用途描述</em>&nbsp;: ${apply.description}</li>
 			</ul>	
 		</li> <!--服务申请Apply End -->
-		
-		
 		<li>
 			<!-- 实例Compute -->
 			<#if (computes?exists) && (computes?size > 0) >
 				<strong>计算资源(PCS,ECS)</strong>
+				
 				<#list computes as compute>
 					<ul>
-					
 						<li><em>标识符</em>&nbsp;:${compute.identifier}</li>
 						<li><em>用途信息</em>&nbsp;:${compute.remark}</li>
 						<li><em>基本信息</em>&nbsp;:
 						
-							<#list osTypeMap?keys as k >
-								<#if compute.osType?string == k>${osTypeMap[k]}</#if>
-							</#list>
+							<#list osTypeMap?keys as k ><#if compute.osType?string == k>${osTypeMap[k]}</#if></#list>
 						
-							<#list osBitMap?keys as k >
-								<#if compute.osBit?string == k>${osBitMap[k]}</#if>
-							</#list>
+							<#list osBitMap?keys as k ><#if compute.osBit?string == k>${osBitMap[k]}</#if></#list>
 						
 							<!-- 规格 1.PCS 2.ECS -->
 							<#if compute.computeType == 1 >
-								<#list pcsServerTypeMap?keys as k >
-									<#if compute.serverType?string == k>${pcsServerTypeMap[k]}</#if>
-								</#list>
+								<#list pcsServerTypeMap?keys as k ><#if compute.serverType?string == k>${pcsServerTypeMap[k]}</#if></#list>
 							<#else>
-								<#list ecsServerTypeMap?keys as k >
-									<#if compute.serverType?string == k>${ecsServerTypeMap[k]}</#if>
-								</#list>
+								<#list ecsServerTypeMap?keys as k ><#if compute.serverType?string == k>${ecsServerTypeMap[k]}</#if></#list>
 							</#if>
 						
-					  </li>
-						
+					  	</li>
 						<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})</li>
-						
 						<br>
-						
 					</ul>
 				</#list>
 				
@@ -71,7 +58,20 @@
 		
 			<!-- 存储 storage  -->
 			<#if (storages?exists) && (storages?size > 0) >
-				我是存储~~
+				<strong>ES3存储空间</strong>
+				
+				<#list storages as storage>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${storage.identifier}</li>
+						<li><em>存储类型</em>&nbsp;:
+							<#list storageTypeMap?keys as k ><#if storage.storageType?string == k>${storageTypeMap[k]}</#if></#list>
+						</li>
+						<li><em>容量空间</em>&nbsp;:${storage.space}GB</li>
+						<li><em>挂载实例</em>&nbsp;:${storage.mountComputes}</li>
+						<br>
+					</ul>
+				</#list>
+				
 			</#if><!-- 存储 storage End-->
 			
 		</li>

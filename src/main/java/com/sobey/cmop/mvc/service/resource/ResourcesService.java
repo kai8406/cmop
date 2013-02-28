@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ResourcesDao;
@@ -29,6 +30,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -240,6 +242,13 @@ public class ResourcesService extends BaseSevcie {
 			serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType()) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
 
 			this.saveAndWrapResources(apply, serviceType, serviceTag, compute.getId(), compute.getIdentifier(), compute.getInnerIp());
+
+		}
+
+		// StorageItem
+		for (StorageItem storageItem : apply.getStorageItems()) {
+
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ES3.toInteger(), serviceTag, storageItem.getId(), storageItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 
 		}
 

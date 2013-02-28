@@ -96,9 +96,9 @@
 					<dt>PCS、ECS实例:</dt>
 					<c:forEach var="item" items="${apply.computeItems}">
 					
-						<dd><em>标识符</em>
-							&nbsp; ${item.identifier}(${item.remark})
-						</dd>
+						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						
+						<dd><em>用途信息</em>&nbsp; ${item.remark}</dd>
 						
 						<dd>
 							<em>基本信息</em>
@@ -119,7 +119,23 @@
 				</c:if>
 				
 				<!-- 存储空间ES3 -->
-				<c:if test="${not empty apply.storageItems}"></c:if>
+				<c:if test="${not empty apply.storageItems}">
+					<hr>
+					<dt>ES3存储空间</dt>
+					<c:forEach var="item" items="${apply.storageItems}">
+					
+						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						
+						<dd><em>存储类型</em>&nbsp;<c:forEach var="map" items="${storageTypeMap}"><c:if test="${item.storageType == map.key}">${map.value}</c:if></c:forEach></dd>
+						
+						<dd><em>容量空间</em>&nbsp; ${item.space}&nbsp;GB</dd>
+						
+						<dd><em>挂载实例</em>&nbsp; ${item.mountComputes}</dd>
+						
+						<br>
+						
+					</c:forEach>
+				</c:if>
 				
 				<!-- 负载均衡器ELB -->
 				<c:if test="${not empty apply.networkElbItems}"></c:if>

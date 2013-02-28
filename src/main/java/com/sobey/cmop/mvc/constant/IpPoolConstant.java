@@ -13,6 +13,11 @@ import com.google.common.collect.Maps;
 public class IpPoolConstant {
 
 	/**
+	 * 默认IP : 0.0.0.0
+	 */
+	public static final String DEFAULT_IPADDRESS = "0.0.0.0";
+
+	/**
 	 * IP状态
 	 * <p>
 	 * 1-未使用<br>

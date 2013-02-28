@@ -12,6 +12,7 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
@@ -20,6 +21,7 @@ import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
  * 生成满足 Redmine格式的文本(用于通过API插入redmine).
@@ -85,7 +87,20 @@ public class RedmineUtilService extends BaseSevcie {
 						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
 					}
 
-					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
+					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")")
+							.append(NEWLINE + NEWLINE);
+				}
+				content.append("</pre>").append(NEWLINE);
+			}
+
+			if (!apply.getStorageItems().isEmpty()) {
+				content.append("# +*存储资源信息*+").append(NEWLINE);
+				content.append("<pre>").append(NEWLINE);
+				for (StorageItem storageItem : apply.getStorageItems()) {
+					content.append("标识符: ").append(storageItem.getIdentifier()).append(NEWLINE);
+					content.append("存储类型: ").append(StorageConstant.storageType.get(storageItem.getStorageType())).append(NEWLINE);
+					content.append("容量空间: ").append(storageItem.getSpace()).append("GB").append(NEWLINE);
+					content.append("挂载实例: ").append(storageItem.getMountComputes()).append(NEWLINE + NEWLINE);
 				}
 				content.append("</pre>").append(NEWLINE);
 			}

@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.google.common.collect.Maps;
@@ -21,6 +19,7 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
@@ -39,8 +38,6 @@ import freemarker.template.TemplateException;
  * 
  * @author liukai
  */
-@Service
-@Transactional(readOnly = true)
 public class TemplateMailService extends BaseSevcie {
 
 	public static final String DEFAULT_ENCODING = "utf-8";
@@ -88,6 +85,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
 		map.put("allESGs", comm.esgService.getAllEsgList());
 		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
+		map.put("storageTypeMap", StorageConstant.storageType.mapKeyStr);
 
 		return map;
 
@@ -102,74 +100,36 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendApplyNotificationMail(Apply apply, AuditFlow auditFlow) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务申请Apply
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("apply", apply);
 
-			// 服务申请Apply
+		map.put("computes", apply.getComputeItems());
+		map.put("storages", apply.getStorageItems());
+		map.put("elbs", apply.getNetworkElbItems());
+		map.put("eips", apply.getNetworkEipItems());
+		map.put("dnses", apply.getNetworkDnsItems());
+		map.put("monitorComputes", apply.getMonitorComputes());
+		map.put("monitorElbs", apply.getMonitorElbs());
 
-			map.put("apply", apply);
+		// 申请 审批Audit
 
-			map.put("computes", apply.getComputeItems());
-			map.put("storages", apply.getStorageItems());
-			map.put("elbs", apply.getNetworkElbItems());
-			map.put("eips", apply.getNetworkEipItems());
-			map.put("dnses", apply.getNetworkDnsItems());
-			map.put("monitorComputes", apply.getMonitorComputes());
-			map.put("monitorElbs", apply.getMonitorElbs());
+		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意但继续;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意且退回;
 
-			// 申请 审批Audit
+		map.put("passUrl", passUrl);
+		map.put("disagreeContinueUrl", disagreeContinueUrl);
+		map.put("disagreeReturnUrl", disagreeReturnUrl);
 
-			String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
-			String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-					+ AuditConstant.AuditResult.不同意但继续;
-			String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意且退回;
+		// 邮件标题
+		String sendSubject = "资源申请审批邮件";
 
-			map.put("passUrl", passUrl);
-			map.put("disagreeContinueUrl", disagreeContinueUrl);
-			map.put("disagreeReturnUrl", disagreeReturnUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(applyTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = auditFlow.getUser().getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源申请审批邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(applyTemplate, map, auditFlow.getUser(), sendSubject);
 
 	}
 
@@ -178,69 +138,32 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendApplyOperateNotificationMail(Apply apply, User assigneeUser) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务申请Apply
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("apply", apply);
 
-			// 服务申请Apply
+		map.put("computes", apply.getComputeItems());
+		map.put("storages", apply.getStorageItems());
+		map.put("elbs", apply.getNetworkElbItems());
+		map.put("eips", apply.getNetworkEipItems());
+		map.put("dnses", apply.getNetworkDnsItems());
+		map.put("monitorComputes", apply.getMonitorComputes());
+		map.put("monitorElbs", apply.getMonitorElbs());
 
-			map.put("apply", apply);
+		// 工单处理URL
 
-			map.put("computes", apply.getComputeItems());
-			map.put("storages", apply.getStorageItems());
-			map.put("elbs", apply.getNetworkElbItems());
-			map.put("eips", apply.getNetworkEipItems());
-			map.put("dnses", apply.getNetworkDnsItems());
-			map.put("monitorComputes", apply.getMonitorComputes());
-			map.put("monitorElbs", apply.getMonitorElbs());
+		String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
 
-			// 工单处理URL
+		map.put("operateUrl", operateUrl);
 
-			String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		// 邮件标题
+		String sendSubject = "工单处理邮件";
 
-			map.put("operateUrl", operateUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(applyTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = assigneeUser.getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "工单处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(applyTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -249,73 +172,31 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendApplyOperateDoneNotificationMail(Apply apply) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务申请Apply
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("apply", apply);
+		map.put("computes", apply.getComputeItems());
+		map.put("storages", apply.getStorageItems());
+		map.put("elbs", apply.getNetworkElbItems());
+		map.put("eips", apply.getNetworkEipItems());
+		map.put("dnses", apply.getNetworkDnsItems());
+		map.put("monitorComputes", apply.getMonitorComputes());
+		map.put("monitorElbs", apply.getMonitorElbs());
 
-			// 服务申请Apply
+		// 工单处理完成提示文字
 
-			map.put("apply", apply);
-			map.put("computes", apply.getComputeItems());
-			map.put("storages", apply.getStorageItems());
-			map.put("elbs", apply.getNetworkElbItems());
-			map.put("eips", apply.getNetworkEipItems());
-			map.put("dnses", apply.getNetworkDnsItems());
-			map.put("monitorComputes", apply.getMonitorComputes());
-			map.put("monitorElbs", apply.getMonitorElbs());
+		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
 
-			// 实例Compute
+		map.put("operateDoneStr", operateDoneStr);
 
-			map.put("computes", apply.getComputeItems());
-			map.put("storages", apply.getStorageItems());
+		// 邮件标题
+		String sendSubject = "服务申请工单处理邮件";
 
-			// 工单处理完成提示文字
-
-			String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
-
-			map.put("operateDoneStr", operateDoneStr);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(applyTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = apply.getUser().getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "服务申请工单处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(applyTemplate, map, apply.getUser(), sendSubject);
 
 	}
 
@@ -328,70 +209,32 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendResourcesNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务标签ServiceTag
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("serviceTag", serviceTag);
 
-			// 服务标签ServiceTag
+		map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
-			map.put("serviceTag", serviceTag);
+		// 变更 审批Audit
 
-			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
+		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+				+ AuditConstant.AuditResult.不同意但继续;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
+				+ AuditConstant.AuditResult.不同意且退回;
 
-			// 变更 审批Audit
+		map.put("passUrl", passUrl);
+		map.put("disagreeContinueUrl", disagreeContinueUrl);
+		map.put("disagreeReturnUrl", disagreeReturnUrl);
 
-			String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result="
-					+ AuditConstant.AuditResult.同意;
-			String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-					+ AuditConstant.AuditResult.不同意但继续;
-			String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-					+ AuditConstant.AuditResult.不同意且退回;
+		// 邮件标题
+		String sendSubject = "资源变更审批邮件";
 
-			map.put("passUrl", passUrl);
-			map.put("disagreeContinueUrl", disagreeContinueUrl);
-			map.put("disagreeReturnUrl", disagreeReturnUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(resourcesTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = auditFlow.getUser().getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源变更审批邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(resourcesTemplate, map, auditFlow.getUser(), sendSubject);
 
 	}
 
@@ -400,63 +243,26 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendResourcesOperateNotificationMail(ServiceTag serviceTag, User assigneeUser) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务标签ServiceTag
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("serviceTag", serviceTag);
 
-			// 服务标签ServiceTag
+		map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
-			map.put("serviceTag", serviceTag);
+		// 工单处理URL
 
-			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
+		String operateUrl = "你有新的资源变更处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
 
-			// 工单处理URL
+		map.put("operateUrl", operateUrl);
 
-			String operateUrl = "你有新的资源变更处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		// 邮件标题
+		String sendSubject = "工单处理邮件";
 
-			map.put("operateUrl", operateUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(resourcesTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = assigneeUser.getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "工单处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(resourcesTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -465,63 +271,26 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendResourcesOperateDoneNotificationMail(ServiceTag serviceTag) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// 服务标签ServiceTag
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		map.put("serviceTag", serviceTag);
 
-			// 服务标签ServiceTag
+		map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
-			map.put("serviceTag", serviceTag);
+		// 工单处理完成提示文字
 
-			map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
+		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
 
-			// 工单处理完成提示文字
+		map.put("operateDoneStr", operateDoneStr);
 
-			String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+		// 邮件标题
+		String sendSubject = "资源变更处理邮件";
 
-			map.put("operateDoneStr", operateDoneStr);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(resourcesTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = serviceTag.getUser().getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源变更处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(resourcesTemplate, map, serviceTag.getUser(), sendSubject);
 
 	}
 
@@ -534,68 +303,24 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendRecycleResourcesNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		map.put("computes", computeItems);
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		// TODO 其它资源缺少
 
-			map.put("computes", computeItems);
+		// 工单处理URL
 
-			// TODO 其它资源缺少
+		String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
 
-			// map.put("storages", apply.getStorageItems());
-			// map.put("elbs", apply.getNetworkElbItems());
-			// map.put("eips", apply.getNetworkEipItems());
-			// map.put("dnses", apply.getNetworkDnsItems());
-			// map.put("monitorComputes", apply.getMonitorComputes());
-			// map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("operateUrl", operateUrl);
 
-			// 工单处理URL
+		// 邮件标题
+		String sendSubject = "资源回收工单处理邮件";
 
-			String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-
-			map.put("operateUrl", operateUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(recycleTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = assigneeUser.getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源回收工单处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(recycleTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -604,68 +329,24 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		map.put("computes", computeItems);
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		// TODO 其它资源缺少
 
-			map.put("computes", computeItems);
+		// 工单处理URL
 
-			// TODO 其它资源缺少
+		String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
 
-			// map.put("storages", apply.getStorageItems());
-			// map.put("elbs", apply.getNetworkElbItems());
-			// map.put("eips", apply.getNetworkEipItems());
-			// map.put("dnses", apply.getNetworkDnsItems());
-			// map.put("monitorComputes", apply.getMonitorComputes());
-			// map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("operateUrl", operateUrl);
 
-			// 工单处理URL
+		// 邮件标题
+		String sendSubject = "资源回收工单处理邮件";
 
-			String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-
-			map.put("operateUrl", operateUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(recycleTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = assigneeUser.getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源回收工单处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(recycleTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -677,66 +358,22 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendRecycleResourcesOperateDoneNotificationMail(User sendToUser, List<ComputeItem> computeItems) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
 
-		try {
+		Map<String, Object> map = this.freemarkerParameterMap();
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+		// TODO 其它资源缺少
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+		// 工单处理完成提示文字
 
-			// TODO 其它资源缺少
+		String operateDoneStr = "资源回收工单处理流程已完成.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
 
-			// map.put("storages", apply.getStorageItems());
-			// map.put("elbs", apply.getNetworkElbItems());
-			// map.put("eips", apply.getNetworkEipItems());
-			// map.put("dnses", apply.getNetworkDnsItems());
-			// map.put("monitorComputes", apply.getMonitorComputes());
-			// map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("operateDoneStr", operateDoneStr);
 
-			// 工单处理完成提示文字
+		// 邮件标题
+		String sendSubject = "资源回收处理邮件";
 
-			String operateDoneStr = "资源回收工单处理流程已完成.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
-
-			map.put("operateDoneStr", operateDoneStr);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(recycleTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
-
-			// 发件人.通过读取配置文件获得.
-			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
-
-			// 收件人.生成环境使用
-			String sendTo = sendToUser.getEmail();
-
-			// 收件人.测试使用
-			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
-
-			// 邮件标题
-			String sendSubject = "资源回收处理邮件";
-
-			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
-
-			helper.setFrom(sendFrom);
-			helper.setTo(sendToTest); // 测试环境使用.
-			// helper.setTo(sendTo); //生产环境使用.
-			helper.setSubject(sendSubject);
-			helper.setText(content, true);
-
-			mailSender.send(msg);
-
-			logger.info("HTML版邮件已发送至 " + sendTo);
-
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			logger.error("构造邮件失败", e);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("发送邮件失败", e);
-		}
+		this.sendMailConfig(recycleTemplate, map, sendToUser, sendSubject);
 
 	}
 
@@ -749,50 +386,60 @@ public class TemplateMailService extends BaseSevcie {
 	 */
 	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, User assigneeUser) {
 
-		MimeMessage msg = mailSender.createMimeMessage();
+		// 初始化数据,并将其放入一个HashMap中.
+
+		Map<String, Object> map = this.freemarkerParameterMap();
+
+		map.put("failure", failure);
+		map.put("computes", computeItems);
+
+		// TODO 其它资源缺少
+
+		// 工单处理URL
+
+		String operateUrl = "你有新的故障处理工单工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+
+		map.put("operateUrl", operateUrl);
+
+		// 邮件标题
+		String sendSubject = "资源回收工单处理邮件";
+
+		this.sendMailConfig(failureTemplate, map, assigneeUser, sendSubject);
+
+	}
+
+	/**
+	 * 邮件发送配置的信息
+	 * 
+	 * @param template
+	 *            采用的邮件模板.
+	 * @param map
+	 *            初始化的数据map
+	 * @param sendToUser
+	 *            收件人
+	 * @param sendSubject
+	 *            邮件标题
+	 */
+	private void sendMailConfig(Template template, Map<String, Object> map, User sendToUser, String sendSubject) {
 
 		try {
 
-			/****************** Step.1 初始化数据,并将其放入一个HashMap中. ******************/
+			/****************** Step.1 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
 
-			Map<String, Object> map = this.freemarkerParameterMap();
+			String content = this.generateMailContent(template, map);
 
-			map.put("failure", failure);
-
-			map.put("computes", computeItems);
-
-			// TODO 其它资源缺少
-
-			// map.put("storages", apply.getStorageItems());
-			// map.put("elbs", apply.getNetworkElbItems());
-			// map.put("eips", apply.getNetworkEipItems());
-			// map.put("dnses", apply.getNetworkDnsItems());
-			// map.put("monitorComputes", apply.getMonitorComputes());
-			// map.put("monitorElbs", apply.getMonitorElbs());
-
-			// 工单处理URL
-
-			String operateUrl = "你有新的故障处理工单工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-
-			map.put("operateUrl", operateUrl);
-
-			/****************** Step.2 将初始化的数据Map通过freemarker模板生成HTML格式内容. ******************/
-
-			String content = this.generateMailContent(failureTemplate, map);
-
-			/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
+			/****************** Step.2 完成邮件发送的几个参数后发送邮件. ******************/
 
 			// 发件人.通过读取配置文件获得.
 			String sendFrom = CONFIG_LOADER.getProperty("SENDFROM_EMAIL");
 
 			// 收件人.生成环境使用
-			String sendTo = assigneeUser.getEmail();
+			String sendTo = sendToUser.getEmail();
 
 			// 收件人.测试使用
 			String sendToTest = CONFIG_LOADER.getProperty("TEST_SENDTO_EMAIL");
 
-			// 邮件标题
-			String sendSubject = "资源回收工单处理邮件";
+			MimeMessage msg = mailSender.createMimeMessage();
 
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true, DEFAULT_ENCODING);
 
@@ -807,12 +454,12 @@ public class TemplateMailService extends BaseSevcie {
 			logger.info("HTML版邮件已发送至 " + sendTo);
 
 		} catch (MessagingException e) {
-			e.printStackTrace();
 			logger.error("构造邮件失败", e);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("发送邮件失败", e);
 		}
+
+		/****************** Step.3 完成邮件发送的几个参数后发送邮件. ******************/
 
 	}
 

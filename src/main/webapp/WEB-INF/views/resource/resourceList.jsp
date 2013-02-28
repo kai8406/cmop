@@ -26,31 +26,31 @@
 			
 				<div class="span3">
 					<ul class="site-stats">
-						<a href="${ctx}/resource/?search_EQ_serviceType=1"><li><i class="icon-calendar"></i> <strong>${PCSCOUNT}</strong> <small>PCS 物理机</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=2"><li><i class="icon-tasks"></i> <strong>${ECSCOUNT}</strong> <small>ECS 虚拟机(实例)</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=3"><li><i class="icon-hdd"></i> <strong>${ES3COUNT}</strong> <small>ES3 存储卷</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=1"><li><i class="icon-calendar"></i> <strong>${PCSCOUNT}</strong> <small>PCS 物理机</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=2"><li><i class="icon-tasks"></i> <strong>${ECSCOUNT}</strong> <small>ECS 虚拟机(实例)</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=3"><li><i class="icon-hdd"></i> <strong>${ES3COUNT}</strong> <small>ES3 存储卷</small></li></a>
 					</ul>
 				</div>
 				
 				<div class="span3">
 					<ul class="site-stats">
-						<a href="${ctx}/resource/?search_EQ_serviceType=4"><li><i class="icon-random"></i> <strong>${ELBCOUNT}</strong> <small>ELB 负载均衡</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=5"><li><i class="icon-screenshot"></i> <strong>${EIPCOUNT}</strong> <small>EIP 公网IP及端口映射</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=6"><li><i class="icon-list"></i> <strong>${DNSCOUNT}</strong> <small>DNS 域名映射</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=4"><li><i class="icon-random"></i> <strong>${ELBCOUNT}</strong> <small>ELB 负载均衡</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=5"><li><i class="icon-screenshot"></i> <strong>${EIPCOUNT}</strong> <small>EIP 公网IP及端口映射</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=6"><li><i class="icon-list"></i> <strong>${DNSCOUNT}</strong> <small>DNS 域名映射</small></li></a>
 					</ul>
 				</div>
 				
 				<div class="span3">
 					<ul class="site-stats">
-						<a href="${ctx}/resource/?search_EQ_serviceType=9"><li><i class="icon-eye-open"></i> <strong>${MONITOR_COMPUTECOUNT}</strong> <small>实例监控</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=10"><li><i class="icon-eye-close"></i> <strong>${MONITOR_ELBCOUNT}</strong> <small>ELB监控</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=9"><li><i class="icon-eye-open"></i> <strong>${MONITOR_COMPUTECOUNT}</strong> <small>实例监控</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=10"><li><i class="icon-eye-close"></i> <strong>${MONITOR_ELBCOUNT}</strong> <small>ELB监控</small></li></a>
 					</ul>
 				</div>
 				
 				<div class="span2">
 					<ul class="site-stats">
-						<a href="${ctx}/resource/?search_EQ_serviceType=8"><li><i class="icon-globe"></i> <strong>${MDNCOUNT}</strong> <small>MDN</small></li></a>
-						<a href="${ctx}/resource/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>11</strong> <small>云生产</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=8"><li><i class="icon-globe"></i> <strong>${MDNCOUNT}</strong> <small>MDN</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>11</strong> <small>云生产</small></li></a>
 					</ul>
 				</div>
 				

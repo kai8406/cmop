@@ -20,4 +20,5 @@ public interface IpPoolDaoCustom {
 	 */
 	public List<String> findAllIpAddressList(Location location, Vlan vlan);
 
+	public int updateIpPoolByStatus(int status);
 }

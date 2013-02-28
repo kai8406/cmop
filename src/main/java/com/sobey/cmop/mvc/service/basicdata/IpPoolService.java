@@ -473,4 +473,14 @@ public class IpPoolService extends BaseSevcie {
 		return ipPoolDao.findByVlanAliasAndStatus(vlan, 1);
 	}
 
+	@Transactional(readOnly = false)
+	public void updateIpPoolByHostServer(HostServer hostServer, Integer status) {
+		List<IpPool> ipList = ipPoolDao.findByIpAddress(hostServer.getIpAddress());
+		if (ipList != null && ipList.size() > 0) {
+			ipList.get(0).setStatus(status);
+			ipList.get(0).setHostServer(hostServer);
+			ipPoolDao.save(ipList.get(0));
+		}
+	}
+
 }

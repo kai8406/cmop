@@ -61,9 +61,9 @@ public class IpPoolController extends BaseController {
 
 		Vlan vlan = comm.vlanService.getVlan(vlanId);
 
-		boolean flat = comm.ipPoolService.saveIpPool(ipAddress, poolType, location, vlan);
+		boolean flag = comm.ipPoolService.saveIpPool(ipAddress, poolType, location, vlan);
 
-		if (flat) {
+		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "创建IP成功");
 			return REDIRECT_SUCCESS_URL;
 		} else {
@@ -100,9 +100,9 @@ public class IpPoolController extends BaseController {
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		boolean falg = comm.ipPoolService.deleteIpPool(id);
+		boolean flag = comm.ipPoolService.deleteIpPool(id);
 
-		if (falg) {
+		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "删除IP成功");
 		} else {
 			redirectAttributes.addFlashAttribute("errorMessage", "不能删除默认IP");

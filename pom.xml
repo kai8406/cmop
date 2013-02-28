@@ -64,6 +64,13 @@
 			<artifactId>redmine-java-api</artifactId>
 			<version>${redmine-java-api.version}</version>
 		</dependency>
+		
+		<!-- Vmware -->
+		<dependency>
+			<groupId>com.vmware</groupId>
+			<artifactId>vmware</artifactId>
+			<version>5.1.0</version>
+		</dependency>
 
 		<!-- SPRING basic begin(一般不需要显式定义) -->
 		<dependency>

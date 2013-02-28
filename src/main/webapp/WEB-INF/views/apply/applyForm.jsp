@@ -238,7 +238,7 @@
 			</dl>
 			
 			<div class="form-actions">
-				<input class="btn" type="button" value="返回" onclick="history.back()">
+				<a class="btn" href="${ctx}/apply/">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 		

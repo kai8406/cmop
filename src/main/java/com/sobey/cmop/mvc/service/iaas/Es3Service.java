@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -13,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
-import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.dao.StorageItemDao;
 import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
-import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -144,13 +141,14 @@ public class Es3Service extends BaseSevcie {
 
 		/* 比较实例资源computeItem 变更前和变更后的值. */
 
-		boolean isChange = this.storageCompute(resources, storageItem, change, storageType, space, computeIds);
+		boolean isChange = comm.compareResourcesService.compareStorage(resources, storageItem, storageType, space, computeIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
 		if (isChange) {
 
 			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+			
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 
 			comm.serviceTagService.saveOrUpdate(serviceTag);
@@ -174,67 +172,4 @@ public class Es3Service extends BaseSevcie {
 
 	}
 
-	/**
-	 * 比较实例资源computeItem 变更前和变更后的值,并保存于变更详情ChangeItem表中<br>
-	 * 如果新值和旧值不相同,则将其保存在变更详情ChangeItem中并返回true(只要有一项不同都会返回true).<br>
-	 * <br>
-	 * 根据变更项和changeId查询数据库中是否有变更详情ChangeItem. <br>
-	 * 如果有:取最新的数据,保存.<br>
-	 * 如果没有或者资源状态是 0:未变更;6:已创建. 新插入一条.
-	 */
-	private boolean storageCompute(Resources resources, StorageItem storageItem, Change change, Integer storageType, Integer space, String[] computeIds) {
-
-		boolean isChange = false;
-
-		// 存储类型
-
-		if (!storageItem.getStorageType().equals(storageType)) {
-
-			isChange = true;
-
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), StorageConstant.StorageFieldName.存储类型.toString());
-
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
-
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, StorageConstant.StorageFieldName.存储类型.toString(), storageItem.getStorageType().toString(), storageType.toString()));
-
-			} else {
-
-				ChangeItem changeItem = changeItems.get(0);
-
-				changeItem.setNewValue(storageType.toString());
-				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
-
-			}
-
-		}
-
-		if (!storageItem.getSpace().equals(space)) {
-
-			isChange = true;
-
-			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), StorageConstant.StorageFieldName.容量空间.toString());
-
-			if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
-
-				// 插入变更明细.变更项（字段）名称以枚举CompateFieldName为准.
-
-				comm.changeServcie.saveOrUpdateChangeItem(new ChangeItem(change, StorageConstant.StorageFieldName.容量空间.toString(), storageItem.getSpace().toString(), space.toString()));
-
-			} else {
-
-				ChangeItem changeItem = changeItems.get(0);
-
-				changeItem.setNewValue(space.toString());
-				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
-
-			}
-
-		}
-
-		// TODO 挂载实例
-
-		return isChange;
-
-	}
 }

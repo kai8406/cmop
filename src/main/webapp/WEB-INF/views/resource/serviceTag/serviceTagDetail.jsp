@@ -118,7 +118,25 @@
 									
 									<!-- 存储 storage  -->
 					            	<c:if test="${resource.serviceType == 3 }">
-					            	
+					            		<td class="is-hidden">
+					            			<c:choose>
+												<c:when test="${item.fieldName == '存储类型'}">
+													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '容量空间'}">${item.oldValue}GB</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '存储类型'}">
+													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '容量空间'}">${item.newValue}GB</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
 					            	</c:if><!-- 存储 storage  End -->
 									
 								</tr>

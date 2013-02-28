@@ -201,7 +201,21 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else {
 
+								if (StorageConstant.StorageFieldName.存储类型.toString().equals(fieldName)) {
+
+									content.append(StorageConstant.StorageFieldName.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
+											.append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
+
+								} else if (StorageConstant.StorageFieldName.容量空间.toString().equals(fieldName)) {
+
+									content.append(StorageConstant.StorageFieldName.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue())
+											.append("GB").append(NEWLINE);
+
+								}
+
 							}
+
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
 
 						}
 

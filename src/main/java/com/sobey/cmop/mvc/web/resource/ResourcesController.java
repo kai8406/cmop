@@ -95,7 +95,12 @@ public class ResourcesController extends BaseController {
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
 
+			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
+
+			returnUrl = "resource/form/storage";
+
 		} else {
+
 			returnUrl = "resource/resourceList";
 		}
 

@@ -176,6 +176,40 @@ table {
 								
 								<#elseif resource.serviceType == 3 ><!-- 存储 storage  -->
 								
+								<td class="is-hidden">
+									
+										<#if item.fieldName == '存储类型' >
+										
+											<#list storageTypeMap?keys as k ><#if item.oldValue?string == k>${storageTypeMap[k]}</#if></#list>
+											
+										<#elseif item.fieldName == '容量空间' >
+										
+											${item.oldValue}GB
+											
+										<#else>${item.oldValue}</#if>
+										
+									</td>
+									
+									<td class="is-visible">
+									
+									
+										<#if item.fieldName == '存储类型' >
+										
+											<#list storageTypeMap?keys as k ><#if item.newValue?string == k>${storageTypeMap[k]}</#if></#list>
+											
+										<#elseif item.fieldName == '容量空间' >
+										
+											${item.newValue}GB
+											
+										<#else>${item.newValue}</#if>
+										 
+									</td>
+									
+								
+								<#elseif resource.serviceType == 4 ><!--   ELB  -->
+								
+								
+								
 								<#else>
 								
 								

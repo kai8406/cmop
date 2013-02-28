@@ -64,6 +64,9 @@ public class CommonService {
 	public FailureService failureService;
 
 	@Resource
+	public HostServerService hostServerService;
+
+	@Resource
 	public ImportService importService;
 
 	@Resource
@@ -98,8 +101,5 @@ public class CommonService {
 
 	@Resource
 	public VlanService vlanService;
-
-	@Resource
-	public HostServerService hostServerService;
 
 }

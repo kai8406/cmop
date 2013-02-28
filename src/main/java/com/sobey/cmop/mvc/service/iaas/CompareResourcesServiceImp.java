@@ -116,20 +116,20 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		}
 
-		// remark
+		// Remark
 		if (!computeItem.getRemark().equals(remark)) {
 
 			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.用途信息.toString(), computeItem.getRemark().toString(), remark);
 
 		}
 
-		// application
+		// Application
 		if (this.compareApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths)) {
 
 			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
 			String newValue = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.用途信息.toString(), oldValue, newValue);
+			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.应用信息.toString(), oldValue, newValue);
 
 		}
 

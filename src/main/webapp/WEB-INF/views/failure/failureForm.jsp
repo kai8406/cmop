@@ -73,7 +73,7 @@
 			$("#resources-tbody").empty();
 			
 			//Post方法提交查询资源Resources.
-			$("#resourcesModal").ajaxSubmit({
+			$("#resourcesForm").ajaxSubmit({
 				url : "${ctx}/ajax/getResourcesList",
 				type: "POST" ,
 				dataType: "json",
@@ -225,7 +225,7 @@
 		<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>资源列表</h3></div>
 		<div class="modal-body">
 		
-		<form class="form-inline well well-small">
+		<form id="resourcesForm" class="form-inline well well-small">
 			
 			<!-- 搜索 -->
 			<div class="row">

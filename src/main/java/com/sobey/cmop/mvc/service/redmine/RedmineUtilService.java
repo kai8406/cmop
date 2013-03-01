@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.redmine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -18,6 +20,9 @@ import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -56,7 +61,7 @@ public class RedmineUtilService extends BaseSevcie {
 	public String applyRedmineDesc(Apply apply) {
 		try {
 
-			StringBuffer content = new StringBuffer();
+			StringBuilder content = new StringBuilder();
 
 			content.append("*服务申请的详细信息*").append(NEWLINE + NEWLINE);
 			content.append("# +*基本信息*+").append(NEWLINE);
@@ -73,37 +78,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装计算资源Compute信息
 
-			if (!apply.getComputeItems().isEmpty()) {
-				content.append("# +*计算资源信息*+").append(NEWLINE);
-				content.append("<pre>").append(NEWLINE);
-				for (ComputeItem compute : apply.getComputeItems()) {
-					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
-					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
-					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
-
-					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
-						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
-					} else {
-						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
-					}
-
-					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")")
-							.append(NEWLINE + NEWLINE);
-				}
-				content.append("</pre>").append(NEWLINE);
-			}
-
-			if (!apply.getStorageItems().isEmpty()) {
-				content.append("# +*存储资源信息*+").append(NEWLINE);
-				content.append("<pre>").append(NEWLINE);
-				for (StorageItem storageItem : apply.getStorageItems()) {
-					content.append("标识符: ").append(storageItem.getIdentifier()).append(NEWLINE);
-					content.append("存储类型: ").append(StorageConstant.storageType.get(storageItem.getStorageType())).append(NEWLINE);
-					content.append("容量空间: ").append(storageItem.getSpace()).append("GB").append(NEWLINE);
-					content.append("挂载实例: ").append(storageItem.getMountComputes()).append(NEWLINE + NEWLINE);
-				}
-				content.append("</pre>").append(NEWLINE);
-			}
+			this.generateContentByLists(content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
+					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()), new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()), new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()));
 
 			return content.toString();
 
@@ -117,12 +93,83 @@ public class RedmineUtilService extends BaseSevcie {
 	}
 
 	/**
+	 * 生成满足redmine显示的资源回收Resources文本.
+	 */
+	public String recycleResourcesRedmineDesc(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems) {
+
+		try {
+
+			StringBuilder content = new StringBuilder();
+
+			// 拼装计算资源Compute信息
+
+			this.generateContentByLists(content, computeItems, storageItems, elbItems, eipItems, dnsItems);
+
+			return content.toString();
+
+		} catch (Exception e) {
+
+			logger.error("--->资源变更Resources拼装Redmine内容出错：" + e.getMessage());
+
+			return null;
+
+		}
+	}
+
+	/**
+	 * 生成满足redmine显示的故障申报Failure文本.
+	 */
+	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems) {
+
+		try {
+
+			StringBuilder content = new StringBuilder();
+
+			content.append("# +*故障申报信息*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			content.append("申报人：").append(failure.getUser().getName()).append(NEWLINE);
+			content.append("申报标题：").append(failure.getTitle()).append(NEWLINE);
+			content.append("申报时间：").append(failure.getCreateTime()).append(NEWLINE);
+			content.append("故障类型：").append(ApplyConstant.ServiceType.get(failure.getFaultType())).append(NEWLINE);
+			content.append("优先级：").append(RedmineConstant.Priority.get(failure.getLevel())).append(NEWLINE);
+			content.append("受理人：").append(RedmineConstant.Assignee.get(failure.getAssignee())).append(NEWLINE);
+			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
+			content.append("</pre>");
+
+			this.generateContentByLists(content, computeItems, storageItems, elbItems, eipItems, dnsItems);
+
+			return content.toString();
+
+		} catch (Exception e) {
+
+			logger.error("--->故障申报Failure拼装Redmine内容出错：" + e.getMessage());
+
+			return null;
+
+		}
+
+	}
+
+	private void generateContentByLists(StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems) {
+
+		RedmineTextUtil.generateCompute(content, computeItems);
+		RedmineTextUtil.generateStorage(content, storageItems);
+		RedmineTextUtil.generateElb(content, elbItems);
+		RedmineTextUtil.generateEip(content, eipItems);
+		RedmineTextUtil.generateDNS(content, dnsItems);
+
+	}
+
+	/**
 	 * 生成满足redmine显示的资源变更Resources文本.
 	 */
 	public String resourcesRedmineDesc(ServiceTag serviceTag) {
 		try {
 
-			StringBuffer content = new StringBuffer();
+			StringBuilder content = new StringBuilder();
 
 			content.append("*资源变更的详细信息*").append(NEWLINE + NEWLINE);
 			content.append("* +*服务标签基本信息*+").append(NEWLINE);
@@ -159,17 +206,17 @@ public class RedmineUtilService extends BaseSevcie {
 
 							// 拼装计算资源Compute信息
 
-							if (ComputeConstant.CompateFieldName.操作系统.toString().equals(fieldName)) {
+							if (FieldNameConstant.Compate.操作系统.toString().equals(fieldName)) {
 
-								content.append(ComputeConstant.CompateFieldName.操作系统 + ":" + BLANK).append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
+								content.append(FieldNameConstant.Compate.操作系统 + ":" + BLANK).append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
 										.append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
 
-							} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Compate.操作位数.toString().equals(fieldName)) {
 
-								content.append(ComputeConstant.CompateFieldName.操作位数 + ":" + BLANK).append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
+								content.append(FieldNameConstant.Compate.操作位数 + ":" + BLANK).append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
 										.append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
 
-							} else if (ComputeConstant.CompateFieldName.规格.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Compate.规格.toString().equals(fieldName)) {
 
 								String oldValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getOldValue())
 										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getOldValue());
@@ -177,23 +224,23 @@ public class RedmineUtilService extends BaseSevcie {
 								String newValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getNewValue())
 										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getNewValue());
 
-								content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.规格 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
 
-							} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Compate.用途信息.toString().equals(fieldName)) {
 
-								content.append(ComputeConstant.CompateFieldName.用途信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
 
-							} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
 
-								content.append(ComputeConstant.CompateFieldName.应用信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
 
-							} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
 								NetworkEsgItem OldESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue()));
 
 								NetworkEsgItem NewESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getNewValue()));
 
-								content.append(ComputeConstant.CompateFieldName.ESG + ":" + BLANK).append(OldESG.getIdentifier() + "(" + OldESG.getDescription() + ")").append(RARR)
+								content.append(FieldNameConstant.Compate.ESG + ":" + BLANK).append(OldESG.getIdentifier() + "(" + OldESG.getDescription() + ")").append(RARR)
 										.append(NewESG.getIdentifier() + "(" + NewESG.getDescription() + ")").append(NEWLINE);
 
 							}
@@ -202,15 +249,15 @@ public class RedmineUtilService extends BaseSevcie {
 
 							// 拼装存储空间Storage信息
 
-							if (StorageConstant.StorageFieldName.存储类型.toString().equals(fieldName)) {
+							if (FieldNameConstant.Storage.存储类型.toString().equals(fieldName)) {
 
-								content.append(StorageConstant.StorageFieldName.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
+								content.append(FieldNameConstant.Storage.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
 										.append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
 
-							} else if (StorageConstant.StorageFieldName.容量空间.toString().equals(fieldName)) {
+							} else if (FieldNameConstant.Storage.容量空间.toString().equals(fieldName)) {
 
-								content.append(StorageConstant.StorageFieldName.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue())
-										.append("GB").append(NEWLINE);
+								content.append(FieldNameConstant.Storage.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue()).append("GB")
+										.append(NEWLINE);
 
 							}
 
@@ -233,103 +280,6 @@ public class RedmineUtilService extends BaseSevcie {
 			e.printStackTrace();
 
 			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
-
-			return null;
-
-		}
-	}
-
-	/**
-	 * 生成满足redmine显示的资源回收Resources文本.
-	 */
-	public String recycleResourcesRedmineDesc(List<ComputeItem> computeItems) {
-
-		try {
-
-			StringBuffer content = new StringBuffer();
-
-			// 拼装计算资源Compute信息
-
-			if (!computeItems.isEmpty()) {
-				content.append("# +*计算资源信息*+").append(NEWLINE);
-				content.append("<pre>").append(NEWLINE);
-				for (ComputeItem compute : computeItems) {
-					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
-					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
-					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
-
-					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
-						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
-					} else {
-						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
-					}
-
-					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
-				}
-				content.append("</pre>").append(NEWLINE);
-			}
-
-			// TODO 缺少其它资源
-
-			return content.toString();
-
-		} catch (Exception e) {
-
-			logger.error("--->资源变更Resources拼装Redmine内容出错：" + e.getMessage());
-
-			return null;
-
-		}
-	}
-
-	/**
-	 * 生成满足redmine显示的故障申报Failure文本.
-	 */
-	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems) {
-
-		try {
-
-			StringBuffer content = new StringBuffer();
-
-			content.append("# +*故障申报信息*+").append(NEWLINE);
-			content.append("<pre>").append(NEWLINE);
-			content.append("申报人：").append(failure.getUser().getName()).append(NEWLINE);
-			content.append("申报标题：").append(failure.getTitle()).append(NEWLINE);
-			content.append("申报时间：").append(failure.getCreateTime()).append(NEWLINE);
-			content.append("故障类型：").append(ApplyConstant.ServiceType.get(failure.getFaultType())).append(NEWLINE);
-			content.append("优先级：").append(RedmineConstant.Priority.get(failure.getLevel())).append(NEWLINE);
-			content.append("受理人：").append(RedmineConstant.Assignee.get(failure.getAssignee())).append(NEWLINE);
-			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
-			content.append("</pre>");
-
-			// 拼装计算资源Compute信息
-
-			if (!computeItems.isEmpty()) {
-				content.append("# +*计算资源信息*+").append(NEWLINE);
-				content.append("<pre>").append(NEWLINE);
-				for (ComputeItem compute : computeItems) {
-					content.append("标识符: ").append(compute.getIdentifier()).append(NEWLINE);
-					content.append("用途信息: ").append(compute.getRemark()).append(NEWLINE);
-					content.append("基本信息: ").append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(" ").append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit())).append(" ");
-
-					if (ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType())) { // 区分PCS和ECS
-						content.append(ComputeConstant.PCSServerType.get(compute.getServerType())).append(NEWLINE);
-					} else {
-						content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
-					}
-
-					content.append("关联ESG: ").append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append("\r\n\r\n");
-				}
-				content.append("</pre>").append(NEWLINE);
-			}
-
-			// TODO 缺少其它资源
-
-			return content.toString();
-
-		} catch (Exception e) {
-
-			logger.error("--->故障申报Failure拼装Redmine内容出错：" + e.getMessage());
 
 			return null;
 

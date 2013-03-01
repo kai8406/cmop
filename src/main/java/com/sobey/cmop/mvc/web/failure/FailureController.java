@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Servlets;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -103,32 +103,29 @@ public class FailureController extends BaseController {
 
 		Integer issueId = failure.getRedmineIssue().getIssueId();
 
-		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
-
-		String[] resourcesIds = failure.getRelatedId().split(",");
-		for (String resourcesId : resourcesIds) {
-
-			Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
-			Integer serviceType = resources.getServiceType();
-			Integer serviceId = resources.getServiceId();
-
-			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
-				computeItems.add(comm.computeService.getComputeItem(serviceId));
-			}
-
-			// TODO 其它资源处理
-
-		}
-
 		Issue issue = RedmineService.getIssue(issueId);
 
 		if (issue == null) { // 查询Redmine中的Issue信息失败
 			model.addAttribute("message", "查询工单信息失败，请稍后重试！");
 		}
 
+		List<Resources> resourcesList = new ArrayList<Resources>();
+		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+		List<StorageItem> storageItems = new ArrayList<StorageItem>();
+
+		String[] resourcesIds = failure.getRelatedId().split(",");
+		for (String resourcesId : resourcesIds) {
+			Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
+			resourcesList.add(resources);
+		}
+
+		/* 封装各个资源对象 */
+
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
 		model.addAttribute("issue", issue);
 		model.addAttribute("failure", failure);
 		model.addAttribute("computeItems", computeItems);
+		model.addAttribute("storageItems", storageItems);
 
 		return "failure/failureDetail";
 	}

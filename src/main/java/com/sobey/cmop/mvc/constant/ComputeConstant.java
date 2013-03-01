@@ -228,15 +228,4 @@ public class ComputeConstant {
 
 	}
 
-	/**
-	 * entity ComputeItem 里的参数<br>
-	 * 用于变更项的说明
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum CompateFieldName {
-		操作系统, 操作位数, 规格, 用途信息, ESG, 应用信息;
-	}
-
 }

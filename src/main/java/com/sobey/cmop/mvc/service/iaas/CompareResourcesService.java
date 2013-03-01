@@ -13,14 +13,14 @@ import com.sobey.cmop.mvc.entity.StorageItem;
  * 根据变更项和changeId查询数据库中是否有变更详情ChangeItem.  
  * 如果有:取最新的数据,保存. 
  * 如果没有或者资源状态是 0:未变更;6:已创建. 新插入一条.
+ * 
+ * 返回的值 true : 变更 ; false : 未变更.
  * </pre>
  */
 public interface CompareResourcesService {
 
 	/**
 	 * 比较实例资源computeItem 变更前和变更后的值<br>
-	 * 如果变更前后值不同,保存至Change表中,并返回true<br>
-	 * true : 变更 ; false : 未变更.
 	 * 
 	 * @param resources
 	 *            资源
@@ -49,8 +49,6 @@ public interface CompareResourcesService {
 
 	/**
 	 * 比较存储空间StorageItem变更前和变更后的值<br>
-	 * 如果变更前后值不同,保存至Change表中,并返回true<br>
-	 * true : 变更 ; false : 未变更.
 	 * 
 	 * @param resources
 	 *            资源

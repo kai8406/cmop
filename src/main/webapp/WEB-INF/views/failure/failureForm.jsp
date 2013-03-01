@@ -4,6 +4,7 @@
 <html>
 <head>
 
+
 	<title>故障申报</title>
 	
 	<script>
@@ -26,37 +27,31 @@
 			 
 		});
 		
+		/**
+		1.每次点击确认时,遍历页面,将存在页面的resourcesId放入一个临时数组.
+		2.判断选中的资源是否在页面上.如果存在跳过,不存在生成该资源对应的resource代码插入页面
+		3.初始化临时数组和checkbox
+		**/
 		$(document).on("click", "#ModalSave", function() {
-			
-			/**
-			1.每次点击确认时,遍历页面,将存在页面的resourcesId放入一个临时数组.
-			2.判断选中的资源是否在页面上.如果存在跳过,不存在生成该资源对应的resource代码插入页面
-			3.初始化临时数组和checkbox
-			**/
-			
 			var selectedArray = [];
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
 			
 			//Step.1
-			$("div.resources").each(function(){
+			
+			$("div.resources").each(function() {
 				selectedArray.push($(this).find("#resourcesId").val());
 			});
 			
 			//Step.2
 			
-			$CheckedIds.each(function(){
-				
+			$CheckedIds.each(function() {
 				var resourcesId = $(this).val();
-				
-				if($.inArray(resourcesId,selectedArray) == -1){
+				if ($.inArray(resourcesId, selectedArray) == -1) {
 					var serviceType = $(this).parent().parent().find('#resources-serviceType').text();
-					
 					//根据resourcesId生成HTML字符串,并拼装
-					
-					fGetUnitByResourcesId(resourcesId,serviceType);
+					fGetUnitByResourcesId(resourcesId, serviceType);
 				}
-				
 			});
 			
 			//Step.3
@@ -66,79 +61,101 @@
 			$ModalDiv.find(".checker > span").removeClass("checked");
 			
 		});
-		
-		//查询resourceList		
-		function searchResources(){
-			
+
+		/**
+		 * 查询resourceList,遍历Json数据插入到页面
+		 */
+		function searchResources() {
 			$("#resources-tbody").empty();
 			
 			//Post方法提交查询资源Resources.
+			
 			$("#resourcesForm").ajaxSubmit({
-				url : "${ctx}/ajax/getResourcesList",
-				type: "POST" ,
+				url: "${ctx}/ajax/getResourcesList",
+				type: "POST",
 				dataType: "json",
-				success : function(responseText, statusText, xhr, $form)  { 
-					
+				success: function(responseText, statusText, xhr, $form) {
 					var html = '';
-					
-					for ( var i = 0; i < responseText.length; i++) {
-						
+					for (var i = 0; i < responseText.length; i++) {
 						html += '<tr>';
-						html += '<td><input type="checkbox" value="'+responseText[i].id+'"></td>';
-						html += '<td>'+responseText[i].serviceIdentifier+'</td>';
-						html += '<td>'+responseText[i].serviceTag.name+'</td>';
-						html += '<td>'+ (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress ) +'</td>';
+						html += '<td><input type="checkbox" value="' + responseText[i].id + '"></td>';
+						html += '<td>' + responseText[i].serviceIdentifier + '</td>';
+						html += '<td>' + responseText[i].serviceTag.name + '</td>';
+						html += '<td>' + (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress) + '</td>';
 						html += "<td id='resources-serviceType' class='hide'>" + responseText[i].serviceType + "</td>";
 						html += '</tr>';
-					
 					}
-					
 					$("#resources-tbody").append(html);
-					
-				}  
+				}
 			});
-			
-			return false; 
-			
+			return false;
 		};
 		
-		function fGetUnitByResourcesId(resourcesId,serviceType){
-			
-			//TODO 生成资源的代码
-			
-			if(serviceType == 1 || serviceType == 2){ 
+
+		/**
+		 * 通过resourcesId Ajax获得资源Json数据后,根据serviceType区分不同的服务类型插入不同的数据至HTML页面
+		 * @param resourcesId 资源ID
+		 * @param serviceType 资源服务类型 eg:PCS,ECS
+		 */
+		function fGetUnitByResourcesId(resourcesId, serviceType) {
+			 
+			if (serviceType == 1 || serviceType == 2) {
+				
+				//PCS & ECS
+				
 				$.ajax({
 					type: "GET",
-					url: "${ctx}/ajax/getCompute?id="+resourcesId,
+					url: "${ctx}/ajax/getCompute?id=" + resourcesId,
 					dataType: "json",
-					success: function(data){
-						
+					success: function(data) {
 						var html = '';
-						 
 						html += '<div class="resources alert alert-block alert-info fade in">';
 						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
-						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="'+resourcesId+'">';
-						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>'+data.identifier+'</strong></dd>';
-						html += '<dd><em>用途信息</em>&nbsp;&nbsp;<strong>'+data.remark+'</strong></dd>';
-						html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>'+data.osType+'&nbsp;'+data.osBit+'&nbsp;'+data.serverType+'</strong></dd>';
-						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>'+data.networkEsgItem.identifier+'('+data.networkEsgItem.description+')</strong></dd>';
-						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>'+data.innerIp+'</strong></dd>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>用途信息</em>&nbsp;&nbsp;<strong>' + data.remark + '</strong></dd>';
+						html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + data.osType + '&nbsp;' + data.osBit + '&nbsp;' + data.serverType + '</strong></dd>';
+						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.networkEsgItem.identifier + '(' + data.networkEsgItem.description + ')</strong></dd>';
+						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>' + (data.innerIp == null ? "" : data.innerIp)  + '</strong></dd>';
 						html += '</div>';
-						
 						$("#resourcesDIV dl").append(html);
-						
-					}		
+					}
 				});
-			}
+				
+			}else if(serviceType == 3){
+				
+				//ES3
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getStorage?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>存储类型</em>&nbsp;&nbsp;<strong>' + data.storageType + '</strong></dd>';
+						html += '<dd><em>容量空间</em>&nbsp;&nbsp;<strong>' + data.space+ 'GB</strong></dd>';
+						html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>' + data.mountComputes + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				 
+			
+			} 
 			
 		};
+		 
 		
 	</script>
 	
 </head>
 
 <body>
-	
+
 	<style>body{background-color: #f5f5f5;}</style>
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
@@ -208,7 +225,9 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
+			<div id="resourcesDIV"><dl class="dl-horizontal">
+
+				</dl></div>
 			 
 			
 			<div class="form-actions">

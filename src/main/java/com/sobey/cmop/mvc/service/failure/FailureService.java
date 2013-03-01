@@ -17,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
-import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -72,28 +72,25 @@ public class FailureService extends BaseSevcie {
 
 		try {
 
+			List<Resources> resourcesList = new ArrayList<Resources>();
 			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+			List<StorageItem> storageItems = new ArrayList<StorageItem>();
 
 			String[] resourcesIds = failure.getRelatedId().split(",");
 			for (String resourcesId : resourcesIds) {
 				Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
-
-				Integer serviceType = resources.getServiceType();
-				Integer serviceId = resources.getServiceId();
-
-				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
-					computeItems.add(comm.computeService.getComputeItem(serviceId));
-				} else {
-					// TODO 其它资源
-				}
-
+				resourcesList.add(resources);
 			}
+
+			/* 封装各个资源对象 */
+
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
 
 			logger.info("--->拼装邮件内容...");
 
 			// 拼装Redmine内容
 
-			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems);
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, null, null, null);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
 

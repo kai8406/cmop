@@ -356,8 +356,7 @@ public class IpPoolService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据ipAddress获得指定的IpPool TODO
-	 * 存在各个IDC相同网段IP的情况，暂未处理。只要不涉及到东莞和沈阳的生产资源申请就不会有问题。
+	 * 根据ipAddress获得指定的IpPool 存在各个IDC相同网段IP的情况，暂未处理。只要不涉及到东莞和沈阳的生产资源申请就不会有问题。
 	 * 
 	 * @param ipAddress
 	 * @return

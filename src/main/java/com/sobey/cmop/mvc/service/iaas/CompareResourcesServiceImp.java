@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
-import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
-import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
@@ -90,7 +89,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		if (!computeItem.getOsType().equals(osType)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.操作系统.toString(), computeItem.getOsType().toString(), osType.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.操作系统.toString(), computeItem.getOsType().toString(), osType.toString());
 
 		}
 
@@ -98,28 +97,28 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		if (!computeItem.getOsBit().equals(osBit)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.操作位数.toString(), computeItem.getOsBit().toString(), osBit.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.操作位数.toString(), computeItem.getOsBit().toString(), osBit.toString());
 
 		}
 
 		// 规格
 		if (!computeItem.getServerType().equals(serverType)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.规格.toString(), computeItem.getServerType().toString(), serverType.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.规格.toString(), computeItem.getServerType().toString(), serverType.toString());
 
 		}
 
 		// ESG
 		if (!computeItem.getNetworkEsgItem().getId().equals(esgId)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.ESG.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.ESG.toString(), computeItem.getNetworkEsgItem().getId().toString(), esgId.toString());
 
 		}
 
 		// Remark
 		if (!computeItem.getRemark().equals(remark)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.用途信息.toString(), computeItem.getRemark().toString(), remark);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.用途信息.toString(), computeItem.getRemark().toString(), remark);
 
 		}
 
@@ -129,7 +128,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
 			String newValue = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
-			isChange = this.saveChangeItemByFieldName(resources, ComputeConstant.CompateFieldName.应用信息.toString(), oldValue, newValue);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Compate.应用信息.toString(), oldValue, newValue);
 
 		}
 
@@ -230,7 +229,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		if (!storageItem.getStorageType().equals(storageType)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, StorageConstant.StorageFieldName.存储类型.toString(), storageItem.getStorageType().toString(), storageType.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Storage.存储类型.toString(), storageItem.getStorageType().toString(), storageType.toString());
 
 		}
 
@@ -238,7 +237,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		if (!storageItem.getSpace().equals(space)) {
 
-			isChange = this.saveChangeItemByFieldName(resources, StorageConstant.StorageFieldName.容量空间.toString(), storageItem.getSpace().toString(), space.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Storage.容量空间.toString(), storageItem.getSpace().toString(), space.toString());
 
 		}
 

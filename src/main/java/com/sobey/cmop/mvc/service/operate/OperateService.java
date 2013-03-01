@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -341,23 +342,6 @@ public class OperateService extends BaseSevcie {
 			resourcesList.add(comm.resourcesService.getResources(Integer.valueOf(resourcesId)));
 		}
 
-		/* TODO 对resource做一些封装处理 */
-
-		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
-
-		for (Resources resources : resourcesList) {
-
-			Integer serviceType = resources.getServiceType();
-			Integer serviceId = resources.getServiceId();
-
-			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
-				computeItems.add(comm.computeService.getComputeItem(serviceId));
-			}
-
-			// TODO 其它资源处理
-
-		}
-
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
 
 			logger.info("---> 完成度 = 100%的工单处理...");
@@ -376,7 +360,7 @@ public class OperateService extends BaseSevcie {
 
 			// 工单处理完成，给申请人发送邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser, computeItems);
+			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);
 
 			// 删除资源.
 			for (Resources resources : resourcesList) {
@@ -390,11 +374,18 @@ public class OperateService extends BaseSevcie {
 
 			logger.info("---> 完成度 < 100%的工单处理...");
 
+			/* 对resource做一些封装处理 */
+
+			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+			List<StorageItem> storageItems = new ArrayList<StorageItem>();
+
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
+
 			// 发送邮件通知下个指派人
 
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, assigneeUser);
 
 		}
 

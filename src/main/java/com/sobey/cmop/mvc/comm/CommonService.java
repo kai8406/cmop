@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.service.iaas.CompareResourcesService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
+import com.sobey.cmop.mvc.service.iaas.ResourcesJsonService;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
@@ -90,6 +91,9 @@ public class CommonService {
 
 	@Resource
 	public RedmineUtilService redmineUtilService;
+
+	@Resource
+	public ResourcesJsonService resourcesJsonService;
 
 	@Resource
 	public ResourcesService resourcesService;

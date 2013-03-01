@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -107,7 +108,7 @@ public class ResourcesService extends BaseSevcie {
 		status.add(ResourcesConstant.Status.审批中.toInteger());
 		status.add(ResourcesConstant.Status.已审批.toInteger());
 		status.add(ResourcesConstant.Status.创建中.toInteger());
-		status.add(ResourcesConstant.Status.已创建.toInteger());
+		// status.add(ResourcesConstant.Status.已创建.toInteger());
 
 		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
 	}
@@ -126,43 +127,6 @@ public class ResourcesService extends BaseSevcie {
 		status.add(ResourcesConstant.Status.已变更.toInteger());
 
 		return resourcesDao.findByServiceTagIdAndStatusInOrderByIdDesc(serviceTagId, status);
-	}
-
-	/**
-	 * 根据Resources获得对应的基础设施对象.<br>
-	 * 通过serviceType来区分Resources所对应的基础设施对象,再通过serviceId获得对象<br>
-	 * 没有的话返回null
-	 * 
-	 * @return
-	 */
-	public Object getObjectByResourcesId(Integer id) {
-
-		Resources resources = comm.resourcesService.getResources(id);
-
-		Integer serviceType = resources.getServiceType();
-
-		Integer serviceId = resources.getServiceId();
-
-		Object object = null;
-
-		if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
-
-			object = comm.computeService.getComputeItem(serviceId);
-
-		} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
-
-			object = comm.es3Service.getStorageItem(serviceId);
-
-			// TODO 其它资源未完成
-
-		} else {
-
-			logger.info("没有找到相关的资源");
-
-		}
-
-		return object;
-
 	}
 
 	/**
@@ -270,7 +234,7 @@ public class ResourcesService extends BaseSevcie {
 
 		}
 
-		// TODO 还有其它资源的插入.暂时略过.
+		// TODO 还有其它资源的插入.
 
 	}
 
@@ -291,21 +255,23 @@ public class ResourcesService extends BaseSevcie {
 
 		boolean result = false;
 
-		// 回收的资源ID.可能会有多个,用 "," 连接.
-
-		// TODO 暂时只针对compute
-
+		// TODO 回收的资源ID.可能会有多个,用 "," 连接. 暂时只针对compute,此处去缺少一个验证回收资源的关联资源的方法.
+		/**
+		 * 根据resourceId获得与其相关的各个资源ID
+		 */
 		String resourceId = resources.getId().toString();
 
+		List<Resources> resourcesList = new ArrayList<Resources>();
 		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+		List<StorageItem> storageItems = new ArrayList<StorageItem>();
 
-		computeItems.add((ComputeItem) this.getObjectByResourcesId(id));
+		resourcesList.add(resources);
 
-		// TODO 拼装Redmine内容
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
 
 		logger.info("--->拼装Redmine内容...");
 
-		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(computeItems);
+		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(computeItems, storageItems, null, null, null);
 
 		// 写入工单Issue到Redmine
 
@@ -355,7 +321,7 @@ public class ResourcesService extends BaseSevcie {
 
 			// 发送工单处理邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, assigneeUser);
 
 		} else {
 			return false;
@@ -378,37 +344,37 @@ public class ResourcesService extends BaseSevcie {
 		Integer serviceType = resources.getServiceType();
 		Integer serviceId = resources.getServiceId();
 
-		ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
-
 		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
 
 		List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeId(change.getId());
 
 		if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
+			ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+
 			for (ChangeItem changeItem : changeItems) {
 
-				if (ComputeConstant.CompateFieldName.操作系统.toString().equals(changeItem.getFieldName())) {
+				if (FieldNameConstant.Compate.操作系统.toString().equals(changeItem.getFieldName())) {
 
 					computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
 
-				} else if (ComputeConstant.CompateFieldName.操作位数.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.Compate.操作位数.toString().equals(changeItem.getFieldName())) {
 
 					computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
 
-				} else if (ComputeConstant.CompateFieldName.规格.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.Compate.规格.toString().equals(changeItem.getFieldName())) {
 
 					computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
 
-				} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.Compate.用途信息.toString().equals(changeItem.getFieldName())) {
 
 					computeItem.setRemark(changeItem.getOldValue());
 
-				} else if (ComputeConstant.CompateFieldName.ESG.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.Compate.ESG.toString().equals(changeItem.getFieldName())) {
 
 					computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue())));
 
-				} else if (ComputeConstant.CompateFieldName.应用信息.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 
 					// TODO 应用信息无法还原.
 
@@ -420,9 +386,30 @@ public class ResourcesService extends BaseSevcie {
 
 		} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
 
-			// TODO 其它资源的还原
+			StorageItem storageItem = comm.es3Service.getStorageItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.Storage.存储类型.toString().equals(changeItem.getFieldName())) {
+
+					storageItem.setStorageType(Integer.valueOf(changeItem.getOldValue()));
+
+				} else if (FieldNameConstant.Storage.容量空间.toString().equals(changeItem.getFieldName())) {
+
+					storageItem.setSpace(Integer.valueOf(changeItem.getOldValue()));
+
+				} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+				}
+
+			}
+
+			comm.es3Service.saveOrUpdate(storageItem);
 
 		}
+
+		// TODO 其它资源的还原
 
 		// 清除服务变更Change的内容
 
@@ -469,6 +456,34 @@ public class ResourcesService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteResources(Integer id) {
 		resourcesDao.delete(id);
+	}
+
+	/**
+	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.<br>
+	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
+	 */
+	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems) {
+
+		for (Resources resources : resourcesList) {
+
+			Integer serviceType = resources.getServiceType();
+			Integer serviceId = resources.getServiceId();
+
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+
+				// PCS & ECS
+				computeItems.add(comm.computeService.getComputeItem(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
+
+				// ES3
+				storageItems.add(comm.es3Service.getStorageItem(serviceId));
+
+			}
+
+			// TODO 其它资源处理
+		}
+
 	}
 
 }

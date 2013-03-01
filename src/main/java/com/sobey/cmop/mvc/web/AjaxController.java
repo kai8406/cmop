@@ -127,18 +127,6 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
-	 * Ajax请求根据computeId获得compute的对象
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "getCompute")
-	public @ResponseBody
-	ComputeJson getCompute(@RequestParam(value = "id") Integer id) {
-		return comm.computeService.convertComputeJsonToComputeItem(comm.computeService.getComputeItem(id));
-	}
-
-	/**
 	 * Ajax请求获得当前登录用户创建的所有ComputeJson对象.
 	 * 
 	 * @return ComputeJson List
@@ -153,7 +141,7 @@ public class AjaxController extends BaseController {
 
 		for (ComputeItem computeItem : computeItems) {
 
-			ComputeJson json = comm.computeService.convertComputeJsonToComputeItem(computeItem);
+			ComputeJson json = comm.resourcesJsonService.convertComputeJsonToComputeItem(computeItem);
 
 			computeJsons.add(json);
 		}

@@ -65,15 +65,4 @@ public class StorageConstant {
 
 	}
 
-	/**
-	 * entity StorageItem 里的参数<br>
-	 * 用于变更项的说明
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum StorageFieldName {
-		存储类型, 容量空间, 挂载实例;
-	}
-
 }

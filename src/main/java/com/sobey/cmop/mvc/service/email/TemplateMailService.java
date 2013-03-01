@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 
 import freemarker.template.Configuration;
@@ -325,15 +326,16 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
-	 * 发送工单处理邮件(资源回收)
+	 * TOTO 发送工单处理邮件(资源回收)
 	 */
-	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
+	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
 		Map<String, Object> map = this.freemarkerParameterMap();
 
 		map.put("computes", computeItems);
+		map.put("storageItems", storageItems);
 
 		// TODO 其它资源缺少
 
@@ -356,7 +358,7 @@ public class TemplateMailService extends BaseSevcie {
 	 * @param sendToUser
 	 *            收件人.生成环境使用
 	 */
-	public void sendRecycleResourcesOperateDoneNotificationMail(User sendToUser, List<ComputeItem> computeItems) {
+	public void sendRecycleResourcesOperateDoneNotificationMail(User sendToUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 

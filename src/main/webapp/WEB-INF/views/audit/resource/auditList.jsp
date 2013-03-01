@@ -77,7 +77,7 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="detail/${item.id}">${item.serviceTag.name}</a></td>
+					<td>${item.serviceTag.name}</td>
 					<td>
 						<c:forEach var="map" items="${priorityMap }">
 							<c:if test="${map.key == item.serviceTag.priority }">

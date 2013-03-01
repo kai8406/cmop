@@ -90,7 +90,7 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="detail/${item.id}">${item.apply.title}</a></td>
+					<td>${item.apply.title}</td>
 					<td>${item.apply.serviceTag}</td>
 					<td>
 						<c:forEach var="map" items="${priorityMap }">

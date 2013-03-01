@@ -148,7 +148,7 @@ public class Es3Service extends BaseSevcie {
 		if (isChange) {
 
 			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
-			
+
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 
 			comm.serviceTagService.saveOrUpdate(serviceTag);

@@ -155,8 +155,9 @@ public class RedmineUtilService extends BaseSevcie {
 
 						String fieldName = changeItem.getFieldName();
 
-						// 拼装计算资源Compute信息
 						if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+							// 拼装计算资源Compute信息
 
 							if (ComputeConstant.CompateFieldName.操作系统.toString().equals(fieldName)) {
 
@@ -170,17 +171,13 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (ComputeConstant.CompateFieldName.规格.toString().equals(fieldName)) {
 
-								if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())) {
+								String oldValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getOldValue())
+										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getOldValue());
 
-									content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getOldValue())).append(RARR)
-											.append(ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getNewValue())).append(NEWLINE);
+								String newValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getNewValue())
+										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getNewValue());
 
-								} else {
-
-									content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getOldValue())).append(RARR)
-											.append(ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getNewValue())).append(NEWLINE);
-
-								}
+								content.append(ComputeConstant.CompateFieldName.规格 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
 
 							} else if (ComputeConstant.CompateFieldName.用途信息.toString().equals(fieldName)) {
 
@@ -199,23 +196,23 @@ public class RedmineUtilService extends BaseSevcie {
 								content.append(ComputeConstant.CompateFieldName.ESG + ":" + BLANK).append(OldESG.getIdentifier() + "(" + OldESG.getDescription() + ")").append(RARR)
 										.append(NewESG.getIdentifier() + "(" + NewESG.getDescription() + ")").append(NEWLINE);
 
-							} else {
-
-								if (StorageConstant.StorageFieldName.存储类型.toString().equals(fieldName)) {
-
-									content.append(StorageConstant.StorageFieldName.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
-											.append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
-
-								} else if (StorageConstant.StorageFieldName.容量空间.toString().equals(fieldName)) {
-
-									content.append(StorageConstant.StorageFieldName.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue())
-											.append("GB").append(NEWLINE);
-
-								}
-
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
+
+							// 拼装存储空间Storage信息
+
+							if (StorageConstant.StorageFieldName.存储类型.toString().equals(fieldName)) {
+
+								content.append(StorageConstant.StorageFieldName.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
+										.append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
+
+							} else if (StorageConstant.StorageFieldName.容量空间.toString().equals(fieldName)) {
+
+								content.append(StorageConstant.StorageFieldName.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue())
+										.append("GB").append(NEWLINE);
+
+							}
 
 						}
 

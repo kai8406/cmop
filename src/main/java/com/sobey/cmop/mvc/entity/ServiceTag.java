@@ -19,6 +19,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * ServiceTag entity. @author MyEclipse Persistence Tools
@@ -215,6 +216,7 @@ public class ServiceTag implements java.io.Serializable {
 		this.redmineIssueId = redmineIssueId;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "serviceTag")
 	@OrderBy("createTime ASC")
 	public Set<Audit> getAudits() {

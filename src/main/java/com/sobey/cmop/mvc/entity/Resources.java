@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Resources entity. @author MyEclipse Persistence Tools
@@ -166,6 +167,7 @@ public class Resources implements java.io.Serializable {
 		this.usedby = usedby;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "resources")
 	public Set<Change> getChanges() {
 		return changes;

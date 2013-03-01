@@ -45,7 +45,7 @@ public class ApplyAuditController extends BaseController {
 
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
 
-		return "audit/apply/auditList";
+		return "audit/apply/auditApplyList";
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class ApplyAuditController extends BaseController {
 
 			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(applyId));
 
-			returnUrl = "audit/apply/auditForm";
+			returnUrl = "audit/apply/auditApplyForm";
 
 		}
 

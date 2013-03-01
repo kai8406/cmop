@@ -45,7 +45,7 @@ public class ResourcesAuditController extends BaseController {
 
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
 
-		return "audit/resource/auditList";
+		return "audit/resource/auditResourcesList";
 	}
 
 	/**
@@ -116,9 +116,11 @@ public class ResourcesAuditController extends BaseController {
 
 			model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(serviceTagId));
 
+			model.addAttribute("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
+
 			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
 
-			returnUrl = "audit/resource/auditForm";
+			returnUrl = "audit/resource/auditResourcesForm";
 
 		}
 

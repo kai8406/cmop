@@ -26,9 +26,24 @@
 <!-- Le css styles ==================================================== -->
 <link href="${ctx}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
+
+	html,body {
+	
+		height: 100%;
+	}
 	body {
 	  padding-top: 60px;
 	  padding-bottom: 40px;
+	}
+	
+	/* Lastly, apply responsive CSS fixes as necessary */
+	@media ( max-width : 767px) {
+		#footer {
+			margin-left: -20px;
+			margin-right: -20px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
 	}
 </style>
 <link href="${ctx}/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
@@ -65,17 +80,21 @@
 
 <body>
 	
+	<!--  push down footer -->
+	<div style="min-height: 100%;height: auto !important;height: 100%;">
+	
 	<%@ include file="/WEB-INF/layouts/navbar.jsp"%>
 	
-	<div class="container">
-		<div id="content">
+		<div class="container">
 			<sitemesh:body/>
 		</div>
+		
 	</div>
-	
-	<footer style="text-align: center;">
-		<hr>
-		<p>Copyright &copy; 2013 Sobey</p>
+	 
+	<footer id="footer" style="text-align: center;height: 60px;background-color: #f5f5f5;">
+		<div class="container">
+			<p style="margin: 20px 0;">Copyright &copy; 2013 Sobey</p>
+		</div>
 	</footer>
 	
 </body>

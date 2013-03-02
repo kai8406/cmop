@@ -45,7 +45,7 @@ public class BaseController {
 	/**
 	 * 分页:每页行数 : 10
 	 */
-	public static final String PAGE_SIZE = "10";
+	public static final String PAGE_SIZE = "100000";
 
 	/**
 	 * 查询前缀 :search_<br>

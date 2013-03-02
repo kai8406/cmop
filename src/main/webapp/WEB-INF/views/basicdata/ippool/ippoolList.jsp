@@ -65,7 +65,13 @@
 			
 		</div>
 	</form>
-		
+	
+	<div class="row">
+		<div class="span4">	<a class="btn" href="${ctx}/basicdata/ippool/save/">创建IP</a></div>
+		<div class="pull-right"><tags:singlePage page="${page}" /></div>
+	</div>
+
+	<div class="singlePage">
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
@@ -128,10 +134,7 @@
 			</c:forEach>
 		</tbody>
 	</table>
+	</div>
 		
-	<tags:pagination page="${page}" />
-
-	<a class="btn" href="${ctx}/basicdata/ippool/save/">创建IP</a>
-	
 </body>
 </html>

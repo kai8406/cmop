@@ -35,6 +35,12 @@
 
 	</form>
 	
+	<div class="row">
+		<div class="span4"><a class="btn" href="save/">创建权限</a></div>
+		<div class="pull-right"><tags:singlePage page="${page}" /></div>
+	</div>
+	
+	<div class="singlePage">
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
@@ -64,10 +70,7 @@
 			</c:forEach>
 		</tbody>
 	</table>
-	
-	<tags:pagination page="${page}" />
-
-	<a class="btn" href="save/">创建权限</a>
+	</div>	
 
 </body>
 </html>

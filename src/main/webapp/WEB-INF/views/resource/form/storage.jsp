@@ -159,7 +159,7 @@
 				<c:forEach var="compute" items="${storage.computeItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
-						<input type="hidden" name="computeIds" id="computeIds" value="16">
+						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
 						<dd>
 							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier }&nbsp;</strong>
 						</dd>

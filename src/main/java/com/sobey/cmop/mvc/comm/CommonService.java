@@ -18,6 +18,9 @@ import com.sobey.cmop.mvc.service.email.TemplateMailService;
 import com.sobey.cmop.mvc.service.failure.FailureService;
 import com.sobey.cmop.mvc.service.iaas.CompareResourcesService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
+import com.sobey.cmop.mvc.service.iaas.DnsService;
+import com.sobey.cmop.mvc.service.iaas.EipService;
+import com.sobey.cmop.mvc.service.iaas.ElbService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
 import com.sobey.cmop.mvc.service.iaas.ResourcesJsonService;
@@ -58,6 +61,15 @@ public class CommonService {
 
 	@Resource
 	public DepartmentService departmentService;
+
+	@Resource
+	public DnsService dnsService;
+
+	@Resource
+	public EipService eipService;
+
+	@Resource
+	public ElbService elbService;
 
 	@Resource
 	public Es3Service es3Service;

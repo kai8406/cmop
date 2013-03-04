@@ -313,4 +313,13 @@ public class BaseController {
 		return StorageConstant.storageType.map;
 	}
 
+	/**
+	 * 
+	 * @return 是否保持会话Map
+	 */
+	@ModelAttribute("keepSessionMap")
+	public Map<Integer, String> keepSessionMap() {
+		return NetworkConstant.KeepSession.map;
+	}
+
 }

@@ -98,7 +98,7 @@ public class NetworkConstant {
 			}
 		}
 
-		public static String get(Integer code) {
+		public static String get(Boolean code) {
 			return map.get(code);
 		}
 

@@ -125,9 +125,12 @@ public class ApplyService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得登录用户所有的申请单 Apply.用于基础设施申请<br>
-	 * 1.申请单必须是服务类型ServiceType为 1.基础设施 的Apply<br>
-	 * 2.申请单状态为 0.已申请 和 3.已退回 ,以满足服务申请只有在"已申请"和"已退回"这两个状态下才能修改的业务要求.<br>
+	 * 获得登录用户所有的申请单 Apply.用于基础设施申请
+	 * 
+	 * <pre>
+	 * 1.申请单必须是服务类型ServiceType为 1.基础设施 的Apply 
+	 * 2.申请单状态为 0.已申请 和 3.已退回 ,以满足服务申请只有在"已申请"和"已退回"这两个状态下才能修改的业务要求.
+	 * </pre>
 	 * 
 	 * @return
 	 */
@@ -146,6 +149,16 @@ public class ApplyService extends BaseSevcie {
 	 * 向第一位审批人发起审批邮件<br>
 	 * 同时向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
 	 * 
+	 * <pre>
+	 * 1.先判断是否有上级领导存在.
+	 * 2.如果存在上级领导.首先获得第一个审批人(上级领导)和审批流程.
+	 * 3.根据资源拼装邮件内容并发送到第一个审批人的邮箱.
+	 * 4.更新Apply状态和Apply的审批流程
+	 * 5.向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
+	 * 6.如果不存在上级领导,判断其是否是终审人,如果不是终审人,则返回一个错误字符串.
+	 * 如果是终审人则直接发送工单
+	 * </pre>
+	 * 
 	 * @param apply
 	 * @return
 	 */
@@ -155,13 +168,13 @@ public class ApplyService extends BaseSevcie {
 		String message = "";
 		User user = apply.getUser();
 
-		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
+		/* Step.1 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在. */
 
 		if (user.getLeaderId() != null) {
 
 			try {
 
-				/* Step.1 获得第一个审批人和审批流程 */
+				/* Step.2 获得第一个审批人和审批流程 */
 
 				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
 
@@ -170,12 +183,11 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 
-				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
+				/* Step.3 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
 
-				logger.info("--->拼装邮件内容...");
 				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
 
-				/* Step.3 更新Apply状态和Apply的审批流程. */
+				/* Step.4 更新Apply状态和Apply的审批流程. */
 
 				apply.setAuditFlow(auditFlow);
 				apply.setStatus(ApplyConstant.Status.待审批.toInteger());
@@ -185,7 +197,7 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("--->服务申请邮件发送成功...");
 
-				/* Step.4 插入一条下级审批人所用到的audit. */
+				/* Step.5 插入一条下级审批人所用到的audit. */
 
 				comm.auditService.saveSubAudit(user.getId(), apply, null);
 
@@ -200,6 +212,8 @@ public class ApplyService extends BaseSevcie {
 
 			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 			AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
+			/* Step.5申请人即最终审批人.直接发送工单 */
 
 			if (auditFlow != null && auditFlow.getIsFinal()) {
 

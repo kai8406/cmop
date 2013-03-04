@@ -9,7 +9,7 @@ import com.sobey.cmop.mvc.entity.NetworkEsgItem;
  * @author liukai
  * 
  */
-public class ComputeJson {
+public class ComputeJson implements java.io.Serializable {
 
 	private Integer id;
 	private String identifier;

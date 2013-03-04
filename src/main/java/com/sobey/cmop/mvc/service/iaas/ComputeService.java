@@ -110,6 +110,17 @@ public class ComputeService extends BaseSevcie {
 
 	// === ComputeItem ===//
 
+	/**
+	 * 获得指定ELB下关联的所有实例compute
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	public List<ComputeItem> getComputeItemByElbId(Integer elbId) {
+		return computeItemDao.findByNetworkElbItemId(elbId);
+
+	}
+
 	public ComputeItem getComputeItem(Integer id) {
 		return computeItemDao.findOne(id);
 	}
@@ -299,5 +310,14 @@ public class ComputeService extends BaseSevcie {
 	 */
 	public List<ComputeItem> getComputeList() {
 		return computeItemDao.findByApplyUserId(getCurrentUserId());
+	}
+
+	/**
+	 * 获得当前用户创建的未和ELB关联的实例Compute
+	 * 
+	 * @return
+	 */
+	public List<ComputeItem> getComputeByElbIsNullList() {
+		return computeItemDao.findByNetworkElbItemIsNull();
 	}
 }

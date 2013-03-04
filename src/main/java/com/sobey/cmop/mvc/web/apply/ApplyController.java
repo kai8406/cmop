@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -156,6 +158,17 @@ public class ApplyController extends BaseController {
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return REDIRECT_SUCCESS_URL;
+	}
+
+	/**
+	 * 当前用户所创建的所有实例
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("computeItems")
+	public List<ComputeItem> computeItems() {
+		return comm.computeService.getComputeList();
+
 	}
 
 }

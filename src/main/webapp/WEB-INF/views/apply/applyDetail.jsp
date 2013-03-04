@@ -109,7 +109,33 @@
 				</c:if>
 				
 				<!-- 负载均衡器ELB -->
-				<c:if test="${not empty apply.networkElbItems}"></c:if>
+				<c:if test="${not empty apply.networkElbItems}">
+					<hr>
+					<dt>负载均衡器ELB</dt>
+					<c:forEach var="item" items="${apply.networkElbItems}">
+					
+						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						
+						<dd><em>是否保持会话</em>&nbsp;
+							<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach>
+						</dd>
+						
+						<dd><em>关联实例</em>&nbsp; 
+							<c:forEach var="compute" items="${computeItems}">
+								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier }&nbsp;&nbsp;</c:if>
+							</c:forEach>
+						</dd>
+						
+						<dd><em>端口映射（协议、负载端口、实例端口）</em></dd>
+						
+						<c:forEach var="port" items="${item.elbPortItems }">
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}  &nbsp;,&nbsp;${port.targetPort}</dd>
+						</c:forEach>
+							
+						<br>
+						
+					</c:forEach>
+				</c:if>
 				
 				<!-- IP地址EIP -->
 				<c:if test="${not empty apply.networkEipItems}"></c:if>

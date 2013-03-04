@@ -1,10 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,14 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.NetworkEipItemDao;
-import com.sobey.cmop.mvc.dao.StorageItemDao;
 import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
-import com.sobey.cmop.mvc.entity.NetworkEipItem;
-import com.sobey.cmop.mvc.entity.Resources;
-import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**

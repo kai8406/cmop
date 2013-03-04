@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ES3管理</title>
+	<title>ELB管理</title>
 	
 	<script>
 		$(document).ready(function() {
@@ -24,7 +24,7 @@
 			
 			$.ajax({
 				type: "GET",
-				url: "${ctx}/ajax/getComputeList",
+				url: "${ctx}/ajax/getComputeByElbIsNullList",
 				dataType: "json",
 				success: function(data){
 					
@@ -54,12 +54,30 @@
 		$(document).on("click", "#ModalSave", function() {
 			
 			var selectedArray = [];
+			var isUnique = true;
+			
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
 			
 			//Step.1
+			
 			$("div.resources").each(function(){
 				selectedArray.push($(this).find("#computeIds").val());
+			});
+			
+			
+			//Step.2 遍历页面,将存在于页面的computeId放入临时数组selectedArray中
+			
+			$("div.resources").each(function() {
+	 
+				var computeIds = $(this).find("input[name='computeIds']").val(); // 1-2-3-
+				var computeId = computeIds.substring(0,computeIds.length-1); // 1-2-3
+				var computeIdArray = computeId.split("-"); //{1,2,3}
+				for ( var i = 0; i < computeIdArray.length; i++) {
+					 
+					selectedArray.push(computeIdArray[i]);
+					 
+				}
 			});
 			
 			var html = '';
@@ -71,6 +89,9 @@
 				var $this = $(this);
 		    	var computeIdentifier = $this.closest("tr").find("td").eq(1).text()+"&nbsp;";
 		    	
+				//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+		    	
+				
 		    	if($.inArray($this.val(),selectedArray) == -1){
 		    		
 		    		//拼装HTML文本
@@ -106,46 +127,56 @@
 	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${storage.apply.id }">
+		<input type="hidden" name="applyId" value="${elb.apply.id }">
 		
 		<fieldset>
-			<legend><small>修改ES3存储空间</small></legend>
+			<legend><small>修改ELB</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.apply.title}</p>
+					<p class="help-inline plain-text">${elb.apply.title}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.identifier}</p>
+					<p class="help-inline plain-text">${elb.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="keepSession">是否保持会话</label>
 				<div class="controls">
-					<select id="storageType" name="storageType" class="required">
-						<c:forEach var="map" items="${storageTypeMap }">
-							<option value="${map.key }" 
-								<c:if test="${map.key == storage.storageType }">
-									selected="selected"
-								</c:if>
-							>${map.value }</option>
-						</c:forEach>
-					</select>
+					<c:forEach var="map" items="${keepSessionMap}">
+						<label class="radio inline"> 
+							<input type="radio" name="keepSession" value="${map.key}" <c:if test="${elb.keepSession == map.key }"> checked="checked"</c:if>>${map.value}
+						</label>
+					</c:forEach>
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="space">容量空间(GB)</label>
-				<div class="controls">
-					<input type="text" id="space" name="space" value="${storage.space}" class="required digits" maxlength="6" placeholder="...容量空间">
-				</div>
-			</div>
+			<table class="table table-bordered table-condensed"  >
+				<thead><tr><th>Protocol</th><th>Load Balance Port</th><th>Instance Port</th><th></th></tr></thead>
+				<tbody>
+					<c:forEach var="item" items="${elb.elbPortItems}">
+						<tr class="clone">
+							<td>
+								<select id="protocol" name="protocols" class="input-small required">
+									<c:forEach var="map" items="${protocolMap}">
+										<option value="${map.key }" <c:if test="${item.protocol == map.value }">selected="selected"</c:if>	
+										>${map.value }</option>
+									</c:forEach>
+								</select>
+							</td>
+							<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+							<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+							<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 			
 			<div class="control-group">
 				<div class="controls">
@@ -155,10 +186,10 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
-				<c:forEach var="compute" items="${storage.computeItemList }">
+				<c:forEach var="compute" items="${computes }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
-						<input type="hidden" name="computeIds" id="computeIds" value="16">
+						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
 						<dd>
 							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier }&nbsp;</strong>
 						</dd>
@@ -167,7 +198,7 @@
 			</dl></div>
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/update/${storage.apply.id}/" class="btn">返回</a>
+				<a href="${ctx}/apply/update/${elb.apply.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 			

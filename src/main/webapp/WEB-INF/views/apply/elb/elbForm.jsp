@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ES3管理</title>
+	<title>ELB管理</title>
 
 	<script>
 		$(document).ready(function() {
@@ -27,7 +27,7 @@
 			
 			$.ajax({
 				type: "GET",
-				url: "${ctx}/ajax/getComputeList",
+				url: "${ctx}/ajax/getComputeByElbIsNullList",
 				dataType: "json",
 				success: function(data){
 					
@@ -53,21 +53,45 @@
 		});
 		
 		
-		 /*点击弹出窗口保存时,连同ES3的信息生成HTML代码插入页面.*/
+		 /*点击弹出窗口保存时,连同ELB的信息生成HTML代码插入页面.*/
 	  	 
 		$(document).on("click", "#ModalSave", function() {
+			
+			/*
+				1.创建一个临时数组selectedArray 以及一个是否重复的标识符isUnique
+				2.遍历页面,将存在于页面的computeId放入临时数组selectedArray中.
+				3.对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+				4.只有isUnique为true,表示所选的实例ID没有被使用则可以创建HTML字符串在页面显示.
+			*/
+			
+			//Step.1
+			
+			var selectedArray = [];
+			var isUnique = true;
 			
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
 			
+			//Step.2 遍历页面,将存在于页面的computeId放入临时数组selectedArray中
+			
+			$("div.resources").each(function() {
+	 
+				var computeIds = $(this).find("input[name='computeIds']").val(); // 1-2-3-
+				var computeId = computeIds.substring(0,computeIds.length-1); // 1-2-3
+				var computeIdArray = computeId.split("-"); //{1,2,3}
+				for ( var i = 0; i < computeIdArray.length; i++) {
+					 
+					selectedArray.push(computeIdArray[i]);
+					 
+				}
+			});
+				
 			var html = '';
 			var computeIds = "";
 			var computeIdentifier = "";
 			var keepSession = $("input[name='keepSessionRadio']:checked").val();
 			var keepSessionText = $("input[name='keepSessionRadio']:checked").parent().parent().parent().find("span.radioText").text();
-			alert(keepSessionText);
 			
-
 			
 			//遍历挂载Compute的Id和identifier.
 			
@@ -76,31 +100,83 @@
 				var $this = $(this);
 				computeIds +=  $this.val() +"-";
 		    	computeIdentifier += $this.closest("tr").find("td").eq(1).text()+"&nbsp;";
+		    	
+		    	//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+		    	
+		    	if($.inArray($this.val(), selectedArray) > -1){
+					isUnique = false;
+				} 
 				
 			});
 			
-			//拼装HTML文本
+			//Step.4 只有isUnique为true,表示所选的实例ID没有被使用则可以创建HTML字符串在页面显示.
 			
-			html +='<div class="resources alert alert-block alert-info fade in">';
-			html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-			html +='<input type="hidden" value="'+computeIds+'" name="computeIds">';
-			/* html +='<input type="hidden" value="'+space+'" name="spaces">';
-			html +='<input type="hidden" value="'+storageType+'" name="storageTypes">';
-			html +='<dd><em>存储类型</em>&nbsp;&nbsp;<strong>'+storageTypeText+'</strong></dd>';
-			html +='<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>'+space+'</strong></dd>';
-			html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>'; */
-			html +='</div> ';
+			if(isUnique){
 			
+				//拼装HTML文本
+				
+				html +='<div class="resources alert alert-block alert-info fade in">';
+				html +='<button type="button" class="close" data-dismiss="alert">×</button>';
+				html +='<input type="hidden" value="'+computeIds+'" name="computeIds">';
+			    html +='<input type="hidden" value="'+keepSession+'" name="keepSessions">';
+				html +='<dd><em>是否保持会话</em>&nbsp;&nbsp;<strong>'+keepSessionText+'</strong></dd>';
+				html +='<dd><em>关联实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
+				html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、负载端口、实例端口）</em></dd>';  
+				
+				var portTempArray =[];
+				var protocolStr = "";
+				var sourcePortStr = "";
+				var targetPortStr = "";
+				
+				//端口信息相关的HTML
+				
+				$("tr.clone").each(function(){
+					
+					var $tr = $(this);
+					
+					var protocol = $tr.find("#protocol").val();
+					var protocolText = $tr.find("#protocol>option:selected").text();
+					var sourcePort = $tr.find("#sourcePort").val();
+					var targetPort = $tr.find("#targetPort").val();
+					
+					var portTemp = protocol+"-"+sourcePort+"-"+targetPort;
+					
+					//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
+					
+					if(portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1){
+						portTempArray.push(portTemp);
+						protocolStr += protocol+"-";
+						sourcePortStr +=  sourcePort+"-"; 
+						targetPortStr += targetPort+"-";
+						html +='<dd><strong>'+protocolText+'&nbsp;,&nbsp;'+sourcePort+'&nbsp;,&nbsp;'+targetPort+'</strong></dd>';
+					}
+					
+				});
+				
+				html +='<input type="hidden" value="'+protocolStr+'" name="protocols">';
+				html +='<input type="hidden" value="'+sourcePortStr+'" name="sourcePorts">';
+				html +='<input type="hidden" value="'+targetPortStr+'" name="targetPorts">';
+			
+			
+				html +='</div> ';
+			
+				//插入HTML文本
+				
+				$("#resourcesDIV dl").append(html);
+			
+			}else{
+				 alert("同一计算资源不能关联多个ELB");
+			}
 			
 			//初始化
 			
+			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
+			portTempArray =[];
+			selectedArray = [];
 			$CheckedIds.removeAttr('checked');
 			$ModalDiv.find(".checker > span").removeClass("checked");
-			 
+			isUnique = true;
 			
-			//插入HTML文本
-			
-			$("#resourcesDIV dl").append(html);
 			
 		}); 
 		 
@@ -130,7 +206,7 @@
 			<hr> 
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">是否保持会话</label>
+				<label class="control-label" for="keepSession">是否保持会话</label>
 				<div class="controls">
 					<c:forEach var="map" items="${keepSessionMap}">
 						<label class="radio inline">
@@ -139,6 +215,22 @@
 					</c:forEach>
 				</div>
 			</div>
+			
+			<table class="table table-bordered table-condensed"  >
+				<thead><tr><th>Protocol</th><th>Load Balance Port</th><th>Instance Port</th><th></th></tr></thead>
+				<tbody>
+					<tr class="clone">
+						<td>
+							<select id="protocol" class="input-small required">
+								<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
+							</select>
+						</td>
+						<td><input type="text" id="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+						<td><input type="text" id="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+					</tr>
+				</tbody>
+			</table>	
 			
 			<div class="control-group">
 				<div class="controls">

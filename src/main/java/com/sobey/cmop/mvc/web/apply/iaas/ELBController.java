@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.entity.StorageItem;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 
 /**
  * 负责实例ES3存储Storage的管理
@@ -32,14 +33,27 @@ public class ELBController extends BaseController {
 	}
 
 	/**
-	 * 新增
+	 * 新增<br>
+	 * 新增N个ELB( N >= 1)<br>
+	 * 同一个ELB下的多个参数用"-"区分.<br>
+	 * 逗号","用于区分不同的ELB的参数.
+	 * 
+	 * @param applyId
+	 * @param keepSessions
+	 * @param protocols
+	 *            协议数组 格式{1-2-3,4-5-6}下同
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param computeIds
+	 *            关联实例数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, 
-			@RequestParam(value = "keepSessions") String[] keepSessions, 
-			@RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts, 
-			@RequestParam(value = "targetPorts") String[] targetPorts, @RequestParam(value = "computeIds") String[] computeIds,
+	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "keepSessions") String[] keepSessions, @RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts, @RequestParam(value = "computeIds") String[] computeIds,
 			RedirectAttributes redirectAttributes) {
 
 		comm.elbService.saveELBToApply(applyId, keepSessions, protocols, sourcePorts, targetPorts, computeIds);
@@ -50,24 +64,32 @@ public class ELBController extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到实例的修改页面.
+	 * 从服务申请表页面跳转到ELB的修改页面.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 		model.addAttribute("elb", comm.elbService.getNetworkElbItem(id));
+		model.addAttribute("computes", comm.computeService.getComputeItemByElbId(id));
+
 		return "apply/elb/elbUpateForm";
 	}
 
 	/**
-	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 修改单个ELB信息.<br>
+	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"-" <br>
+	 * 修改ELB信息后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "keepSession") String keepSession,
+			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
-		StorageItem storageItem = comm.es3Service.getStorageItem(id);
+		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(id);
+		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
-		redirectAttributes.addFlashAttribute("message", "修改ELB " + storageItem.getIdentifier() + " 成功");
+		comm.elbService.updateELBToApply(networkElbItem, protocols, sourcePorts, targetPorts, computeIds);
+
+		redirectAttributes.addFlashAttribute("message", "修改ELB " + networkElbItem.getIdentifier() + " 成功");
 
 		return "redirect:/apply/update/" + applyId;
 	}

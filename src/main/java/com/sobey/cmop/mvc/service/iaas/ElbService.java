@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +15,6 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ElbPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkElbItemDao;
-import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
@@ -35,9 +36,6 @@ public class ElbService extends BaseSevcie {
 
 	@Resource
 	private ElbPortItemDao elbPortItemDao;
-
-	@Resource
-	private BasicUnitDaoCustom basicUnitDao;
 
 	// ========= ElbPortItem ==========//
 
@@ -69,8 +67,17 @@ public class ElbService extends BaseSevcie {
 		return networkElbItemDao.save(networkElbItem);
 	}
 
+	/**
+	 * 删除ELB<br>
+	 * 删除前,断开该ELB关联实例Compute的关系.
+	 * 
+	 * @param id
+	 */
 	@Transactional(readOnly = false)
 	public void deleteNetworkElbItem(Integer id) {
+
+		this.initElbInCompute(id);
+
 		networkElbItemDao.delete(id);
 	}
 
@@ -122,6 +129,62 @@ public class ElbService extends BaseSevcie {
 
 		}
 
+	}
+
+	/**
+	 * 修改ELB的服务申请.(在服务申请时调用)<br>
+	 * 1.先将ELB下的所有映射信息删除.<br>
+	 * 2.将ELB下所有的实例compute查询出来并设置实例管理的ELB为null.<br>
+	 * 3.保存ELB和端口映射.<br>
+	 * 
+	 * @param applyId
+	 *            服务申请单ID
+	 */
+	@Transactional(readOnly = false)
+	public void updateELBToApply(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+
+		// Step.1
+
+		elbPortItemDao.delete(elbPortItemDao.findByNetworkElbItemId(networkElbItem.getId()));
+
+		// Step.2
+
+		this.initElbInCompute(networkElbItem.getId());
+
+		this.saveOrUpdate(networkElbItem);
+
+		// Step.3
+
+		// ELB的端口映射
+
+		for (int i = 0; i < protocols.length; i++) {
+
+			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+			this.saveOrUpdateElbPortItem(elbPortItem);
+		}
+
+		// 关联实例
+
+		for (String computeId : computeIds) {
+			ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
+			computeItem.setNetworkElbItem(networkElbItem);
+			comm.computeService.saveOrUpdate(computeItem);
+		}
+
+	}
+
+	/**
+	 * 初始化实例compute中的elb关联.(elb_id = null)
+	 * 
+	 * @param elbId
+	 */
+	@Transactional(readOnly = false)
+	private void initElbInCompute(Integer elbId) {
+		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(elbId);
+		for (ComputeItem computeItem : computeItems) {
+			computeItem.setNetworkElbItem(null);
+			comm.computeService.saveOrUpdate(computeItem);
+		}
 	}
 
 }

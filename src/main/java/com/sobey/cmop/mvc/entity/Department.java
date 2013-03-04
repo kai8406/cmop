@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Group entity. @author MyEclipse Persistence Tools
  */
@@ -75,6 +77,7 @@ public class Department implements java.io.Serializable {
 		this.pid = pid;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "department")
 	public Set<User> getUsers() {
 		return this.users;

@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
@@ -87,6 +88,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("allESGs", comm.esgService.getAllEsgList());
 		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
 		map.put("storageTypeMap", StorageConstant.storageType.mapKeyStr);
+		map.put("KeepSessionMap", NetworkConstant.KeepSession.mapKeyStr);
 
 		return map;
 

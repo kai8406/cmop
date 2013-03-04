@@ -29,7 +29,7 @@
 		<li>
 			<!-- 实例Compute -->
 			<#if (computes?exists) && (computes?size > 0) >
-				<strong>计算资源(PCS,ECS)</strong>
+				<strong>计算资源(PCS & ECS)</strong>
 				
 				<#list computes as compute>
 					<ul>
@@ -73,6 +73,31 @@
 				</#list>
 				
 			</#if><!-- 存储 storage End-->
+			
+			<!-- 负载均衡器ELB -->
+			<#if (elbs?exists) && (elbs?size > 0) >
+				<strong>负载均衡器ELB</strong>
+				
+				<#list elbs as elb>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${elb.identifier}</li>
+						<li><em>是否保持会话</em>&nbsp;:
+							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
+						</li>
+						<li><em>关联实例</em>&nbsp;: 待完成 </li>
+						<li><em>端口映射(协议、负载端口、实例端口)</em></li>
+						
+						<#list elb.elbPortItems as port>
+							<ul>
+								<li>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</li>
+							</ul>
+						</#list>
+						
+						<br>
+					</ul>
+				</#list>
+				
+			</#if><!-- 负载均衡器ELB End -->
 			
 		</li>
 		

@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>用户管理</title>
+	<title>故障申报</title>
 	
 	<script>
 		$(document).ready(function() {
@@ -117,7 +117,7 @@
 				<!-- 实例Compute -->
 				<c:if test="${not empty computeItems}">
 					
-					<dt>PCS、ECS实例</dt>
+					<dt>PCS & ECS实例</dt>
 					<c:forEach var="item" items="${computeItems}">
 					
 						<dd><em>标识符</em>
@@ -170,9 +170,35 @@
 					<hr>
 					
 				</c:if>
-			
+				
+				<!-- 负载均衡器ELB -->
+				<c:if test="${not empty elbItems}">
+					<hr>
+					<dt>负载均衡器ELB</dt>
+					<c:forEach var="item" items="${elbItems}">
+					
+						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						
+						<dd><em>是否保持会话</em>&nbsp;
+							<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach>
+						</dd>
+						
+						<dd><em>关联实例</em>&nbsp; 
+							 TODO
+						</dd>
+						
+						<dd><em>端口映射（协议、负载端口、实例端口）</em></dd>
+						
+						<c:forEach var="port" items="${item.elbPortItems }">
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}  &nbsp;,&nbsp;${port.targetPort}</dd>
+						</c:forEach>
+							
+						<br>
+						
+					</c:forEach>
+				</c:if>
+				
 			</dl>
-			
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">

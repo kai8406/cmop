@@ -5,9 +5,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -67,6 +69,7 @@ public class RedmineTextUtil {
 					}
 
 				}
+
 				content.append(NEWLINE);
 
 			}
@@ -87,14 +90,18 @@ public class RedmineTextUtil {
 
 			content.append("# +*存储资源信息*+").append(NEWLINE);
 			content.append("<pre>").append(NEWLINE);
+
 			for (StorageItem storageItem : storageItems) {
 				content.append("标识符:").append(BLANK).append(storageItem.getIdentifier()).append(NEWLINE);
 				content.append("存储类型:").append(BLANK).append(StorageConstant.storageType.get(storageItem.getStorageType())).append(NEWLINE);
 				content.append("容量空间:").append(BLANK).append(storageItem.getSpace()).append("GB").append(NEWLINE);
 				content.append("挂载实例:").append(BLANK).append(storageItem.getMountComputes()).append(NEWLINE + NEWLINE);
 			}
+
 			content.append("</pre>").append(NEWLINE);
+
 		}
+
 	}
 
 	/**
@@ -104,7 +111,34 @@ public class RedmineTextUtil {
 	 * @param elbItems
 	 */
 	public static void generateElb(StringBuilder content, List<NetworkElbItem> elbItems) {
-		// TODO NetworkElbItem拼装
+
+		if (!elbItems.isEmpty()) {
+
+			content.append("# +*负载均衡器ELB*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+
+			for (NetworkElbItem elbItem : elbItems) {
+				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
+				content.append("是否保持会话 :").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
+				content.append("关联实例:").append(BLANK).append("TODO").append(NEWLINE);
+
+				if (!elbItem.getElbPortItems().isEmpty()) {
+
+					content.append("端口映射（协议、负载端口、实例端口）:").append(NEWLINE);
+					for (ElbPortItem portItem : elbItem.getElbPortItems()) {
+						content.append(BLANK + BLANK + BLANK + BLANK + BLANK).append(portItem.getProtocol()).append(BLANK + BLANK).append(portItem.getSourcePort()).append(BLANK + BLANK)
+								.append(portItem.getTargetPort()).append(NEWLINE);
+					}
+
+				}
+
+				content.append(NEWLINE);
+
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
 	}
 
 	/**

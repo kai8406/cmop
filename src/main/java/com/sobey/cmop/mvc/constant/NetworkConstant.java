@@ -65,22 +65,22 @@ public class NetworkConstant {
 	 * 计算资源类型.
 	 * <p>
 	 * true :1-保持<br>
-	 * false:2-不保持<br>
+	 * false:0-不保持<br>
 	 * <p>
 	 * 
 	 * @author liukai
 	 * 
 	 */
 	public enum KeepSession implements CommonEnum {
-		保持(1), 不保持(2);
+		保持(true), 不保持(false);
 
-		private int code;
+		private boolean code;
 
-		private KeepSession(int code) {
+		private KeepSession(boolean code) {
 			this.code = code;
 		}
 
-		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+		public static final Map<Boolean, String> map = Maps.newLinkedHashMap();
 		static {
 			for (KeepSession e : KeepSession.values()) {
 
@@ -104,7 +104,12 @@ public class NetworkConstant {
 
 		@Override
 		public Integer toInteger() {
+			return this.code ? 1 : 0;
+		}
+
+		public Boolean toBoolean() {
 			return this.code;
+
 		}
 
 		@Override

@@ -318,8 +318,17 @@ public class BaseController {
 	 * @return 是否保持会话Map
 	 */
 	@ModelAttribute("keepSessionMap")
-	public Map<Integer, String> keepSessionMap() {
+	public Map<Boolean, String> keepSessionMap() {
 		return NetworkConstant.KeepSession.map;
+	}
+
+	/**
+	 * 
+	 * @return 网络资源的协议类型Map
+	 */
+	@ModelAttribute("protocolMap")
+	public Map<String, String> protocolMap() {
+		return NetworkConstant.Protocol.map;
 	}
 
 }

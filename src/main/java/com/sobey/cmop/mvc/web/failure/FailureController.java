@@ -135,6 +135,9 @@ public class FailureController extends BaseController {
 		model.addAttribute("failure", failure);
 		model.addAttribute("computeItems", computeItems);
 		model.addAttribute("storageItems", storageItems);
+		model.addAttribute("elbItems", elbItems);
+		model.addAttribute("eipItems", eipItems);
+		model.addAttribute("dnsItems", dnsItems);
 
 		return "failure/failureDetail";
 	}

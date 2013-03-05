@@ -115,7 +115,7 @@
 						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
 						html += '<dd><em>用途信息</em>&nbsp;&nbsp;<strong>' + data.remark + '</strong></dd>';
 						html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + data.osType + '&nbsp;' + data.osBit + '&nbsp;' + data.serverType + '</strong></dd>';
-						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.networkEsgItem.identifier + '(' + data.networkEsgItem.description + ')</strong></dd>';
+						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.networkEsgItem + '</strong></dd>';
 						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>' + (data.innerIp == null ? "" : data.innerIp)  + '</strong></dd>';
 						html += '</div>';
 						$("#resourcesDIV dl").append(html);
@@ -143,7 +143,28 @@
 						$("#resourcesDIV dl").append(html);
 					}
 				});
-				 
+			
+				
+			}else if(serviceType == 4){
+				
+				//ELB
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getElb?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>是否保持会话</em>&nbsp;&nbsp;<strong>' + data.keepSession + '</strong></dd>';
+						html += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + data.relationCompute + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
 			
 			} 
 			

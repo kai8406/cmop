@@ -130,7 +130,7 @@
 		<input type="hidden" name="applyId" value="${elb.apply.id }">
 		
 		<fieldset>
-			<legend><small>修改ELB</small></legend>
+			<legend><small>修改负载均衡器ELB</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
@@ -186,7 +186,7 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
-				<c:forEach var="compute" items="${computes }">
+				<c:forEach var="compute" items="${relationComputes }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
 						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">

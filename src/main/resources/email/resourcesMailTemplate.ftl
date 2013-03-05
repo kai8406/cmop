@@ -207,7 +207,26 @@ table {
 									
 								
 								<#elseif resource.serviceType == 4 ><!--   ELB  -->
-								
+									
+									<td class="is-hidden">
+									
+										<#if item.fieldName == '是否保持会话' >
+										
+											<#list KeepSessionMap?keys as k ><#if item.oldValue?string == k>${KeepSessionMap[k]}</#if></#list>
+											
+										<#else>${item.oldValue}</#if>
+										
+									</td>
+									
+									<td class="is-visible">
+										
+										<#if item.fieldName == '是否保持会话' >
+										
+											<#list KeepSessionMap?keys as k ><#if item.newValue?string == k>${KeepSessionMap[k]}</#if></#list>
+											
+										<#else>${item.newValue}</#if>
+										 
+									</td>
 								
 								
 								<#else>

@@ -69,7 +69,7 @@ public class ELBController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 		model.addAttribute("elb", comm.elbService.getNetworkElbItem(id));
-		model.addAttribute("computes", comm.computeService.getComputeItemByElbId(id));
+		model.addAttribute("relationComputes", comm.computeService.getComputeItemByElbId(id));
 
 		return "apply/elb/elbUpateForm";
 	}

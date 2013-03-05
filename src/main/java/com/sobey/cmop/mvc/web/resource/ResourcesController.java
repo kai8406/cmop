@@ -76,7 +76,47 @@ public class ResourcesController extends BaseController {
 
 		String updateUrl = "";
 
-		this.returnUrlAndModel(model, resources, updateUrl, "");
+		Integer serviceId = resources.getServiceId();
+
+		// 服务类型
+
+		Integer serviceType = resources.getServiceType();
+
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
+
+			updateUrl = "resource/form/compute";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
+
+			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
+
+			updateUrl = "resource/form/storage";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
+
+			model.addAttribute("elb", comm.elbService.getNetworkElbItem(serviceId));
+			model.addAttribute("relationComputes", comm.computeService.getComputeItemByElbId(id));
+
+			updateUrl = "resource/form/elb";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
+
+			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
+
+			updateUrl = "resource/form/eip";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
+
+			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
+
+			updateUrl = "resource/form/dns";
+
+		} else {
+
+			updateUrl = "resource/resourceList";
+		}
 
 		return updateUrl;
 	}
@@ -113,27 +153,7 @@ public class ResourcesController extends BaseController {
 
 		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
 
-		String detailUrl = "";
-
-		this.returnUrlAndModel(model, resources, "", detailUrl);
-
-		return detailUrl;
-	}
-
-	/**
-	 * 根据不同的服务类型返回不同的对象和页面.<br>
-	 * updateUrl和detailUrl必须且只能同时声明一个.
-	 * 
-	 * @param model
-	 * @param resources
-	 * @param updateUrl
-	 *            跳转到变更页面的URL
-	 * @param detailUrl
-	 *            跳转到变更详情的URL
-	 */
-	private void returnUrlAndModel(Model model, Resources resources, String updateUrl, String detailUrl) {
-
-		// 资源单项服务的ID
+		String detailUrl = null;
 
 		Integer serviceId = resources.getServiceId();
 
@@ -145,43 +165,38 @@ public class ResourcesController extends BaseController {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
 
-			updateUrl = "resource/form/compute";
 			detailUrl = "resource/detail/computeDetail";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
 
 			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
 
-			updateUrl = "resource/form/storage";
 			detailUrl = "resource/detail/storageDetail";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
 
 			model.addAttribute("elb", comm.elbService.getNetworkElbItem(serviceId));
 
-			updateUrl = "resource/form/elb";
 			detailUrl = "resource/detail/elbDetail";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
 			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
 
-			updateUrl = "resource/form/eip";
 			detailUrl = "resource/detail/eipDetail";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
 
 			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
 
-			updateUrl = "resource/form/dns";
 			detailUrl = "resource/detail/dnsDetail";
 
 		} else {
 
-			updateUrl = "resource/resourceList";
 			detailUrl = "resource/resourceList";
 		}
 
+		return detailUrl;
 	}
 
 }

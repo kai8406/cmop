@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
@@ -63,5 +64,26 @@ public interface CompareResourcesService {
 	 * @return
 	 */
 	public boolean compareStorage(Resources resources, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
+
+	/**
+	 * 比较更负载均衡器ELB变更前和变更后的值<br>
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param networkElbItem
+	 *            变更前的负载均衡器ELB
+	 * @param keepSession
+	 *            是否保持会话
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            端口数组
+	 * @param targetPorts
+	 *            目标端口(实例端口)数组
+	 * @param computeIds
+	 *            关联实例Id
+	 * @return
+	 */
+	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds);
 
 }

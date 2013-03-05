@@ -72,4 +72,24 @@ public class ResourcesExtensionController extends BaseController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
+	/**
+	 * 变更负载均衡器ELB
+	 */
+	@RequestMapping(value = "/elb", method = RequestMethod.POST)
+	public String updateElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "keepSession") String keepSession, @RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts, @RequestParam(value = "computeIds") String[] computeIds,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby, @RequestParam(value = "changeDescription") String changeDescription,
+
+			RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.elbService.saveResourcesByElb(resources, serviceTagId, keepSession, protocols, sourcePorts, targetPorts, computeIds, changeDescription);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
 }

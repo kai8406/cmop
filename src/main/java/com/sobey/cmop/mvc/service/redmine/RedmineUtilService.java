@@ -12,6 +12,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -245,7 +246,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE)
+										.append(changeItem.getNewValue()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
@@ -273,6 +275,26 @@ public class RedmineUtilService extends BaseSevcie {
 										.append(NEWLINE);
 
 							}
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
+
+							// 拼装变更负载均衡器ELB
+
+							if (FieldNameConstant.Elb.是否保持会话.toString().equals(fieldName)) {
+
+								Boolean OldKeepSession = NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false;
+								Boolean NewKeepSession = NetworkConstant.KeepSession.保持.toString().equals(changeItem.getNewValue()) ? true : false;
+
+								content.append(FieldNameConstant.Elb.是否保持会话 + ":" + BLANK).append(NetworkConstant.KeepSession.get(OldKeepSession)).append(RARR)
+										.append(NetworkConstant.KeepSession.get(NewKeepSession)).append(NEWLINE);
+
+							} else if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE).append(changeItem.getNewValue())
+										.append(NEWLINE);
+
+							}
+
+							// TODO 关联实例
 
 						}
 

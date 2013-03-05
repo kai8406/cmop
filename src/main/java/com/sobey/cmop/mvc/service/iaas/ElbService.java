@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,9 +17,12 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ElbPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkElbItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * ES3相关的管理类.
@@ -48,6 +52,17 @@ public class ElbService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public ElbPortItem saveOrUpdateElbPortItem(ElbPortItem elbPortItem) {
 		return elbPortItemDao.save(elbPortItem);
+	}
+
+	/**
+	 * 获得指定NetworkElbItem下的所有端口ElbPortItem
+	 * 
+	 * @param computeItemId
+	 * @return
+	 */
+	public List<ElbPortItem> getElbPortItemListByElbId(Integer elbId) {
+		return elbPortItemDao.findByNetworkElbItemId(elbId);
+
 	}
 
 	// ========= NetworkElbItem ==========//
@@ -145,7 +160,7 @@ public class ElbService extends BaseSevcie {
 
 		// Step.1
 
-		elbPortItemDao.delete(elbPortItemDao.findByNetworkElbItemId(networkElbItem.getId()));
+		elbPortItemDao.delete(this.getElbPortItemListByElbId(networkElbItem.getId()));
 
 		// Step.2
 
@@ -170,6 +185,95 @@ public class ElbService extends BaseSevcie {
 			computeItem.setNetworkElbItem(networkElbItem);
 			comm.computeService.saveOrUpdate(computeItem);
 		}
+
+	}
+
+	/**
+	 * 变更变更负载均衡器ELB
+	 * 
+	 */
+	@Transactional(readOnly = false)
+	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds,
+
+	String changeDescription) {
+
+		/**
+		 * 查找该资源的change.<br>
+		 * 返回null表示数据库没有该资源下的change,该资源以前未变更过.新建一个change;<br>
+		 * 返回结果不为null,该资源以前变更过,更新其变更时间和变更说明.
+		 */
+
+		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+
+		if (change == null) {
+
+			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
+			change.setDescription(changeDescription);
+
+		} else {
+
+			change.setChangeTime(new Date());
+			change.setDescription(changeDescription);
+
+		}
+
+		comm.changeServcie.saveOrUpdateChange(change);
+
+		NetworkElbItem networkElbItem = this.getNetworkElbItem(resources.getServiceId());
+
+		/* 比较实例资源computeItem 变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts, computeIds);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		if (isChange) {
+
+			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+
+			resources.setServiceTag(serviceTag);
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+		}
+
+		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
+
+		// TODO 审批退回操作的话映射端口如果处理.
+		// 更新networkElbItem
+
+		// Step.1
+
+		elbPortItemDao.delete(this.getElbPortItemListByElbId(networkElbItem.getId()));
+
+		this.initElbInCompute(networkElbItem.getId());
+
+		this.saveOrUpdate(networkElbItem);
+
+		// Step.3
+
+		// ELB的端口映射
+
+		for (int i = 0; i < protocols.length; i++) {
+
+			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+			this.saveOrUpdateElbPortItem(elbPortItem);
+		}
+
+		// 关联实例
+
+		for (String computeId : computeIds) {
+			ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
+			computeItem.setNetworkElbItem(networkElbItem);
+			comm.computeService.saveOrUpdate(computeItem);
+		}
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
 
 	}
 

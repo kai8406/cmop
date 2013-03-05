@@ -16,6 +16,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplicationDao;
 import com.sobey.cmop.mvc.dao.ComputeItemDao;
+import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
@@ -39,6 +40,9 @@ public class ComputeService extends BaseSevcie {
 
 	@Resource
 	private ApplicationDao applicationDao;
+
+	@Resource
+	private BasicUnitDaoCustom basicUnitDao;
 
 	// === Application ===//
 
@@ -319,5 +323,51 @@ public class ComputeService extends BaseSevcie {
 	 */
 	public List<ComputeItem> getComputeByElbIsNullList() {
 		return computeItemDao.findByNetworkElbItemIsNull();
+	}
+
+	/**
+	 * 获得指定用户创建的审批通过的实例Compute List,并且该实例没有被其它ELB关联过,即elb_id = null<br>
+	 * 主要用于ELB的变更中.<br>
+	 * dao查询出来的是无泛型的List,将其封装成 ComputeItem List
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<ComputeItem> getComputeItemListByResourcesId(Integer userId) {
+
+		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+
+		List list = basicUnitDao.getComputeItemListByResourcesId(userId);
+
+		for (int i = 0; i < list.size(); i++) {
+
+			Object[] object = (Object[]) list.get(i);
+
+			/* 封装成ComputeItem */
+
+			ComputeItem computeItem = new ComputeItem();
+
+			computeItem.setId(Integer.valueOf(object[0].toString()));
+			computeItem.setApply(comm.applyService.getApply(Integer.valueOf(object[1].toString())));
+			computeItem.setIdentifier(object[2].toString());
+			computeItem.setComputeType(Integer.valueOf(object[3].toString()));
+			computeItem.setOsType(Integer.valueOf(object[4].toString()));
+			computeItem.setOsBit(Integer.valueOf(object[5].toString()));
+			computeItem.setServerType(Integer.valueOf(object[6].toString()));
+			computeItem.setRemark(object[7].toString());
+			computeItem.setInnerIp(object[8] != null ? object[8].toString() : null);
+			computeItem.setOldIp(object[9] != null ? object[9].toString() : null);
+			computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getEsg(Integer.valueOf(object[10].toString())) : null);
+			computeItem.setNetworkElbItem(object[11] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[11].toString())) : null);
+			computeItem.setHostName(object[12] != null ? object[12].toString() : null);
+			computeItem.setServerAlias(object[13] != null ? object[13].toString() : null);
+			computeItem.setHostServerAlias(object[14] != null ? object[14].toString() : null);
+			computeItem.setOsStorageAlias(object[15] != null ? object[15].toString() : null);
+
+			computeItems.add(computeItem);
+
+		}
+
+		return computeItems;
 	}
 }

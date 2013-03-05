@@ -23,4 +23,5 @@ public interface ElbPortItemDao extends PagingAndSortingRepository<ElbPortItem, 
 	 * @return
 	 */
 	List<ElbPortItem> findByNetworkElbItemId(Integer networkElbItemId);
+
 }

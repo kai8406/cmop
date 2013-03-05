@@ -138,6 +138,29 @@
 											</c:choose>
 										</td>
 					            	</c:if><!-- 存储 storage  End -->
+					            	
+					            	<!-- 变更负载均衡器ELB -->
+	            					<c:if test="${resource.serviceType == 4 }">
+									
+										<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == '是否保持会话'}">
+													<c:forEach var="map" items="${keepSessionKeyStrMap}"><c:if test="${item.oldValue == map.key }">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '是否保持会话'}">
+													<c:forEach var="map" items="${keepSessionKeyStrMap}"><c:if test="${item.newValue == map.key }">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
+									
+									</c:if><!-- 变更负载均衡器ELB End -->
 									
 								</tr>
 								

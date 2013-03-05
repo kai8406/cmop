@@ -73,6 +73,8 @@ public class FailureService extends BaseSevcie {
 
 		logger.info("--->故障申报处理...");
 
+		boolean result = false;
+
 		try {
 
 			List<Resources> resourcesList = new ArrayList<Resources>();
@@ -125,6 +127,8 @@ public class FailureService extends BaseSevcie {
 
 			if (isCreated) { // 写入Redmine成功
 
+				result = true;
+
 				issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
 
 				logger.info("--->创建RedmineIssue...");
@@ -158,15 +162,13 @@ public class FailureService extends BaseSevcie {
 
 				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, assigneeUser);
 
-			} else {
-				return false;
 			}
 
-			return true;
+			return result;
 
 		} catch (Exception e) {
 			logger.error("--->故障申报处理失败：" + e.getMessage());
-			return false;
+			return result;
 		}
 
 	}

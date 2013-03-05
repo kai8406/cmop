@@ -16,6 +16,8 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
@@ -244,6 +246,118 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 		// TODO 挂载实例
 
 		return isChange;
+	}
+
+	@Override
+	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+		boolean isChange = false;
+
+		// 存储类型
+
+		if (!networkElbItem.getKeepSession().toString().equals(keepSession)) {
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Elb.是否保持会话.toString(), networkElbItem.getKeepSession().toString(), keepSession);
+
+		}
+
+		// 端口信息
+		if (this.compareElbPortItem(networkElbItem, protocols, sourcePorts, targetPorts)) {
+
+			String oldValue = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
+			String newValue = this.wrapElbPortItemToString(protocols, sourcePorts, targetPorts);
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Elb.端口信息.toString(), oldValue, newValue);
+
+		}
+
+		// TODO 关联实例
+
+		return isChange;
+	}
+
+	/**
+	 * 比较应用Application<br>
+	 * true:有变更;false:未变更.<br>
+	 * 
+	 * @param computeItem
+	 * @param applicationNames
+	 * @param applicationVersions
+	 * @param applicationDeployPaths
+	 * @return
+	 */
+	private boolean compareElbPortItem(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+
+		// === OldValue === //
+
+		List<String> oldProtocolList = new ArrayList<String>();
+		List<String> oldSourcePortList = new ArrayList<String>();
+		List<String> oldTargetPortList = new ArrayList<String>();
+
+		List<ElbPortItem> elbPortItems = comm.elbService.getElbPortItemListByElbId(networkElbItem.getId());
+
+		for (ElbPortItem elbPortItem : elbPortItems) {
+			oldProtocolList.add(elbPortItem.getProtocol());
+			oldSourcePortList.add(elbPortItem.getSourcePort());
+			oldTargetPortList.add(elbPortItem.getTargetPort());
+		}
+
+		// === NewValue === //
+
+		List<String> protocolList = new ArrayList<String>();
+		List<String> sourcePortList = new ArrayList<String>();
+		List<String> targetPortList = new ArrayList<String>();
+
+		for (int i = 0; i < protocols.length; i++) {
+			protocolList.add(protocols[i]);
+			sourcePortList.add(sourcePorts[i]);
+			targetPortList.add(targetPorts[i]);
+		}
+
+		// 比较OldValue和NewValue的List.
+
+		return CollectionUtils.isEqualCollection(protocolList, oldProtocolList) && CollectionUtils.isEqualCollection(sourcePortList, oldSourcePortList)
+				&& CollectionUtils.isEqualCollection(targetPortList, oldTargetPortList) ? false : true;
+
+	}
+
+	/**
+	 * 将NetworkElbItem下的ElbPortItem List 转换成字符串(newValue)
+	 * 
+	 * @param networkElbItem
+	 * @return
+	 */
+	private String wrapElbPortItemFromNetworkElbItemToString(NetworkElbItem networkElbItem) {
+
+		StringBuilder sb = new StringBuilder();
+
+		List<ElbPortItem> elbPortItems = comm.elbService.getElbPortItemListByElbId(networkElbItem.getId());
+
+		for (ElbPortItem elbPortItem : elbPortItems) {
+			sb.append(elbPortItem.getProtocol()).append(",").append(elbPortItem.getSourcePort()).append(",").append(elbPortItem.getTargetPort()).append("<br>");
+		}
+
+		return sb.toString();
+
+	}
+
+	/**
+	 * 将ElbPortItem的数组参数转换成字符串(oldValue)
+	 * 
+	 * @param protocols
+	 * @param sourcePorts
+	 * @param targetPorts
+	 * @return
+	 */
+	private String wrapElbPortItemToString(String[] protocols, String[] sourcePorts, String[] targetPorts) {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < protocols.length; i++) {
+			sb.append(protocols[i]).append(",").append(sourcePorts[i]).append(",").append(targetPorts[i]).append("<br>");
+		}
+
+		return sb.toString();
+
 	}
 
 }

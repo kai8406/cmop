@@ -105,12 +105,18 @@ public class Es3Service extends BaseSevcie {
 	/**
 	 * 变更ES3存储空间
 	 * 
-	 * @param computeItem
-	 *            变更后的实例
-	 * @param applicationNames
-	 * @param applicationVersions
-	 * @param applicationDeployPaths
-	 * @return
+	 * @param resources
+	 *            资源对象
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @param storageType
+	 *            存储类型
+	 * @param space
+	 *            存储空间
+	 * @param computeIds
+	 *            挂载实例ID
+	 * @param changeDescription
+	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
 	public void saveResourcesByStorage(Resources resources, Integer serviceTagId, Integer storageType, Integer space, String[] computeIds, String changeDescription) {

@@ -28,7 +28,7 @@
 			 <div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.apply.title}</p>
+					<p class="help-inline plain-text">${elb.apply.title}</p>
 				</div>
 			</div>
 			
@@ -44,84 +44,57 @@
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.identifier}</p>
+					<p class="help-inline plain-text">${elb.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="ipAddress">IP地址</label>
+				<label class="control-label" for="ipAddress">负载均衡虚拟IP</label>
 				<div class="controls">
 					<p class="help-inline plain-text">${resources.ipAddress}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osType">操作系统</label>
+				<label class="control-label" for="keepSession">是否保持会话</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="map" items="${osTypeMap}"><c:if test="${map.key == compute.osType }">${map.value}</c:if></c:forEach>
+						<c:forEach var="map" items="${keepSessionMap}"><c:if test="${map.key == elb.keepSession }">${map.value}</c:if></c:forEach>
 					</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osBit">操作位数</label>
+				<label class="control-label" for="relationCompute">关联实例</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="map" items="${osBitMap}"><c:if test="${map.key == compute.osBit }">${map.value}</c:if></c:forEach>
+						<c:forEach var="compute" items="${allComputes}">
+							<c:if test="${compute.networkElbItem.id == elb.id }">${compute.identifier}
+								<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
+							</c:if>
+						</c:forEach>
 					</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="serverType">规格</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:choose>
-							<c:when test="${compute.computeType == 1 }">
-								<c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${map.key == compute.serverType }">${map.value}</c:if></c:forEach>
-							</c:when>
-							<c:otherwise>
-								<c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${map.key == compute.serverType }">${map.value}</c:if></c:forEach>
-							</c:otherwise>
-						</c:choose>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:forEach var="item" items="${esgList}"><c:if test="${item.id == compute.networkEsgItem.id}">${item.identifier}(${item.description})</c:if></c:forEach>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="remark">用途信息</label>
-				<div class="controls">
-					<p class="help-inline plain-text">${compute.remark}</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="application">应用信息</label>
+				<label class="control-label" for="elbPortItem">端口映射</label>
 				<div class="controls">
 					<table class="table table-bordered table-condensed"  >
-						<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th></tr></thead>
+						<thead><tr><th>协议</th><th>负载端口</th><th>实例端口</th></tr></thead>
 						<tbody>
-							<c:forEach var="item" items="${compute.applications}">
+							<c:forEach var="item" items="${elb.elbPortItems}">
 								<tr>
-									<td>${item.name }</td>
-									<td>${item.version }</td>
-									<td>${item.deployPath }</td>
+									<td>${item.protocol }</td>
+									<td>${item.sourcePort }</td>
+									<td>${item.targetPort }</td>
 								</tr>
 							</c:forEach>
 		 				</tbody>
 					</table>	
 				</div>
 			</div>
+			
 			
 			<hr>
 			

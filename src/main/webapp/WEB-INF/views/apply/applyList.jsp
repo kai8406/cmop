@@ -38,12 +38,10 @@
 			<a href="${ctx}/apply/eip/save/" class="btn span1">EIP &raquo;</a>
 			<a href="${ctx}/apply/dns/save/" class="btn span1">DNS &raquo;</a>
 			<a href="${ctx}/apply/esg/save/" class="btn span1">ESG &raquo;</a>
-		</div>
-
-		<div class="span12 quick-actions">
 			<a href="${ctx}/apply/mdn/save/" class="btn span1">MDN &raquo;</a>
 			<a href="#" class="btn span1">CP &raquo;</a>
 		</div>
+
 	</div>
 
 	<form class="form-inline well well-small" action="#">

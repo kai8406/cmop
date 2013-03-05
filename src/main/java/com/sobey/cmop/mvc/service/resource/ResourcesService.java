@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ResourcesDao;
@@ -322,6 +323,8 @@ public class ResourcesService extends BaseSevcie {
 
 		if (isCreated) { // 写入Redmine成功
 
+			result = true;
+
 			Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
 
 			issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
@@ -350,8 +353,6 @@ public class ResourcesService extends BaseSevcie {
 
 			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, assigneeUser);
 
-		} else {
-			return false;
 		}
 
 		return result;
@@ -433,6 +434,29 @@ public class ResourcesService extends BaseSevcie {
 			}
 
 			comm.es3Service.saveOrUpdate(storageItem);
+
+		} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+
+			NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.Elb.是否保持会话.toString().equals(changeItem.getFieldName())) {
+
+					networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false);
+
+				} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 端口信息无法还原.
+
+				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+				}
+
+			}
+
+			comm.elbService.saveOrUpdate(networkElbItem);
 
 		}
 

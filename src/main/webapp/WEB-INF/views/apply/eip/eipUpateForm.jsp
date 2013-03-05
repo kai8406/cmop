@@ -109,7 +109,7 @@
 		<input type="hidden" name="applyId" value="${storage.apply.id }">
 		
 		<fieldset>
-			<legend><small>修改ES3存储空间</small></legend>
+			<legend><small>修改EIP</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>

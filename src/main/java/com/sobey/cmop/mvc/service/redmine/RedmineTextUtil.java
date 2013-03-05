@@ -127,7 +127,7 @@ public class RedmineTextUtil {
 
 				for (ComputeItem computeItem : computeItems) {
 
-					if (elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
+					if (computeItem.getNetworkElbItem() != null && elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
 
 						content.append(computeItem.getIdentifier());
 

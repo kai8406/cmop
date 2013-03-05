@@ -173,7 +173,7 @@
 				
 				<!-- 负载均衡器ELB -->
 				<c:if test="${not empty elbItems}">
-					<hr>
+					
 					<dt>负载均衡器ELB</dt>
 					<c:forEach var="item" items="${elbItems}">
 					
@@ -200,6 +200,9 @@
 						<br>
 						
 					</c:forEach>
+					
+					<hr>
+					
 				</c:if>
 				
 			</dl>

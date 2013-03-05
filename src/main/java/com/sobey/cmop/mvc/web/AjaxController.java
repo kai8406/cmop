@@ -150,6 +150,30 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
+	 * Ajax请求获得当前登录用户创建的通过审批的实例Compute List<br>
+	 * 并且该实例没有被其它ELB关联过,即elb_id = null .
+	 * 
+	 * @return ComputeJson List
+	 */
+	@RequestMapping(value = "getResourcesComputeByElbIsNullList")
+	public @ResponseBody
+	List<ComputeJson> getResourcesComputeByElbIsNullList() {
+
+		List<ComputeItem> computeItems = comm.computeService.getComputeItemListByResourcesId(getCurrentUserId());
+
+		List<ComputeJson> computeJsons = new ArrayList<ComputeJson>();
+
+		for (ComputeItem computeItem : computeItems) {
+
+			ComputeJson json = comm.resourcesJsonService.convertComputeJsonToComputeItem(computeItem);
+
+			computeJsons.add(json);
+		}
+
+		return computeJsons;
+	}
+
+	/**
 	 * Ajax请求获得当前登录用户创建的未和ELB关联ComputeJson对象.
 	 * 
 	 * @return ComputeJson List

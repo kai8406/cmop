@@ -74,44 +74,21 @@ public class ResourcesController extends BaseController {
 
 		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
 
-		String returnUrl = "";
+		String updateUrl = "";
 
-		// 资源单项服务的ID
+		this.returnUrlAndModel(model, resources, updateUrl, "");
 
-		Integer serviceId = resources.getServiceId();
-
-		// 服务类型
-
-		Integer serviceType = resources.getServiceType();
-
-		/**
-		 * 根据不同的服务类型返回不同的对象和页面.
-		 */
-		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
-
-			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
-
-			returnUrl = "resource/form/compute";
-
-		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
-
-			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
-
-			returnUrl = "resource/form/storage";
-
-		} else {
-
-			returnUrl = "resource/resourceList";
-		}
-
-		return returnUrl;
+		return updateUrl;
 	}
 
 	/**
-	 * 资源回收.<br>
-	 * 1.根据ID查询该资源属于哪种类型(PCS,ECS,ES3...)并获得各个单元的对象.<br>
-	 * 2.查询该资源对象关联的所有资源(根据不同的资源关联的资源对象也不同),拼接成邮件,直接发送至redmine第一接收人处.<br>
-	 * 3.审批->工单处理完成后,再物理删除cmop本地的数据以及oneCMDB的数据(通过API实现).<br>
+	 * 资源回收.
+	 * 
+	 * <pre>
+	 * 1.根据ID查询该资源属于哪种类型(PCS,ECS,ES3...)并获得各个单元的对象.
+	 * 2.查询该资源对象关联的所有资源(根据不同的资源关联的资源对象也不同),拼接成邮件,直接发送至redmine第一接收人处.
+	 * 3.审批->工单处理完成后,再物理删除cmop本地的数据以及oneCMDB的数据(通过API实现).
+	 * </pre>
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -136,7 +113,25 @@ public class ResourcesController extends BaseController {
 
 		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
 
-		String returnUrl = "";
+		String detailUrl = "";
+
+		this.returnUrlAndModel(model, resources, "", detailUrl);
+
+		return detailUrl;
+	}
+
+	/**
+	 * 根据不同的服务类型返回不同的对象和页面.<br>
+	 * updateUrl和detailUrl必须且只能同时声明一个.
+	 * 
+	 * @param model
+	 * @param resources
+	 * @param updateUrl
+	 *            跳转到变更页面的URL
+	 * @param detailUrl
+	 *            跳转到变更详情的URL
+	 */
+	private void returnUrlAndModel(Model model, Resources resources, String updateUrl, String detailUrl) {
 
 		// 资源单项服务的ID
 
@@ -146,26 +141,47 @@ public class ResourcesController extends BaseController {
 
 		Integer serviceType = resources.getServiceType();
 
-		/**
-		 * 根据不同的服务类型返回不同的对象和页面.
-		 */
 		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
 
-			returnUrl = "resource/detail/computeDetail";
+			updateUrl = "resource/form/compute";
+			detailUrl = "resource/detail/computeDetail";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
 
 			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
 
-			returnUrl = "resource/detail/storageDetail";
+			updateUrl = "resource/form/storage";
+			detailUrl = "resource/detail/storageDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
+
+			model.addAttribute("elb", comm.elbService.getNetworkElbItem(serviceId));
+
+			updateUrl = "resource/form/elb";
+			detailUrl = "resource/detail/elbDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
+
+			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
+
+			updateUrl = "resource/form/eip";
+			detailUrl = "resource/detail/eipDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
+
+			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
+
+			updateUrl = "resource/form/dns";
+			detailUrl = "resource/detail/dnsDetail";
 
 		} else {
-			returnUrl = "resource/resourceList";
+
+			updateUrl = "resource/resourceList";
+			detailUrl = "resource/resourceList";
 		}
 
-		return returnUrl;
 	}
 
 }

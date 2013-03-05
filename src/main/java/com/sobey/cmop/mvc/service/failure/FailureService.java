@@ -20,6 +20,9 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -75,6 +78,9 @@ public class FailureService extends BaseSevcie {
 			List<Resources> resourcesList = new ArrayList<Resources>();
 			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 			List<StorageItem> storageItems = new ArrayList<StorageItem>();
+			List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
+			List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
+			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 
 			String[] resourcesIds = failure.getRelatedId().split(",");
 			for (String resourcesId : resourcesIds) {
@@ -84,13 +90,13 @@ public class FailureService extends BaseSevcie {
 
 			/* 封装各个资源对象 */
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 			logger.info("--->拼装邮件内容...");
 
 			// 拼装Redmine内容
 
-			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, null, null, null);
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
 

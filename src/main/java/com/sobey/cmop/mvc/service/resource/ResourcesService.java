@@ -28,6 +28,9 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -234,6 +237,27 @@ public class ResourcesService extends BaseSevcie {
 
 		}
 
+		// ELB
+		for (NetworkElbItem networkElbItem : apply.getNetworkElbItems()) {
+
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ELB.toInteger(), serviceTag, networkElbItem.getId(), networkElbItem.getIdentifier(), networkElbItem.getVirtualIp());
+
+		}
+
+		// EIP
+		for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
+
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.EIP.toInteger(), serviceTag, networkEipItem.getId(), networkEipItem.getIdentifier(), networkEipItem.getIpAddress());
+
+		}
+
+		// DNS
+		for (NetworkDnsItem networkDnsItem : apply.getNetworkDnsItems()) {
+
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.DNS.toInteger(), serviceTag, networkDnsItem.getId(), networkDnsItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+
+		}
+
 		// TODO 还有其它资源的插入.
 
 	}
@@ -264,10 +288,13 @@ public class ResourcesService extends BaseSevcie {
 		List<Resources> resourcesList = new ArrayList<Resources>();
 		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 		List<StorageItem> storageItems = new ArrayList<StorageItem>();
+		List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
+		List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
+		List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 
 		resourcesList.add(resources);
 
-		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 		logger.info("--->拼装Redmine内容...");
 
@@ -462,7 +489,8 @@ public class ResourcesService extends BaseSevcie {
 	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.<br>
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
-	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems) {
+	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,
+			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems) {
 
 		for (Resources resources : resourcesList) {
 
@@ -478,6 +506,21 @@ public class ResourcesService extends BaseSevcie {
 
 				// ES3
 				storageItems.add(comm.es3Service.getStorageItem(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+
+				// ELB
+				elbItems.add(comm.elbService.getNetworkElbItem(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
+
+				// EIP
+				eipItems.add(comm.eipService.getNetworkEipItem(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
+
+				// DNS
+				dnsItems.add(comm.dnsService.getNetworkDnsItem(serviceId));
 
 			}
 

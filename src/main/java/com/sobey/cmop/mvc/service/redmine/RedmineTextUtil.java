@@ -109,8 +109,10 @@ public class RedmineTextUtil {
 	 * 
 	 * @param content
 	 * @param elbItems
+	 * @param computeItems
+	 *            当前用户的所有实例Compute
 	 */
-	public static void generateElb(StringBuilder content, List<NetworkElbItem> elbItems) {
+	public static void generateElb(StringBuilder content, List<NetworkElbItem> elbItems, List<ComputeItem> computeItems) {
 
 		if (!elbItems.isEmpty()) {
 
@@ -120,7 +122,25 @@ public class RedmineTextUtil {
 			for (NetworkElbItem elbItem : elbItems) {
 				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
 				content.append("是否保持会话 :").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
-				content.append("关联实例:").append(BLANK).append("TODO").append(NEWLINE);
+
+				content.append("关联实例:").append(BLANK);
+
+				for (ComputeItem computeItem : computeItems) {
+
+					if (elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
+
+						content.append(computeItem.getIdentifier());
+
+						if (computeItem.getInnerIp() != null) {
+
+							content.append("(").append(computeItem.getInnerIp()).append(")");
+						}
+
+						content.append(BLANK + BLANK);
+					}
+				}
+
+				content.append(NEWLINE);
 
 				if (!elbItem.getElbPortItems().isEmpty()) {
 

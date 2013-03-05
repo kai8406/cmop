@@ -298,7 +298,7 @@ public class ResourcesService extends BaseSevcie {
 
 		logger.info("--->拼装Redmine内容...");
 
-		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(computeItems, storageItems, null, null, null);
+		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 		// 写入工单Issue到Redmine
 

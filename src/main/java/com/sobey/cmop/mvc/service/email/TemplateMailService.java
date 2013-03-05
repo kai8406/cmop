@@ -79,16 +79,18 @@ public class TemplateMailService extends BaseSevcie {
 
 		Map<String, Object> map = Maps.newHashMap();
 
-		map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
 		map.put("osTypeMap", ComputeConstant.OS_TYPE_STRING_MAP);
 		map.put("osBitMap", ComputeConstant.OS_BIT_STRING_MAP);
+
+		map.put("priorityMap", RedmineConstant.Priority.mapKeyStr);
 		map.put("computeTypeMap", ComputeConstant.ComputeType.mapKeyStr);
 		map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
 		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
-		map.put("allESGs", comm.esgService.getAllEsgList());
 		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
 		map.put("storageTypeMap", StorageConstant.storageType.mapKeyStr);
 		map.put("KeepSessionMap", NetworkConstant.KeepSession.mapKeyStr);
+
+		map.put("allESGs", comm.esgService.getAllEsgList());
 
 		return map;
 
@@ -114,6 +116,10 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
+
+		// 申请人所创建的所有实例
+
+		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
@@ -152,6 +158,10 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
+
+		// 申请人所创建的所有实例
+
+		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
@@ -185,6 +195,11 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
+
+		// 申请人所创建的所有实例
+
+		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
+
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());

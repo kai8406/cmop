@@ -1,7 +1,5 @@
 package com.sobey.cmop.mvc.entity.ToJson;
 
-import com.sobey.cmop.mvc.entity.NetworkEsgItem;
-
 /**
  * Json格式返回到页面的Compute对象.<br>
  * 针对osType等Integer类型的属性,将其转换成字符串后返回页面
@@ -24,7 +22,7 @@ public class ComputeJson implements java.io.Serializable {
 	private String serverAlias;
 	private String hostServerAlias;
 	private String osStorageAlias;
-	private NetworkEsgItem networkEsgItem;
+	private String networkEsgItem;
 
 	public Integer getId() {
 		return id;
@@ -130,11 +128,11 @@ public class ComputeJson implements java.io.Serializable {
 		this.osStorageAlias = osStorageAlias;
 	}
 
-	public NetworkEsgItem getNetworkEsgItem() {
+	public String getNetworkEsgItem() {
 		return networkEsgItem;
 	}
 
-	public void setNetworkEsgItem(NetworkEsgItem networkEsgItem) {
+	public void setNetworkEsgItem(String networkEsgItem) {
 		this.networkEsgItem = networkEsgItem;
 	}
 

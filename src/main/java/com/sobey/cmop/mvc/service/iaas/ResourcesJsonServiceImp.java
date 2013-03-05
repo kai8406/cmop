@@ -45,7 +45,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 		json.setOldIp(computeItem.getOldIp());
 		json.setHostName(computeItem.getHostName());
 		json.setOsStorageAlias(computeItem.getOsStorageAlias());
-		json.setNetworkEsgItem(computeItem.getNetworkEsgItem());
+		json.setNetworkEsgItem(computeItem.getNetworkEsgItem().getIdentifier() + "(" + computeItem.getNetworkEsgItem().getDescription() + ")");
 
 		return json;
 

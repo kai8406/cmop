@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
@@ -331,4 +332,14 @@ public class BaseController {
 		return NetworkConstant.Protocol.map;
 	}
 
+	/**
+	 * 当前用户所创建的所有实例
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("allComputes")
+	public List<ComputeItem> allComputes() {
+		return comm.computeService.getComputeListByUserId(getCurrentUserId());
+
+	}
 }

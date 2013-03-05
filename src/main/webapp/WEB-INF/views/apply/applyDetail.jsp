@@ -121,15 +121,17 @@
 						</dd>
 						
 						<dd><em>关联实例</em>&nbsp; 
-							<c:forEach var="compute" items="${computeItems}">
-								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier }&nbsp;&nbsp;</c:if>
+							<c:forEach var="compute" items="${allComputes}">
+								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}
+									<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
+								</c:if>
 							</c:forEach>
 						</dd>
 						
 						<dd><em>端口映射（协议、负载端口、实例端口）</em></dd>
 						
 						<c:forEach var="port" items="${item.elbPortItems }">
-							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}  &nbsp;,&nbsp;${port.targetPort}</dd>
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
 							
 						<br>

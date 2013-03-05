@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * NetworkEsgItem entity. @author MyEclipse Persistence Tools
@@ -94,6 +95,7 @@ public class NetworkEsgItem implements java.io.Serializable {
 		this.description = description;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkEsgItem")
 	public Set<EsgRuleItem> getEsgRuleItems() {
 		return this.esgRuleItems;

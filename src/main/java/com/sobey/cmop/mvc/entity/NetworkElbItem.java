@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * NetworkElbItem entity. @author MyEclipse Persistence Tools
  */
@@ -106,6 +108,7 @@ public class NetworkElbItem implements java.io.Serializable {
 		this.virtualIp = virtualIp;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkElbItem")
 	public Set<ElbPortItem> getElbPortItems() {
 		return this.elbPortItems;

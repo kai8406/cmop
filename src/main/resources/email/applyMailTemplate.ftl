@@ -84,7 +84,17 @@
 						<li><em>是否保持会话</em>&nbsp;:
 							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
 						</li>
-						<li><em>关联实例</em>&nbsp;: 待完成 </li>
+						<li><em>关联实例</em>&nbsp;: 
+							<#list allComputes as compute>
+							
+							<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == elb.id ) >
+								${compute.identifier}
+								<#if compute.innerIp?exists >(${compute.innerIp})</#if> &nbsp;&nbsp;
+							</#if>
+							
+							</#list>
+						</li>
+						
 						<li><em>端口映射(协议、负载端口、实例端口)</em></li>
 						
 						<#list elb.elbPortItems as port>

@@ -27,6 +27,7 @@ import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
+import com.sobey.cmop.mvc.entity.User;
 
 /**
  * 生成满足 Redmine格式的文本(用于通过API插入redmine).
@@ -78,7 +79,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装计算资源Compute信息
 
-			this.generateContentByLists(content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
+			this.generateContentByLists(apply.getUser(), content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
 					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()), new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()), new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()));
 
 			return content.toString();
@@ -95,7 +96,7 @@ public class RedmineUtilService extends BaseSevcie {
 	/**
 	 * 生成满足redmine显示的资源回收Resources文本.
 	 */
-	public String recycleResourcesRedmineDesc(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+	public String recycleResourcesRedmineDesc(Resources resources, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
 			List<NetworkDnsItem> dnsItems) {
 
 		try {
@@ -104,7 +105,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装计算资源Compute信息
 
-			this.generateContentByLists(content, computeItems, storageItems, elbItems, eipItems, dnsItems);
+			this.generateContentByLists(resources.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 			return content.toString();
 
@@ -138,7 +139,7 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
 			content.append("</pre>");
 
-			this.generateContentByLists(content, computeItems, storageItems, elbItems, eipItems, dnsItems);
+			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 			return content.toString();
 
@@ -152,12 +153,24 @@ public class RedmineUtilService extends BaseSevcie {
 
 	}
 
-	private void generateContentByLists(StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+	/**
+	 * 将各个资源相关的参数生成符合redmine格式的文本.
+	 * 
+	 * @param user
+	 *            资源的创建人
+	 * @param content
+	 * @param computeItems
+	 * @param storageItems
+	 * @param elbItems
+	 * @param eipItems
+	 * @param dnsItems
+	 */
+	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
 			List<NetworkDnsItem> dnsItems) {
 
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
-		RedmineTextUtil.generateElb(content, elbItems);
+		RedmineTextUtil.generateElb(content, elbItems, comm.computeService.getComputeListByUserId(user.getId()));
 		RedmineTextUtil.generateEip(content, eipItems);
 		RedmineTextUtil.generateDNS(content, dnsItems);
 

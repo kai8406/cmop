@@ -135,7 +135,7 @@ public class AjaxController extends BaseController {
 	public @ResponseBody
 	List<ComputeJson> getComputeList() {
 
-		List<ComputeItem> computeItems = comm.computeService.getComputeList();
+		List<ComputeItem> computeItems = comm.computeService.getComputeListByUserId(getCurrentUserId());
 
 		List<ComputeJson> computeJsons = new ArrayList<ComputeJson>();
 

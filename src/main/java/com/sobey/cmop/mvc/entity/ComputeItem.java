@@ -228,7 +228,6 @@ public class ComputeItem implements java.io.Serializable {
 		this.networkEsgItem = networkEsgItem;
 	}
 
-	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "elb_id")
 	public NetworkElbItem getNetworkElbItem() {

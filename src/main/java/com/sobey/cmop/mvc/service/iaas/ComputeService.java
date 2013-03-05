@@ -304,12 +304,12 @@ public class ComputeService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得当前用户的所有实例Compute
+	 * 获得指定用户的所有实例Compute
 	 * 
 	 * @return
 	 */
-	public List<ComputeItem> getComputeList() {
-		return computeItemDao.findByApplyUserId(getCurrentUserId());
+	public List<ComputeItem> getComputeListByUserId(Integer userId) {
+		return computeItemDao.findByApplyUserId(userId);
 	}
 
 	/**

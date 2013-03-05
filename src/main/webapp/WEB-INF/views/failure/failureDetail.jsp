@@ -184,7 +184,11 @@
 						</dd>
 						
 						<dd><em>关联实例</em>&nbsp; 
-							 TODO
+							<c:forEach var="compute" items="${allComputes}">
+								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}
+									<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
+								</c:if>
+							</c:forEach>
 						</dd>
 						
 						<dd><em>端口映射（协议、负载端口、实例端口）</em></dd>

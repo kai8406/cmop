@@ -22,6 +22,9 @@ import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -125,6 +128,15 @@ public class OperateService extends BaseSevcie {
 	/**
 	 * 更新工单
 	 * 
+	 * <pre>
+	 * 1.更新redmine的数据.如果更新成功进行下一步操作,失败提示失败信息.
+	 * 2.根据RedmineIssue对象中的applyId, serviceTagId, recycleId进行不同的逻辑操作.
+	 * applyId != null 表示服务申请.
+	 * serviceTagId != null 表示资源变更.
+	 * resourceId != null 表示资源回收.
+	 * 三种字段都为null 表示故障申报.
+	 * 3.更新RedmineIssue的状态
+	 * 
 	 * @param issue
 	 * @return
 	 */
@@ -135,12 +147,11 @@ public class OperateService extends BaseSevcie {
 
 		try {
 
-			// 初始化第一接收人
+			/* Step.1 更新redmine的数据 */
 
 			User user = comm.accountService.getCurrentUser();
 			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(user.getRedmineUserId()));
 
-			// 更新redmine的数据
 			boolean isChanged = RedmineService.changeIssue(issue, mgr);
 
 			logger.info("---> Redmine isChanged?" + isChanged);
@@ -152,10 +163,9 @@ public class OperateService extends BaseSevcie {
 				RedmineIssue redmineIssue = this.findByIssueId(issue.getId());
 				redmineIssue.setAssignee(issue.getAssignee().getId());
 
-				/**
-				 * applyId != null 表示服务申请.<br>
-				 * serviceTagId != null 表示资源变更.<br>
-				 * resourceId != null 表示资源回收.<br>
+				/*
+				 * Step.2 根据RedmineIssue对象中的applyId, serviceTagId,
+				 * recycleId进行不同的逻辑操作
 				 */
 
 				Integer applyId = redmineIssue.getApplyId();
@@ -187,7 +197,7 @@ public class OperateService extends BaseSevcie {
 					this.failureOperate(issue);
 				}
 
-				// 更新RedmineIssue状态
+				/* Step.3 更新RedmineIssue状态 */
 
 				Integer status = RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio()) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
 				redmineIssue.setStatus(status);
@@ -378,8 +388,11 @@ public class OperateService extends BaseSevcie {
 
 			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 			List<StorageItem> storageItems = new ArrayList<StorageItem>();
+			List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
+			List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
+			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 			// 发送邮件通知下个指派人
 

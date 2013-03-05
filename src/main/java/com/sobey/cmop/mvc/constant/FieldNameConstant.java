@@ -37,4 +37,18 @@ public class FieldNameConstant {
 		存储类型, 容量空间, 挂载实例;
 	}
 
+	/**
+	 * entity NetworkElbItem 里的参数<br>
+	 * 
+	 * <pre>
+	 * 是否保持会话, 端口信息, 关联实例;
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum Elb {
+		是否保持会话, 端口信息, 关联实例;
+	}
+
 }

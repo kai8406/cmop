@@ -316,11 +316,20 @@ public class BaseController {
 
 	/**
 	 * 
-	 * @return 是否保持会话Map
+	 * @return 是否保持会话Map key为boolean类型
 	 */
 	@ModelAttribute("keepSessionMap")
 	public Map<Boolean, String> keepSessionMap() {
 		return NetworkConstant.KeepSession.map;
+	}
+
+	/**
+	 * 
+	 * @return 是否保持会话Map key为String类型
+	 */
+	@ModelAttribute("keepSessionKeyStrMap")
+	public Map<String, String> keepSessionKeyStrMap() {
+		return NetworkConstant.KeepSession.mapKeyStr;
 	}
 
 	/**

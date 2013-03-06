@@ -40,33 +40,23 @@
 		});
 		
 		
-		 /*点击弹出窗口保存时,连同ES3的信息生成HTML代码插入页面.*/
+		 /*点击"生成EIP"按钮,连同EIP的信息生成HTML代码插入页面.*/
 	  	 
 		$(document).on("click", "#createEIPBtn", function() {
+			
+			var html = '';
 			
 			 //选中的关联实例或关联ELB对象
 			
 			var $elbSelect = $("#elbSelectDiv.show #elbSelect");
 			var $computeSelect = $("#computeSelectDiv.show #computeSelect");
 			
-			
-			
-			
-			
-			/*
-				1.创建一个临时数组selectedArray 以及一个是否重复的标识符isUnique
-				2.遍历页面,将存在于页面的computeId放入临时数组selectedArray中.
-				3.对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
-				4.只有isUnique为true,表示所选的实例ID没有被使用则可以创建HTML字符串在页面显示.
-			*/
-			
-			//Step.1
-			
 			var selectedArray = [];
 			var isUnique = true;
 			
+			var $ispTyp = $("input[name='ispTypeCheckbox']:checked");
 			
-			//Step.2 遍历页面,将存在于页面的computeId放入临时数组selectedArray中
+			
 			
 			/*
 			$("div.resources").each(function() {
@@ -75,19 +65,16 @@
 				var computeId = computeIds.substring(0,computeIds.length-1); // 1-2-3
 				var computeIdArray = computeId.split("-"); //{1,2,3}
 				for ( var i = 0; i < computeIdArray.length; i++) {
-					 
 					selectedArray.push(computeIdArray[i]);
-					 
 				}
 			});
-				 */
-			var html = '';
-			var $ispTyp = $("input[name='ispTypeCheckbox']:checked");
+			 */
+		
+			//遍历选中的ISP
+				 
 			$ispTyp.each(function(){
 				
-				//ISP的ID
 				var $this = $(this);
-				
 				//ISP的文本
 				var ispTypText =  $this.parent().parent().parent().find("span.checkboxText").text();
 				
@@ -98,18 +85,25 @@
 				html +='<dd><em>ISP运营商</em>&nbsp;&nbsp;<strong>'+ispTypText+'</strong></dd>';
 				
 				//判断选中的是哪种关联(linkTypes 关联类型 0:ELB ; 1: 实例)
+				
 				if($elbSelect.val() != undefined){
+					
 					//关联ELB
+					
 					var elbSelectText =   $elbSelect.find("option:selected").text();
 					html +='<input type="hidden" value="0" name="linkTypes">';
 					html +='<input type="hidden" value="'+$elbSelect.val()+'" name="linkIds">';
 					html +='<dd><em>关联ELB</em>&nbsp;&nbsp;<strong>'+elbSelectText+'</strong></dd>';
+					
 				}else{
+					
 					//关联实例
+					
 					var computeSelectText = $computeSelect.find("option:selected").text();
 					html +='<input type="hidden" value="1" name="linkTypes">';
 					html +='<input type="hidden" value="'+$computeSelect.val()+'" name="linkIds">';
 					html +='<dd><em>关联实例</em>&nbsp;&nbsp;<strong>'+computeSelectText+'</strong></dd>';
+					
 				}
 				
 				
@@ -125,12 +119,10 @@
 				$("tr.clone").each(function(){
 					
 					var $tr = $(this);
-					
 					var protocol = $tr.find("#protocol").val();
 					var protocolText = $tr.find("#protocol>option:selected").text();
 					var sourcePort = $tr.find("#sourcePort").val();
 					var targetPort = $tr.find("#targetPort").val();
-					
 					var portTemp = protocol+"-"+sourcePort+"-"+targetPort;
 					
 					//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
@@ -148,8 +140,6 @@
 				html +='<input type="hidden" value="'+protocolStr+'" name="protocols">';
 				html +='<input type="hidden" value="'+sourcePortStr+'" name="sourcePorts">';
 				html +='<input type="hidden" value="'+targetPortStr+'" name="targetPorts">';
-			
-			
 				html +='</div> ';
 				
 				
@@ -169,6 +159,9 @@
 			//初始化
 			
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
+			$("input[type=checkbox]").removeAttr('checked');
+			$(".checker > span").removeClass('checked'); //uniform checkbox的处理
+			
 			portTempArray =[];
 			selectedArray = [];
 			isUnique = true;

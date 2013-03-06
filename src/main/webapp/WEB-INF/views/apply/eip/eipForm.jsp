@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ES3管理</title>
+	<title>EIP管理</title>
 
 	<script>
 		$(document).ready(function() {
@@ -23,82 +23,156 @@
 	
 			});
 			
-			 /* 获得当前用户拥有的Compute拼装至实例相关资源的modal中.*/
 			
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getComputeList",
-				dataType: "json",
-				success: function(data){
-					
-					var html = '';
-					
-					for ( var i = 0; i < data.length; i++) {
-						
-						html += '<tr>';
-						html += '<td><input type="checkbox" value="'+data[i].id+'"></td>';
-						html += '<td>'+data[i].identifier+'</td>';
-						html += '<td>'+data[i].osType+'&nbsp;&nbsp;&nbsp;'+data[i].osBit+'&nbsp;&nbsp;&nbsp;'+data[i].serverType+'</td>';
-						html += '<td>'+data[i].remark+'</td>';
-						html += '<td>'+ (data[i].innerIp == null ? "" : data[i].innerIp ) +'</td>';
-						html += '</tr> ';
-						
-					}
-					
-					$("#resources-tbody").append(html);
-					
- 				}		
+			/*关联实例和关联ELB select控件的切换*/
+			
+			$("input[name='linkRadio']").click(function(){
+				if($(this).val() == "isCompute"){
+					$("#computeSelectDiv").addClass("show").removeClass("hidden");
+					$("#elbSelectDiv").addClass("hidden").removeClass("show");
+				}else{
+					$("#elbSelectDiv").addClass("show").removeClass("hidden");
+					$("#computeSelectDiv").addClass("hidden").removeClass("show");
+				}
 			});
+			
 			
 		});
 		
 		
 		 /*点击弹出窗口保存时,连同ES3的信息生成HTML代码插入页面.*/
 	  	 
-		$(document).on("click", "#ModalSave", function() {
+		$(document).on("click", "#createEIPBtn", function() {
 			
-			var $ModalDiv = $(this).parent().parent();
-			var $CheckedIds = $ModalDiv.find("tbody input:checked");
+			 //选中的关联实例或关联ELB对象
 			
+			var $elbSelect = $("#elbSelectDiv.show #elbSelect");
+			var $computeSelect = $("#computeSelectDiv.show #computeSelect");
+			
+			
+			
+			
+			
+			/*
+				1.创建一个临时数组selectedArray 以及一个是否重复的标识符isUnique
+				2.遍历页面,将存在于页面的computeId放入临时数组selectedArray中.
+				3.对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+				4.只有isUnique为true,表示所选的实例ID没有被使用则可以创建HTML字符串在页面显示.
+			*/
+			
+			//Step.1
+			
+			var selectedArray = [];
+			var isUnique = true;
+			
+			
+			//Step.2 遍历页面,将存在于页面的computeId放入临时数组selectedArray中
+			
+			/*
+			$("div.resources").each(function() {
+	 
+				var computeIds = $(this).find("input[name='computeIds']").val(); // 1-2-3-
+				var computeId = computeIds.substring(0,computeIds.length-1); // 1-2-3
+				var computeIdArray = computeId.split("-"); //{1,2,3}
+				for ( var i = 0; i < computeIdArray.length; i++) {
+					 
+					selectedArray.push(computeIdArray[i]);
+					 
+				}
+			});
+				 */
 			var html = '';
-			var computeIds = "";
-			var computeIdentifier = "";
-			var storageType = $("#storageType").val();
-			var storageTypeText = $("#storageType>option:selected").text();
-			var space = $("#space").val();
-			
-			//遍历挂载Compute的Id和identifier.
-			
-			$CheckedIds.each(function(){
+			var $ispTyp = $("input[name='ispTypeCheckbox']:checked");
+			$ispTyp.each(function(){
 				
+				//ISP的ID
 				var $this = $(this);
-				computeIds +=  $this.val() +"-";
-		    	computeIdentifier += $this.closest("tr").find("td").eq(1).text()+"&nbsp;";
+				
+				//ISP的文本
+				var ispTypText =  $this.parent().parent().parent().find("span.checkboxText").text();
+				
+				//拼装HTML文本
+				html +='<div class="resources alert alert-block alert-info fade in">';
+				html +='<button type="button" class="close" data-dismiss="alert">×</button>';
+			    html +='<input type="hidden" value="'+$this.val()+'" name="ispTypes">';
+				html +='<dd><em>ISP运营商</em>&nbsp;&nbsp;<strong>'+ispTypText+'</strong></dd>';
+				
+				//判断选中的是哪种关联(linkTypes 关联类型 0:ELB ; 1: 实例)
+				if($elbSelect.val() != undefined){
+					//关联ELB
+					var elbSelectText =   $elbSelect.find("option:selected").text();
+					html +='<input type="hidden" value="0" name="linkTypes">';
+					html +='<input type="hidden" value="'+$elbSelect.val()+'" name="linkIds">';
+					html +='<dd><em>关联ELB</em>&nbsp;&nbsp;<strong>'+elbSelectText+'</strong></dd>';
+				}else{
+					//关联实例
+					var computeSelectText = $computeSelect.find("option:selected").text();
+					html +='<input type="hidden" value="1" name="linkTypes">';
+					html +='<input type="hidden" value="'+$computeSelect.val()+'" name="linkIds">';
+					html +='<dd><em>关联实例</em>&nbsp;&nbsp;<strong>'+computeSelectText+'</strong></dd>';
+				}
+				
+				
+				html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、负载端口、实例端口）</em></dd>';  
+				
+				var portTempArray =[];
+				var protocolStr = "";
+				var sourcePortStr = "";
+				var targetPortStr = "";
+				
+				//端口信息相关的HTML
+				
+				$("tr.clone").each(function(){
+					
+					var $tr = $(this);
+					
+					var protocol = $tr.find("#protocol").val();
+					var protocolText = $tr.find("#protocol>option:selected").text();
+					var sourcePort = $tr.find("#sourcePort").val();
+					var targetPort = $tr.find("#targetPort").val();
+					
+					var portTemp = protocol+"-"+sourcePort+"-"+targetPort;
+					
+					//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
+					
+					if(portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1){
+						portTempArray.push(portTemp);
+						protocolStr += protocol+"-";
+						sourcePortStr +=  sourcePort+"-"; 
+						targetPortStr += targetPort+"-";
+						html +='<dd><strong>'+protocolText+'&nbsp;,&nbsp;'+sourcePort+'&nbsp;,&nbsp;'+targetPort+'</strong></dd>';
+					}
+					
+				});
+				
+				html +='<input type="hidden" value="'+protocolStr+'" name="protocols">';
+				html +='<input type="hidden" value="'+sourcePortStr+'" name="sourcePorts">';
+				html +='<input type="hidden" value="'+targetPortStr+'" name="targetPorts">';
+			
+			
+				html +='</div> ';
+				
 				
 			});
 			
-			//拼装HTML文本
 			
-			html +='<div class="resources alert alert-block alert-info fade in">';
-			html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-			html +='<input type="hidden" value="'+computeIds+'" name="computeIds">';
-			html +='<input type="hidden" value="'+space+'" name="spaces">';
-			html +='<input type="hidden" value="'+storageType+'" name="storageTypes">';
-			html +='<dd><em>存储类型</em>&nbsp;&nbsp;<strong>'+storageTypeText+'</strong></dd>';
-			html +='<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>'+space+'</strong></dd>';
-			html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
-			html +='</div> ';
+			if(isUnique){
 			
+				//插入HTML文本
+				
+				$("#resourcesDIV dl").append(html);
+			
+			}else{
+				 alert("一个实例/ELB不能关联多个相同的ISP");
+			}
 			
 			//初始化
 			
-			$CheckedIds.removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked");
-			 
+			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
+			portTempArray =[];
+			selectedArray = [];
+			isUnique = true;
 			
-			//插入HTML文本
-			
-			$("#resourcesDIV dl").append(html);
 			
 		}); 
 		 
@@ -114,7 +188,7 @@
 		
 		<fieldset>
 		
-			<legend><small>创建ES3存储空间</small></legend>
+			<legend><small>创建EIP</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="applyId">所属服务申请</label>
@@ -128,26 +202,68 @@
 			<hr> 
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="ispTypeCheckbox">ISP运营商</label>
 				<div class="controls">
-					<select id="storageType" class="required">
-						<c:forEach var="map" items="${storageTypeMap}">
-							<option value="${map.key}">${map.value}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="space">容量空间(GB)</label>
-				<div class="controls">
-					<input type="text" id="space" class="required digits" maxlength="6" placeholder="...容量空间(GB)">
+					<c:forEach var="map" items="${ispTypeMap}">
+						<label class="checkbox">
+							<input type="checkbox" name="ispTypeCheckbox" value="${map.key}"><span class="checkboxText">${map.value}</span>
+						</label>
+					</c:forEach>
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<div class="controls">
-					 <a id="addComputeBtn" class="btn" data-toggle="modal" href="#computeModal" >实例相关资源</a>
+					<label class="radio inline">
+ 						<input type="radio" name="linkRadio" value="isCompute" checked="checked">关联实例
+					</label>
+					<label class="radio inline">
+	 					<input type="radio" name="linkRadio" value="isElb">关联Elb
+					</label>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="controls">
+				
+					<div id="computeSelectDiv" class="show">
+						<select id="computeSelect" class="required">
+							<c:forEach var="item" items="${allComputes }">
+								<option value="${item.id }">${item.identifier}(${item.innerIp })</option>
+							</c:forEach>
+						</select>					
+					</div>
+					
+					<div id="elbSelectDiv" class="hidden">
+						<select id="elbSelect" class="required">
+							<c:forEach var="item" items="${allElbs }">
+								<option value="${item.id }">${item.identifier}(${item.virtualIp })</option>
+							</c:forEach>
+						</select>			
+					</div>		
+ 
+				</div>
+			</div>
+			
+			<table class="table table-bordered table-condensed"  >
+				<thead><tr><th>Protocol</th><th>SourcePort</th><th>TargetPort</th><th></th></tr></thead>
+				<tbody>
+					<tr class="clone">
+						<td>
+							<select id="protocol" class="input-small required">
+								<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
+							</select>
+						</td>
+						<td><input type="text" id="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+						<td><input type="text" id="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+					</tr>
+				</tbody>
+			</table>	
+			
+			<div class="control-group">
+				<div class="controls">
+					 <a id="createEIPBtn" class="btn btn-success">生成EIP</a>
 				</div>
 			</div>
 				
@@ -164,32 +280,6 @@
 		</fieldset>
 		
 	</form>
-	
-	<!-- 实例选择的Modal -->
-	<form id="modalForm" action="#" >
-		<div id="computeModal" class="modal container hide fade" tabindex="-1">
-	
-			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>实例</h4></div>
-				
-			<div class="modal-body">
-				<table class="table table-striped table-bordered table-condensed">
-					<thead><tr>
-						<th><input type="checkbox"></th>
-						<th>实例标识符</th>
-						<th>基本信息(操作系统,位数,规格)</th>
-						<th>用途信息</th>
-						<th>IP地址</th>
-					</tr></thead>
-					<tbody id="resources-tbody"></tbody>
-				</table>
-			</div>
-				
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
-			</div>
-		</div>
-	</form><!-- 实例规格选择的Modal End -->
 	
 </body>
 </html>

@@ -145,7 +145,7 @@ public class Es3Service extends BaseSevcie {
 
 		StorageItem storageItem = this.getStorageItem(resources.getServiceId());
 
-		/* 比较实例资源computeItem 变更前和变更后的值. */
+		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareStorage(resources, storageItem, storageType, space, computeIds);
 

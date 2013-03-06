@@ -1,7 +1,10 @@
 package com.sobey.cmop.mvc.entity.ToJson;
 
 /**
- * NetworkElbItem entity. @author MyEclipse Persistence Tools
+ * Json格式返回到页面的NetworkElbItem对象.
+ * 
+ * @author liukai
+ * 
  */
 public class ElbJson implements java.io.Serializable {
 

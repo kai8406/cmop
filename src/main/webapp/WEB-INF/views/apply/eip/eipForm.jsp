@@ -140,7 +140,7 @@
 					html += str;
 					html +='<input type="hidden" value="'+linkId+'" id="linkIds" name="linkIds">';
 					html +='<input type="hidden" value="'+linkType+'" id="linkTypes" name="linkTypes">';
-					html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、负载端口、实例端口）</em></dd>';  
+					html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、源端口、目标端口）</em></dd>';  
 					
 					var portTempArray =[];
 					var protocolStr = "";
@@ -193,7 +193,6 @@
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
 			$("input[type=checkbox]").removeAttr('checked');
 			$(".checker > span").removeClass('checked'); //uniform checkbox的处理
-			
 		
 			selectedArray = [];
 			

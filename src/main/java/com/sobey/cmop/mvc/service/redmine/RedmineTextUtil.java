@@ -144,7 +144,7 @@ public class RedmineTextUtil {
 
 				if (!elbItem.getElbPortItems().isEmpty()) {
 
-					content.append("端口映射（协议、负载端口、实例端口）:").append(NEWLINE);
+					content.append("端口映射（协议、源端口、目标端口）:").append(NEWLINE);
 					for (ElbPortItem portItem : elbItem.getElbPortItems()) {
 						content.append(BLANK + BLANK + BLANK + BLANK + BLANK).append(portItem.getProtocol()).append(BLANK + BLANK).append(portItem.getSourcePort()).append(BLANK + BLANK)
 								.append(portItem.getTargetPort()).append(NEWLINE);

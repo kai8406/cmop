@@ -95,7 +95,7 @@
 							</#list>
 						</li>
 						
-						<li><em>端口映射(协议、负载端口、实例端口)</em></li>
+						<li><em>端口映射(协议、源端口、目标端口)</em></li>
 						
 						<#list elb.elbPortItems as port>
 							<ul>

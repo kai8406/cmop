@@ -191,7 +191,7 @@
 							</c:forEach>
 						</dd>
 						
-						<dd><em>端口映射（协议、负载端口、实例端口）</em></dd>
+						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
 						
 						<c:forEach var="port" items="${item.elbPortItems }">
 							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}  &nbsp;,&nbsp;${port.targetPort}</dd>

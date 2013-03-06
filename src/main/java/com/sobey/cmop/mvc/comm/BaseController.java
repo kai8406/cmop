@@ -342,6 +342,24 @@ public class BaseController {
 	}
 
 	/**
+	 * 
+	 * @return 运营商ISP类型Map
+	 */
+	@ModelAttribute("ispTypeMap")
+	public Map<Integer, String> ispTypeMap() {
+		return NetworkConstant.ISPType.map;
+	}
+
+	/**
+	 * 
+	 * @return 域名类型Map
+	 */
+	@ModelAttribute("domainTypeMap")
+	public Map<Integer, String> domainTypeMap() {
+		return NetworkConstant.DomainType.map;
+	}
+
+	/**
 	 * 当前用户所创建的所有实例
 	 * 
 	 * @return

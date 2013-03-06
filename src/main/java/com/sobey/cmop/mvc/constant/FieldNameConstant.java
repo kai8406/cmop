@@ -51,4 +51,32 @@ public class FieldNameConstant {
 		是否保持会话, 端口信息, 关联实例;
 	}
 
+	/**
+	 * entity NetworkEipItem 里的参数<br>
+	 * 
+	 * <pre>
+	 * ISP, 关联ELB, 关联实例, 端口映射
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum Eip {
+		ISP, 关联ELB, 关联实例, 端口映射
+	}
+
+	/**
+	 * entity NetworkDnsItem 里的参数<br>
+	 * 
+	 * <pre>
+	 * 域名, 域名类型, 目标IP_CNAME域名;
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum Dns {
+		域名, 域名类型, 目标IP_CNAME域名;
+	}
+
 }

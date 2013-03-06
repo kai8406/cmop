@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -66,7 +67,7 @@ public interface CompareResourcesService {
 	public boolean compareStorage(Resources resources, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
 
 	/**
-	 * 比较更负载均衡器ELB变更前和变更后的值<br>
+	 * 比较负载均衡器ELB变更前和变更后的值<br>
 	 * 
 	 * @param resources
 	 *            资源
@@ -77,13 +78,34 @@ public interface CompareResourcesService {
 	 * @param protocols
 	 *            协议数组
 	 * @param sourcePorts
-	 *            端口数组
+	 *            源端口数组
 	 * @param targetPorts
-	 *            目标端口(实例端口)数组
+	 *            目标端口数组
 	 * @param computeIds
 	 *            关联实例Id
 	 * @return
 	 */
 	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds);
+
+	/**
+	 * 比较公网IP EIP 变更前和变更后的值<br>
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param networkEipItem
+	 *            变更前的公网IP EIP
+	 * @param linkType
+	 *            关联类型
+	 * @param linkId
+	 *            关联ID
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @return
+	 */
+	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts);
 
 }

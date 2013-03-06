@@ -1,17 +1,26 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.dao.EipPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkEipItemDao;
-import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
+import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * 公网IPNetworkEipItem相关的管理类.
@@ -24,11 +33,43 @@ public class EipService extends BaseSevcie {
 
 	private static Logger logger = LoggerFactory.getLogger(EipService.class);
 
+	/**
+	 * 关联类型 : 1.实例Compute<br>
+	 * 页面eipForm.jsp也有该参数.注意两者同步.
+	 */
+	private static final String LINKTYPE_COMPUTE = "1";
+
 	@Resource
 	private NetworkEipItemDao networkEipItemDao;
 
 	@Resource
-	private BasicUnitDaoCustom basicUnitDao;
+	private EipPortItemDao eipPortItemDao;
+
+	// ========= EipPortItem ==========//
+
+	/**
+	 * 新增,保存ELB映射端口.
+	 * 
+	 * @param elbPortItem
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public EipPortItem saveOrUpdateEipPortItem(EipPortItem eipPortItem) {
+		return eipPortItemDao.save(eipPortItem);
+	}
+
+	/**
+	 * 获得指定NetworkEipItem下的所有端口ElbPortItem
+	 * 
+	 * @param computeItemId
+	 * @return
+	 */
+	public List<EipPortItem> getEipPortItemListByEipId(Integer eipId) {
+		return eipPortItemDao.findByNetworkEipItemId(eipId);
+
+	}
+
+	// ========= NetworkEipItem ==========//
 
 	public NetworkEipItem getNetworkEipItem(Integer id) {
 		return networkEipItemDao.findOne(id);
@@ -42,6 +83,15 @@ public class EipService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteNetworkEipItem(Integer id) {
 		networkEipItemDao.delete(id);
+	}
+
+	/**
+	 * 获得指定用户的所有eip
+	 * 
+	 * @return
+	 */
+	public List<NetworkEipItem> getEIPListByUserId(Integer userId) {
+		return networkEipItemDao.findByApplyUserId(userId);
 	}
 
 	/**
@@ -69,19 +119,181 @@ public class EipService extends BaseSevcie {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
-		// for (int i = 0; i < storageTypes.length; i++) {
-		// StorageItem storageItem = new StorageItem();
-		//
-		// String identifier =
-		// comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ES3.toInteger());
-		// storageItem.setIdentifier(identifier);
-		// storageItem.setApply(apply);
-		// storageItem.setStorageType(Integer.parseInt(storageTypes[i]));
-		//
-		// // this.saveOrUpdate(storageItem);
-		//
-		// }
+		logger.info("创建EIP的数量:" + ispTypes.length);
 
+		for (int i = 0; i < ispTypes.length; i++) {
+
+			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.EIP.toInteger());
+
+			NetworkEipItem networkEipItem = new NetworkEipItem();
+
+			networkEipItem.setApply(apply);
+			networkEipItem.setIdentifier(identifier);
+			networkEipItem.setIspType(Integer.valueOf(ispTypes[i]));
+
+			if (LINKTYPE_COMPUTE.equals(linkTypes[i])) {
+
+				// 关联实例
+				networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(linkIds[i])));
+
+			} else {
+
+				// 关联ELB
+				networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(linkIds[i])));
+
+			}
+
+			this.saveOrUpdate(networkEipItem);
+
+			// EIP的端口映射
+
+			String[] protocolArray = StringUtils.split(protocols[i], "-");
+			String[] sourcePortArray = StringUtils.split(sourcePorts[i], "-");
+			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
+
+			for (int j = 0; j < protocolArray.length; j++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j], targetPortArray[j]);
+				this.saveOrUpdateEipPortItem(eipPortItem);
+			}
+
+		}
+
+	}
+
+	/**
+	 * 修改EIP的服务申请.(在服务申请时调用)
+	 * 
+	 * <pre>
+	 * 1.先将EIP下的所有映射信息删除.
+	 * 2.判断关联ID是compute还是elb的.
+	 * 3.保存ELB和端口映射.
+	 * </pre>
+	 * 
+	 * @param networkEipItem
+	 *            EIP对象
+	 * @param linkType
+	 *            关联类型
+	 * @param linkId
+	 *            关联ID
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 */
+	@Transactional(readOnly = false)
+	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+
+		// Step.1
+
+		eipPortItemDao.delete(this.getEipPortItemListByEipId(networkEipItem.getId()));
+
+		// Step.2
+
+		if (LINKTYPE_COMPUTE.equals(linkType)) {
+
+			// 关联实例
+
+			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
+
+		} else {
+
+			// 关联ELB
+			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
+
+		}
+
+		// Step.3
+
+		this.saveOrUpdate(networkEipItem);
+
+		// ELB的端口映射
+
+		for (int i = 0; i < protocols.length; i++) {
+
+			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+			this.saveOrUpdateEipPortItem(eipPortItem);
+
+		}
+
+	}
+
+	@Transactional(readOnly = false)
+	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts,
+
+	String changeDescription) {
+
+		/**
+		 * 查找该资源的change.<br>
+		 * 返回null表示数据库没有该资源下的change,该资源以前未变更过.新建一个change;<br>
+		 * 返回结果不为null,该资源以前变更过,更新其变更时间和变更说明.
+		 */
+
+		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+
+		if (change == null) {
+
+			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
+			change.setDescription(changeDescription);
+
+		} else {
+
+			change.setChangeTime(new Date());
+			change.setDescription(changeDescription);
+
+		}
+
+		comm.changeServcie.saveOrUpdateChange(change);
+
+		NetworkEipItem networkEipItem = this.getNetworkEipItem(resources.getServiceId());
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareEip(resources, networkEipItem, linkType, linkId, protocols, sourcePorts, targetPorts);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		if (isChange) {
+
+			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+
+			resources.setServiceTag(serviceTag);
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+		}
+
+		if (LINKTYPE_COMPUTE.equals(linkType)) {
+
+			// 关联实例
+
+			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
+
+		} else {
+
+			// 关联ELB
+			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
+
+		}
+
+		this.saveOrUpdate(networkEipItem);
+
+		// ELB的端口映射
+
+		for (int i = 0; i < protocols.length; i++) {
+
+			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+			this.saveOrUpdateEipPortItem(eipPortItem);
+
+		}
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
 	}
 
 }

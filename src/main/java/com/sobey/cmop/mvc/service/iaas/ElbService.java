@@ -121,12 +121,9 @@ public class ElbService extends BaseSevcie {
 
 			this.saveOrUpdate(networkElbItem);
 
-			String[] protocolArray = StringUtils.split(protocols[i], "-");
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], "-");
-			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
-			String[] computeIdArray = StringUtils.split(computeIds[i], "-");
-
 			// 关联实例
+
+			String[] computeIdArray = StringUtils.split(computeIds[i], "-");
 
 			for (String computeId : computeIdArray) {
 				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
@@ -135,6 +132,10 @@ public class ElbService extends BaseSevcie {
 			}
 
 			// ELB的端口映射
+
+			String[] protocolArray = StringUtils.split(protocols[i], "-");
+			String[] sourcePortArray = StringUtils.split(sourcePorts[i], "-");
+			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
 
 			for (int j = 0; j < protocolArray.length; j++) {
 
@@ -147,13 +148,24 @@ public class ElbService extends BaseSevcie {
 	}
 
 	/**
-	 * 修改ELB的服务申请.(在服务申请时调用)<br>
-	 * 1.先将ELB下的所有映射信息删除.<br>
-	 * 2.将ELB下所有的实例compute查询出来并设置实例管理的ELB为null.<br>
-	 * 3.保存ELB和端口映射.<br>
+	 * 修改ELB的服务申请.(在服务申请时调用)
 	 * 
-	 * @param applyId
-	 *            服务申请单ID
+	 * <pre>
+	 * 1.先将ELB下的所有映射信息删除.
+	 * 2.将ELB下所有的实例compute查询出来并设置实例管理的ELB为null.
+	 * 3.保存ELB和端口映射.
+	 * </pre>
+	 * 
+	 * @param networkElbItem
+	 *            ELB对象
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param computeIds
+	 *            关联实例ID数组
 	 */
 	@Transactional(readOnly = false)
 	public void updateELBToApply(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
@@ -176,6 +188,7 @@ public class ElbService extends BaseSevcie {
 
 			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateElbPortItem(elbPortItem);
+
 		}
 
 		// 关联实例
@@ -194,8 +207,7 @@ public class ElbService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds,
-
-	String changeDescription) {
+			String changeDescription) {
 
 		/**
 		 * 查找该资源的change.<br>
@@ -221,7 +233,7 @@ public class ElbService extends BaseSevcie {
 
 		NetworkElbItem networkElbItem = this.getNetworkElbItem(resources.getServiceId());
 
-		/* 比较实例资源computeItem 变更前和变更后的值. */
+		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts, computeIds);
 
@@ -243,17 +255,14 @@ public class ElbService extends BaseSevcie {
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
 		// TODO 审批退回操作的话映射端口如果处理.
-		// 更新networkElbItem
 
-		// Step.1
+		// 更新networkElbItem
 
 		elbPortItemDao.delete(this.getElbPortItemListByElbId(networkElbItem.getId()));
 
 		this.initElbInCompute(networkElbItem.getId());
 
 		this.saveOrUpdate(networkElbItem);
-
-		// Step.3
 
 		// ELB的端口映射
 

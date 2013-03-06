@@ -10,9 +10,11 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
@@ -93,7 +95,32 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 		json.setRelationCompute(relationCompute);
 
-		// port 也视后期的需求
+		// TODO port 也视后期的需求
+
+		return json;
+	}
+
+	@Override
+	public EipJson convertEipJsonToNetworkEipItem(NetworkEipItem networkEipItem) {
+
+		EipJson json = new EipJson();
+		String link = null;
+
+		json.setId(networkEipItem.getId());
+		json.setIdentifier(networkEipItem.getIdentifier());
+		json.setIpAddress(networkEipItem.getIpAddress());
+		json.setOldIp(networkEipItem.getOldIp());
+		json.setIspType(NetworkConstant.ISPType.get(networkEipItem.getIspType()));
+
+		if (networkEipItem.getNetworkElbItem() != null) {
+			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")";
+		}
+
+		if (networkEipItem.getComputeItem() != null) {
+			link += networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getInnerIp() + ")";
+		}
+
+		json.setLink(link);
 
 		return json;
 	}

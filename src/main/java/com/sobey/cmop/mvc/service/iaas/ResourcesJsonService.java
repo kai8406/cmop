@@ -1,9 +1,11 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
@@ -37,5 +39,13 @@ public interface ResourcesJsonService {
 	 * @return
 	 */
 	public ElbJson convertElbJsonToNetworkElbItem(NetworkElbItem elbItem);
+
+	/**
+	 * 将networkEipItem转化成EipJson格式.
+	 * 
+	 * @param elbItem
+	 * @return
+	 */
+	public EipJson convertEipJsonToNetworkEipItem(NetworkEipItem networkEipItem);
 
 }

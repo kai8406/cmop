@@ -16,7 +16,9 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -264,7 +266,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 		if (this.compareElbPortItem(networkElbItem, protocols, sourcePorts, targetPorts)) {
 
 			String oldValue = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
-			String newValue = this.wrapElbPortItemToString(protocols, sourcePorts, targetPorts);
+			String newValue = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
 
 			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Elb.端口信息.toString(), oldValue, newValue);
 
@@ -276,13 +278,16 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 	}
 
 	/**
-	 * 比较应用Application<br>
+	 * 比较应用ElbPortItem<br>
 	 * true:有变更;false:未变更.<br>
 	 * 
-	 * @param computeItem
-	 * @param applicationNames
-	 * @param applicationVersions
-	 * @param applicationDeployPaths
+	 * @param networkElbItem
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
 	 * @return
 	 */
 	private boolean compareElbPortItem(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts) {
@@ -341,14 +346,14 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 	}
 
 	/**
-	 * 将ElbPortItem的数组参数转换成字符串(oldValue)
+	 * 将PortItem的数组参数转换成字符串(oldValue),可通用于ELB和EIP
 	 * 
 	 * @param protocols
 	 * @param sourcePorts
 	 * @param targetPorts
 	 * @return
 	 */
-	private String wrapElbPortItemToString(String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	private String wrapPortItemToString(String[] protocols, String[] sourcePorts, String[] targetPorts) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -360,4 +365,77 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 	}
 
+	@Override
+	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * 将NetworkEipItem下的EipPortItem List 转换成字符串(newValue)
+	 * 
+	 * @param networkEipItem
+	 * @return
+	 */
+	private String wrapEipPortItemFromNetworkEipItemToString(NetworkEipItem networkEipItem) {
+
+		StringBuilder sb = new StringBuilder();
+
+		List<EipPortItem> eipPortItems = comm.eipService.getEipPortItemListByEipId(networkEipItem.getId());
+
+		for (EipPortItem eipPortItem : eipPortItems) {
+			sb.append(eipPortItem.getProtocol()).append(",").append(eipPortItem.getSourcePort()).append(",").append(eipPortItem.getTargetPort()).append("<br>");
+		}
+
+		return sb.toString();
+
+	}
+
+	/**
+	 * 比较应用EipPortItem<br>
+	 * true:有变更;false:未变更.<br>
+	 * 
+	 * @param networkEipItem
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @return
+	 */
+	private boolean compareEipPortItem(NetworkEipItem networkEipItem, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+
+		// === OldValue === //
+
+		List<String> oldProtocolList = new ArrayList<String>();
+		List<String> oldSourcePortList = new ArrayList<String>();
+		List<String> oldTargetPortList = new ArrayList<String>();
+
+		List<EipPortItem> eipPortItems = comm.eipService.getEipPortItemListByEipId(networkEipItem.getId());
+
+		for (EipPortItem eipPortItem : eipPortItems) {
+			oldProtocolList.add(eipPortItem.getProtocol());
+			oldSourcePortList.add(eipPortItem.getSourcePort());
+			oldTargetPortList.add(eipPortItem.getTargetPort());
+		}
+
+		// === NewValue === //
+
+		List<String> protocolList = new ArrayList<String>();
+		List<String> sourcePortList = new ArrayList<String>();
+		List<String> targetPortList = new ArrayList<String>();
+
+		for (int i = 0; i < protocols.length; i++) {
+			protocolList.add(protocols[i]);
+			sourcePortList.add(sourcePorts[i]);
+			targetPortList.add(targetPorts[i]);
+		}
+
+		// 比较OldValue和NewValue的List.
+
+		return CollectionUtils.isEqualCollection(protocolList, oldProtocolList) && CollectionUtils.isEqualCollection(sourcePortList, oldSourcePortList)
+				&& CollectionUtils.isEqualCollection(targetPortList, oldTargetPortList) ? false : true;
+
+	}
 }

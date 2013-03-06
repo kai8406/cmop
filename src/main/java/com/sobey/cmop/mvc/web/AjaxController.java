@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 
 /**
  * 页面AJAX操作相关的 Controller
@@ -147,6 +149,29 @@ public class AjaxController extends BaseController {
 		}
 
 		return computeJsons;
+	}
+
+	/**
+	 * Ajax请求获得当前登录用户创建的所有EipJson对象.
+	 * 
+	 * @return EipJson List
+	 */
+	@RequestMapping(value = "getEipList")
+	public @ResponseBody
+	List<EipJson> getEipList() {
+
+		List<NetworkEipItem> eipItems = comm.eipService.getEIPListByUserId(getCurrentUserId());
+
+		List<EipJson> eipJsons = new ArrayList<EipJson>();
+
+		for (NetworkEipItem networkEipItem : eipItems) {
+
+			EipJson json = comm.resourcesJsonService.convertEipJsonToNetworkEipItem(networkEipItem);
+
+			eipJsons.add(json);
+		}
+
+		return eipJsons;
 	}
 
 	/**

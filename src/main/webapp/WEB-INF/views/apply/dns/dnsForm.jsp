@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ES3管理</title>
+	<title>DNS管理</title>
 
 	<script>
 		$(document).ready(function() {
@@ -23,11 +23,11 @@
 	
 			});
 			
-			 /* 获得当前用户拥有的Compute拼装至实例相关资源的modal中.*/
+			 /* 获得当前用户拥有的EIP拼装至实例相关资源的modal中.*/
 			
 			$.ajax({
 				type: "GET",
-				url: "${ctx}/ajax/getComputeList",
+				url: "${ctx}/ajax/getEipList",
 				dataType: "json",
 				success: function(data){
 					
@@ -38,9 +38,9 @@
 						html += '<tr>';
 						html += '<td><input type="checkbox" value="'+data[i].id+'"></td>';
 						html += '<td>'+data[i].identifier+'</td>';
-						html += '<td>'+data[i].osType+'&nbsp;&nbsp;&nbsp;'+data[i].osBit+'&nbsp;&nbsp;&nbsp;'+data[i].serverType+'</td>';
-						html += '<td>'+data[i].remark+'</td>';
-						html += '<td>'+ (data[i].innerIp == null ? "" : data[i].innerIp ) +'</td>';
+						html += '<td>'+data[i].ispType+'</td>';
+						html += '<td>'+data[i].ipAddress+'</td>';
+						html += '<td>'+data[i].link+'</td>';
 						html += '</tr> ';
 						
 					}
@@ -114,7 +114,7 @@
 		
 		<fieldset>
 		
-			<legend><small>创建ES3存储空间</small></legend>
+			<legend><small>创建DNS</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="applyId">所属服务申请</label>
@@ -128,26 +128,27 @@
 			<hr> 
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="domainName">域名</label>
 				<div class="controls">
-					<select id="storageType" class="required">
-						<c:forEach var="map" items="${storageTypeMap}">
+					<input type="text" id="domainName" class="required"  placeholder="...域名">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="domainType">域名类型</label>
+				<div class="controls">
+					<select id="domainType" class="required">
+						<c:forEach var="map" items="${domainTypeMap}">
 							<option value="${map.key}">${map.value}</option>
 						</c:forEach>
 					</select>
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="space">容量空间(GB)</label>
-				<div class="controls">
-					<input type="text" id="space" class="required digits" maxlength="6" placeholder="...容量空间(GB)">
-				</div>
-			</div>
 			
 			<div class="control-group">
 				<div class="controls">
-					 <a id="addComputeBtn" class="btn" data-toggle="modal" href="#computeModal" >实例相关资源</a>
+					 <a id="addEipBtn" class="btn" data-toggle="modal" href="#eipModal" >EIP相关资源</a>
 				</div>
 			</div>
 				
@@ -165,20 +166,20 @@
 		
 	</form>
 	
-	<!-- 实例选择的Modal -->
+	<!-- EIP选择的Modal -->
 	<form id="modalForm" action="#" >
-		<div id="computeModal" class="modal container hide fade" tabindex="-1">
+		<div id="eipModal" class="modal container hide fade" tabindex="-1">
 	
-			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>实例</h4></div>
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>EIP</h4></div>
 				
 			<div class="modal-body">
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr>
 						<th><input type="checkbox"></th>
-						<th>实例标识符</th>
-						<th>基本信息(操作系统,位数,规格)</th>
-						<th>用途信息</th>
-						<th>IP地址</th>
+						<th>标识符</th>
+						<th>ISP</th>
+						<th>IP</th>
+						<th>关联实例/ELB</th>
 					</tr></thead>
 					<tbody id="resources-tbody"></tbody>
 				</table>
@@ -189,7 +190,7 @@
 				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
 			</div>
 		</div>
-	</form><!-- 实例规格选择的Modal End -->
+	</form><!-- EIP选择的Modal End -->
 	
 </body>
 </html>

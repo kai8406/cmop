@@ -217,7 +217,7 @@
 			</div>
 			
 			<table class="table table-bordered table-condensed"  >
-				<thead><tr><th>Protocol</th><th>Load Balance Port</th><th>Instance Port</th><th></th></tr></thead>
+				<thead><tr><th>Protocol</th><th>SourcePort</th><th>TargetPort</th><th></th></tr></thead>
 				<tbody>
 					<tr class="clone">
 						<td>

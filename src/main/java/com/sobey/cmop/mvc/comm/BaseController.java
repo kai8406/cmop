@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Department;
 import com.sobey.cmop.mvc.entity.Location;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
@@ -76,12 +77,14 @@ public class BaseController {
 	}
 
 	/**
+	 * 
+	 * type从 枚举 DefaultGroups 取 3.audit 审批人. 即上级领导.
+	 * 
 	 * @return 所有的上级领导列表
+	 * 
 	 */
 	@ModelAttribute("leaders")
 	public List<User> leaders() {
-
-		// type从 枚举 DefaultGroups 取 3.audit 审批人. 即上级领导.
 
 		return comm.accountService.getUserListByType(AccountConstant.DefaultGroups.audit.toInteger());
 	}
@@ -367,6 +370,15 @@ public class BaseController {
 	@ModelAttribute("allComputes")
 	public List<ComputeItem> allComputes() {
 		return comm.computeService.getComputeListByUserId(getCurrentUserId());
+	}
 
+	/**
+	 * 当前用户所创建的所有ELB
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("allElbs")
+	public List<NetworkElbItem> allElbs() {
+		return comm.elbService.getNetworkElbItemListByUserId(getCurrentUserId());
 	}
 }

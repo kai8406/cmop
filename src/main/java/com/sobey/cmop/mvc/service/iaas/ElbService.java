@@ -25,7 +25,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
- * ES3相关的管理类.
+ * 负载均衡器NetworkElbItem相关的管理类.
  * 
  * @author liukai
  */
@@ -289,6 +289,15 @@ public class ElbService extends BaseSevcie {
 			computeItem.setNetworkElbItem(null);
 			comm.computeService.saveOrUpdate(computeItem);
 		}
+	}
+
+	/**
+	 * 获得指定用户的所有负载均衡器ELB
+	 * 
+	 * @return
+	 */
+	public List<NetworkElbItem> getNetworkElbItemListByUserId(Integer userId) {
+		return networkElbItemDao.findByApplyUserId(userId);
 	}
 
 }

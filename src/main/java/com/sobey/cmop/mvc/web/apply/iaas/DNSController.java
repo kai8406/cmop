@@ -16,7 +16,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * 负责实例ES3存储Storage的管理
+ * 负责DNS NetworkDnsItem 的管理
  * 
  * @author liukai
  * 

@@ -16,7 +16,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * 负责实例ES3存储Storage的管理
+ * 负责公网IPNetworkEipItem的管理
  * 
  * @author liukai
  * 
@@ -37,12 +37,33 @@ public class EIPController extends BaseController {
 
 	/**
 	 * 新增
+	 * 
+	 * @param applyId
+	 * @param ispTypes
+	 *            ISP运营商的ID
+	 * @param linkTypes
+	 *            关联类型,区分关联的是ELB还是实例. 0:ELB ; 1: 实例
+	 * @param linkIds
+	 *            关联ID
+	 * @param protocols
+	 *            协议数组 格式{1-2-3,4-5-6}下同
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param redirectAttributes
+	 *            关联实例数组
+	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "spaces") String[] spaces, @RequestParam(value = "storageTypes") String[] storageTypes,
-			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "ispTypes") String[] ispTypes, @RequestParam(value = "linkTypes") String[] linkTypes,
+			@RequestParam(value = "linkIds") String[] linkIds,
 
-		comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes, computeIds);
+			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
+
+			RedirectAttributes redirectAttributes) {
+
+		comm.eipService.saveEIPToApply(applyId, ispTypes, linkTypes, linkIds, protocols, sourcePorts, targetPorts);
 
 		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
 

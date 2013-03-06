@@ -13,7 +13,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 
 /**
- * 负责实例ES3存储Storage的管理
+ * 负责负载均衡器NetworkElbItem的管理
  * 
  * @author liukai
  * 

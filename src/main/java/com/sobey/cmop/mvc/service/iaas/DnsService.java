@@ -16,7 +16,7 @@ import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * ES3相关的管理类.
+ * DNS NetworkDnsItem 的管理类.
  * 
  * @author liukai
  */
@@ -47,7 +47,7 @@ public class DnsService extends BaseSevcie {
 	}
 
 	/**
-	 * 保存ELB的服务申请.(在服务申请时调用)
+	 * 保存DNS的服务申请.(在服务申请时调用)
 	 * 
 	 * @param applyId
 	 *            服务申请单ID

@@ -59,8 +59,8 @@
 			
 			/*
 				1.创建一个临时数组selectedArray 以及一个是否重复的标识符isUnique
-				2.遍历页面,将存在于页面的computeId放入临时数组selectedArray中.
-				3.对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+				2.遍历页面,将存在于页面的computeId放入数组selectedArray中.
+				3.对选择的实例ID和数组selectedArray进行比较.如果存在,设置isUnique为false.
 				4.只有isUnique为true,表示所选的实例ID没有被使用则可以创建HTML字符串在页面显示.
 			*/
 			
@@ -121,7 +121,7 @@
 			    html +='<input type="hidden" value="'+keepSession+'" name="keepSessions">';
 				html +='<dd><em>是否保持会话</em>&nbsp;&nbsp;<strong>'+keepSessionText+'</strong></dd>';
 				html +='<dd><em>关联实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
-				html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、负载端口、实例端口）</em></dd>';  
+				html +='<dd><em>端口映射 &nbsp;&nbsp;（协议、源端口、目标端口）</em></dd>';  
 				
 				var portTempArray =[];
 				var protocolStr = "";

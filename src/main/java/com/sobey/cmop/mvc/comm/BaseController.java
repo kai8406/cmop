@@ -58,11 +58,12 @@ public class BaseController {
 	public static final String REQUEST_PREFIX = "search_";
 
 	/**
-	 * 获得当前登录用户的ID
+	 * 获得当前登录用户的ID.<br>
+	 * 如果没有当前用户则返回 0
 	 */
 	public Integer getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-		return user.id;
+		return user != null ? user.id : 0;
 	}
 
 	// =============== 返回页面参数 =============== //

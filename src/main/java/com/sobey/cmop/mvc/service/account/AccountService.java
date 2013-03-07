@@ -220,6 +220,7 @@ public class AccountService extends BaseSevcie {
 			user.setPlainPassword(AccountConstant.DEFAULT_PASSWORD);
 			entryptPassword(user);
 			user.setCreateTime(new Date());
+			user.setEmail(email + "@sobey.com");
 
 			userDao.save(user);
 		}

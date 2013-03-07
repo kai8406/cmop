@@ -106,9 +106,22 @@ public class HostServerController extends BaseController {
 	}
 
 	@RequestMapping(value = { "syn" })
-	public String syn(Model model, ServletRequest request) {
-		boolean flag = comm.hostServerService.syn();
-		return list(1, Integer.parseInt(PAGE_SIZE), "", model, request);
+	public String syn(Model model, RedirectAttributes redirectAttributes) {
+		String rtn = comm.hostServerService.syn();
+		String[] rtnArr = rtn.split("-");
+		if (rtnArr[0].equals("true")) {
+			redirectAttributes.addFlashAttribute("message", "同步宿主机和虚拟机成功！共计：宿主机（" + rtnArr[1] + "），虚拟机（" + rtnArr[2] + "）");
+		}
+		return REDIRECT_SUCCESS_URL;
+	}
+
+	@RequestMapping(value = { "export" })
+	public String export(Model model, RedirectAttributes redirectAttributes) {
+		boolean flag = comm.hostServerService.export();
+		if (flag) {
+			redirectAttributes.addFlashAttribute("message", "导出宿主机及其虚拟机关系成功！D:\\Host_Vm.xls");
+		}
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	// ============== 返回页面的参数 =============

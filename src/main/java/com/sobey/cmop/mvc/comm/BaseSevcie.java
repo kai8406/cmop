@@ -49,4 +49,12 @@ public class BaseSevcie {
 		return new PageRequest(pageNumber - 1, pagzSize, new Sort(Direction.DESC, "id"));
 	}
 
+	/**
+	 * 创建分页请求.<br>
+	 * 以传入的sort排序
+	 */
+	public PageRequest buildPageRequest(int pageNumber, int pagzSize, Sort sort) {
+		return new PageRequest(pageNumber - 1, pagzSize, sort);
+	}
+
 }

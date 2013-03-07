@@ -10,6 +10,9 @@
 		$("#synBtn").click(function(){
 			$(this).modalmanager('loading');
 		});
+		$("#exportBtn").click(function(){
+			$(this).modalmanager('loading');
+		});
 	});
 </script>
 </head>
@@ -37,7 +40,9 @@
 			
 			<div class="span2 pull-right">
 				<button class="btn" type="submit"><i class="icon-search"></i>查询</button>
-				<a href="${ctx}/basicdata/host/syn" class="btn" id="synBtn"><i class="icon-refresh"></i>同步</a>
+				<a href="${ctx}/basicdata/host/syn" title="同步Vcenter数据" class="btn tip-bottom" id="synBtn"><i class="icon-refresh"></i>同步</a>
+				<a href="${ctx}/basicdata/host/export" title="导出数据到Excel" class="btn tip-bottom" id="exportBtn"><i class="icon-refresh"></i>导出</a>
+				<a href="${ctx}/basicdata/host/write" title="写入OneCMDB" class="btn tip-bottom" id="writeBtn"><i class="icon-refresh"></i>写入</a>
 			</div>
 		</div>
 	</form>

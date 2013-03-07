@@ -55,14 +55,14 @@ public class FieldNameConstant {
 	 * entity NetworkEipItem 里的参数<br>
 	 * 
 	 * <pre>
-	 * ISP, 关联ELB, 关联实例, 端口映射
+	 * ISP, 关联实例orELB, 端口信息
 	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
 	public enum Eip {
-		ISP, 关联ELB, 关联实例, 端口映射
+		ISP, 关联实例orELB, 端口信息
 	}
 
 	/**

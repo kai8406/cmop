@@ -177,6 +177,61 @@ public class NetworkConstant {
 	}
 
 	/**
+	 * EIP中的关联类型<br>
+	 * 注意和JSP()同步.
+	 * 
+	 * <pre>
+	 * 1-关联实例
+	 * 2-关联ELB
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum LinkType implements CommonEnum {
+		关联实例(1), 关联ELB(2);
+
+		private int code;
+
+		private LinkType(int code) {
+			this.code = code;
+		}
+
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+		static {
+			for (LinkType e : LinkType.values()) {
+
+				map.put(e.code, e.name());
+
+			}
+		}
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+		static {
+			for (LinkType e : LinkType.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
+		public static String get(Integer code) {
+			return map.get(code);
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
+	}
+
+	/**
 	 * 运营商ISP
 	 * 
 	 * <pre>

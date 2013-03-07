@@ -32,6 +32,17 @@ public class ESGController extends BaseController {
 
 	/**
 	 * 新增
+	 * 
+	 * @param description
+	 *            ESG说明
+	 * @param protocols
+	 *            协议数组
+	 * @param portRanges
+	 *            端口范围数组
+	 * @param visitSources
+	 *            访问源数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "description") String description, @RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "portRanges") String[] portRanges,

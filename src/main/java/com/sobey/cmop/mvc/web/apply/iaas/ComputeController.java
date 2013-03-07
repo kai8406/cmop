@@ -33,7 +33,24 @@ public class ComputeController extends BaseController {
 	}
 
 	/**
-	 * 新增
+	 * 新增(多个实例)
+	 * 
+	 * @param computeType
+	 *            实例类型
+	 * @param applyId
+	 *            服务申请单ID
+	 * @param osTypes
+	 *            操作系统数组
+	 * @param osBits
+	 *            位数数组
+	 * @param serverTypes
+	 *            规格数组
+	 * @param esgIds
+	 *            关联ESG数组
+	 * @param remarks
+	 *            备注数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/save/{computeType}", method = RequestMethod.POST)
 	public String save(@PathVariable("computeType") Integer computeType, @RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "osTypes") String[] osTypes,
@@ -58,6 +75,22 @@ public class ComputeController extends BaseController {
 
 	/**
 	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 * @param applyId
+	 *            服务申请单ID
+	 * @param osType
+	 *            操作系统
+	 * @param osBit
+	 *            位数
+	 * @param serverType
+	 *            规格
+	 * @param esgId
+	 *            关联ESG
+	 * @param remark
+	 *            备注
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,

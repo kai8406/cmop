@@ -78,6 +78,22 @@ public class ELBController extends BaseController {
 	 * 修改单个ELB信息.<br>
 	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"-" <br>
 	 * 修改ELB信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 * @param applyId
+	 *            服务申请单ID
+	 * @param keepSession
+	 *            是否保持会话
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param computeIds
+	 *            关联实例
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "keepSession") String keepSession,

@@ -37,6 +37,16 @@ public class ES3Controller extends BaseController {
 
 	/**
 	 * 新增
+	 * 
+	 * @param applyId
+	 * @param spaces
+	 *            容量空间数组
+	 * @param storageTypes
+	 *            存储类型数组
+	 * @param computeIds
+	 *            挂载实例数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "spaces") String[] spaces, @RequestParam(value = "storageTypes") String[] storageTypes,
@@ -60,6 +70,18 @@ public class ES3Controller extends BaseController {
 
 	/**
 	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 * @param applyId
+	 *            服务申请单ID
+	 * @param space
+	 *            容量空间
+	 * @param storageType
+	 *            存储类型
+	 * @param computeIds
+	 *            挂载实例数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,

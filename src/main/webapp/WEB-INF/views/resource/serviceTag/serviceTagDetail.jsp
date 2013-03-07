@@ -162,6 +162,29 @@
 									
 									</c:if><!-- 变更负载均衡器ELB End -->
 									
+					            	<!-- EIP-->
+	            					<c:if test="${resource.serviceType == 5 }">
+									
+										<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == '关联实例orELB'}">
+													${item.oldValue}
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '关联实例orELB'}">
+													${item.oldValue}
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
+									
+									</c:if><!-- EIP End -->
+									
 								</tr>
 								
 							</c:forEach>

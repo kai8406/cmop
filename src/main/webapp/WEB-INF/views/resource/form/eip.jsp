@@ -22,7 +22,47 @@
 				}
 			});
 			
+			/*关联实例和关联ELB select控件的切换*/
+			
+			$("input[name='linkRadio']").click(function(){
+				if($(this).val() == "isCompute"){
+					$("#computeSelectDiv").addClass("show").removeClass("hidden");
+					$("#elbSelectDiv").addClass("hidden").removeClass("show");
+				}else{
+					$("#elbSelectDiv").addClass("show").removeClass("hidden");
+					$("#computeSelectDiv").addClass("hidden").removeClass("show");
+				}
+			});
+			
 		});
+		
+		/**
+		 * 提交form的时候.将关联类型和关联ID写入隐藏域中.
+		 */
+		function fillLinkType(){
+			
+			var $elbSelect = $("#elbSelectDiv.show #elbSelect");
+			var $computeSelect = $("#computeSelectDiv.show #computeSelect");
+			var linkType;
+			var linkId;
+			
+			if($elbSelect.val() != undefined){
+				
+				//关联ELB
+				linkType = "0";
+				linkId = $elbSelect.val();
+				
+			}else{
+				
+				//关联实例
+				linkType = "1";
+				linkId = $computeSelect.val();
+				
+			}
+			$("#linkType").val(linkType);
+			$("#linkId").val(linkId);
+			
+		};
 	</script>
 	
 </head>
@@ -31,125 +71,101 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 	
-	<form id="inputForm" action="${ctx}/resources/update/compute" method="post" class="input-form form-horizontal" >
+	<form id="inputForm" action="${ctx}/resources/update/eip/" method="post" class="input-form form-horizontal" >
 		
 		<input type="hidden" name="id" value="${resources.id }">
+		<input type="text" id="linkId" name="linkId" >
+		<input type="text" id="linkType" name="linkType">
 		
 		<fieldset>
-			<legend><small>
-				<c:choose>
-					<c:when test="${compute.computeType == 1 }">变更实例PCS</c:when>
-					<c:otherwise>变更实例ECS</c:otherwise>
-				</c:choose>
-			</small></legend>
+			<legend><small>变更EIP</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.apply.title}</p>
+					<p class="help-inline plain-text">${eip.apply.title}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.identifier}</p>
+					<p class="help-inline plain-text">${eip.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osType">操作系统</label>
+				<label class="control-label" for="ispType">ISP运营商</label>
 				<div class="controls">
-					<select id="osType" name="osType" class="required">
-						<c:forEach var="map" items="${osTypeMap }">
-							<option value="${map.key }" 
-								<c:if test="${map.key == compute.osType }">
-									selected="selected"
-								</c:if>
-							>${map.value }</option>
-						</c:forEach>
-					</select>
+					<p class="help-inline plain-text"><c:forEach var="map" items="${ispTypeMap }"><c:if test="${map.key == eip.ispType }">${map.value }</c:if></c:forEach></p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osBit">操作位数</label>
 				<div class="controls">
-					<c:forEach var="map" items="${osBitMap }">
-						<label class="radio inline"> 
-							<input type="radio" name="osBit" value="${map.key}" <c:if test="${map.key == compute.osBit }">checked="checked"</c:if> >
-							<c:out value="${map.value}" />
-						</label>
-					</c:forEach>
+					<label class="radio inline">
+ 						<input type="radio" name="linkRadio" value="isCompute" 
+ 						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
+					</label>
+					<label class="radio inline">
+	 					<input type="radio" name="linkRadio" value="isElb"
+	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
+					</label>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="serverType">规格</label>
 				<div class="controls">
-					<select id="serverType" name="serverType" class="required">
-						
-						<c:choose>
-							<c:when test="${compute.computeType == 1 }">
-								<c:forEach var="map" items="${pcsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
-							</c:when>
-							<c:otherwise>
-								<c:forEach var="map" items="${ecsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
-							</c:otherwise>
-						</c:choose>
 				
-					</select>
+					<div id="computeSelectDiv" 
+						<c:choose>
+						<c:when test="${not empty eip.computeItem }">class="show"</c:when>
+						<c:otherwise>class="hidden"</c:otherwise>
+						</c:choose>
+					>
+						<select id="computeSelect" class="required">
+							<c:forEach var="item" items="${allComputes }">
+								<option value="${item.id }" <c:if test="${not empty eip.computeItem && item.id == eip.computeItem.id }">selected="selected"</c:if>>${item.identifier}(${item.innerIp })</option>
+							</c:forEach>
+						</select>					
+					</div>
+					
+					<div id="elbSelectDiv" 
+						<c:choose>
+						<c:when test="${not empty eip.networkElbItem }">class="show"</c:when>
+						<c:otherwise>class="hidden"</c:otherwise>
+						</c:choose>
+					>
+						<select id="elbSelect" class="required">
+							<c:forEach var="item" items="${allElbs }">
+								<option value="${item.id }" <c:if test="${not empty eip.networkElbItem && item.id == eip.networkElbItem.id }">selected="selected"</c:if>>${item.identifier}(${item.virtualIp })</option>
+							</c:forEach>
+						</select>			
+					</div>		
+ 
 				</div>
 			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
-				<div class="controls">
-					<select id="esgId" name="esgId" class="required">
-						<c:forEach var="item" items="${esgList}">
-							<option value="${item.id }" 
-								<c:if test="${item.id == compute.networkEsgItem.id }">
-									selected="selected"
-								</c:if>
-							>${item.identifier}(${item.description})</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="remark">用途信息</label>
-				<div class="controls">
-					<input type="text" id="remark" name="remark" value="${compute.remark }" class="required" maxlength="45" placeholder="...用途信息">
-				</div>
-			</div>
-			
 			
 			<table class="table table-bordered table-condensed"  >
-				<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th><th></th></tr></thead>
+				<thead><tr><th>Protocol</th><th>SourcePort</th><th>TargetPort</th><th></th></tr></thead>
 				<tbody>
-					<c:choose>
-						<c:when test="${not empty compute.applications }">
-							<c:forEach var="item" items="${compute.applications}">
-								<tr class="clone">
-									<td><input type="text" name="applicationName" value="${item.name}" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
-									<td><input type="text" name="applicationVersion" value="${item.version}" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
-									<td><input type="text" name="applicationDeployPath" value="${item.deployPath}" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
-									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-								</tr>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<tr class="clone">
-								<td><input type="text" name="applicationName" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
-								<td><input type="text" name="applicationVersion" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
-								<td><input type="text" name="applicationDeployPath" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
-								<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-							</tr>
-						</c:otherwise>
-					</c:choose>
+					<c:forEach var="item" items="${eip.eipPortItems}">
+						<tr class="clone">
+							<td>
+								<select id="protocol" name="protocols" class="input-small required">
+									<c:forEach var="map" items="${protocolMap}">
+										<option value="${map.key }" <c:if test="${item.protocol == map.value }">selected="selected"</c:if>	
+										>${map.value }</option>
+									</c:forEach>
+								</select>
+							</td>
+							<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+							<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+							<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+						</tr>
+					</c:forEach>
 				</tbody>
-			</table>	
+			</table>
 			
 			<hr>
 			
@@ -193,7 +209,7 @@
 				 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input class="btn btn-primary" type="submit" onclick="fillLinkType()" value="提交">
 			</div>
 			
 		</fieldset>

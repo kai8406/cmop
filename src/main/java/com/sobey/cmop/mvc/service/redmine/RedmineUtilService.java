@@ -296,6 +296,21 @@ public class RedmineUtilService extends BaseSevcie {
 
 							// TODO 关联实例
 
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
+
+							// EIP
+
+							if (FieldNameConstant.Eip.关联实例orELB.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Eip.关联实例orELB + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.Eip.端口信息.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE).append(changeItem.getNewValue())
+										.append(NEWLINE);
+
+							}
+
 						}
 
 					}

@@ -1,8 +1,5 @@
 package com.sobey.cmop.mvc.web.apply.iaas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.entity.ComputeItem;
-import com.sobey.cmop.mvc.entity.StorageItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 
 /**
  * 负责公网IPNetworkEipItem的管理
@@ -75,30 +71,39 @@ public class EIPController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
-		model.addAttribute("storage", comm.es3Service.getStorageItem(id));
+		model.addAttribute("eip", comm.eipService.getNetworkEipItem(id));
 		return "apply/eip/eipUpateForm";
 	}
 
 	/**
 	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 * @param applyId
+	 *            服务申请单ID
+	 * @param linkType
+	 *            关联类型
+	 * @param linkId
+	 *            关联ID
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") Integer linkId,
+			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
+			RedirectAttributes redirectAttributes) {
 
-		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(id);
 
-		for (String computeId : computeIds) {
-			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
-		}
+		comm.eipService.updateEIPToApply(networkEipItem, linkType, linkId, protocols, sourcePorts, targetPorts);
 
-		StorageItem storageItem = comm.es3Service.getStorageItem(id);
-		storageItem.setSpace(space);
-		storageItem.setStorageType(storageType);
-		storageItem.setComputeItemList(computeItemList);
-		comm.es3Service.saveOrUpdate(storageItem);
-
-		redirectAttributes.addFlashAttribute("message", "修改EIP " + storageItem.getIdentifier() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "修改EIP " + networkEipItem.getIdentifier() + " 成功");
 
 		return "redirect:/apply/update/" + applyId;
 	}
@@ -109,7 +114,7 @@ public class EIPController extends BaseController {
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
 
-		comm.es3Service.deleteStorageItem(id);
+		comm.eipService.deleteNetworkEipItem(id);
 
 		redirectAttributes.addFlashAttribute("message", "删除EIP成功");
 

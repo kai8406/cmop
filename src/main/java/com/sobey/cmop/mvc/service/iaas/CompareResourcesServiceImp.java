@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Change;
@@ -252,6 +253,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 	@Override
 	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+
 		boolean isChange = false;
 
 		// 存储类型
@@ -367,8 +369,50 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 	@Override
 	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts) {
-		// TODO Auto-generated method stub
-		return false;
+
+		boolean isChange = false;
+
+		// 变更前的关联类型.
+
+		String oldLinkType = networkEipItem.getComputeItem() != null ? NetworkConstant.LinkType.关联实例.toString() : NetworkConstant.LinkType.关联ELB.toString();
+
+		// 变更后的关联类型
+
+		String newLinkType = linkType;
+
+		if (newLinkType.equals(oldLinkType) && NetworkConstant.LinkType.关联实例.toString().equals(newLinkType)) {
+
+			// 变更前后的关联类型都相同,按照关联类型找出对应的关联实例插入变更详情Change中.
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), networkEipItem.getComputeItem().getId().toString(), linkId.toString());
+
+		} else if (newLinkType.equals(oldLinkType) && NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
+
+			// 变更前后的关联类型都相同,按照关联类型找出对应的关联ELB插入变更详情Change中.
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), networkEipItem.getNetworkElbItem().getId().toString(), linkId.toString());
+
+		} else {
+
+			// 变更前后的关联类型不同,找出不为null的对象插入变更详情中.
+
+			Integer oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId() : networkEipItem.getNetworkElbItem().getId();
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), oldValue.toString(), linkId.toString());
+		}
+
+		// 端口信息
+
+		if (this.compareEipPortItem(networkEipItem, protocols, sourcePorts, targetPorts)) {
+
+			String oldValue = this.wrapEipPortItemFromNetworkEipItemToString(networkEipItem);
+			String newValue = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.端口信息.toString(), oldValue, newValue);
+
+		}
+
+		return isChange;
 	}
 
 	/**

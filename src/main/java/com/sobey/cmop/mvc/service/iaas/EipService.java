@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.EipPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkEipItemDao;
@@ -32,12 +33,6 @@ import com.sobey.cmop.mvc.entity.ServiceTag;
 public class EipService extends BaseSevcie {
 
 	private static Logger logger = LoggerFactory.getLogger(EipService.class);
-
-	/**
-	 * 关联类型 : 1.实例Compute<br>
-	 * 页面eipForm.jsp也有该参数.注意两者同步.
-	 */
-	private static final String LINKTYPE_COMPUTE = "1";
 
 	@Resource
 	private NetworkEipItemDao networkEipItemDao;
@@ -131,17 +126,9 @@ public class EipService extends BaseSevcie {
 			networkEipItem.setIdentifier(identifier);
 			networkEipItem.setIspType(Integer.valueOf(ispTypes[i]));
 
-			if (LINKTYPE_COMPUTE.equals(linkTypes[i])) {
+			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-				// 关联实例
-				networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(linkIds[i])));
-
-			} else {
-
-				// 关联ELB
-				networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(linkIds[i])));
-
-			}
+			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], Integer.valueOf(linkIds[i]));
 
 			this.saveOrUpdate(networkEipItem);
 
@@ -191,18 +178,9 @@ public class EipService extends BaseSevcie {
 
 		// Step.2
 
-		if (LINKTYPE_COMPUTE.equals(linkType)) {
+		// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			// 关联实例
-
-			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
-
-		} else {
-
-			// 关联ELB
-			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
-
-		}
+		networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkType, linkId);
 
 		// Step.3
 
@@ -267,18 +245,9 @@ public class EipService extends BaseSevcie {
 
 		}
 
-		if (LINKTYPE_COMPUTE.equals(linkType)) {
+		// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			// 关联实例
-
-			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
-
-		} else {
-
-			// 关联ELB
-			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
-
-		}
+		networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkType, linkId);
 
 		this.saveOrUpdate(networkEipItem);
 
@@ -294,6 +263,31 @@ public class EipService extends BaseSevcie {
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
+	}
+
+	/**
+	 * 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
+	 * 
+	 * @return
+	 */
+	private NetworkEipItem fillComputeOrElbToNetworkEipItem(NetworkEipItem networkEipItem, String linkType, Integer linkId) {
+
+		if (NetworkConstant.LinkType.关联实例.toString().equals(linkType)) {
+
+			// 关联实例
+
+			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
+			networkEipItem.setNetworkElbItem(null);
+
+		} else {
+
+			// 关联ELB
+			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
+			networkEipItem.setComputeItem(null);
+
+		}
+		return networkEipItem;
+
 	}
 
 }

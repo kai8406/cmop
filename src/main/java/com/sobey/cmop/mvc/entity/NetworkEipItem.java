@@ -122,7 +122,6 @@ public class NetworkEipItem implements java.io.Serializable {
 		return oldIp;
 	}
 
-	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "elb_id")
 	public NetworkElbItem getNetworkElbItem() {
@@ -133,7 +132,6 @@ public class NetworkEipItem implements java.io.Serializable {
 		this.networkElbItem = networkElbItem;
 	}
 
-	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "compute_id")
 	public ComputeItem getComputeItem() {

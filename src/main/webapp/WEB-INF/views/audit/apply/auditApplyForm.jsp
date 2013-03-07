@@ -96,22 +96,22 @@
 					<dt>PCS & ECS实例</dt>
 					<c:forEach var="item" items="${apply.computeItems}">
 					
-						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
-						<dd><em>用途信息</em>&nbsp; ${item.remark}</dd>
+						<dd><em>用途信息</em>&nbsp;&nbsp;${item.remark}</dd>
 						
 						<dd>
 							<em>基本信息</em>
-							&nbsp; <c:forEach var="map" items="${osTypeMap}"><c:if test="${item.osType == map.key}">${map.value}</c:if></c:forEach>
-							&nbsp; <c:forEach var="map" items="${osBitMap}"><c:if test="${item.osBit == map.key}">${map.value}</c:if></c:forEach>
-							&nbsp;
-							<c:if test="${item.computeType == 1}"><c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:if>
-							<c:if test="${item.computeType == 2}"><c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:if>
+							&nbsp;&nbsp;<c:forEach var="map" items="${osTypeMap}"><c:if test="${item.osType == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp;&nbsp;<c:forEach var="map" items="${osBitMap}"><c:if test="${item.osBit == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp;&nbsp;
+							<c:choose>
+								<c:when test="${item.computeType == 1}"><c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:when>
+								<c:otherwise><c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:otherwise>
+							</c:choose>
 						</dd>
 						
-						<dd>
-							<em>关联ESG</em> &nbsp; ${item.networkEsgItem.identifier}(${item.networkEsgItem.description})
-						</dd>
+						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})</dd>
 						
 						<br>
 						
@@ -124,13 +124,13 @@
 					<dt>ES3存储空间</dt>
 					<c:forEach var="item" items="${apply.storageItems}">
 					
-						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
-						<dd><em>存储类型</em>&nbsp;<c:forEach var="map" items="${storageTypeMap}"><c:if test="${item.storageType == map.key}">${map.value}</c:if></c:forEach></dd>
+						<dd><em>存储类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${storageTypeMap}"><c:if test="${item.storageType == map.key}">${map.value}</c:if></c:forEach></dd>
 						
-						<dd><em>容量空间</em>&nbsp; ${item.space}&nbsp;GB</dd>
+						<dd><em>容量空间</em>&nbsp;&nbsp;${item.space}&nbsp;GB</dd>
 						
-						<dd><em>挂载实例</em>&nbsp; ${item.mountComputes}</dd>
+						<dd><em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
 						
 						<br>
 						
@@ -143,11 +143,9 @@
 					<dt>负载均衡器ELB</dt>
 					<c:forEach var="item" items="${apply.networkElbItems}">
 					
-						<dd><em>标识符</em>	&nbsp; ${item.identifier}</dd>
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
-						<dd><em>是否保持会话</em>&nbsp;
-							<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach>
-						</dd>
+						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
 						<dd><em>关联实例</em>&nbsp; 
 							<c:forEach var="compute" items="${allComputes}">
@@ -160,7 +158,7 @@
 						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
 						
 						<c:forEach var="port" items="${item.elbPortItems }">
-							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}  &nbsp;,&nbsp;${port.targetPort}</dd>
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
 							
 						<br>
@@ -169,7 +167,34 @@
 				</c:if>
 				
 				<!-- IP地址EIP -->
-				<c:if test="${not empty apply.networkEipItems}"></c:if>
+				<c:if test="${not empty apply.networkEipItems}">
+				
+					<hr>
+					<dt>EIP</dt>
+					<c:forEach var="item" items="${apply.networkEipItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>ISP运营商</em>&nbsp;&nbsp;<c:forEach var="map" items="${ispTypeMap}"><c:if test="${item.ispType == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd>
+							<c:choose>
+								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.innerIp })</c:when>
+								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+							</c:choose>
+						</dd>
+						
+						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
+						
+						<c:forEach var="port" items="${item.eipPortItems }">
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
+						</c:forEach>
+							
+						<br>
+						
+					</c:forEach>
+				
+				</c:if>
 				
 				<!-- DNS -->
 				<c:if test="${not empty apply.networkDnsItems}"></c:if>

@@ -164,7 +164,21 @@
 							</c:choose>
 						</dd>
 						
-						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})</dd>
+						<dd>
+							<em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})
+							<span class="pull-right">
+								<a href="${ctx}/apply/compute/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否删除?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="${ctx}/apply/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</span>
+						</dd>
 						
 						<br>
 						
@@ -183,7 +197,21 @@
 						
 						<dd><em>容量空间</em>&nbsp;&nbsp;${item.space}&nbsp;GB</dd>
 						
-						<dd><em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
+						<dd>
+							<em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}
+							<span class="pull-right">
+								<a href="${ctx}/apply/es3/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否删除?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="${ctx}/apply/es3/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</span>
+						</dd>
 						
 						<br>
 						
@@ -213,6 +241,20 @@
 						<c:forEach var="port" items="${item.elbPortItems }">
 							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
+						
+						<span class="pull-right">
+							<a href="${ctx}/apply/elb/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+							<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+							<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+								<div class="modal-body">是否删除?</div>
+								<div class="modal-footer">
+									<button class="btn" data-dismiss="modal">关闭</button>
+									<a href="${ctx}/apply/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+								</div>
+							</div>
+						</span>
+						
 							
 						<br>
 						
@@ -242,6 +284,19 @@
 						<c:forEach var="port" items="${item.eipPortItems }">
 							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
+						
+						<span class="pull-right">
+							<a href="${ctx}/apply/eip/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+							<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+							<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+								<div class="modal-body">是否删除?</div>
+								<div class="modal-footer">
+									<button class="btn" data-dismiss="modal">关闭</button>
+									<a href="${ctx}/apply/eip/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+								</div>
+							</div>
+						</span>
 							
 						<br>
 						

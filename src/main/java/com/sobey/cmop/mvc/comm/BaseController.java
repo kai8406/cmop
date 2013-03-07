@@ -370,7 +370,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("allComputes")
 	public List<ComputeItem> allComputes() {
-		return comm.computeService.getComputeListByUserId(getCurrentUserId());
+		return comm.computeService.getComputeListByUserId(getCurrentUserId() == null ? 0 : getCurrentUserId());
 	}
 
 	/**
@@ -380,6 +380,6 @@ public class BaseController {
 	 */
 	@ModelAttribute("allElbs")
 	public List<NetworkElbItem> allElbs() {
-		return comm.elbService.getNetworkElbItemListByUserId(getCurrentUserId());
+		return comm.elbService.getNetworkElbItemListByUserId(getCurrentUserId() == null ? 0 : getCurrentUserId());
 	}
 }

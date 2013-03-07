@@ -15,8 +15,13 @@ public class EipJson implements java.io.Serializable {
 	private String ispType;
 	private String ipAddress;
 	private String oldIp;
+
 	/**
-	 * 关联ELB/实例
+	 * 关联类型(关联ELB/实例)
+	 */
+	private Integer linkType;
+	/**
+	 * 关联对象的标识符+IP
 	 */
 	private String link;
 
@@ -58,6 +63,14 @@ public class EipJson implements java.io.Serializable {
 
 	public void setOldIp(String oldIp) {
 		this.oldIp = oldIp;
+	}
+
+	public Integer getLinkType() {
+		return linkType;
+	}
+
+	public void setLinkType(Integer linkType) {
+		this.linkType = linkType;
 	}
 
 	public String getLink() {

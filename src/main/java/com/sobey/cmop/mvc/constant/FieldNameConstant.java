@@ -62,7 +62,7 @@ public class FieldNameConstant {
 	 * 
 	 */
 	public enum Eip {
-		ISP, 关联实例orELB, 端口信息
+		ISP, 关联实例, 关联ELB, 端口信息
 	}
 
 	/**

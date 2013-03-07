@@ -74,8 +74,8 @@
 	<form id="inputForm" action="${ctx}/resources/update/eip/" method="post" class="input-form form-horizontal" >
 		
 		<input type="hidden" name="id" value="${resources.id }">
-		<input type="text" id="linkId" name="linkId" >
-		<input type="text" id="linkType" name="linkType">
+		<input type="hidden" id="linkId" name="linkId">
+		<input type="hidden" id="linkType" name="linkType">
 		
 		<fieldset>
 			<legend><small>变更EIP</small></legend>

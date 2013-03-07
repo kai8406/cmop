@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
@@ -55,6 +56,18 @@ public class ResourceAjaxController extends BaseController {
 	public @ResponseBody
 	ElbJson getElb(@RequestParam(value = "id") Integer id) {
 		return comm.resourcesJsonService.convertElbJsonToNetworkElbItem(comm.elbService.getNetworkElbItem(comm.resourcesService.getResources(id).getServiceId()));
+	}
+
+	/**
+	 * Ajax请求根据computeId获得compute的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getEip")
+	public @ResponseBody
+	EipJson getEip(@RequestParam(value = "id") Integer id) {
+		return comm.resourcesJsonService.convertEipJsonToNetworkEipItem(comm.eipService.getNetworkEipItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 }

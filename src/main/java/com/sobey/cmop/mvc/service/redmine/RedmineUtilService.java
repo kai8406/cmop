@@ -298,11 +298,65 @@ public class RedmineUtilService extends BaseSevcie {
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
-							// EIP
+							// EIP , 需要对很多属性做不为null的判断.烦躁.
 
-							if (FieldNameConstant.Eip.关联实例orELB.toString().equals(fieldName)) {
+							if (FieldNameConstant.Eip.关联实例.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Eip.关联实例orELB + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								ComputeItem oldComputeItem = comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue()));
+								ComputeItem newComputeItem = comm.computeService.getComputeItem(Integer.valueOf(changeItem.getNewValue()));
+
+								String oldValue = "";
+								String newValue = "";
+
+								if (oldComputeItem != null) {
+
+									String innerIp = "";
+									if (oldComputeItem.getInnerIp() != null) {
+										innerIp = oldComputeItem.getInnerIp();
+									}
+									oldValue += oldComputeItem.getIdentifier() + "(" + innerIp + ")";
+								}
+
+								if (newComputeItem != null) {
+
+									String innerIp = "";
+									if (newComputeItem.getInnerIp() != null) {
+										innerIp = newComputeItem.getInnerIp();
+									}
+									newValue += newComputeItem.getIdentifier() + "(" + innerIp + ")";
+								}
+
+								content.append(FieldNameConstant.Eip.关联实例 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+
+							} else if (FieldNameConstant.Eip.关联ELB.toString().equals(fieldName)) {
+
+								NetworkElbItem oldNetworkElbItem = comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
+								NetworkElbItem newNetworkElbItem = comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
+
+								String oldValue = "";
+								String newValue = "";
+
+								if (oldNetworkElbItem != null) {
+
+									String virtualIp = "";
+									if (oldNetworkElbItem.getVirtualIp() != null) {
+										virtualIp = oldNetworkElbItem.getVirtualIp();
+									}
+
+									oldValue += oldNetworkElbItem.getIdentifier() + "(" + virtualIp + ")";
+								}
+
+								if (newNetworkElbItem != null) {
+
+									String virtualIp = "";
+									if (newNetworkElbItem.getVirtualIp() != null) {
+										virtualIp = newNetworkElbItem.getVirtualIp();
+									}
+
+									newValue += newNetworkElbItem.getIdentifier() + "(" + virtualIp + ")";
+								}
+
+								content.append(FieldNameConstant.Eip.关联ELB + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
 
 							} else if (FieldNameConstant.Eip.端口信息.toString().equals(fieldName)) {
 

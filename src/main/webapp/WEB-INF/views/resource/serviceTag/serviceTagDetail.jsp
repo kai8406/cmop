@@ -167,8 +167,15 @@
 									
 										<td class="is-hidden">
 											<c:choose>
-												<c:when test="${item.fieldName == '关联实例orELB'}">
-													${item.oldValue}
+												<c:when test="${item.fieldName == '关联实例'}">
+													<c:forEach var="compute" items="${allComputes }">
+														<c:if test="${compute.id == item.oldValue }">${compute.identifier }(${compute.innerIp })</c:if>
+													</c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '关联ELB'}">
+													<c:forEach var="elb" items="${allElbs }">
+														<c:if test="${elb.id == item.oldValue }">${elb.identifier }(${elb.virtualIp })</c:if>
+													</c:forEach>
 												</c:when>
 												<c:otherwise>${item.oldValue}</c:otherwise>
 											</c:choose>
@@ -176,8 +183,15 @@
 										
 										<td class="is-visible">
 											<c:choose>
-												<c:when test="${item.fieldName == '关联实例orELB'}">
-													${item.oldValue}
+												<c:when test="${item.fieldName == '关联实例'}">
+													<c:forEach var="compute" items="${allComputes }">
+														<c:if test="${compute.id == item.newValue }">${compute.identifier }(${compute.innerIp })</c:if>
+													</c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '关联ELB'}">
+													<c:forEach var="elb" items="${allElbs }">
+														<c:if test="${elb.id == item.newValue }">${elb.identifier }(${elb.virtualIp })</c:if>
+													</c:forEach>
 												</c:when>
 												<c:otherwise>${item.newValue}</c:otherwise>
 											</c:choose>

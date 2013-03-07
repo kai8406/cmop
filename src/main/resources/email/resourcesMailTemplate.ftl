@@ -232,13 +232,46 @@ table {
 									
 									<td class="is-hidden">
 									
-										${item.oldValue}
+										<#if item.fieldName == '关联实例' >
+											
+											<#list allComputes as compute >
+											<#if item.oldValue?string == compute.id?string >
+												${compute.identifier}(<#if compute.innerIp?exists>${compute.innerIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#elseif item.fieldName == '关联ELB' >
+										
+											<#list allElbs as elb >
+											<#if item.oldValue?string == elb.id?string >
+												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#else>${item.oldValue}</#if>
+										
 										
 									</td>
 									
 									<td class="is-visible">
 									
-										${item.newValue}
+										<#if item.fieldName == '关联实例' >
+											
+											<#list allComputes as compute >
+											<#if item.newValue?string == compute.id?string >
+												${compute.identifier}(<#if compute.innerIp?exists>${compute.innerIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#elseif item.fieldName == '关联ELB' >
+										
+											<#list allElbs as elb >
+											<#if item.newValue?string == elb.id?string >
+												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#else>${item.newValue}</#if>
 										 
 									</td>
 								

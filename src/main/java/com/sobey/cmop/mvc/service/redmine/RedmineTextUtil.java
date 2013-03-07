@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
@@ -122,22 +123,16 @@ public class RedmineTextUtil {
 
 			for (NetworkElbItem elbItem : elbItems) {
 				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
-				content.append("是否保持会话:").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
+				content.append(FieldNameConstant.Elb.是否保持会话 + ":").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
 
-				content.append("关联实例:").append(BLANK);
+				content.append(FieldNameConstant.Elb.关联实例 + ":").append(BLANK);
 
 				for (ComputeItem computeItem : computeItems) {
 
 					if (computeItem.getNetworkElbItem() != null && elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
 
-						content.append(computeItem.getIdentifier());
+						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getInnerIp() == null ? "" : computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
 
-						if (computeItem.getInnerIp() != null) {
-
-							content.append("(").append(computeItem.getInnerIp()).append(")");
-						}
-
-						content.append(BLANK + BLANK);
 					}
 				}
 
@@ -182,22 +177,14 @@ public class RedmineTextUtil {
 				if (eipItem.getComputeItem() != null) {
 
 					// 关联实例
-					content.append(NetworkConstant.LinkType.关联实例.toString() + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier());
-
-					if (StringUtils.isNotBlank(eipItem.getComputeItem().getInnerIp())) {
-						content.append("(").append(eipItem.getComputeItem().getInnerIp()).append(")");
-					}
-					content.append(NEWLINE);
+					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(")
+							.append(eipItem.getComputeItem().getInnerIp() == null ? "" : eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
 
 				} else {
 
 					// 关联ELB
-					content.append(NetworkConstant.LinkType.关联ELB.toString() + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier());
-
-					if (StringUtils.isNotBlank(eipItem.getNetworkElbItem().getVirtualIp())) {
-						content.append("(").append(eipItem.getNetworkElbItem().getVirtualIp()).append(")");
-					}
-					content.append(NEWLINE);
+					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier()).append("(")
+							.append(eipItem.getNetworkElbItem().getVirtualIp() == null ? "" : eipItem.getNetworkElbItem().getVirtualIp()).append(")").append(NEWLINE);
 
 				}
 

@@ -31,6 +31,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 	private static Logger logger = LoggerFactory.getLogger(CompareResourcesServiceImp.class);
 
 	/**
+	 * EIP变更,未选择的关联,在Change用 0 表示.<br>
+	 */
+	private static final String UN_SELECTED_STRING = "0";
+
+	/**
 	 * 资源变更时,保存变更明细至changeItem中.变更项（字段）名称以枚举XXFieldName为准<br>
 	 * 
 	 * <pre>
@@ -384,21 +389,32 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 			// 变更前后的关联类型都相同,按照关联类型找出对应的关联实例插入变更详情Change中.
 
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), networkEipItem.getComputeItem().getId().toString(), linkId.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例.toString(), networkEipItem.getComputeItem().getId().toString(), linkId.toString());
 
 		} else if (newLinkType.equals(oldLinkType) && NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
 
 			// 变更前后的关联类型都相同,按照关联类型找出对应的关联ELB插入变更详情Change中.
 
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), networkEipItem.getNetworkElbItem().getId().toString(), linkId.toString());
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联ELB.toString(), networkEipItem.getNetworkElbItem().getId().toString(), linkId.toString());
 
-		} else {
+		} else if (!newLinkType.equals(oldLinkType)) {
 
-			// 变更前后的关联类型不同,找出不为null的对象插入变更详情中.
+			// 变更前后的关联类型不同.找出旧值不为null的对象,插入两条Change,关联实例和关联ELB各一条.
 
-			Integer oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId() : networkEipItem.getNetworkElbItem().getId();
+			if (networkEipItem.getComputeItem() != null) {
 
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例orELB.toString(), oldValue.toString(), linkId.toString());
+				// 旧值和新值用 "" 来区分未选择.
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例.toString(), networkEipItem.getComputeItem().getId().toString(), UN_SELECTED_STRING);
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联ELB.toString(), UN_SELECTED_STRING, linkId.toString());
+
+			} else {
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联实例.toString(), UN_SELECTED_STRING, linkId.toString());
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Eip.关联ELB.toString(), networkEipItem.getNetworkElbItem().getId().toString(), UN_SELECTED_STRING);
+
+			}
+
 		}
 
 		// 端口信息

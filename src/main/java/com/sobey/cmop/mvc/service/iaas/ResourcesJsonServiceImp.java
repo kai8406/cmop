@@ -104,7 +104,8 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 	public EipJson convertEipJsonToNetworkEipItem(NetworkEipItem networkEipItem) {
 
 		EipJson json = new EipJson();
-		String link = null;
+		String link = "";
+		Integer linkType = null;
 
 		json.setId(networkEipItem.getId());
 		json.setIdentifier(networkEipItem.getIdentifier());
@@ -113,14 +114,30 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 		json.setIspType(NetworkConstant.ISPType.get(networkEipItem.getIspType()));
 
 		if (networkEipItem.getNetworkElbItem() != null) {
-			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")";
+
+			linkType = NetworkConstant.LinkType.关联ELB.toInteger();
+
+			String virtualIp = "";
+			if (networkEipItem.getNetworkElbItem().getVirtualIp() != null) {
+				virtualIp = networkEipItem.getNetworkElbItem().getVirtualIp();
+			}
+
+			link += networkEipItem.getNetworkElbItem().getIdentifier() + '(' + virtualIp + ')';
 		}
 
 		if (networkEipItem.getComputeItem() != null) {
-			link += networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getInnerIp() + ")";
+			linkType = NetworkConstant.LinkType.关联实例.toInteger();
+
+			String innerIp = "";
+			if (networkEipItem.getComputeItem().getInnerIp() != null) {
+				innerIp = networkEipItem.getComputeItem().getInnerIp();
+			}
+
+			link += networkEipItem.getComputeItem().getIdentifier() + '(' + innerIp + ')';
 		}
 
 		json.setLink(link);
+		json.setLinkType(linkType);
 
 		return json;
 	}

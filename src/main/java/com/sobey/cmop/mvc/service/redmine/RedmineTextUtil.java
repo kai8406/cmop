@@ -9,6 +9,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -121,7 +122,7 @@ public class RedmineTextUtil {
 
 			for (NetworkElbItem elbItem : elbItems) {
 				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
-				content.append("是否保持会话 :").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
+				content.append("是否保持会话:").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
 
 				content.append("关联实例:").append(BLANK);
 
@@ -169,7 +170,54 @@ public class RedmineTextUtil {
 	 */
 	public static void generateEip(StringBuilder content, List<NetworkEipItem> eipItems) {
 
-		// TODO NetworkEipItem拼装
+		if (!eipItems.isEmpty()) {
+
+			content.append("# +*EIP*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+
+			for (NetworkEipItem eipItem : eipItems) {
+				content.append("标识符:").append(BLANK).append(eipItem.getIdentifier()).append(NEWLINE);
+				content.append("ISP运营商:").append(BLANK).append(NetworkConstant.ISPType.get(eipItem.getIspType())).append(NEWLINE);
+
+				if (eipItem.getComputeItem() != null) {
+
+					// 关联实例
+					content.append(NetworkConstant.LinkType.关联实例.toString() + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier());
+
+					if (StringUtils.isNotBlank(eipItem.getComputeItem().getInnerIp())) {
+						content.append("(").append(eipItem.getComputeItem().getInnerIp()).append(")");
+					}
+					content.append(NEWLINE);
+
+				} else {
+
+					// 关联ELB
+					content.append(NetworkConstant.LinkType.关联ELB.toString() + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier());
+
+					if (StringUtils.isNotBlank(eipItem.getNetworkElbItem().getVirtualIp())) {
+						content.append("(").append(eipItem.getNetworkElbItem().getVirtualIp()).append(")");
+					}
+					content.append(NEWLINE);
+
+				}
+
+				if (!eipItem.getEipPortItems().isEmpty()) {
+
+					content.append("端口映射（协议、源端口、目标端口）:").append(NEWLINE);
+					for (EipPortItem portItem : eipItem.getEipPortItems()) {
+						content.append(BLANK + BLANK + BLANK + BLANK + BLANK).append(portItem.getProtocol()).append(BLANK + BLANK).append(portItem.getSourcePort()).append(BLANK + BLANK)
+								.append(portItem.getTargetPort()).append(NEWLINE);
+					}
+
+				}
+
+				content.append(NEWLINE);
+
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
 	}
 
 	/**

@@ -88,8 +88,7 @@
 							<#list allComputes as compute>
 							
 							<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == elb.id ) >
-								${compute.identifier}
-								<#if compute.innerIp?exists >(${compute.innerIp})</#if> &nbsp;&nbsp;
+								${compute.identifier}<#if compute.innerIp?exists >(${compute.innerIp})</#if> &nbsp;&nbsp;
 							</#if>
 							
 							</#list>
@@ -108,6 +107,39 @@
 				</#list>
 				
 			</#if><!-- 负载均衡器ELB End -->
+			
+			<!-- EIP -->
+			<#if (eips?exists) && (eips?size > 0) >
+				<strong>EIP</strong>
+				
+				<#list eips as eip>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${eip.identifier}</li>
+						
+						<li><em>ISP运营商</em>&nbsp;:
+							<#list ispTypeMap?keys as k ><#if eip.ispType?string == k>${ispTypeMap[k]}</#if></#list>
+						</li>
+						<li>
+							<#if eip.computeItem?exists>
+								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}<#if eip.computeItem.innerIp?exists>(${eip.computeItem.innerIp})</#if>
+							<#else>
+								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}<#if eip.networkElbItem.virtualIp?exists>(${eip.networkElbItem.virtualIp})</#if>
+							</#if>
+						</li>
+						
+						<li><em>端口映射(协议、源端口、目标端口)</em></li>
+						
+						<#list eip.eipPortItems as port>
+							<ul>
+								<li>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</li>
+							</ul>
+						</#list>
+						
+						<br>
+					</ul>
+				</#list>
+				
+			</#if><!-- EIP End -->
 			
 		</li>
 		

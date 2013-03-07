@@ -227,6 +227,22 @@ table {
 										<#else>${item.newValue}</#if>
 										 
 									</td>
+									
+								<#elseif resource.serviceType == 5 ><!--   EIP  -->
+									
+									<td class="is-hidden">
+									
+										${item.oldValue}
+										
+									</td>
+									
+									<td class="is-visible">
+									
+										${item.newValue}
+										 
+									</td>
+								
+								<#elseif resource.serviceType == 6 ><!--   DNS  -->
 								
 								
 								<#else>

@@ -89,6 +89,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
 		map.put("storageTypeMap", StorageConstant.storageType.mapKeyStr);
 		map.put("KeepSessionMap", NetworkConstant.KeepSession.mapKeyStr);
+		map.put("ispTypeMap", NetworkConstant.ISPType.mapKeyStr);
 
 		map.put("allESGs", comm.esgService.getAllEsgList());
 

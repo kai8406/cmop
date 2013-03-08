@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -19,7 +18,6 @@ import com.sobey.cmop.mvc.dao.ComputeItemDao;
 import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -183,27 +181,9 @@ public class ComputeService extends BaseSevcie {
 	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
 			String[] applicationVersions, String[] applicationDeployPaths, String changeDescription) {
 
-		/**
-		 * 查找该资源的change.<br>
-		 * 返回null表示数据库没有该资源下的change,该资源以前未变更过.新建一个change;<br>
-		 * 返回结果不为null,该资源以前变更过,更新其变更时间和变更说明.
-		 */
+		/* 新增或更新资源Resources的服务变更Change. */
 
-		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
-
-		if (change == null) {
-
-			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
-			change.setDescription(changeDescription);
-
-		} else {
-
-			change.setChangeTime(new Date());
-			change.setDescription(changeDescription);
-
-		}
-
-		comm.changeServcie.saveOrUpdateChange(change);
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		ComputeItem computeItem = comm.computeService.getComputeItem(resources.getServiceId());
 

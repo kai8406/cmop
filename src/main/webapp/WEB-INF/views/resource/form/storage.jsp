@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>实例变更</title>
+	<title>ES3变更</title>
 	
 	<script>
 		$(document).ready(function() {
@@ -105,7 +105,7 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 	
-	<form id="inputForm" action="${ctx}/resources/update/storage" method="post" class="input-form form-horizontal" >
+	<form id="inputForm" action="${ctx}/resources/update/storage/" method="post" class="input-form form-horizontal" >
 		
 		<input type="hidden" name="id" value="${resources.id }">
 		

@@ -215,7 +215,28 @@ public class RedmineTextUtil {
 	 */
 	public static void generateDNS(StringBuilder content, List<NetworkDnsItem> dnsItems) {
 
-		// TODO NetworkDnsItem拼装
+		if (!dnsItems.isEmpty()) {
+
+			content.append("# +*DNS域名映射*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+
+			for (NetworkDnsItem networkDnsItem : dnsItems) {
+				content.append("标识符:").append(BLANK).append(networkDnsItem.getIdentifier()).append(NEWLINE);
+				content.append("域名:").append(BLANK).append(networkDnsItem.getDomainName()).append(NEWLINE);
+				content.append("域名类型:").append(BLANK).append(NetworkConstant.DomainType.get(networkDnsItem.getDomainType())).append(NEWLINE);
+				if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType())) {
+
+					content.append("CNAME域名:").append(BLANK).append(networkDnsItem.getCnameDomain()).append(NEWLINE + NEWLINE);
+				} else {
+
+					content.append("目标IP:").append(BLANK).append(networkDnsItem.getMountElbs()).append(NEWLINE + NEWLINE);
+				}
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
 	}
 
 }

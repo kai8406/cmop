@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>实例变更</title>
+	<title>EIP变更</title>
 	
 	<script>
 		$(document).ready(function() {

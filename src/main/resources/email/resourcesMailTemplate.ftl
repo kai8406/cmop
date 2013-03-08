@@ -277,7 +277,34 @@ table {
 								
 								<#elseif resource.serviceType == 6 ><!--   DNS  -->
 								
-								
+									<td class="is-hidden">
+									
+										<#if item.fieldName == '域名类型' >
+										
+											<#list domainTypeMap?keys as k ><#if item.oldValue?string == k>${domainTypeMap[k]}</#if></#list>
+											
+										<#elseif item.fieldName == '目标IP' >
+											${item.oldValue}
+										<#elseif item.fieldName == 'CNAME域名' >
+											${item.oldValue}
+										<#else>${item.oldValue}</#if>
+										
+									</td>
+									
+									<td class="is-visible">
+									
+										<#if item.fieldName == '域名类型' >
+										
+											<#list domainTypeMap?keys as k ><#if item.newValue?string == k>${domainTypeMap[k]}</#if></#list>
+											
+										<#elseif item.fieldName == '目标IP' >
+											${item.newValue}
+										<#elseif item.fieldName == 'CNAME域名' >
+											${item.newValue}
+										<#else>${item.newValue}</#if>
+										 
+									</td>
+									
 								<#else>
 								
 								

@@ -365,6 +365,28 @@ public class RedmineUtilService extends BaseSevcie {
 
 							}
 
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
+
+							// 拼装DNS信息
+
+							if (FieldNameConstant.Dns.域名类型.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Dns.域名类型 + ":" + BLANK).append(NetworkConstant.DomainType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
+										.append(NetworkConstant.DomainType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
+
+							} else if (FieldNameConstant.Dns.域名.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Dns.域名 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Dns.CNAME域名 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.Dns.目标IP.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Dns.目标IP + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							}
 						}
 
 					}

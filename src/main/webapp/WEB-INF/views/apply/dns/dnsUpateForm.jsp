@@ -24,30 +24,57 @@
 			
 			$.ajax({
 				type: "GET",
-				url: "${ctx}/ajax/getComputeList",
+				url: "${ctx}/ajax/getEipList",
 				dataType: "json",
 				success: function(data){
-					
 					var html = '';
-					
 					for ( var i = 0; i < data.length; i++) {
-						
 						html += '<tr>';
 						html += '<td><input type="checkbox" value="'+data[i].id+'"></td>';
 						html += '<td>'+data[i].identifier+'</td>';
-						html += '<td>'+data[i].osType+'&nbsp;&nbsp;&nbsp;'+data[i].osBit+'&nbsp;&nbsp;&nbsp;'+data[i].serverType+'</td>';
-						html += '<td>'+data[i].remark+'</td>';
-						html += '<td>'+ (data[i].innerIp == null ? "" : data[i].innerIp ) +'</td>';
+						html += '<td>'+data[i].ispType+'</td>';
+						html += '<td>'+(data[i].ipAddress == null ? "" : data[i].ipAddress ) +'</td>';
+						html += '<td>'+data[i].link+'</td>';
 						html += '</tr> ';
-						
 					}
-					
 					$("#resources-tbody").append(html);
-					
  				}		
 			});
 			
 		});
+		
+		
+		/*
+			选择域名类型时,根据不同的类型切换不同的目标IP/CNAME域名
+			GSLB,A : 选择EIP
+			CNAME : 输入文本框 cnameDomainDiv targetEIPDiv
+		*/
+		$(document).on("change", "#domainType", function(){
+			
+			var $this = $(this);
+			
+			if ( $this.val()== 3 ) {
+				//CNAME
+				
+				$("#cnameDomainDiv").addClass("show").removeClass("hidden");
+				$("#targetEIPDiv").addClass("hidden").removeClass("show");
+				
+				
+			}else{
+				//GSLB,A
+				
+				$("#targetEIPDiv").addClass("show").removeClass("hidden");
+				$("#cnameDomainDiv").addClass("hidden").removeClass("show");
+				
+			}
+			
+			//
+				
+			$("#resourcesDIV dl").empty();
+			$("#cnameDomain").val('');
+				
+		});
+		
 		
 		 /*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
 	  	 
@@ -77,8 +104,8 @@
 					
 					html +='<div class="resources alert alert-block alert-info fade in">';
 					html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-					html +='<input type="hidden" value="'+$this.val()+'" id="computeIds" name="computeIds">';
-					html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
+					html +='<input type="hidden" value="'+$this.val()+'" id="eipIds" name="eipIds">';
+					html +='<dd><em>目标IP</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
 					html +='</div> ';
 					
 				}
@@ -88,8 +115,8 @@
 			
 			//初始化
 			selectedArray = [];
-			$CheckedIds.removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked");
+			$("input[type=checkbox]").removeAttr('checked');
+			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
 			 
 			
 			//插入HTML文本
@@ -97,6 +124,8 @@
 			$("#resourcesDIV dl").append(html);
 			
 		}); 
+		 
+		 
 	</script>
 </head>
 
@@ -106,32 +135,39 @@
 	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${storage.apply.id }">
+		<input type="hidden" name="applyId" value="${dns.apply.id }">
 		
 		<fieldset>
-			<legend><small>修改ES3存储空间</small></legend>
+			<legend><small>修改DNS域名映射</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.apply.title}</p>
+					<p class="help-inline plain-text">${dns.apply.title}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.identifier}</p>
+					<p class="help-inline plain-text">${dns.identifier}</p>
+				</div>
+			</div>
+			
+			<div class="control-group"> 
+				<label class="control-label" for="domainName">域名</label>
+				<div class="controls">
+					<input type="text" id="domainName" name="domainName" value="${dns.domainName}" maxlength="45" class="required">
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="domainType">存储类型</label>
 				<div class="controls">
-					<select id="storageType" name="storageType" class="required">
-						<c:forEach var="map" items="${storageTypeMap }">
+					<select id="domainType" name="domainType" class="required">
+						<c:forEach var="map" items="${domainTypeMap }">
 							<option value="${map.key }" 
-								<c:if test="${map.key == storage.storageType }">
+								<c:if test="${map.key == dns.domainType }">
 									selected="selected"
 								</c:if>
 							>${map.value }</option>
@@ -140,34 +176,45 @@
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="space">容量空间(GB)</label>
+			<div id="targetEIPDiv" 
+				<c:choose>
+				<c:when test="${ empty dns.cnameDomain  }">class="show"</c:when>
+				<c:otherwise>class="hidden control-group"</c:otherwise>
+				</c:choose>
+			 >
+				<label class="control-label" for="domainType">目标IP</label>
 				<div class="controls">
-					<input type="text" id="space" name="space" value="${storage.space}" class="required digits" maxlength="6" placeholder="...容量空间">
+					 <a id="addEipBtn" class="btn" data-toggle="modal" href="#eipModal" >EIP资源</a>
 				</div>
 			</div>
 			
-			<div class="control-group">
+			<div id="cnameDomainDiv" 
+				<c:choose>
+				<c:when test="${not empty dns.cnameDomain }">class="show"</c:when>
+				<c:otherwise>class="hidden control-group"</c:otherwise>
+				</c:choose>
+			>
+				<label class="control-label" for="cnameDomain">CNAME域名</label>
 				<div class="controls">
-					 <a id="addComputeBtn" class="btn" data-toggle="modal" href="#computeModal" >实例相关资源</a>
+					 <input type="text" id="cnameDomain" name="cnameDomain" value="${dns.cnameDomain}" maxlength="45" >
 				</div>
 			</div>
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
-				<c:forEach var="compute" items="${storage.computeItemList }">
+				<c:forEach var="eip" items="${dns.networkEipItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
-						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
+						<input type="hidden" name="eipIds" id="eipIds" value="${eip.id }">
 						<dd>
-							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier }&nbsp;</strong>
+							<em>目标IP</em>&nbsp;&nbsp;<strong>${eip.identifier }(<c:if test="${not empty eip.ipAddress }">${eip.ipAddress }</c:if>)&nbsp;</strong>
 						</dd>
 					</div>
 				</c:forEach>
 			</dl></div>
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/update/${storage.apply.id}/" class="btn">返回</a>
+				<a href="${ctx}/apply/update/${dns.apply.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 			
@@ -175,20 +222,20 @@
 		
 	</form>
 	
-	<!-- 实例选择的Modal -->
+	<!-- EIP选择的Modal -->
 	<form id="modalForm" action="#" >
-		<div id="computeModal" class="modal container hide fade" tabindex="-1">
+		<div id="eipModal" class="modal container hide fade" tabindex="-1">
 	
-			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>实例</h4></div>
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>EIP</h4></div>
 				
 			<div class="modal-body">
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr>
 						<th><input type="checkbox"></th>
-						<th>实例标识符</th>
-						<th>基本信息(操作系统,位数,规格)</th>
-						<th>用途信息</th>
-						<th>IP地址</th>
+						<th>标识符</th>
+						<th>ISP</th>
+						<th>IP</th>
+						<th>关联实例/ELB</th>
 					</tr></thead>
 					<tbody id="resources-tbody"></tbody>
 				</table>
@@ -199,7 +246,7 @@
 				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
 			</div>
 		</div>
-	</form><!-- 实例规格选择的Modal End -->
+	</form><!-- EIP选择的Modal End -->
 	
 </body>
 </html>

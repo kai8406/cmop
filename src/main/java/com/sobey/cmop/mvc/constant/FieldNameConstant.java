@@ -69,14 +69,14 @@ public class FieldNameConstant {
 	 * entity NetworkDnsItem 里的参数<br>
 	 * 
 	 * <pre>
-	 * 域名, 域名类型, 目标IP_CNAME域名;
+	 * 域名, 域名类型, 目标IP,CNAME域名;
 	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
 	public enum Dns {
-		域名, 域名类型, 目标IP_CNAME域名;
+		域名, 域名类型, 目标IP, CNAME域名;
 	}
 
 }

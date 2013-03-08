@@ -112,4 +112,23 @@ public class ResourcesExtensionController extends BaseController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
+	/**
+	 * 变更DNS
+	 */
+	@RequestMapping(value = "/dns", method = RequestMethod.POST)
+	public String updateDns(@RequestParam(value = "id") Integer id, @RequestParam(value = "domainName") String domainName, @RequestParam(value = "domainType") Integer domainType,
+			@RequestParam(value = "cnameDomain", required = false) String cnameDomain, @RequestParam(value = "eipIds", required = false) String[] eipIds,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby, @RequestParam(value = "changeDescription") String changeDescription,
+			RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.dnsService.saveResourcesByDns(resources, serviceTagId, domainName, domainType, cnameDomain, eipIds, changeDescription);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
 }

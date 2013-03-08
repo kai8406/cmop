@@ -168,7 +168,30 @@
 				</c:if>
 				
 				<!-- DNS -->
-				<c:if test="${not empty apply.networkDnsItems}"></c:if>
+				<c:if test="${not empty apply.networkDnsItems}">
+				
+					<hr>
+					<dt>DNS域名映射</dt>
+					<c:forEach var="item" items="${apply.networkDnsItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>域名</em>&nbsp;&nbsp;${item.domainName }</dd>
+						
+						<dd><em>域名类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${domainTypeMap}"><c:if test="${item.domainType == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd>
+							<c:choose>
+								<c:when test="${item.domainType != 3 }"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
+								<c:otherwise><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:otherwise>
+							</c:choose>
+						</dd>
+						
+						<br>
+						
+					</c:forEach>
+					
+				</c:if>
 				
 				<!-- 服务器监控monitorCompute -->
 				<c:if test="${not empty apply.monitorComputes}"></c:if>

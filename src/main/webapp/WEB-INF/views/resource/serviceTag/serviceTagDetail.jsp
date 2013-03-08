@@ -199,6 +199,42 @@
 									
 									</c:if><!-- EIP End -->
 									
+					            	<!-- DNS-->
+	            					<c:if test="${resource.serviceType == 6 }">
+									
+										<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == '域名类型'}">
+													<c:forEach var="map" items="${domainTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '目标IP'}">
+													${item.oldValue}
+												</c:when>
+												<c:when test="${item.fieldName == 'CNAME域名'}">
+													${item.oldValue}
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '域名类型'}">
+													<c:forEach var="map" items="${domainTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '目标IP'}">
+													${item.newValue}
+												</c:when>
+												<c:when test="${item.fieldName == 'CNAME域名'}">
+													${item.newValue}
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+											
+										</td>
+									
+									</c:if><!-- DNS End -->
+									
 								</tr>
 								
 							</c:forEach>

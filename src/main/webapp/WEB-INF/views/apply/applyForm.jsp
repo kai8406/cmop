@@ -254,7 +254,6 @@
 								</div>
 							</div>
 						</span>
-						
 							
 						<br>
 						
@@ -305,7 +304,44 @@
 				</c:if>
 				
 				<!-- DNS -->
-				<c:if test="${not empty apply.networkDnsItems}"></c:if>
+				<c:if test="${not empty apply.networkDnsItems}">
+				
+					<hr>
+					<dt>DNS域名映射</dt>
+					<c:forEach var="item" items="${apply.networkDnsItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>域名</em>&nbsp;&nbsp;${item.domainName }</dd>
+						
+						<dd><em>域名类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${domainTypeMap}"><c:if test="${item.domainType == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd>
+							<c:choose>
+								<c:when test="${item.domainType != 3 }"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
+								<c:otherwise><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:otherwise>
+							</c:choose>
+							
+							<span class="pull-right">
+								<a href="${ctx}/apply/dns/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否删除?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="${ctx}/apply/dns/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</span>
+						
+						</dd>
+						
+						<br>
+						
+					</c:forEach>
+					
+				</c:if>
 				
 				<!-- 服务器监控monitorCompute -->
 				<c:if test="${not empty apply.monitorComputes}"></c:if>

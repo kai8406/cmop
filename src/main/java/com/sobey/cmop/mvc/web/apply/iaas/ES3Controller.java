@@ -1,8 +1,5 @@
 package com.sobey.cmop.mvc.web.apply.iaas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
@@ -87,17 +83,9 @@ public class ES3Controller extends BaseController {
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
 			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
-		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-
-		for (String computeId : computeIds) {
-			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
-		}
-
 		StorageItem storageItem = comm.es3Service.getStorageItem(id);
-		storageItem.setSpace(space);
-		storageItem.setStorageType(storageType);
-		storageItem.setComputeItemList(computeItemList);
-		comm.es3Service.saveOrUpdate(storageItem);
+
+		comm.es3Service.updateES3ToApply(storageItem, space, storageType, computeIds);
 
 		redirectAttributes.addFlashAttribute("message", "修改ES3存储空间 " + storageItem.getIdentifier() + " 成功");
 

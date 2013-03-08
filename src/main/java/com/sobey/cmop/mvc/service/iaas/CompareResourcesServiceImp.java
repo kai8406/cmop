@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
@@ -497,5 +498,46 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 		return CollectionUtils.isEqualCollection(protocolList, oldProtocolList) && CollectionUtils.isEqualCollection(sourcePortList, oldSourcePortList)
 				&& CollectionUtils.isEqualCollection(targetPortList, oldTargetPortList) ? false : true;
 
+	}
+
+	@Override
+	public boolean compareDns(Resources resources, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
+
+		boolean isChange = false;
+
+		// 域名
+
+		if (!networkDnsItem.getDomainName().equals(domainName)) {
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Dns.域名.toString(), networkDnsItem.getDomainName(), domainName);
+
+		}
+
+		// 域名类型
+
+		if (!networkDnsItem.getDomainType().equals(domainType)) {
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Dns.域名类型.toString(), networkDnsItem.getDomainType().toString(), domainType.toString());
+
+		}
+
+		// TODO
+		// 需要区分不同域名类型的切换,如A->CNAME.需要插入两条change.但是和ES3相同的问题,不能直接插入关联EIP的Id.因为要显示IP.目前暂时忽略,待后面有时间再弄.
+
+		if (networkDnsItem.getDomainType().equals(domainType)) {
+
+			if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+				// CNAME
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.Dns.CNAME域名.toString(), networkDnsItem.getCnameDomain(), cnameDomain);
+
+			} else {
+				// GSLB,A
+				// TODO 目标IP
+			}
+
+		}
+
+		return isChange;
 	}
 }

@@ -31,39 +31,41 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 	
-	<form id="inputForm" action="${ctx}/resources/update/compute" method="post" class="input-form form-horizontal" >
+	<form id="inputForm" action="${ctx}/resources/update/dns/" method="post" class="input-form form-horizontal" >
 		
 		<input type="hidden" name="id" value="${resources.id }">
 		
 		<fieldset>
-			<legend><small>
-				<c:choose>
-					<c:when test="${compute.computeType == 1 }">变更实例PCS</c:when>
-					<c:otherwise>变更实例ECS</c:otherwise>
-				</c:choose>
-			</small></legend>
+			<legend><small>变更DNS域名映射</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.apply.title}</p>
+					<p class="help-inline plain-text">${dns.apply.title}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.identifier}</p>
+					<p class="help-inline plain-text">${dns.identifier}</p>
+				</div>
+			</div>
+			
+			<div class="control-group"> 
+				<label class="control-label" for="domainName">域名</label>
+				<div class="controls">
+					<input type="text" id="domainName" name="domainName" value="${dns.domainName}" maxlength="45" class="required">
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osType">操作系统</label>
+				<label class="control-label" for="domainType">存储类型</label>
 				<div class="controls">
-					<select id="osType" name="osType" class="required">
-						<c:forEach var="map" items="${osTypeMap }">
+					<select id="domainType" name="domainType" class="required">
+						<c:forEach var="map" items="${domainTypeMap }">
 							<option value="${map.key }" 
-								<c:if test="${map.key == compute.osType }">
+								<c:if test="${map.key == dns.domainType }">
 									selected="selected"
 								</c:if>
 							>${map.value }</option>
@@ -72,84 +74,43 @@
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="osBit">操作位数</label>
+			<div id="targetEIPDiv" 
+				<c:choose>
+				<c:when test="${ empty dns.cnameDomain  }">class="show"</c:when>
+				<c:otherwise>class="hidden control-group"</c:otherwise>
+				</c:choose>
+			 >
+				<label class="control-label" for="domainType">目标IP</label>
 				<div class="controls">
-					<c:forEach var="map" items="${osBitMap }">
-						<label class="radio inline"> 
-							<input type="radio" name="osBit" value="${map.key}" <c:if test="${map.key == compute.osBit }">checked="checked"</c:if> >
-							<c:out value="${map.value}" />
-						</label>
-					</c:forEach>
+					 <a id="addEipBtn" class="btn" data-toggle="modal" href="#eipModal" >EIP资源</a>
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="serverType">规格</label>
+			<div id="cnameDomainDiv" 
+				<c:choose>
+				<c:when test="${not empty dns.cnameDomain }">class="show"</c:when>
+				<c:otherwise>class="hidden control-group"</c:otherwise>
+				</c:choose>
+			>
+				<label class="control-label" for="cnameDomain">CNAME域名</label>
 				<div class="controls">
-					<select id="serverType" name="serverType" class="required">
-						
-						<c:choose>
-							<c:when test="${compute.computeType == 1 }">
-								<c:forEach var="map" items="${pcsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
-							</c:when>
-							<c:otherwise>
-								<c:forEach var="map" items="${ecsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
-							</c:otherwise>
-						</c:choose>
-				
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
-				<div class="controls">
-					<select id="esgId" name="esgId" class="required">
-						<c:forEach var="item" items="${esgList}">
-							<option value="${item.id }" 
-								<c:if test="${item.id == compute.networkEsgItem.id }">
-									selected="selected"
-								</c:if>
-							>${item.identifier}(${item.description})</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="remark">用途信息</label>
-				<div class="controls">
-					<input type="text" id="remark" name="remark" value="${compute.remark }" class="required" maxlength="45" placeholder="...用途信息">
+					 <input type="text" id="cnameDomain" name="cnameDomain" value="${dns.cnameDomain}" maxlength="45" >
 				</div>
 			</div>
 			
 			
-			<table class="table table-bordered table-condensed"  >
-				<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th><th></th></tr></thead>
-				<tbody>
-					<c:choose>
-						<c:when test="${not empty compute.applications }">
-							<c:forEach var="item" items="${compute.applications}">
-								<tr class="clone">
-									<td><input type="text" name="applicationName" value="${item.name}" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
-									<td><input type="text" name="applicationVersion" value="${item.version}" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
-									<td><input type="text" name="applicationDeployPath" value="${item.deployPath}" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
-									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-								</tr>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<tr class="clone">
-								<td><input type="text" name="applicationName" class="input-small required" maxlength="45" placeholder="...应用名称"></td>
-								<td><input type="text" name="applicationVersion" class="input-small required" maxlength="45" placeholder="...应用版本"></td>
-								<td><input type="text" name="applicationDeployPath" class="input-small required" maxlength="45" placeholder="...部署路径"></td>
-								<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-							</tr>
-						</c:otherwise>
-					</c:choose>
-				</tbody>
-			</table>	
+			<!-- 生成的资源 -->
+			<div id="resourcesDIV"><dl class="dl-horizontal">
+				<c:forEach var="eip" items="${dns.networkEipItemList }">
+					<div class="resources alert alert-block alert-info fade in">
+						<button data-dismiss="alert" class="close" type="button">×</button>
+						<input type="hidden" name="eipIds" id="eipIds" value="${eip.id }">
+						<dd>
+							<em>目标IP</em>&nbsp;&nbsp;<strong>${eip.identifier }(<c:if test="${not empty eip.ipAddress }">${eip.ipAddress }</c:if>)&nbsp;</strong>
+						</dd>
+					</div>
+				</c:forEach>
+			</dl></div>
 			
 			<hr>
 			
@@ -199,6 +160,32 @@
 		</fieldset>
 		
 	</form>
+	
+	<!-- EIP选择的Modal -->
+	<form id="modalForm" action="#" >
+		<div id="eipModal" class="modal container hide fade" tabindex="-1">
+	
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>EIP</h4></div>
+				
+			<div class="modal-body">
+				<table class="table table-striped table-bordered table-condensed">
+					<thead><tr>
+						<th><input type="checkbox"></th>
+						<th>标识符</th>
+						<th>ISP</th>
+						<th>IP</th>
+						<th>关联实例/ELB</th>
+					</tr></thead>
+					<tbody id="resources-tbody"></tbody>
+				</table>
+			</div>
+				
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
+			</div>
+		</div>
+	</form><!-- EIP选择的Modal End -->
 	
 </body>
 </html>

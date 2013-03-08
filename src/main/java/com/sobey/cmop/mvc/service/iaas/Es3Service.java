@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -13,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.StorageItemDao;
-import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.Change;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -33,9 +33,6 @@ public class Es3Service extends BaseSevcie {
 
 	@Resource
 	private StorageItemDao storageItemDao;
-
-	@Resource
-	private BasicUnitDaoCustom basicUnitDao;
 
 	public StorageItem getStorageItem(Integer id) {
 		return storageItemDao.findOne(id);
@@ -69,15 +66,8 @@ public class Es3Service extends BaseSevcie {
 		Apply apply = comm.applyService.getApply(applyId);
 
 		for (int i = 0; i < storageTypes.length; i++) {
-			StorageItem storageItem = new StorageItem();
 
-			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ES3.toInteger());
-			storageItem.setIdentifier(identifier);
-			storageItem.setSpace(Integer.parseInt(spaces[i]));// 存储空间大小
-			storageItem.setApply(apply);
-			storageItem.setStorageType(Integer.parseInt(storageTypes[i]));
-
-			this.saveOrUpdate(storageItem);
+			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 
 			// 单个存储空间挂载的实例ID数组,分割后得到类似 1-2-3- 的数组组合.
 
@@ -90,15 +80,51 @@ public class Es3Service extends BaseSevcie {
 				String[] ids = StringUtils.split(computeIdArray[j], "-");
 
 				for (String computeId : ids) {
-
-					// 将存储空间和选中的计算资源进行关联(挂载)
-
-					basicUnitDao.saveComputeAndStorageRelevance(computeId, storageItem.getId());
+					computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
 				}
 
 			}
 
+			StorageItem storageItem = new StorageItem();
+
+			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ES3.toInteger());
+			storageItem.setIdentifier(identifier);
+			storageItem.setSpace(Integer.parseInt(spaces[i]));// 存储空间大小
+			storageItem.setApply(apply);
+			storageItem.setStorageType(Integer.parseInt(storageTypes[i]));
+			storageItem.setComputeItemList(computeItemList);
+
+			this.saveOrUpdate(storageItem);
+
 		}
+
+	}
+
+	/**
+	 * update ES3 (服务申请)
+	 * 
+	 * @param storageItem
+	 *            存储ES3对象
+	 * @param space
+	 *            存储空间
+	 * @param storageType
+	 *            存储类型
+	 * @param computeIds
+	 *            挂载实例数组
+	 */
+	@Transactional(readOnly = false)
+	public void updateES3ToApply(StorageItem storageItem, Integer space, Integer storageType, String[] computeIds) {
+
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		for (String computeId : computeIds) {
+			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+		}
+
+		storageItem.setSpace(space);
+		storageItem.setStorageType(storageType);
+		storageItem.setComputeItemList(computeItemList);
+
+		comm.es3Service.saveOrUpdate(storageItem);
 
 	}
 
@@ -121,27 +147,9 @@ public class Es3Service extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveResourcesByStorage(Resources resources, Integer serviceTagId, Integer storageType, Integer space, String[] computeIds, String changeDescription) {
 
-		/**
-		 * 查找该资源的change.<br>
-		 * 返回null表示数据库没有该资源下的change,该资源以前未变更过.新建一个change;<br>
-		 * 返回结果不为null,该资源以前变更过,更新其变更时间和变更说明.
-		 */
+		/* 新增或更新资源Resources的服务变更Change. */
 
-		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
-
-		if (change == null) {
-
-			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
-			change.setDescription(changeDescription);
-
-		} else {
-
-			change.setChangeTime(new Date());
-			change.setDescription(changeDescription);
-
-		}
-
-		comm.changeServcie.saveOrUpdateChange(change);
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		StorageItem storageItem = this.getStorageItem(resources.getServiceId());
 

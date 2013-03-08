@@ -141,6 +141,34 @@
 				
 			</#if><!-- EIP End -->
 			
+			<!-- DNS域名映射 -->
+			<#if (dnses?exists) && (dnses?size > 0) >
+				<strong>DNS域名映射</strong>
+				
+				<#list dnses as dns>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${dns.identifier}</li>
+						
+						<li><em>域名</em>&nbsp;:${dns.domainName}</li>
+						
+						<li><em>域名类型</em>&nbsp;:
+							<#list domainTypeMap?keys as k ><#if dns.domainType?string == k>${domainTypeMap[k]}</#if></#list>
+						</li>
+						
+						<li>
+							<#if dns.cnameDomain?exists>
+								<em>CNAME域名</em>&nbsp;:${dns.cnameDomain}
+							<#else>
+								<em>目标IP</em>&nbsp;:${dns.mountElbs}
+							</#if>
+						</li>
+						
+						<br>
+					</ul>
+				</#list>
+				
+			</#if><!-- DNS域名映射 End -->
+			
 		</li>
 		
 		<#if passUrl?exists>

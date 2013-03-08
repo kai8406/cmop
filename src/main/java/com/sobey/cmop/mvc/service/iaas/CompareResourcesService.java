@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
@@ -107,5 +108,24 @@ public interface CompareResourcesService {
 	 * @return
 	 */
 	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts);
+
+	/**
+	 * 比较dns变更前和变更后的值
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param networkDnsItem
+	 *            变更前的DNS对象
+	 * @param domainName
+	 *            域名
+	 * @param domainType
+	 *            域名类型
+	 * @param cnameDomain
+	 *            CNAME域名
+	 * @param eipIds
+	 *            目标IP数组
+	 * @return
+	 */
+	public boolean compareDns(Resources resources, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds);
 
 }

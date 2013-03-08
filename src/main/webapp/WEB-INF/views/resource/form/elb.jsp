@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>实例变更</title>
+	<title>ELB变更</title>
 	
 	<script>
 		$(document).ready(function() {

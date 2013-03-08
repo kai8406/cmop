@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -7,8 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.google.common.collect.Lists;
+import com.sobey.framework.utils.Collections3;
 
 /**
  * NetworkEipItem entity. @author MyEclipse Persistence Tools
@@ -25,6 +40,7 @@ public class NetworkDnsItem implements java.io.Serializable {
 	private String domainName;
 	private Integer domainType;
 	private String cnameDomain;
+	private List<NetworkEipItem> networkEipItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -105,6 +121,37 @@ public class NetworkDnsItem implements java.io.Serializable {
 
 	public void setCnameDomain(String cnameDomain) {
 		this.cnameDomain = cnameDomain;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "dns_eip_item", joinColumns = { @JoinColumn(name = "dns_item_id") }, inverseJoinColumns = { @JoinColumn(name = "eip_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.JOIN)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<NetworkEipItem> getNetworkEipItemList() {
+		return networkEipItemList;
+	}
+
+	public void setNetworkEipItemList(List<NetworkEipItem> networkEipItemList) {
+		this.networkEipItemList = networkEipItemList;
+	}
+
+	/**
+	 * dns关联的eip标识符字符串, 多个字符串用','分隔.
+	 */
+	// 非持久化属性.
+	@Transient
+	public String getMountElbs() {
+		return Collections3.extractToString(networkEipItemList, "identifier", ",");
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

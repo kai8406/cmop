@@ -35,6 +35,20 @@ public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 
 	}
 
+	@Override
+	public void saveDnsAndEipRelevance(Integer dnsId, Integer eipId) {
+
+		String sqlString = "insert into dns_eip_item (dns_item_id,eip_item_id)values(?,?)";
+
+		logger.info(sqlString);
+
+		Query query = em.createNativeQuery(sqlString);
+		query.setParameter(1, dnsId);
+		query.setParameter(2, eipId);
+
+		query.executeUpdate();
+	}
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List getComputeItemListByResourcesId(Integer userId) {

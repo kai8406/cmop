@@ -170,6 +170,7 @@ function cloneParamTable() {
 			 */
 			var $clone = $tr.clone();
 			$clone.find('input[type=text]').val(''); //清空文本
+			$clone.find("span,p").empty();
 			$tr.after($clone);
 		}
 	});

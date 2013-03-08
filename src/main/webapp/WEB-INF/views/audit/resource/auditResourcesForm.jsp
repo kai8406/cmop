@@ -3,62 +3,37 @@
 
 <html>
 <head>
+<title>审批管理</title>
+<script>
+$(document).ready(function() {
+	$("ul#navbar li#resourceAudit").addClass("active");
+});
 
-	<title>审批管理</title>
-	
-	<script>
-		$(document).ready(function() {
-			
-			$("ul#navbar li#resourceAudit").addClass("active");
-			
-			//点击class为"auditResult" 的button触发审批意见的非空判断
-			
-			$("button.auditResult").click(function(){
-				
-				var $this = $(this); 
-				
-				var $opinion = $("#opinion");
-				
-				//审批时,选择 1.同意 去除class中的required.
-				
-				$this.val() == 1 ? $opinion.removeClass("required"):$opinion.addClass("required")
-				
-				$("#result").val($this.val());
-				
-			});
-			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-			   		$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
-			
-			
-		});
-	</script>
-	
+function setResult(result) {
+    if (result != "1" && $('#opinion').val() == "") {
+        alert("请填写审批意见！");
+        $('#opinion').focus();
+        return false;
+    }
+    $('#result').val(result);
+    return true;
+}
+</script>
 </head>
 
 <body>
-	
-	<style>body{background-color: #f5f5f5;}</style>
 
 	<form   action="#" method="post" class="form-horizontal input-form">
-	
 		<input type="hidden" name="id" value="${apply.id}">
-		<input type="hidden" name="userId" value="${userId }">
-		<input type="hidden" id="result" name="result">
+		<input type="hidden" name="userId" value="${userId}">
+		<c:if test="${empty result}">
+			<input type="hidden" name="result" id="result">
+		</c:if>
 		
 		<fieldset>
 			<legend><small>资源变更详情</small></legend>
 			
 			<dl class="dl-horizontal">
-			
 				<dt>标签名</dt>
 				<dd>${serviceTag.name}&nbsp;</dd>
 				
@@ -90,9 +65,7 @@
 				</dl>
 		
 				<c:forEach var="resource" items="${resourcesList }">
-					
 					<c:forEach var="change" items="${resource.changes }">
-					
 						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
 						
 						<table class="table table-bordered">
@@ -235,25 +208,37 @@
 			</c:if>
 			
 			<form id="inputForm" action="${ctx}/audit/apply/${apply.id}" method="post">
-			
-				<div class="control-group">
-					<label class="control-label" for="opinion">审批意见</label>
-					<div class="controls">
-						<textarea rows="3" id="opinion" name="opinion" placeholder="...审批意见" maxlength="45"></textarea>
+				<c:if test="${empty view}">
+					<div class="control-group">
+						<label class="control-label" for="opinion">审批意见</label>
+						<div class="controls">
+							<textarea rows="3" id="opinion" name="opinion" placeholder="...审批意见" maxlength="45" class="required"></textarea>
+						</div>
 					</div>
-				</div>
+				</c:if>
 			
 				<div class="form-actions">
-					<input class="btn" type="button" value="返回" onclick="history.back()">
-					<c:forEach var="map" items="${auditResultMap}">
-						<button class="auditResult btn btn-primary" value="${map.key}">${map.value}</button>
-					</c:forEach>
+					<c:if test="${empty result}">
+						<input class="btn" type="button" value="返回" onclick="history.back()">
+						<c:if test="${empty view}">
+							<c:forEach var="map" items="${auditResultMap}">
+								<button class="btn btn-primary" onclick="return setResult(${map.key})">${map.value}</button>
+							</c:forEach>
+						</c:if>
+					</c:if>
+
+					<c:if test="${not empty result}">
+						<button class="btn" onclick="window.close();">&nbsp;关&nbsp;闭&nbsp;</button>
+						<c:forEach var="map" items="${auditResultMap}">
+							<c:if test="${result==map.key}">
+								<button class="btn btn-primary" onclick="return setResult(${map.key})">${map.value}</button>
+							</c:if>
+						</c:forEach>
+					</c:if>
 				</div>
-				
 			</form>
 		
 		</fieldset>
-		
 	</form>
 	
 </body>

@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,15 +135,10 @@ public class AuditService extends BaseSevcie {
 	 * @return
 	 */
 	public Page<Audit> getAuditApplyPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-
-		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, new Sort(Direction.DESC, "apply.id"));
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-
 		filters.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id", Operator.EQ, getCurrentUserId()));
-
 		filters.put("audit.apply.id", new SearchFilter("apply.id", Operator.NotNull, null));
-
 		Specification<Audit> spec = DynamicSpecifications.bySearchFilter(filters.values(), Audit.class);
 
 		return auditDao.findAll(spec, pageRequest);
@@ -157,15 +154,10 @@ public class AuditService extends BaseSevcie {
 	 * @return
 	 */
 	public Page<Audit> getAuditResourcesPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-
-		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, new Sort(Direction.DESC, "serviceTag.id"));
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-
 		filters.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id", Operator.EQ, getCurrentUserId()));
-
 		filters.put("audit.serviceTag.id", new SearchFilter("serviceTag.id", Operator.NotNull, null));
-
 		Specification<Audit> spec = DynamicSpecifications.bySearchFilter(filters.values(), Audit.class);
 
 		return auditDao.findAll(spec, pageRequest);
@@ -208,29 +200,30 @@ public class AuditService extends BaseSevcie {
 	 *         false:未审批
 	 */
 	public boolean isApplyAudited(Integer applyId, Integer userId) {
-
 		boolean isAudited = false;
-
-		/*
-		 * true:通过页面审批 ;false :通过邮件直接审批同意
-		 */
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
-
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+		// Apply apply = comm.applyService.getApply(applyId);
+		// logger.info("--->user=" + user.getName() + "，apply.auditOrder=" +
+		// apply.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" +
+		// auditFlow.getAuditOrder());
+		// if ((auditFlow.getAuditOrder() == 3 &&
+		// apply.getStatus().equals(ApplyConstant.Status.已退回.toInteger())) ||
+		// (apply.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
+		// logger.info("--->isAudited...");
+		// isAudited = true;
+		// }
 
-		Apply apply = comm.applyService.getApply(applyId);
-
-		logger.info("--->user=" + user.getName() + "，apply.auditOrder=" + apply.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
-
-		if ((auditFlow.getAuditOrder() == 3 && apply.getStatus().equals(ApplyConstant.Status.已退回.toInteger())) || (apply.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
+		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
+		// 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录，如果有则说明可以审批，否则表示已审批。
+		Audit audit = auditDao.findByApplyIdAndAuditFlowAndCreateTimeIsNull(applyId, auditFlow);
+		if (audit == null) {
 			logger.info("--->isAudited...");
 			isAudited = true;
 		}
 
 		return isAudited;
-
 	}
 
 	/**
@@ -244,29 +237,32 @@ public class AuditService extends BaseSevcie {
 	 *         false:未审批
 	 */
 	public boolean isResourcesAudited(Integer serviceTagId, Integer userId) {
-
 		boolean isAudited = false;
-
-		/*
-		 * true:通过页面审批 ;false :通过邮件直接审批同意
-		 */
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
-
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+		// ServiceTag serviceTag =
+		// comm.serviceTagService.getServiceTag(serviceTagId);
+		// logger.info("--->user=" + user.getName() + "，apply.auditOrder=" +
+		// serviceTag.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder="
+		// + auditFlow.getAuditOrder());
+		// if ((auditFlow.getAuditOrder() == 3 &&
+		// serviceTag.getStatus().equals(ResourcesConstant.Status.已退回.toInteger()))
+		// || (serviceTag.getAuditFlow().getAuditOrder() >
+		// auditFlow.getAuditOrder())) {
+		// logger.info("--->isAudited...");
+		// isAudited = true;
+		// }
 
-		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
-
-		logger.info("--->user=" + user.getName() + "，apply.auditOrder=" + serviceTag.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
-
-		if ((auditFlow.getAuditOrder() == 3 && serviceTag.getStatus().equals(ResourcesConstant.Status.已退回.toInteger())) || (serviceTag.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
+		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
+		// 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录，如果有则说明可以审批，否则表示已审批。
+		Audit audit = auditDao.findByServiceTagIdAndAuditFlowAndCreateTimeIsNull(serviceTagId, auditFlow);
+		if (audit == null) {
 			logger.info("--->isAudited...");
 			isAudited = true;
 		}
 
 		return isAudited;
-
 	}
 
 	/**
@@ -287,80 +283,53 @@ public class AuditService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveAuditToApply(Audit audit, Integer applyId, Integer userId) {
-
 		Apply apply = comm.applyService.getApply(applyId);
 
 		/*
 		 * true:通过页面审批 ;false :通过邮件直接审批同意
 		 */
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
-
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-
 		audit.setApply(apply);
 		audit.setAuditFlow(auditFlow);
 		audit.setCreateTime(new Date());
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
 		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
-
 			logger.info("--->审批退回...");
-
 			apply.setStatus(ApplyConstant.Status.已退回.toInteger());
-
 			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
-
 			logger.info("--->退回原因:" + audit.getOpinion());
 
 			// 发送退回通知邮件
-
 			comm.simpleMailService.sendNotificationMail(apply.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
-
 		} else {
-
 			if (auditFlow.getIsFinal()) { // 终审人
-
 				logger.info("--->终审审批...");
-
 				apply.setStatus(ApplyConstant.Status.已审批.toInteger());
-
 				logger.info("--->拼装Redmine内容...");
-
 				// 拼装Redmine内容
-
 				String description = comm.redmineUtilService.applyRedmineDesc(apply);
 
 				// 写入工单Issue到Redmine
-
 				Issue issue = new Issue();
-
 				Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
 				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
-
 				issue.setTracker(tracker);
 				issue.setSubject(apply.getTitle());
 				issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
 				issue.setDescription(description);
-
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
-
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
-
 				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
-
 				logger.info("--->Redmine isCreated?" + isCreated);
-
 				if (isCreated) { // 写入Redmine成功
-
 					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
-
 					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
-
 					logger.info("--->创建RedmineIssue...");
 
 					RedmineIssue redmineIssue = new RedmineIssue();
-
 					redmineIssue.setProjectId(projectId);
 					redmineIssue.setTrackerId(issue.getTracker().getId());
 					redmineIssue.setSubject(issue.getSubject());
@@ -368,52 +337,32 @@ public class AuditService extends BaseSevcie {
 					redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
 					redmineIssue.setIssueId(issue.getId());
 					redmineIssue.setApplyId(applyId);
-
 					comm.operateService.saveOrUpdate(redmineIssue);
-
 					// 指派人的User
-
 					User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
-
 					// 发送工单处理邮件
-
 					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
-
 				} else {
 					return false;
 				}
-
 			} else { // 不是终审人
-
 				logger.info("--->中间审批...");
-
 				// 当前审批人的的下一级审批人的审批顺序.如当前审批人的审批顺序是1的话,下一个就是2.
-
 				Integer auditOrder = auditFlow.getAuditOrder() + 1;
-
 				AuditFlow nextAuditFlow = this.findAuditFlowByAuditOrderAndFlowType(auditOrder, flowType);
-
 				apply.setAuditFlow(nextAuditFlow);
 				apply.setStatus(ApplyConstant.Status.审批中.toInteger());
 
 				// 发送邮件到下一个审批人
-
 				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow);
-
 				// 插入一条下级审批人所用到的audit.
-
 				this.saveSubAudit(userId, apply, null);
-
 			}
-
 		}
 
 		comm.applyService.saveOrUpateApply(apply);
-
 		this.saveOrUpdateAudit(audit);
-
 		return true;
-
 	}
 
 	/**

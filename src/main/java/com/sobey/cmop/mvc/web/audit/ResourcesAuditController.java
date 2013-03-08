@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,15 +37,10 @@ public class ResourcesAuditController extends BaseController {
 	 */
 	@RequestMapping(value = "resources")
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
-
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
-
 		model.addAttribute("page", comm.auditService.getAuditResourcesPageable(searchParams, pageNumber, pageSize));
-
 		// 将搜索条件编码成字符串,分页的URL
-
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
-
 		return "audit/resource/auditResourcesList";
 	}
 
@@ -65,28 +61,18 @@ public class ResourcesAuditController extends BaseController {
 	@RequestMapping(value = "resources/auditOk")
 	public String auditOk(@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
-
 		String message;
-
 		if (comm.auditService.isResourcesAudited(serviceTagId, userId)) { // 该服务申请已审批过.
-
 			message = "你已审批";
-
 		} else {
-
 			// 获得指定serviceTag当前审批记录
-
 			Audit audit = this.getCurrentResourcesAudit(userId, serviceTagId);
 			audit.setResult(result);
 			audit.setOpinion(opinion);
-
 			boolean flag = comm.auditService.saveAuditToResources(audit, serviceTagId, userId);
-
 			message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
 		}
-
 		model.addAttribute("message", message);
-
 		return "audit/auditOk";
 	}
 
@@ -98,34 +84,23 @@ public class ResourcesAuditController extends BaseController {
 	 *            页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
 	 */
 	@RequestMapping(value = "/resources/{id}", method = RequestMethod.GET)
-	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId, Model model) {
-
+	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
+			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
 		String returnUrl = "";
-
-		if (comm.auditService.isResourcesAudited(serviceTagId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
-
+		if (StringUtils.isEmpty(view) && comm.auditService.isResourcesAudited(serviceTagId, userId)) { // 判断该服务申请已审批过.
 			model.addAttribute("message", "你已审批");
-
 			returnUrl = "audit/auditOk";
-
 		} else {
-
-			// 页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
-
+			model.addAttribute("result", result);
+			model.addAttribute("view", view);
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
-
 			model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(serviceTagId));
-
 			model.addAttribute("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
-
 			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
 
 			returnUrl = "audit/resource/auditResourcesForm";
-
 		}
-
 		return returnUrl;
-
 	}
 
 	/**
@@ -145,18 +120,13 @@ public class ResourcesAuditController extends BaseController {
 	@RequestMapping(value = "/resources/{serviceTagId}", method = RequestMethod.POST)
 	public String saveApply(@PathVariable(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
-
 		// 获得指定apply当前审批记录
-
 		Audit audit = this.getCurrentResourcesAudit(userId, serviceTagId);
-
 		audit.setOpinion(opinion);
 		audit.setResult(result);
 
 		boolean flag = comm.auditService.saveAuditToResources(audit, serviceTagId, userId);
-
 		String message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
-
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return REDIRECT_SUCCESS_URL;
@@ -174,15 +144,11 @@ public class ResourcesAuditController extends BaseController {
 	 * @return
 	 */
 	private Audit getCurrentResourcesAudit(Integer userId, Integer serviceTagId) {
-
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-
 		AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(userId, flowType);
-
 		Integer status = AuditConstant.AuditStatus.待审批.toInteger();
 
 		return comm.auditService.findAuditByServiceTagIdAndStatusAndAuditFlow(serviceTagId, status, auditFlow);
-
 	}
 
 }

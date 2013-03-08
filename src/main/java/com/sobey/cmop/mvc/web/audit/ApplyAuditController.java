@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,6 @@ import com.sobey.framework.utils.Servlets;
 @Controller
 @RequestMapping(value = "/audit")
 public class ApplyAuditController extends BaseController {
-
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/audit/apply/";
 
 	/**
@@ -36,15 +36,10 @@ public class ApplyAuditController extends BaseController {
 	 */
 	@RequestMapping(value = "apply")
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
-
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
-
 		model.addAttribute("page", comm.auditService.getAuditApplyPageable(searchParams, pageNumber, pageSize));
-
 		// 将搜索条件编码成字符串,分页的URL
-
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
-
 		return "audit/apply/auditApplyList";
 	}
 
@@ -65,28 +60,18 @@ public class ApplyAuditController extends BaseController {
 	@RequestMapping(value = "apply/auditOk")
 	public String auditOk(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
-
 		String message;
-
 		if (comm.auditService.isApplyAudited(applyId, userId)) { // 该服务申请已审批过.
-
 			message = "你已审批";
-
 		} else {
-
 			// 获得指定apply当前审批记录
-
 			Audit audit = this.getCurrentApplyAudit(userId, applyId);
 			audit.setResult(result);
 			audit.setOpinion(opinion);
-
 			boolean flag = comm.auditService.saveAuditToApply(audit, applyId, userId);
-
 			message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
 		}
-
 		model.addAttribute("message", message);
-
 		return "audit/auditOk";
 	}
 
@@ -98,32 +83,23 @@ public class ApplyAuditController extends BaseController {
 	 *            页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
 	 */
 	@RequestMapping(value = "/apply/{id}", method = RequestMethod.GET)
-	public String apply(@PathVariable("id") Integer applyId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId, Model model) {
-
+	public String apply(@PathVariable("id") Integer applyId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
+			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
 		String returnUrl = "";
-
-		if (comm.auditService.isApplyAudited(applyId, userId) && !AccountConstant.FROM_PAGE_USER_ID.equals(userId)) { // 判断该服务申请已审批过.
-
+		if (StringUtils.isEmpty(view) && comm.auditService.isApplyAudited(applyId, userId)) { // 判断该服务申请已审批过.
 			model.addAttribute("message", "你已审批");
-
 			returnUrl = "audit/auditOk";
-
 		} else {
-
+			model.addAttribute("result", result);
+			model.addAttribute("view", view);
 			// 页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
-
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
-
 			model.addAttribute("apply", comm.applyService.getApply(applyId));
-
 			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(applyId));
 
 			returnUrl = "audit/apply/auditApplyForm";
-
 		}
-
 		return returnUrl;
-
 	}
 
 	/**
@@ -143,18 +119,13 @@ public class ApplyAuditController extends BaseController {
 	@RequestMapping(value = "/apply/{applyId}", method = RequestMethod.POST)
 	public String saveApply(@PathVariable(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
-
 		// 获得指定apply当前审批记录
-
 		Audit audit = this.getCurrentApplyAudit(userId, applyId);
-
 		audit.setOpinion(opinion);
 		audit.setResult(result);
 
 		boolean flag = comm.auditService.saveAuditToApply(audit, applyId, userId);
-
 		String message = flag ? "审批操作成功" : "审批操作失败,请稍后重试";
-
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return REDIRECT_SUCCESS_URL;
@@ -172,15 +143,10 @@ public class ApplyAuditController extends BaseController {
 	 * @return
 	 */
 	private Audit getCurrentApplyAudit(Integer userId, Integer applyId) {
-
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-
 		AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(userId, flowType);
-
 		Integer status = AuditConstant.AuditStatus.待审批.toInteger();
-
 		return comm.auditService.findAuditByApplyIdAndStatusAndAuditFlow(applyId, status, auditFlow);
-
 	}
 
 }

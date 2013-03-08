@@ -6,9 +6,7 @@
 <title>审批管理</title>
 <script>
 	$(document).ready(function() {
-		
 		$("ul#navbar li#applyAudit").addClass("active");
-		
 	});
 </script>
 </head>
@@ -16,10 +14,8 @@
 <body>
 
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-	
 
 	<form class="form-inline well well-small" action="#">
-
 		<div class="row">
 
 	  	 	<div class="span3">
@@ -73,7 +69,6 @@
 			</div>
 			
 		</div> 
-
 	</form>
 	
 	<div class="row">
@@ -90,7 +85,7 @@
 				<th>优先级</th>
 				<th>申请时间</th>
 				<th>审批结果</th>
-				<th>管理</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -112,18 +107,13 @@
 						</c:forEach>
 					</td>
 					<td>
-						
 						<!-- 0.待审批 -->
 						<c:if test="${ empty item.result }">
 							<a href="${ctx}/audit/apply/${item.apply.id}">审批</a>
 						</c:if>
-						
-						
 						<c:if test="${not empty item.result }">
-							<a href="${ctx}/audit/apply/${item.apply.id}">查看</a>
+							<a href="${ctx}/audit/apply/${item.apply.id}?view=1">查看</a>
 						</c:if>
-						
-						
 					</td>
 				</tr>
 			</c:forEach>

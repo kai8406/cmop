@@ -6,4 +6,4 @@
 * `-DartifactId=onecmdb-core -Dversion=2.1.0 -Dpackaging=jar`
 * 回车
 * 上面的maven命令只能修改-Dfile后面的jar路径!
-* resoures/oneCMDB 有该jar包.
+* resoures/oneCMDB 有该jar包. 

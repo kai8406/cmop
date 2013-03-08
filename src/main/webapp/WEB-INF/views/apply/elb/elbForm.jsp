@@ -173,8 +173,8 @@
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
 			portTempArray =[];
 			selectedArray = [];
-			$CheckedIds.removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked");
+			$("input[type=checkbox]").removeAttr('checked');
+			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
 			isUnique = true;
 			
 			

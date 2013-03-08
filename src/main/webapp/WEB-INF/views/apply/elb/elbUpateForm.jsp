@@ -109,8 +109,8 @@
 			
 			//初始化
 			selectedArray = [];
-			$CheckedIds.removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked");
+			$("input[type=checkbox]").removeAttr('checked');
+			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
 			 
 			
 			//插入HTML文本

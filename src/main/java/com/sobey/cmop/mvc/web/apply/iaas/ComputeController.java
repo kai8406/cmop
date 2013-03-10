@@ -96,15 +96,7 @@ public class ComputeController extends BaseController {
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
 			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") Integer esgId, @RequestParam(value = "remark") String remark, RedirectAttributes redirectAttributes) {
 
-		ComputeItem computeItem = comm.computeService.getComputeItem(id);
-
-		computeItem.setOsType(osType);
-		computeItem.setOsBit(osBit);
-		computeItem.setServerType(serverType);
-		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getEsg(esgId));
-
-		comm.computeService.saveOrUpdate(computeItem);
+		ComputeItem computeItem = comm.computeService.updateComputeToApply(id, osType, osBit, serverType, esgId, remark);
 
 		redirectAttributes.addFlashAttribute("message", "修改实例 " + computeItem.getIdentifier() + " 成功");
 

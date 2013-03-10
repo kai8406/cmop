@@ -158,6 +158,32 @@ public class ComputeService extends BaseSevcie {
 	}
 
 	/**
+	 * 更新compute (服务申请)
+	 * 
+	 * @param computeId
+	 * @param osType
+	 * @param osBit
+	 * @param serverType
+	 * @param esgId
+	 * @param remark
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark) {
+
+		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
+
+		computeItem.setOsType(osType);
+		computeItem.setOsBit(osBit);
+		computeItem.setServerType(serverType);
+		computeItem.setRemark(remark);
+		computeItem.setNetworkEsgItem(comm.esgService.getEsg(esgId));
+
+		return comm.computeService.saveOrUpdate(computeItem);
+
+	}
+
+	/**
 	 * 新增,更新computeItem
 	 * 
 	 * @param computeItem

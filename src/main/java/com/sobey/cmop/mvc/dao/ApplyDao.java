@@ -23,6 +23,6 @@ public interface ApplyDao extends PagingAndSortingRepository<Apply, Integer>, Jp
 	 * @param status
 	 * @return
 	 */
-	List<Apply> findByUserIdAndServiceTypeAndStatusIn(Integer userId, Integer serviceType, Collection<Integer> status);
+	List<Apply> findByUserIdAndServiceTypeAndStatusInOrderByIdDesc(Integer userId, Integer serviceType, Collection<Integer> status);
 
 }

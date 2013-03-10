@@ -142,7 +142,7 @@ public class ApplyService extends BaseSevcie {
 		status.add(ApplyConstant.Status.已申请.toInteger());
 		status.add(ApplyConstant.Status.已退回.toInteger());
 
-		return applyDao.findByUserIdAndServiceTypeAndStatusIn(getCurrentUserId(), serviceType, status);
+		return applyDao.findByUserIdAndServiceTypeAndStatusInOrderByIdDesc(getCurrentUserId(), serviceType, status);
 	}
 
 	/**

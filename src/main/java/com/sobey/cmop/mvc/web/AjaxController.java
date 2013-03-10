@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
@@ -172,6 +173,16 @@ public class AjaxController extends BaseController {
 		}
 
 		return eipJsons;
+	}
+
+	/**
+	 * 
+	 * @return 当前用户创建的+公用的(user_id 为null) ESG列表.
+	 */
+	@RequestMapping(value = "getEsgList")
+	public @ResponseBody
+	List<NetworkEsgItem> getEsgList() {
+		return comm.esgService.getESGList();
 	}
 
 	/**

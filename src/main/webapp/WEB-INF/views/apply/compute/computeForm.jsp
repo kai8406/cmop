@@ -26,7 +26,24 @@
 	
 			});
 			
-			 /*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
+			/* ajax获得esgList*/ 
+			
+			//注意该变量是全局变量!!!
+			var esgHTML = '';
+			
+			$.ajax({
+				type: "GET",
+				url: "${ctx}/ajax/getEsgList",
+				dataType: "json",
+				success: function(data){
+					for ( var i = 0; i < data.length; i++) {
+						esgHTML += '<option value="'+data[i].id+'">'+data[i].description+'</option>';
+					}
+ 				}		
+			});
+			
+			
+			/*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
 			$(".serverTypeBtn").click(function() {
 				
 				var $parent = $(this).parent().parent();
@@ -97,7 +114,7 @@
 							html += '<div class="row">';
 							html += '<div class="span5">'+osNAME+' &nbsp; '+osBitText+' &nbsp; '+serverTypeText+'</div>';
 							html += '<div class="span2 control-group" style="margin-bottom: 0px; margin-left: 0px;"><input type="text" id="remarks'+loopId+'" name="remarks" class="required input-small" maxlength="45" placeholder="...用途信息"></div>';
-							html += '<div class="span2"><select class="required input-medium" name="esgIds"><option value="1">ESG List</option></select></div>';
+							html += '<div class="span2"><select class="required input-medium" name="esgIds">'+esgHTML+'</select></div>';
 							
 							html += '<input type="hidden" name="osTypes" value="'+osId+'">';
 							html += '<input type="hidden" name="osBits" value="'+osBitId+'">';

@@ -192,7 +192,7 @@
 		
 		<fieldset>
 		
-			<legend><small>创建ES3存储空间</small></legend>
+			<legend><small>创建负载均衡器ELB</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="applyId">所属服务申请</label>

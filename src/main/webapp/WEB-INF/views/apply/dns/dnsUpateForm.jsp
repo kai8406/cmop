@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ES3管理</title>
+	<title>DNS管理</title>
 	
 	<script>
 		$(document).ready(function() {

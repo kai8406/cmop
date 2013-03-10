@@ -44,6 +44,7 @@
 			
 			
 			/*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
+			
 			$(".serverTypeBtn").click(function() {
 				
 				var $parent = $(this).parent().parent();
@@ -111,18 +112,20 @@
 							
 							var html = '<div class="resources alert alert-block alert-info fade in">';
 							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
-							html += '<div class="row">';
-							html += '<div class="span5">'+osNAME+' &nbsp; '+osBitText+' &nbsp; '+serverTypeText+'</div>';
-							html += '<div class="span2 control-group" style="margin-bottom: 0px; margin-left: 0px;"><input type="text" id="remarks'+loopId+'" name="remarks" class="required input-small" maxlength="45" placeholder="...用途信息"></div>';
-							html += '<div class="span2"><select class="required input-medium" name="esgIds">'+esgHTML+'</select></div>';
+							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>'+osNAME+' &nbsp;'+osBitText+' &nbsp;'+serverTypeText+'</strong></dd>';
+							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required span2" name="remarks" id="remarks'+loopId+'"></dd>';
+							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" class="required span2">'+esgHTML+'</select></dd>';
 							
 							html += '<input type="hidden" name="osTypes" value="'+osId+'">';
 							html += '<input type="hidden" name="osBits" value="'+osBitId+'">';
 							html += '<input type="hidden" name="serverTypes" value="'+serverTypeId+'">';
-							html += '</div>';
+							html += '';
+							html += '';
+							html += '';
 							html += '</div>';
 							
-							$("#resourcesDIV").append(html);
+							
+						$("#resourcesDIV dl").append(html);
 						}
 						
 					}
@@ -130,43 +133,8 @@
 					$this.val('');//清空数量框
 					
 				});
-				
 			});
 			 
-			 
-			/*根据alert中的资源信息,组成汇总信息.*/
-			$(".nextStep").click(function() {
-	
-				var html = '<dl class="dl-horizontal">';
-				
-				html += ' <dt>所属服务申请</dt>';
-				
-				html += '<dd>' + $("#applyId>option:selected").text() + '</dd>';
-	
-				$("#resourcesDIV div.resources").each(function() {
-					
-					var $this = $(this);
-	
-					var basicInfo = $this.find("div.row").find("div:first").text();
-					var remark = $this.find("input").val();
-					var esg = $this.find("select>option:selected").text();
-					
-				    html += '<hr>';
-					html += '<dt>基本信息</dt>';
-					html += '<dd>' + basicInfo + '</dd>';
-					
-					html += '<dt>用途</dt>';
-					html += '<dd>' + remark + '</dd>';
-					html += '<dt>关联ESG</dt>';
-					html += '<dd>' + esg + '</dd>';  
-	
-				});
-	
-				html += '</dl>';
-	
-				$("#resourcesList").append(html);
-				
-			});
 			
 		});
 	</script>
@@ -195,85 +163,67 @@
 				</c:choose>
 			</small></legend>
 			
-			<!-- Step.1 -->
-			<div class="step">
-			
-				<div class="control-group">
-					<label class="control-label" for="applyId">所属服务申请</label>
-					<div class="controls">
-						<select id="applyId" name="applyId" class="required">
-							<c:forEach var="item" items="${baseStationApplys}">
-								<option value="${item.id }">${item.title} ( ${item.description} )</option>
-							</c:forEach>
-						</select>
-					</div>
+			<div class="control-group">
+				<label class="control-label" for="applyId">所属服务申请</label>
+				<div class="controls">
+					<select id="applyId" name="applyId" class="required">
+						<c:forEach var="item" items="${baseStationApplys}">
+							<option value="${item.id }">${item.title} ( ${item.description} )</option>
+						</c:forEach>
+					</select>
 				</div>
+			</div>
+			
+			<hr>
+			
+			<c:forEach var="map" items="${osTypeMap}">
 				
-				<hr>
-				
-				<c:forEach var="map" items="${osTypeMap}">
+				 <div class="row-fluid" style="margin-top: 10px;margin-bottom: 10px">
 					
-					 <div class="row-fluid" style="margin-top: 10px;margin-bottom: 10px">
-						
-						<!-- 位数Id -->
-						<input type="hidden" id="osId" value="${map.key}">
-						
-						<!-- Logo -->
-						<div class="span3">
-					 		<c:choose>
-								<c:when test="${map.key == 1 || map.key ==2 || map.key ==5 }">
-									<img alt="windowsOS" src="${ctx}/static/common/img/logo/windows-logo.png" />
-								</c:when>
-								<c:otherwise>
-									<img alt="windowsOS" src="${ctx}/static/common/img/logo/centos-logo.png" />
-								</c:otherwise>
-							</c:choose>
-						</div>
-						 
-						<!-- 操作系统名 -->
-						<div class="span4"><h4><span>${map.value}</span></h4></div>
-						
-						<!-- 操作系统位数 -->
-						<div class="span2">
-							<c:forEach var="osBitMap" items="${osBitMap}">
-								<label class="radio"> 
-									<input type="radio" value="${osBitMap.key}" name="osBit${map.key }" <c:if test="${osBitMap.key == 2 }">checked="checked"</c:if> 
-										><label id="osBitLab"><c:out value="${osBitMap.value}"/></label>
-								</label>
-							</c:forEach>
-						</div>
-						
-						<!-- 选择规格 -->
-						<div class="span2"><a class="btn serverTypeBtn" data-toggle="modal" href="#serverTypeModal">选择规格</a></div>
-						 
+					<!-- 位数Id -->
+					<input type="hidden" id="osId" value="${map.key}">
+					
+					<!-- Logo -->
+					<div class="span3">
+				 		<c:choose>
+							<c:when test="${map.key == 1 || map.key ==2 || map.key ==5 }">
+								<img alt="windowsOS" src="${ctx}/static/common/img/logo/windows-logo.png" />
+							</c:when>
+							<c:otherwise>
+								<img alt="windowsOS" src="${ctx}/static/common/img/logo/centos-logo.png" />
+							</c:otherwise>
+						</c:choose>
+					</div>
+					 
+					<!-- 操作系统名 -->
+					<div class="span4"><h4><span>${map.value}</span></h4></div>
+					
+					<!-- 操作系统位数 -->
+					<div class="span2">
+						<c:forEach var="osBitMap" items="${osBitMap}">
+							<label class="radio"> 
+								<input type="radio" value="${osBitMap.key}" name="osBit${map.key }" <c:if test="${osBitMap.key == 2 }">checked="checked"</c:if> 
+									><label id="osBitLab"><c:out value="${osBitMap.value}"/></label>
+							</label>
+						</c:forEach>
 					</div>
 					
-				</c:forEach>
-				 
-				 <hr>
-				
-				<!-- 生成的资源 -->
-				<div id="resourcesDIV"></div>
-				
-				<div class="form-actions">
-					<input class="btn" type="button" value="返回" onclick="history.back()">
-					<input class="btn btn-primary nextStep" type="button" value="下一步">
+					<!-- 选择规格 -->
+					<div class="span2"><a class="btn serverTypeBtn" data-toggle="modal" href="#serverTypeModal">选择规格</a></div>
+					 
 				</div>
+				
+			</c:forEach>
+			 
+			 <hr>
 			
-			</div><!-- Step.1 End -->
+			<!-- 生成的资源 -->
+			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 			
-			<!-- Step.2 -->
-			<div class="step">
-				 
-				 <!-- 汇总信息 -->
-				 <div id="resourcesList"></div>
-				 
-				<div class="form-actions">
-					<input class="btn backStep" type="button" value="返回">
-					<input class="btn btn-primary" type="submit" value="提交">
-				</div>
-			
-			</div><!-- Step.2 End -->
+			<div class="form-actions">
+				<input class="btn backStep" type="button" value="返回">
+				<input class="btn btn-primary" type="submit" value="提交">
+			</div>
 			
 		</fieldset>
 		

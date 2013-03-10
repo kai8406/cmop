@@ -16,13 +16,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * NetworkEsgItem entity. @author MyEclipse Persistence Tools
  */
 @Entity
 @Table(name = "network_esg_item", catalog = "cmop")
+// 过滤掉指定的Set关联
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "esgRuleItems" })
 public class NetworkEsgItem implements java.io.Serializable {
 
 	// Fields
@@ -95,7 +97,6 @@ public class NetworkEsgItem implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkEsgItem")
 	public Set<EsgRuleItem> getEsgRuleItems() {
 		return this.esgRuleItems;

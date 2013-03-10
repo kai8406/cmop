@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 /**
  * EsgRuleItem entity. @author MyEclipse Persistence Tools
  */
@@ -53,7 +51,6 @@ public class EsgRuleItem implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "esg_id", nullable = false)
 	public NetworkEsgItem getNetworkEsgItem() {

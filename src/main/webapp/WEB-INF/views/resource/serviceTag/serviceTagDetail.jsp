@@ -92,6 +92,9 @@
 												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
 													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
 												</c:when>
+												<c:when test="${item.fieldName == 'ESG'}">
+													<c:forEach var="esg" items="${esgList }"><c:if test="${esg.id == item.oldValue }">${esg.identifier}(${esg.description})</c:if></c:forEach>
+												</c:when>
 												<c:otherwise>${item.oldValue}</c:otherwise>
 											</c:choose>
 										</td>
@@ -109,6 +112,9 @@
 												</c:when>
 												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
 													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == 'ESG'}">
+													<c:forEach var="esg" items="${esgList }"><c:if test="${esg.id == item.newValue }">${esg.identifier}(${esg.description})</c:if></c:forEach>
 												</c:when>
 												<c:otherwise>${item.newValue}</c:otherwise>
 											</c:choose>

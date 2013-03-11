@@ -2,7 +2,6 @@ package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +54,8 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 		json.setOldIp(computeItem.getOldIp());
 		json.setHostName(computeItem.getHostName());
 		json.setOsStorageAlias(computeItem.getOsStorageAlias());
-		json.setNetworkEsgItem(computeItem.getNetworkEsgItem().getIdentifier() + "(" + computeItem.getNetworkEsgItem().getDescription() + ")");
+		json.setNetworkEsgItem(computeItem.getNetworkEsgItem().getIdentifier() + "("
+				+ (computeItem.getNetworkEsgItem().getDescription() != null ? computeItem.getNetworkEsgItem().getDescription() : "") + ")");
 
 		// TODO application 视后期需不需要.
 
@@ -67,7 +67,6 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 	public StorageJson convertStorageJsonToComputeItem(StorageItem storageItem) {
 
 		StorageJson json = new StorageJson();
-
 		json.setId(storageItem.getId());
 		json.setIdentifier(storageItem.getIdentifier());
 		json.setMountPoint(storageItem.getMountPoint());
@@ -86,7 +85,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 		String relationCompute = "";
 
 		for (ComputeItem computeItem : computeItems) {
-			relationCompute += computeItem.getIdentifier() + "(" + computeItem.getInnerIp() + ")&nbsp;&nbsp;";
+			relationCompute += computeItem.getIdentifier() + "(" + (computeItem.getInnerIp() != null ? computeItem.getInnerIp() : "") + ")&nbsp;&nbsp;";
 		}
 
 		ElbJson json = new ElbJson();
@@ -120,23 +119,18 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 			linkType = NetworkConstant.LinkType.关联ELB.toInteger();
 
-			String virtualIp = "";
-			if (networkEipItem.getNetworkElbItem().getVirtualIp() != null) {
-				virtualIp = networkEipItem.getNetworkElbItem().getVirtualIp();
-			}
+			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + (networkEipItem.getNetworkElbItem().getVirtualIp() != null ? networkEipItem.getNetworkElbItem().getVirtualIp() : "")
+					+ ")&nbsp;&nbsp;";
 
-			link += networkEipItem.getNetworkElbItem().getIdentifier() + '(' + virtualIp + ')';
 		}
 
 		if (networkEipItem.getComputeItem() != null) {
+
 			linkType = NetworkConstant.LinkType.关联实例.toInteger();
 
-			String innerIp = "";
-			if (networkEipItem.getComputeItem().getInnerIp() != null) {
-				innerIp = networkEipItem.getComputeItem().getInnerIp();
-			}
+			link += networkEipItem.getComputeItem().getIdentifier() + "(" + (networkEipItem.getComputeItem().getInnerIp() != null ? networkEipItem.getComputeItem().getInnerIp() : "")
+					+ ")&nbsp;&nbsp;";
 
-			link += networkEipItem.getComputeItem().getIdentifier() + '(' + innerIp + ')';
 		}
 
 		json.setLink(link);

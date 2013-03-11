@@ -7,36 +7,28 @@
  * 
  */
 $(document).ready(function() {
-	
-	$(".step:not(:first)").addClass("hidden");//不是第一个的全部隐藏
-	
-	
+	$(".step:not(:first)").addClass("hidden").removeClass("show"); //不是第一个的全部隐藏
+	wizardStep();
+});
+
+function wizardStep() {
 	//下一步
-	
-	$(".nextStep").click(function() {
-		
+	var $nextStep = $(".nextStep");
+	$nextStep.on("click",function() {
 		var $this = $(this);
-		
-		if (!$this.closest("form").valid()) {return false;}//验证form.
-		
-		var index = $this.index(this); //索引
-		
+		if (!$this.closest("form").valid()) {
+			return false;
+		} //验证form.
+		var index = $nextStep.index(this); //索引
 		$("div.step:eq(" + index + ")").removeClass("show").addClass("hidden");
 		$("div.step:eq(" + (index + 1) + ")").removeClass("hidden").addClass("show");
-		
 	});
-	
-	
 	//退回
-	
-	$(".backStep").click(function() {
-		
-		var index = $(this).index(this);
-		
+	var $backStep = $(".backStep");
+	$backStep.on("click",function() {
+		var index = $backStep.index(this);
 		$("div.step:eq(" + index + ")").removeClass("hidden").addClass("show");
 		$("div.step:eq(" + (index + 1) + ")").removeClass("show").addClass("hidden");
-		
-		$("#resourcesList").empty();//清空各个资源申请的汇总信息
-		
+		$("#resourcesList").empty(); //清空各个资源申请的汇总信息
 	});
-});
+}

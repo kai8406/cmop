@@ -443,7 +443,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("operateUrl", operateUrl);
 
 		// 邮件标题
-		String sendSubject = "资源回收工单处理邮件";
+		String sendSubject = "故障申报工单处理邮件";
 
 		this.sendMailConfig(failureTemplate, map, assigneeUser, sendSubject);
 

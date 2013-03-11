@@ -398,7 +398,7 @@ public class OperateService extends BaseSevcie {
 
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, assigneeUser);
 
 		}
 

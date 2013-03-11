@@ -25,6 +25,9 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
@@ -367,7 +370,8 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * TOTO 发送工单处理邮件(资源回收)
 	 */
-	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, User assigneeUser) {
+	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -375,6 +379,9 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("computes", computeItems);
 		map.put("storageItems", storageItems);
+		map.put("elbs", elbItems);
+		map.put("eips", eipItems);
+		map.put("dnses", dnsItems);
 
 		// TODO 其它资源缺少
 

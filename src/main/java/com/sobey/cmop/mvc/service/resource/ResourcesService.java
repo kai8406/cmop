@@ -297,8 +297,6 @@ public class ResourcesService extends BaseSevcie {
 
 		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
-		logger.info("--->拼装Redmine内容...");
-
 		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
 		// 写入工单Issue到Redmine
@@ -319,7 +317,7 @@ public class ResourcesService extends BaseSevcie {
 
 		boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
 
-		logger.info("--->Redmine isCreated?" + isCreated);
+		logger.info("--->回收 Redmine isCreated?" + isCreated);
 
 		if (isCreated) { // 写入Redmine成功
 
@@ -328,8 +326,6 @@ public class ResourcesService extends BaseSevcie {
 			Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
 
 			issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
-
-			logger.info("--->创建RedmineIssue...");
 
 			RedmineIssue redmineIssue = new RedmineIssue();
 
@@ -351,7 +347,7 @@ public class ResourcesService extends BaseSevcie {
 
 			// 发送工单处理邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, assigneeUser);
 
 		}
 
@@ -457,6 +453,62 @@ public class ResourcesService extends BaseSevcie {
 			}
 
 			comm.elbService.saveOrUpdate(networkElbItem);
+
+		} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
+
+			NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.Eip.ISP.toString().equals(changeItem.getFieldName())) {
+
+					networkEipItem.setIspType(Integer.valueOf(changeItem.getOldValue()));
+
+				} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 端口信息无法还原.
+
+				} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+
+				} else if (FieldNameConstant.Eip.关联实例.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+
+				}
+
+			}
+
+			comm.eipService.saveOrUpdate(networkEipItem);
+
+		} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
+
+			NetworkDnsItem networkDnsItem = comm.dnsService.getNetworkDnsItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.Dns.域名.toString().equals(changeItem.getFieldName())) {
+
+					networkDnsItem.setDomainName(changeItem.getOldValue());
+
+				} else if (FieldNameConstant.Dns.域名类型.toString().equals(changeItem.getFieldName())) {
+
+					networkDnsItem.setDomainType(Integer.valueOf(changeItem.getOldValue()));
+
+				} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+
+				} else if (FieldNameConstant.Dns.目标IP.toString().equals(changeItem.getFieldName())) {
+
+					// TODO 暂时没有好的还原方式.
+
+				}
+
+			}
+
+			comm.dnsService.saveOrUpdate(networkDnsItem);
 
 		}
 

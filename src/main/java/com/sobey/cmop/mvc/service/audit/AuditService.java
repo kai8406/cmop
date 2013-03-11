@@ -200,24 +200,24 @@ public class AuditService extends BaseSevcie {
 	 *         false:未审批
 	 */
 	public boolean isApplyAudited(Integer applyId, Integer userId) {
+
 		boolean isAudited = false;
+
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-		// Apply apply = comm.applyService.getApply(applyId);
-		// logger.info("--->user=" + user.getName() + "，apply.auditOrder=" +
-		// apply.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder=" +
-		// auditFlow.getAuditOrder());
-		// if ((auditFlow.getAuditOrder() == 3 &&
-		// apply.getStatus().equals(ApplyConstant.Status.已退回.toInteger())) ||
-		// (apply.getAuditFlow().getAuditOrder() > auditFlow.getAuditOrder())) {
-		// logger.info("--->isAudited...");
-		// isAudited = true;
-		// }
 
 		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
-		// 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录，如果有则说明可以审批，否则表示已审批。
+
+		/*
+		 * 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录.
+		 * 如果有则说明可以审批，否则表示已审批。
+		 */
+
 		Audit audit = auditDao.findByApplyIdAndAuditFlowAndCreateTimeIsNull(applyId, auditFlow);
+
 		if (audit == null) {
 			logger.info("--->isAudited...");
 			isAudited = true;
@@ -237,25 +237,21 @@ public class AuditService extends BaseSevcie {
 	 *         false:未审批
 	 */
 	public boolean isResourcesAudited(Integer serviceTagId, Integer userId) {
+
 		boolean isAudited = false;
+
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-		// ServiceTag serviceTag =
-		// comm.serviceTagService.getServiceTag(serviceTagId);
-		// logger.info("--->user=" + user.getName() + "，apply.auditOrder=" +
-		// serviceTag.getAuditFlow().getAuditOrder() + "，auditFlow.auditOrder="
-		// + auditFlow.getAuditOrder());
-		// if ((auditFlow.getAuditOrder() == 3 &&
-		// serviceTag.getStatus().equals(ResourcesConstant.Status.已退回.toInteger()))
-		// || (serviceTag.getAuditFlow().getAuditOrder() >
-		// auditFlow.getAuditOrder())) {
-		// logger.info("--->isAudited...");
-		// isAudited = true;
-		// }
 
 		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
-		// 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录，如果有则说明可以审批，否则表示已审批。
+
+		/*
+		 * 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录.
+		 * 如果有则说明可以审批，否则表示已审批。
+		 */
+
 		Audit audit = auditDao.findByServiceTagIdAndAuditFlowAndCreateTimeIsNull(serviceTagId, auditFlow);
 		if (audit == null) {
 			logger.info("--->isAudited...");
@@ -297,23 +293,29 @@ public class AuditService extends BaseSevcie {
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
 		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
-			logger.info("--->审批退回...");
+
+			logger.info("--->申请Apply审批退回...");
+
 			apply.setStatus(ApplyConstant.Status.已退回.toInteger());
+
 			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
-			logger.info("--->退回原因:" + audit.getOpinion());
 
 			// 发送退回通知邮件
 			comm.simpleMailService.sendNotificationMail(apply.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
 		} else {
+
 			if (auditFlow.getIsFinal()) { // 终审人
-				logger.info("--->终审审批...");
+
+				logger.info("--->申请Apply终审审批...");
+
 				apply.setStatus(ApplyConstant.Status.已审批.toInteger());
-				logger.info("--->拼装Redmine内容...");
+
 				// 拼装Redmine内容
 				String description = comm.redmineUtilService.applyRedmineDesc(apply);
 
 				// 写入工单Issue到Redmine
 				Issue issue = new Issue();
+
 				Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
 				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 				issue.setTracker(tracker);
@@ -322,14 +324,18 @@ public class AuditService extends BaseSevcie {
 				issue.setDescription(description);
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+
 				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
-				logger.info("--->Redmine isCreated?" + isCreated);
+
+				logger.info("--->申请Apply Redmine isCreated?" + isCreated);
+
 				if (isCreated) { // 写入Redmine成功
+
 					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
 					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
-					logger.info("--->创建RedmineIssue...");
 
 					RedmineIssue redmineIssue = new RedmineIssue();
+
 					redmineIssue.setProjectId(projectId);
 					redmineIssue.setTrackerId(issue.getTracker().getId());
 					redmineIssue.setSubject(issue.getSubject());
@@ -337,31 +343,43 @@ public class AuditService extends BaseSevcie {
 					redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
 					redmineIssue.setIssueId(issue.getId());
 					redmineIssue.setApplyId(applyId);
+
 					comm.operateService.saveOrUpdate(redmineIssue);
+
 					// 指派人的User
 					User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
+
 					// 发送工单处理邮件
 					comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
+
 				} else {
 					return false;
 				}
+
 			} else { // 不是终审人
-				logger.info("--->中间审批...");
+
+				logger.info("--->申请Apply 中间审批...");
+
 				// 当前审批人的的下一级审批人的审批顺序.如当前审批人的审批顺序是1的话,下一个就是2.
 				Integer auditOrder = auditFlow.getAuditOrder() + 1;
+
 				AuditFlow nextAuditFlow = this.findAuditFlowByAuditOrderAndFlowType(auditOrder, flowType);
+
 				apply.setAuditFlow(nextAuditFlow);
 				apply.setStatus(ApplyConstant.Status.审批中.toInteger());
 
 				// 发送邮件到下一个审批人
 				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow);
+
 				// 插入一条下级审批人所用到的audit.
 				this.saveSubAudit(userId, apply, null);
+
 			}
 		}
 
 		comm.applyService.saveOrUpateApply(apply);
 		this.saveOrUpdateAudit(audit);
+
 		return true;
 	}
 
@@ -402,13 +420,11 @@ public class AuditService extends BaseSevcie {
 
 		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
 
-			logger.info("--->审批退回...");
+			logger.info("--->资源变更Resource审批退回...");
 
 			serviceTag.setStatus(ResourcesConstant.Status.已退回.toInteger());
 
 			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
-
-			logger.info("--->退回原因:" + audit.getOpinion());
 
 			// 发送退回通知邮件
 
@@ -416,7 +432,7 @@ public class AuditService extends BaseSevcie {
 
 			for (Resources resources : resourcesList) {
 
-				// 资源的变更项还原至变更前
+				/* 资源的变更项还原至变更前 */
 
 				resources = comm.resourcesService.restoreResources(resources);
 
@@ -428,11 +444,9 @@ public class AuditService extends BaseSevcie {
 
 			if (auditFlow.getIsFinal()) { // 终审人
 
-				logger.info("--->终审审批...");
+				logger.info("--->资源变更Resource终审审批...");
 
 				serviceTag.setStatus(ResourcesConstant.Status.已审批.toInteger());
-
-				logger.info("--->拼装Redmine内容...");
 
 				String description = comm.redmineUtilService.resourcesRedmineDesc(serviceTag);
 
@@ -454,15 +468,13 @@ public class AuditService extends BaseSevcie {
 
 				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
 
-				logger.info("--->Redmine isCreated?" + isCreated);
+				logger.info("--->资源变更Resource Redmine isCreated?" + isCreated);
 
 				if (isCreated) { // 写入Redmine成功
 
 					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
 
 					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
-
-					logger.info("--->创建RedmineIssue...");
 
 					RedmineIssue redmineIssue = new RedmineIssue();
 
@@ -498,7 +510,7 @@ public class AuditService extends BaseSevcie {
 
 			} else { // 不是终审人
 
-				logger.info("--->中间审批...");
+				logger.info("--->资源变更Resource 中间审批...");
 
 				// 当前审批人的的下一级审批人的审批顺序.如当前审批人的审批顺序是1的话,下一个就是2.
 

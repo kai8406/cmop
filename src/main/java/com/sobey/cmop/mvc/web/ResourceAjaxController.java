@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
@@ -68,6 +69,12 @@ public class ResourceAjaxController extends BaseController {
 	public @ResponseBody
 	EipJson getEip(@RequestParam(value = "id") Integer id) {
 		return comm.resourcesJsonService.convertEipJsonToNetworkEipItem(comm.eipService.getNetworkEipItem(comm.resourcesService.getResources(id).getServiceId()));
+	}
+
+	@RequestMapping(value = "getDns")
+	public @ResponseBody
+	DnsJson getDns(@RequestParam(value = "id") Integer id) {
+		return comm.resourcesJsonService.convertDnsJsonToNetworkDnsItem(comm.dnsService.getNetworkDnsItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 }

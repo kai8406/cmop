@@ -1,10 +1,12 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
@@ -35,17 +37,25 @@ public interface ResourcesJsonService {
 	/**
 	 * 将NetworkElbItem转化成ElbJson格式.
 	 * 
-	 * @param elbItem
+	 * @param networkElbItem
 	 * @return
 	 */
-	public ElbJson convertElbJsonToNetworkElbItem(NetworkElbItem elbItem);
+	public ElbJson convertElbJsonToNetworkElbItem(NetworkElbItem networkElbItem);
 
 	/**
 	 * 将networkEipItem转化成EipJson格式.
 	 * 
-	 * @param elbItem
+	 * @param networkEipItem
 	 * @return
 	 */
 	public EipJson convertEipJsonToNetworkEipItem(NetworkEipItem networkEipItem);
+
+	/**
+	 * 将NetworkDnsItem转化成DnsJson格式.
+	 * 
+	 * @param networkDnsItem
+	 * @return
+	 */
+	public DnsJson convertDnsJsonToNetworkDnsItem(NetworkDnsItem networkDnsItem);
 
 }

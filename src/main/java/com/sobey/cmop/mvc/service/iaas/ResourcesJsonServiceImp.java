@@ -2,6 +2,7 @@ package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,10 +11,12 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
@@ -138,6 +141,38 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 		json.setLink(link);
 		json.setLinkType(linkType);
+
+		return json;
+	}
+
+	@Override
+	public DnsJson convertDnsJsonToNetworkDnsItem(NetworkDnsItem networkDnsItem) {
+		DnsJson json = new DnsJson();
+
+		json.setId(networkDnsItem.getId());
+		json.setIdentifier(networkDnsItem.getIdentifier());
+		json.setDomainName(networkDnsItem.getDomainName());
+		json.setDomainType(NetworkConstant.DomainType.get(networkDnsItem.getDomainType()));
+
+		if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType())) {
+
+			// CNAME
+
+			json.setCnameDomain(networkDnsItem.getCnameDomain());
+
+		} else {
+
+			// GSLB,A
+			List<NetworkEipItem> networkEipItems = networkDnsItem.getNetworkEipItemList();
+
+			String targetEip = "";
+			for (NetworkEipItem networkEipItem : networkEipItems) {
+				targetEip += networkEipItem.getIdentifier() + "(" + (networkEipItem.getIpAddress() != null ? networkEipItem.getIpAddress() : "") + ")&nbsp;&nbsp;";
+			}
+
+			json.setTargetEip(targetEip);
+
+		}
 
 		return json;
 	}

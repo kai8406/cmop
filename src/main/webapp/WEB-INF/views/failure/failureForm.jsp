@@ -192,6 +192,32 @@
 					}
 				});
 				
+			}else if(serviceType == 6){
+			
+				//DNS
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getDns?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>域名</em>&nbsp;&nbsp;<strong>' + data.domainName + '</strong></dd>';
+						html += '<dd><em>域名类型</em>&nbsp;&nbsp;<strong>' + data.domainType + '</strong></dd>';
+						if(data.cnameDomain != null ){
+							html += '<dd><em>CNAME域名</em>&nbsp;&nbsp;<strong>' + data.cnameDomain + '</strong></dd>';
+						}else{
+							html += '<dd><em>目标IP</em>&nbsp;&nbsp;<strong>' + data.targetEip + '</strong></dd>';
+						}
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				
 			} 
 			
 		};

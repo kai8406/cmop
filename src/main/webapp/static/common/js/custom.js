@@ -157,7 +157,7 @@ function cloneParamTable() {
 		var $tr = $this.closest('tr.clone');
 		
 		if ($this.hasClass("disabled")) {
-			if($("tr.clone").length === 1){
+			if($tr.parent().find("tr.clone").length === 1){
 				alert("至少要有一个信息");
 				return false;
 			}

@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.apply;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,29 @@ public class ApplyService extends BaseSevcie {
 
 	public Apply getApply(Integer id) {
 		return applyDao.findOne(id);
+	}
+
+	/**
+	 * 新增服务申请Apply(根据不同的serviceType)<br>
+	 * 
+	 * @param apply
+	 * @param serviceType
+	 *            详细可查看{@link ApplyConstant.ServiceType}.
+	 */
+	@Transactional(readOnly = false)
+	public Apply saveApplyByServiceType(Apply apply, Integer serviceType) {
+
+		Integer status = ApplyConstant.Status.已申请.toInteger();
+		String title = comm.applyService.generateApplyTitle(ApplyConstant.ServiceType.get(serviceType));
+
+		apply.setStatus(status);
+		apply.setServiceType(serviceType);
+		apply.setCreateTime(new Date());
+		apply.setTitle(title);
+		apply.setUser(comm.accountService.getCurrentUser());
+
+		return this.saveOrUpateApply(apply);
+
 	}
 
 	/**

@@ -46,6 +46,8 @@ public class Apply implements java.io.Serializable {
 	private Set<MonitorCompute> monitorComputes = new HashSet<MonitorCompute>(0);
 	private Set<MonitorElb> monitorElbs = new HashSet<MonitorElb>(0);
 	private Set<Audit> audits = new HashSet<Audit>(0);
+	private Set<MonitorMail> monitorMails = new HashSet<MonitorMail>(0);
+	private Set<MonitorPhone> monitorPhones = new HashSet<MonitorPhone>(0);
 
 	// Constructors
 	/** default constructor */
@@ -69,7 +71,7 @@ public class Apply implements java.io.Serializable {
 	/** full constructor */
 	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status,
 			Integer redmineIssueId, AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems, Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems,
-			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits) {
+			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits, Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;
@@ -90,6 +92,8 @@ public class Apply implements java.io.Serializable {
 		this.monitorComputes = monitorComputes;
 		this.monitorElbs = monitorElbs;
 		this.audits = audits;
+		this.monitorMails = monitorMails;
+		this.monitorPhones = monitorPhones;
 	}
 
 	// Property accessors
@@ -267,6 +271,24 @@ public class Apply implements java.io.Serializable {
 
 	public void setAudits(Set<Audit> audits) {
 		this.audits = audits;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<MonitorMail> getMonitorMails() {
+		return monitorMails;
+	}
+
+	public void setMonitorMails(Set<MonitorMail> monitorMails) {
+		this.monitorMails = monitorMails;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<MonitorPhone> getMonitorPhones() {
+		return monitorPhones;
+	}
+
+	public void setMonitorPhones(Set<MonitorPhone> monitorPhones) {
+		this.monitorPhones = monitorPhones;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")

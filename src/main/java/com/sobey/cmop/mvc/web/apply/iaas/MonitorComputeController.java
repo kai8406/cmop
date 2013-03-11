@@ -12,14 +12,14 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 
 /**
- * 负责DNS NetworkDnsItem 的管理
+ * 负责实例监控MonitorCompute的管理
  * 
  * @author liukai
  * 
  */
 @Controller
-@RequestMapping(value = "/apply/dns")
-public class DNSController extends BaseController {
+@RequestMapping(value = "/apply/monitorCompute")
+public class MonitorComputeController extends BaseController {
 
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/apply/";
 
@@ -28,20 +28,12 @@ public class DNSController extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
-		return "apply/dns/dnsForm";
+		return "apply/monitorCompute/monitorComputeForm";
 	}
 
 	/**
 	 * 新增
 	 * 
-	 * @param applyId
-	 *            服务申请单ID
-	 * @param domainNames
-	 *            域名数组
-	 * @param domainTypes
-	 *            域名类型数组
-	 * @param eipIds
-	 *            关联EIP数组
 	 * @param redirectAttributes
 	 * @return
 	 */
@@ -62,11 +54,11 @@ public class DNSController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 		model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(id));
-		return "apply/dns/dnsUpateForm";
+		return "apply/monitorCompute/monitorComputeUpateForm";
 	}
 
 	/**
-	 * 修改DNS.完成后跳转到applyId的服务申请修改页面
+	 * 修改DNS新.完成后跳转到applyId的服务申请修改页面
 	 * 
 	 * @param id
 	 * @param applyId
@@ -94,7 +86,7 @@ public class DNSController extends BaseController {
 	}
 
 	/**
-	 * 删除DNS后,跳转到applyId的服务申请修改页面
+	 * 删除实例后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
@@ -105,5 +97,4 @@ public class DNSController extends BaseController {
 
 		return "redirect:/apply/update/" + applyId;
 	}
-
 }

@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.web.apply;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,16 +71,7 @@ public class ApplyController extends BaseController {
 	public String save(RedirectAttributes redirectAttributes, Apply apply) {
 
 		Integer serviceType = ApplyConstant.ServiceType.基础设施.toInteger();
-		Integer status = ApplyConstant.Status.已申请.toInteger();
-		String title = comm.applyService.generateApplyTitle(ApplyConstant.ServiceType.get(serviceType));
-
-		apply.setStatus(status);
-		apply.setServiceType(serviceType);
-		apply.setCreateTime(new Date());
-		apply.setTitle(title);
-		apply.setUser(comm.accountService.getCurrentUser());
-
-		comm.applyService.saveOrUpateApply(apply);
+		comm.applyService.saveApplyByServiceType(apply, serviceType);
 
 		redirectAttributes.addFlashAttribute("message", "创建服务申请 " + apply.getTitle() + " 成功");
 

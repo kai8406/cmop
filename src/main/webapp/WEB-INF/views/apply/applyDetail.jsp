@@ -193,11 +193,38 @@
 					
 				</c:if>
 				
+				<!-- 监控邮件列表 -->
+				<c:if test="${not empty apply.monitorMails}">
+					<hr>
+					<dt>监控邮件列表</dt>
+					<c:forEach var="item" items="${apply.monitorMails}"><dd>${item.email }</dd>	</c:forEach>
+				</c:if>
+				
+				<!-- 监控手机列表 -->
+				<c:if test="${not empty apply.monitorPhones}">
+					<hr>
+					<dt>监控手机列表</dt>
+					<c:forEach var="item" items="${apply.monitorPhones}"><dd>${item.telephone }</dd></c:forEach>
+				</c:if>
+				
 				<!-- 服务器监控monitorCompute -->
 				<c:if test="${not empty apply.monitorComputes}"></c:if>
 				
 				<!-- ELB监控monitorElb -->
-				<c:if test="${not empty apply.monitorElbs}"></c:if>
+				<c:if test="${not empty apply.monitorElbs}">
+				
+					<hr>
+					<dt>ELB监控</dt>
+					<c:forEach var="item" items="${apply.monitorElbs}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>监控ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp})</dd>
+						
+						<br>
+						
+					</c:forEach>
+				</c:if>
 				
 			</dl>
 			 

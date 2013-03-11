@@ -36,7 +36,7 @@ public class ResourceAjaxController extends BaseController {
 	}
 
 	/**
-	 * Ajax请求根据computeId获得compute的对象
+	 * Ajax请求根据resourcesId获得StorageJson的对象
 	 * 
 	 * @param id
 	 * @return
@@ -48,7 +48,7 @@ public class ResourceAjaxController extends BaseController {
 	}
 
 	/**
-	 * Ajax请求根据computeId获得compute的对象
+	 * Ajax请求根据resourcesId获得ElbJson的对象
 	 * 
 	 * @param id
 	 * @return
@@ -60,7 +60,7 @@ public class ResourceAjaxController extends BaseController {
 	}
 
 	/**
-	 * Ajax请求根据computeId获得compute的对象
+	 * Ajax请求根据resourcesId获得EipJson的对象
 	 * 
 	 * @param id
 	 * @return
@@ -71,6 +71,12 @@ public class ResourceAjaxController extends BaseController {
 		return comm.resourcesJsonService.convertEipJsonToNetworkEipItem(comm.eipService.getNetworkEipItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
+	/**
+	 * Ajax请求根据resourcesId获得DnsJson的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = "getDns")
 	public @ResponseBody
 	DnsJson getDns(@RequestParam(value = "id") Integer id) {

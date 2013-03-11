@@ -67,7 +67,7 @@ public class EIPController extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到实例的修改页面.
+	 * 从服务申请表页面跳转到EIP的修改页面.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
@@ -76,7 +76,7 @@ public class EIPController extends BaseController {
 	}
 
 	/**
-	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 修改EIP信息后,跳转到applyId的服务申请修改页面
 	 * 
 	 * @param id
 	 * @param applyId
@@ -109,7 +109,7 @@ public class EIPController extends BaseController {
 	}
 
 	/**
-	 * 删除实例后,跳转到applyId的服务申请修改页面
+	 * 删除EIP后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {

@@ -23,6 +23,10 @@ import com.sobey.cmop.mvc.service.iaas.EipService;
 import com.sobey.cmop.mvc.service.iaas.ElbService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
+import com.sobey.cmop.mvc.service.iaas.MonitorComputeServcie;
+import com.sobey.cmop.mvc.service.iaas.MonitorElbServcie;
+import com.sobey.cmop.mvc.service.iaas.MonitorMailService;
+import com.sobey.cmop.mvc.service.iaas.MonitorPhoneService;
 import com.sobey.cmop.mvc.service.iaas.ResourcesJsonService;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
@@ -91,6 +95,18 @@ public class CommonService {
 
 	@Resource
 	public LocationService locationService;
+
+	@Resource
+	public MonitorComputeServcie monitorComputeServcie;
+
+	@Resource
+	public MonitorElbServcie monitorElbServcie;
+
+	@Resource
+	public MonitorMailService monitorMailService;
+
+	@Resource
+	public MonitorPhoneService monitorPhoneService;
 
 	@Resource
 	public OneCmdbUtilService oneCmdbUtilService;

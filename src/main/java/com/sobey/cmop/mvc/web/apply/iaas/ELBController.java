@@ -111,7 +111,7 @@ public class ELBController extends BaseController {
 	}
 
 	/**
-	 * 删除实例后,跳转到applyId的服务申请修改页面
+	 * 删除ELB后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {

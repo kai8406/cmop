@@ -12,7 +12,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * 负责实例ES3存储Storage的管理
+ * 负责ES3存储Storage的管理
  * 
  * @author liukai
  * 
@@ -56,7 +56,7 @@ public class ES3Controller extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到实例的修改页面.
+	 * 从服务申请表页面跳转到ES3的修改页面.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
@@ -65,7 +65,7 @@ public class ES3Controller extends BaseController {
 	}
 
 	/**
-	 * 修改实例信息后,跳转到applyId的服务申请修改页面
+	 * 修改ES3信息后,跳转到applyId的服务申请修改页面
 	 * 
 	 * @param id
 	 * @param applyId
@@ -93,7 +93,7 @@ public class ES3Controller extends BaseController {
 	}
 
 	/**
-	 * 删除实例后,跳转到applyId的服务申请修改页面
+	 * 删除ES3后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {

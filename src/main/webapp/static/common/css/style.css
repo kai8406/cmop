@@ -71,6 +71,12 @@ div.singlePage {
 	overflow: auto;
 }
 
+/* 实例监控参数
+----------------------------------*/
+div.threshold{
+	padding-bottom: 5px; padding-top: 5px;
+}
+
 /* 资源管理的各个资源统计
 ----------------------------------*/
 

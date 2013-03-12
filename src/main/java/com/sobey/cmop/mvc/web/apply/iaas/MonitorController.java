@@ -13,7 +13,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 
 /**
- * 负责ELB监控MonitorElb的管理
+ * 负责ELB监控MonitorElb & 实例监控MonitorCompute的管理
  * 
  * @author liukai
  * 
@@ -39,25 +39,20 @@ public class MonitorController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save/", method = RequestMethod.POST)
-	public String save( 
-			//Apply
-			@RequestParam(value = "serviceTag") String serviceTag,
-			@RequestParam(value = "priority") Integer priority,
-			@RequestParam(value = "serviceStart") String serviceStart,
-			@RequestParam(value = "serviceEnd") String serviceEnd,
-			@RequestParam(value = "description") String description,
-			
-			//monitor_Elb
-			@RequestParam(value = "monitorMails") String[] monitorMails,
-			@RequestParam(value = "monitorPhones") String[] monitorPhones, 
-			@RequestParam(value = "elbIds") String[] elbIds,
-			
-			//monitor_Compute
-			
+	public String save(
+			// Apply
+			@RequestParam(value = "serviceTag") String serviceTag, @RequestParam(value = "priority") Integer priority, @RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "description") String description,
+
+			// monitor_Elb
+			@RequestParam(value = "monitorMails") String[] monitorMails, @RequestParam(value = "monitorPhones") String[] monitorPhones, @RequestParam(value = "elbIds") String[] elbIds,
+
+			// monitor_Compute
+
 			RedirectAttributes redirectAttributes) {
-		
+
 		Apply apply = new Apply();
-		
+
 		apply.setServiceTag(serviceTag);
 		apply.setPriority(priority);
 		apply.setServiceStart(serviceStart);

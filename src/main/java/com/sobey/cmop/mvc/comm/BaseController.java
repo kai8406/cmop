@@ -13,6 +13,7 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -381,5 +382,37 @@ public class BaseController {
 	@ModelAttribute("allElbs")
 	public List<NetworkElbItem> allElbs() {
 		return comm.elbService.getNetworkElbItemListByUserId(getCurrentUserId() == null ? 0 : getCurrentUserId());
+	}
+
+	/**
+	 * @return 阀值Map. 大于 >
+	 */
+	@ModelAttribute("thresholdGtMap")
+	public Map<Integer, String> thresholdGtMap() {
+		return MonitorConstant.THRESHOLD_GT;
+	}
+
+	/**
+	 * @return 阀值Map. 小于 <
+	 */
+	@ModelAttribute("thresholdLtMap")
+	public Map<Integer, String> thresholdLtMap() {
+		return MonitorConstant.THRESHOLD_LT;
+	}
+
+	/**
+	 * @return 网络阀值Map. 大于>
+	 */
+	@ModelAttribute("thresholdNetGtMap")
+	public Map<Integer, String> thresholdNetGtMap() {
+		return MonitorConstant.THRESHOLD_NET_GT;
+	}
+
+	/**
+	 * @return 最大进程数Map.
+	 */
+	@ModelAttribute("maxProcessMap")
+	public Map<Integer, String> maxProcessMap() {
+		return MonitorConstant.MAX_PROCESS;
 	}
 }

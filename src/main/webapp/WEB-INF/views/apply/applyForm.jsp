@@ -382,14 +382,14 @@
 						<dd><em>监控ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp})
 						
 							<span class="pull-right">
-								<a href="${ctx}/apply/monitorElb/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="${ctx}/apply/monitor/elb/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
 								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
 								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/monitorElb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/monitor/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
 									</div>
 								</div>
 							</span>

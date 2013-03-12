@@ -19,8 +19,8 @@ import com.sobey.cmop.mvc.entity.MonitorElb;
  * 
  */
 @Controller
-@RequestMapping(value = "/apply/monitorElb")
-public class MonitorElbController extends BaseController {
+@RequestMapping(value = "/apply/monitor")
+public class MonitorController extends BaseController {
 
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/apply/";
 
@@ -29,7 +29,7 @@ public class MonitorElbController extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public String createForm(Model model) {
-		return "apply/monitorElb/monitorElbForm";
+		return "apply/monitor/monitorForm";
 	}
 
 	/**
@@ -38,11 +38,31 @@ public class MonitorElbController extends BaseController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Apply apply,
-
-	@RequestParam(value = "monitorMails") String[] monitorMails, @RequestParam(value = "monitorPhones") String[] monitorPhones, @RequestParam(value = "elbIds") String[] elbIds,
+	@RequestMapping(value = "/save/", method = RequestMethod.POST)
+	public String save( 
+			//Apply
+			@RequestParam(value = "serviceTag") String serviceTag,
+			@RequestParam(value = "priority") Integer priority,
+			@RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd,
+			@RequestParam(value = "description") String description,
+			
+			//monitor_Elb
+			@RequestParam(value = "monitorMails") String[] monitorMails,
+			@RequestParam(value = "monitorPhones") String[] monitorPhones, 
+			@RequestParam(value = "elbIds") String[] elbIds,
+			
+			//monitor_Compute
+			
 			RedirectAttributes redirectAttributes) {
+		
+		Apply apply = new Apply();
+		
+		apply.setServiceTag(serviceTag);
+		apply.setPriority(priority);
+		apply.setServiceStart(serviceStart);
+		apply.setServiceEnd(serviceEnd);
+		apply.setDescription(description);
 
 		comm.monitorElbServcie.saveMonitorElbToApply(apply, monitorMails, monitorPhones, elbIds);
 
@@ -54,14 +74,14 @@ public class MonitorElbController extends BaseController {
 	/**
 	 * 从服务申请表页面跳转到ELB监控的修改页面.
 	 */
-	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/elb/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 
 		model.addAttribute("monitorElb", comm.monitorElbServcie.getMonitorElb(id));
 		model.addAttribute("monitorMails", comm.monitorMailService.getMonitorMailByApplyList(applyId));
 		model.addAttribute("monitorPhones", comm.monitorPhoneService.getMonitorPhoneByApplyList(applyId));
 
-		return "apply/monitorElb/monitorElbUpateForm";
+		return "apply/monitor/monitorElbUpateForm";
 	}
 
 	/**
@@ -75,7 +95,7 @@ public class MonitorElbController extends BaseController {
 	 * @param redirectAttributes
 	 * @return
 	 */
-	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
+	@RequestMapping(value = "/elb/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "elbId") Integer elbId, RedirectAttributes redirectAttributes) {
 
 		MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(id);
@@ -90,7 +110,7 @@ public class MonitorElbController extends BaseController {
 	/**
 	 * 删除ELB监控后,跳转到applyId的服务申请修改页面
 	 */
-	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
+	@RequestMapping(value = "/elb/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
 
 		comm.monitorElbServcie.deleteMonitorElb(id);

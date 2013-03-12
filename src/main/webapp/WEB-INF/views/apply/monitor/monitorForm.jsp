@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>ELB监控管理</title>
+	<title>监控管理</title>
 
 	<script>
 		$(document).ready(function() {
@@ -43,56 +43,6 @@
 				}
 			});
 			
-			
-			/*根据alert中的资源信息,组成汇总信息.*/
-			$(".nextStep").click(function() {
-				
-				$("#resourcesList").empty();
-				
-				var html = '<dl class="dl-horizontal">';
-				
-				html += ' <dt>申请单信息</dt>';
-				html += '<dd><em>服务标签<em>&nbsp;' + $("#serviceTag").val() + '</dd>';
-				html += '<dd><em>优先级</em>&nbsp;' + $("#priority>option:selected").text() + '</dd>';
-				html += '<dd><em>服务开始时间</em>&nbsp;' + $("#serviceStart").val() + '</dd>';
-				html += '<dd><em>服务结束时间</em>&nbsp;' + $("#serviceEnd").val() + '</dd>';
-				html += '<dd><em>用途描述</em>&nbsp;' + $("#description").val() + '</dd>';
-				
-				html += '<br>';
-				
-				html += ' <dt>监控邮件列表</dt>';
-				$("input[name='monitorMails']").each(function() {
-					html += '<dd>' + $(this).val() + '</dd>';
-				});
-				
-				html += '<br>';
-				
-				html += ' <dt>手机邮件列表</dt>';
-				$("input[name='monitorPhones']").each(function() {
-					html += '<dd>' + $(this).val() + '</dd>';
-				});
-				
-				html += '<br>';
-				
-				html += ' <dt>监控实例 & ELB相关资源</dt>';
-				
-				//遍历包含elbId隐藏域的资源
-				$("div.resources").has("input[name='elbIds']").each(function() {
-					var $this = $(this);
-					html += '<dd>' + $this.find("dd:first").find("strong").text()+'('+$this.find("dd:eq(1)").find("strong").text()+')' + '</dd>';
-				});
-				
-				//遍历包含computeId隐藏域的资源
-				$("div.resources").has("input[name='computeIds']").each(function() {
-					var $this = $(this);
-					html += '<dd>' + $this.find("dd:first").find("strong").text()+'('+$this.find("dd:eq(1)").find("strong").text()+')' + '</dd>';
-				});
-
-				html += '</dl>';
-
-				$("#resourcesList").append(html);
-			});
-			
 		});
 		
 		
@@ -124,7 +74,7 @@
 		    	var identifier = $this.closest("tr").find("td").eq(1).text();
 		    	var virtualIp = $this.closest("tr").find("td").eq(2).text();
 		    	
-		    	//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+		    	//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,跳过.
 		    	
 		      	if($.inArray(elbIds, selectedArray) == -1){
 		      		html +='<div class="resources alert alert-block alert-info fade in">';
@@ -165,11 +115,9 @@
 				selectedArray.push(computeIds);
 			});
 			
-			
-		
-			var splitStr = "-";	//分割符号
-			var invalidId = "0";//未选择的参数的Id
-			var blank = "&nbsp;";//空格
+			var splitStr = "-"; 	//分割符号
+			var invalidId = "0"; //未选择的参数的Id
+			var blank = "&nbsp;"; //空格
 			
 			//遍历选择的实例
 			
@@ -181,7 +129,7 @@
 		    	var remark = $this.closest("tr").find("td").eq(2).text();
 		    	var innerIp = $this.closest("tr").find("td").eq(3).text();
 		    	
-				//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
+				//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,跳过.
 		    	
 		      	if($.inArray(computeId, selectedArray) == -1){
 		      		
@@ -196,10 +144,6 @@
 			    	
 			    	var port = "";
 			    	var portText = "";
-			    	var maxProcess = "";
-			    	var maxProcessText = "";
-			    	var mountPath = "";
-			    	var mountPathText = "";
 			    	
 		    		$(".monitorPort").each(function(){
 		    			var $this = $(this);
@@ -209,13 +153,19 @@
 		    		
 			    	//监控进程
 			    	
+			    	var process = "";
+			    	var processText = "";
+			    	
 			    	$(".monitorMaxProcess").each(function(){
 			    		var $this = $(this);
-			    		maxProcess += $this.val() + splitStr;
-			    		maxProcessText += $this.val() + blank;
+			    		process += $this.val() + splitStr;
+			    		processText += $this.val() + blank;
 			    	});
 	
 			    	//挂载路径
+			    	
+		    		var mountPath = "";
+			    	var mountPathText = "";
 			    	
 			    	$(".monitorMountPath").each(function(){
 			    		var $this = $(this);
@@ -224,15 +174,15 @@
 			    	});
 			    	
 			    	html +='<input type="hidden" value="'+port+'" name="ports">';
-			    	html +='<input type="hidden" value="'+maxProcess+'" name="maxProcesses">';
+			    	html +='<input type="hidden" value="'+process+'" name="processes">';
 			    	html +='<input type="hidden" value="'+mountPath+'" name="mountPaths">';
 			    	
 			    	if(portText != blank){
 				    	html += '<dd><em>监控端口</em>&nbsp;&nbsp;<strong>'+portText+'</strong>';
 			    	}
 			    	
-			    	if(maxProcessText != blank){
-				    	html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>'+maxProcessText+'</strong>';
+			    	if(processText != blank){
+				    	html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>'+processText+'</strong>';
 			    	}
 			    	
 			    	if(mountPathText != blank){
@@ -240,94 +190,66 @@
 			    	}
 			    	
 			    	//CPU
-			    	var $cpuChecked = $("#isCpuChecked");
-			    	if($cpuChecked.is(":checked")){
-			    		var $cpu = $cpuChecked.closest(".threshold");
-			    		html += '<dd><em>'+$cpu.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$cpu.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$cpu.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$cpu.find(".warn-threshold").val()+'" name="cpuWarns">';
-			    		html +='<input type="hidden" value="'+$cpu.find(".critical-threshold").val()+'" name="cpuCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="cpuWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="cpuCriticals">';
-			    	}
+		    		var $cpu = $("#cpu");
+		    		html += '<dd><em>'+$cpu.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$cpu.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$cpu.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$cpu.find(".warn-threshold").val()+'" name="cpuWarns">';
+		    		html +='<input type="hidden" value="'+$cpu.find(".critical-threshold").val()+'" name="cpuCriticals">';
 			    	
 			    	//Memory 
-			    	var $memoryChecked = $("#isMemoryChecked");
-			    	if($memoryChecked.is(":checked")){
-			    		var $memory = $memoryChecked.closest(".threshold");
-			    		html += '<dd><em>'+$memory.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$memory.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$memory.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$memory.find(".warn-threshold").val()+'" name="memoryWarns">';
-			    		html +='<input type="hidden" value="'+$memory.find(".critical-threshold").val()+'" name="memoryCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="memoryWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="memoryCriticals">';
-			    	}
+		    		var $memory = $("#memory");
+		    		html += '<dd><em>'+$memory.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$memory.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$memory.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$memory.find(".warn-threshold").val()+'" name="memoryWarns">';
+		    		html +='<input type="hidden" value="'+$memory.find(".critical-threshold").val()+'" name="memoryCriticals">';
 			    	
 			    	//网络丢包率
-			    	var $pingLossChecked = $("#isPingLossChecked");
-			    	if($pingLossChecked.is(":checked")){
-			    		var $pingLoss = $pingLossChecked.closest(".threshold");
-			    		html += '<dd><em>'+$pingLoss.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$pingLoss.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$pingLoss.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$pingLoss.find(".warn-threshold").val()+'" name="pingLossWarns">';
-			    		html +='<input type="hidden" value="'+$pingLoss.find(".critical-threshold").val()+'" name="pingLossCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="pingLossWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="pingLossCriticals">';
-			    	}
+		    		var $pingLoss = $("#pingLoss");
+		    		html += '<dd><em>'+$pingLoss.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$pingLoss.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$pingLoss.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$pingLoss.find(".warn-threshold").val()+'" name="pingLossWarns">';
+		    		html +='<input type="hidden" value="'+$pingLoss.find(".critical-threshold").val()+'" name="pingLossCriticals">';
 			    	
 			    	//硬盘可用率
-			    	var $diskChecked = $("#isDiskChecked");
-			    	if($diskChecked.is(":checked")){
-			    		var $disk = $diskChecked.closest(".threshold");
-			    		html += '<dd><em>'+$disk.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$disk.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$disk.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$disk.find(".warn-threshold").val()+'" name="diskWarns">';
-			    		html +='<input type="hidden" value="'+$disk.find(".critical-threshold").val()+'" name="diskCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="diskWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="diskCriticals">';
-			    	}
+		    		var $disk = $("#disk");
+		    		html += '<dd><em>'+$disk.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$disk.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$disk.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$disk.find(".warn-threshold").val()+'" name="diskWarns">';
+		    		html +='<input type="hidden" value="'+$disk.find(".critical-threshold").val()+'" name="diskCriticals">';
 			    	
 			    	//网络延时率
-			    	var $pingDelayChecked = $("#isPingDelayChecked");
-			    	if($pingDelayChecked.is(":checked")){
-			    		var $pingDelay = $pingDelayChecked.closest(".threshold");
-			    		html += '<dd><em>'+$pingDelay.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$pingDelay.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$pingDelay.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$pingDelay.find(".warn-threshold").val()+'" name="pingDelayWarns">';
-			    		html +='<input type="hidden" value="'+$pingDelay.find(".critical-threshold").val()+'" name="pingDelayCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="pingDelayWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="pingDelayCriticals">';
-			    	}
+		    		var $pingDelay = $("#pingDelay");
+		    		html += '<dd><em>'+$pingDelay.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$pingDelay.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$pingDelay.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$pingDelay.find(".warn-threshold").val()+'" name="pingDelayWarns">';
+		    		html +='<input type="hidden" value="'+$pingDelay.find(".critical-threshold").val()+'" name="pingDelayCriticals">';
 			    	
 			    	
 			    	//最大进程数
-			    	var $maxProcessChecked = $("#isMaxProcess");
-			    	if($maxProcessChecked.is(":checked")){
-			    		var $maxProcess = $maxProcessChecked.closest(".threshold");
-			    		html += '<dd><em>'+$maxProcess.find(".checkboxText").text()+'</em>';
-			    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$maxProcess.find(".warn-threshold>option:selected").text()+'</strong>';
-			    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$maxProcess.find(".critical-threshold>option:selected").text()+'</strong></dd>';
-			    		html +='<input type="hidden" value="'+$maxProcess.find(".warn-threshold").val()+'" name="maxProcessWarns">';
-			    		html +='<input type="hidden" value="'+$maxProcess.find(".critical-threshold").val()+'" name="maxProcessCriticals">';
-			    	}else{
-			    		html +='<input type="hidden" value="'+invalidId+'" name="maxProcessWarns">';
-			    		html +='<input type="hidden" value="'+invalidId+'" name="maxProcessCriticals">';
-			    	}
+		    		var $maxProcess = $("#maxProcess");
+		    		html += '<dd><em>'+$maxProcess.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$maxProcess.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$maxProcess.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$maxProcess.find(".warn-threshold").val()+'" name="maxProcessWarns">';
+		    		html +='<input type="hidden" value="'+$maxProcess.find(".critical-threshold").val()+'" name="maxProcessCriticals">';
+			    	
+		    		
+			    	//网卡流量
+		    		var $networkFlow = $("#networkFlow");
+		    		html += '<dd><em>'+$networkFlow.find(".control-label").text()+'</em>';
+		    		html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>'+$networkFlow.find(".warn-threshold>option:selected").text()+'</strong>';
+		    		html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>'+$networkFlow.find(".critical-threshold>option:selected").text()+'</strong></dd>';
+		    		html +='<input type="hidden" value="'+$networkFlow.find(".warn-threshold").val()+'" name="networkFlowWarns">';
+		    		html +='<input type="hidden" value="'+$networkFlow.find(".critical-threshold").val()+'" name="networkFlowCriticals">';
 			    	
 		      		html +='</div> ';
 		    	
 		      	} 
-				
 		    	
 			});
 			
@@ -340,7 +262,6 @@
 			$(".checker > span").removeClass("checked");//针对页面所有的uniform checkbox的处理
 			
 		});
-		
 		
 	</script>
 	
@@ -513,118 +434,136 @@
 								</div>
 							</div>
 							
-				    	
-				    		<!-- CPU -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isCpuChecked"></label><span class="checkboxText">CPU占用率</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-							</div>
-							
-				    		<!-- Memory -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isMemoryChecked"></label><span class="checkboxText">内存占用率</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							<!-- cpu -->
+							<div class="control-group threshold" id="cpu">
+								<label class="control-label" for="cpu">CPU占用率</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
 							</div>
 							
-				    		<!-- 网络丢包率 -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isPingLossChecked"></label><span class="checkboxText">网络丢包率</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-							</div>
-							
-				    		<!-- 硬盘可用率 -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isDiskChecked"></label><span class="checkboxText">硬盘可用率</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${thresholdLtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
-								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${thresholdLtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							<!-- Memory -->
+							<div class="control-group threshold" id="memory">
+								<label class="control-label" for="memory">内存占用率</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
 							</div>
 							
-				    		<!-- 网络延时率 -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isPingDelayChecked"></label><span class="checkboxText">网络延时率</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${thresholdNetGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							<!-- 网络丢包率 -->
+							<div class="control-group threshold" id="pingLoss">
+								<label class="control-label" for="pingLoss">网络丢包率</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${thresholdNetGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							</div>
+							
+							<!-- 硬盘可用率 -->
+							<div class="control-group threshold" id="disk">
+								<label class="control-label" for="disk">硬盘可用率</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdLtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdLtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<!--  网络延时率 -->
+							<div class="control-group threshold" id="pingDelay">
+								<label class="control-label" for="pingDelay">网络延时率</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdNetGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdNetGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
 							</div>
 							
 				    		<!-- 最大进程数 -->
-					    	<div class="row threshold">
-						    	<div class="span2">
-						    		<label class="checkbox inline"><input type="checkbox" id="isMaxProcess"></label><span class="checkboxText">最大进程数</span>
-					    		</div>
-						    	<div class="span2">
-						    		报警阀值&nbsp;
-						    		<select class="input-small warn-threshold">
-										<c:forEach var="map" items="${maxProcessMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							<div class="control-group threshold" id="maxProcess">
+								<label class="control-label" for="maxProcess">最大进程数</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${maxProcessMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${maxProcessMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
-						    	<div class="span2">
-						    		警告阀值&nbsp;
-						    		<select class="input-small critical-threshold">
-										<c:forEach var="map" items="${maxProcessMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-									</select>
+							</div>
+							
+				    		<!-- 网卡流量 -->
+							<div class="control-group threshold" id="networkFlow">
+								<label class="control-label" for="networkFlow">网卡流量</label>
+								<div class="controls">
+									<div class="span2">
+							    		报警阀值&nbsp;
+							    		<select class="input-small warn-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
+							    	<div class="span2">
+							    		警告阀值&nbsp;
+							    		<select class="input-small critical-threshold">
+											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
+										</select>
+									</div>
 								</div>
 							</div>
 							
@@ -644,21 +583,10 @@
 				
 				<div class="form-actions">
 					<input class="btn backStep" type="button" value="上一步">
-					<input class="btn btn-primary nextStep" type="button" value="下一步">
+					<input class="btn btn-primary" type="submit" value="提交">
 				</div>
 				
 			</div><!-- Step.3 End -->
-			
-			<!-- Step.4 -->
-			<div class="step">
-				 <!-- 汇总信息 -->
-				<div id="resourcesList"></div>
-				<div class="form-actions">
-					<input class="btn backStep" type="button" value="上一步">
-					<input class="btn btn-primary" type="submit" value="提交">
-				</div>
-			</div><!-- Step.4 End -->
-			 
 			
 		</fieldset>
 		
@@ -672,7 +600,7 @@
 				
 			<div class="modal-body">
 				<table class="table table-striped table-bordered table-condensed">
-					<thead><tr><th><input type="checkbox"></th><th>标识符</th><th>负载均衡虚拟IP</th></tr></thead>
+					<thead><tr><th><input type="checkbox"></th><th>ELB标识符</th><th>负载均衡虚拟IP</th></tr></thead>
 					<tbody id="resources-tbody">
 						<c:forEach var="elb" items="${allElbs}">
 							<tr>
@@ -699,12 +627,7 @@
 				
 			<div class="modal-body">
 				<table class="table table-striped table-bordered table-condensed">
-					<thead><tr>
-						<th><input type="checkbox"></th>
-						<th>标识符</th>
-						<th>用途信息</th>
-						<th>IP地址</th>
-					</tr></thead>
+					<thead><tr><th><input type="checkbox"></th><th>实例标识符</th><th>用途信息</th><th>IP地址</th></tr></thead>
 					<tbody id="resources-tbody">
 						<c:forEach var="compute" items="${allComputes}">
 							<tr>

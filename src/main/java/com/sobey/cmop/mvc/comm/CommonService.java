@@ -27,6 +27,7 @@ import com.sobey.cmop.mvc.service.iaas.MonitorComputeServcie;
 import com.sobey.cmop.mvc.service.iaas.MonitorElbServcie;
 import com.sobey.cmop.mvc.service.iaas.MonitorMailService;
 import com.sobey.cmop.mvc.service.iaas.MonitorPhoneService;
+import com.sobey.cmop.mvc.service.iaas.MonitorServcie;
 import com.sobey.cmop.mvc.service.iaas.ResourcesJsonService;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
@@ -65,7 +66,7 @@ public class CommonService {
 
 	@Resource
 	public DepartmentService departmentService;
-
+	
 	@Resource
 	public DnsService dnsService;
 
@@ -107,6 +108,9 @@ public class CommonService {
 
 	@Resource
 	public MonitorPhoneService monitorPhoneService;
+
+	@Resource
+	public MonitorServcie monitorServcie;
 
 	@Resource
 	public OneCmdbUtilService oneCmdbUtilService;

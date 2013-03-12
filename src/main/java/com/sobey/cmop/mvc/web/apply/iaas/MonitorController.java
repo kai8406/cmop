@@ -44,10 +44,31 @@ public class MonitorController extends BaseController {
 			@RequestParam(value = "serviceTag") String serviceTag, @RequestParam(value = "priority") Integer priority, @RequestParam(value = "serviceStart") String serviceStart,
 			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "description") String description,
 
+			@RequestParam(value = "monitorMails") String[] monitorMails, @RequestParam(value = "monitorPhones") String[] monitorPhones,
+
 			// monitor_Elb
-			@RequestParam(value = "monitorMails") String[] monitorMails, @RequestParam(value = "monitorPhones") String[] monitorPhones, @RequestParam(value = "elbIds") String[] elbIds,
+
+			@RequestParam(value = "elbIds", required = false) String[] elbIds,
 
 			// monitor_Compute
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+
+			@RequestParam(value = "cpuWarns", required = false) String[] cpuWarns, @RequestParam(value = "cpuCriticals", required = false) String[] cpuCriticals,
+
+			@RequestParam(value = "memoryWarns", required = false) String[] memoryWarns, @RequestParam(value = "memoryCriticals", required = false) String[] memoryCriticals,
+
+			@RequestParam(value = "pingLossWarns", required = false) String[] pingLossWarns, @RequestParam(value = "pingLossCriticals", required = false) String[] pingLossCriticals,
+
+			@RequestParam(value = "diskWarns", required = false) String[] diskWarns, @RequestParam(value = "diskCriticals", required = false) String[] diskCriticals,
+
+			@RequestParam(value = "pingDelayWarns", required = false) String[] pingDelayWarns, @RequestParam(value = "pingDelayCriticals", required = false) String[] pingDelayCriticals,
+
+			@RequestParam(value = "maxProcessWarns", required = false) String[] maxProcessWarns, @RequestParam(value = "maxProcessCriticals", required = false) String[] maxProcessCriticals,
+
+			@RequestParam(value = "networkFlowWarns", required = false) String[] networkFlowWarns, @RequestParam(value = "networkFlowCriticals", required = false) String[] networkFlowCriticals,
+
+			@RequestParam(value = "ports", required = false) String[] ports, @RequestParam(value = "processes", required = false) String[] processes,
+			@RequestParam(value = "mountPaths", required = false) String[] mountPaths,
 
 			RedirectAttributes redirectAttributes) {
 
@@ -59,7 +80,8 @@ public class MonitorController extends BaseController {
 		apply.setServiceEnd(serviceEnd);
 		apply.setDescription(description);
 
-		comm.monitorElbServcie.saveMonitorElbToApply(apply, monitorMails, monitorPhones, elbIds);
+		comm.monitorServcie.saveMonitorToApply(apply, monitorMails, monitorPhones, elbIds, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals,
+				diskWarns, diskCriticals, pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, networkFlowWarns, networkFlowCriticals, ports, processes, mountPaths);
 
 		redirectAttributes.addFlashAttribute("message", "创建ELB监控成功.");
 

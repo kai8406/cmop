@@ -51,7 +51,7 @@ public class MonitorComputeServcie extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void udpateMonitorComputeToApply() {
+	public void updateMonitorComputeToApply() {
 
 	}
 

@@ -109,45 +109,16 @@ public class MonitorElbServcie extends BaseSevcie {
 
 	/**
 	 * 更新服务申请单中的ELB监控<br>
-	 * 先删除监控邮件和监控手机表中的信息,再插入新的数据
 	 * 
 	 * @param monitorElb
-	 *            ELB监控对象
-	 * @param applyId
-	 *            服务申请单ID
+	 *            ELB监控监控对象
 	 * @param elbId
-	 *            监控的ELBId
-	 * @param monitorMails
-	 *            监控邮件数组
-	 * @param monitorPhones
-	 *            监控手机数组
+	 *            修改后的elbId
 	 */
 	@Transactional(readOnly = false)
-	public void udpateMonitorElbToApply(MonitorElb monitorElb, Integer applyId, Integer elbId, String[] monitorMails, String[] monitorPhones) {
-
-		Apply apply = comm.applyService.getApply(applyId);
-
-		// Step2. 创建邮件和电话监控列表
-
-		User user = comm.accountService.getCurrentUser();
-
-		// 删除库中监控邮件和监控电话的数据
-
-		comm.monitorMailService.deleteMonitorMail(comm.monitorMailService.getMonitorMailByApplyList(applyId));
-		comm.monitorPhoneService.deleteMonitorPhone(comm.monitorPhoneService.getMonitorPhoneByApplyList(applyId));
-
-		// 插入新的数据
-
-		for (int i = 0; i < monitorMails.length; i++) {
-			MonitorMail monitorMail = new MonitorMail(apply, user, monitorMails[i]);
-			comm.monitorMailService.saveOrUpdate(monitorMail);
-		}
-
-		for (int i = 0; i < monitorPhones.length; i++) {
-			MonitorPhone monitorPhone = new MonitorPhone(apply, user, monitorPhones[i]);
-			comm.monitorPhoneService.saveOrUpdate(monitorPhone);
-		}
-
+	public void updateMonitorElbToApply(MonitorElb monitorElb, Integer elbId) {
+		monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(elbId));
+		this.saveOrUpdate(monitorElb);
 	}
 
 	@Transactional(readOnly = false)

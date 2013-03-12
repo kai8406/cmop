@@ -42,22 +42,7 @@ public class MonitorElbController extends BaseController {
 	public String save(Apply apply,
 
 	@RequestParam(value = "monitorMails") String[] monitorMails, @RequestParam(value = "monitorPhones") String[] monitorPhones, @RequestParam(value = "elbIds") String[] elbIds,
-
-	// @RequestParam(value = "serviceTag") String serviceTag,
-	// @RequestParam(value = "serviceStart") String serviceStart,
-	// @RequestParam(value = "serviceEnd") String serviceEnd,
-	// @RequestParam(value = "priority") Integer priority,
-	// @RequestParam(value = "description") String description,
-
 			RedirectAttributes redirectAttributes) {
-
-		System.out.println("**************");
-
-		System.out.println(apply.getDescription());
-		System.out.println(apply.getServiceStart());
-		System.out.println(apply.getServiceTag());
-		System.out.println(apply.getPriority());
-		System.out.println("**************");
 
 		comm.monitorElbServcie.saveMonitorElbToApply(apply, monitorMails, monitorPhones, elbIds);
 
@@ -84,20 +69,18 @@ public class MonitorElbController extends BaseController {
 	 * 
 	 * @param id
 	 * @param applyId
-	 * @param domainName
-	 * @param domainType
-	 * @param cnameDomain
-	 * @param eipIds
+	 *            服务申请单ID
+	 * @param elbId
+	 *            修改后的elbId
 	 * @param redirectAttributes
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "monitorMails") String[] monitorMails,
-			@RequestParam(value = "monitorPhones") String[] monitorPhones, @RequestParam(value = "elbId") Integer elbId, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "elbId") Integer elbId, RedirectAttributes redirectAttributes) {
 
 		MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(id);
 
-		comm.monitorElbServcie.udpateMonitorElbToApply(monitorElb, applyId, elbId, monitorMails, monitorPhones);
+		comm.monitorElbServcie.updateMonitorElbToApply(monitorElb, elbId);
 
 		redirectAttributes.addFlashAttribute("message", "修改ELB监控 " + monitorElb.getIdentifier() + " 成功");
 

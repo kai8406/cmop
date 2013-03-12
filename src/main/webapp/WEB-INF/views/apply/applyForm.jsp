@@ -347,7 +347,12 @@
 				<c:if test="${not empty apply.monitorMails}">
 					<hr>
 					<dt>监控邮件列表</dt>
-					<c:forEach var="item" items="${apply.monitorMails}"><dd>${item.email }</dd>	</c:forEach>
+					<c:forEach var="item" items="${apply.monitorMails}"><dd>${item.email }</dd></c:forEach>
+					<dd>
+						<span class="pull-right">
+							<a href="${ctx}/apply/monitorEmail/update/applyId/${apply.id}">修改</a>&nbsp;
+						</span>
+					</dd>
 				</c:if>
 				
 				<!-- 监控手机列表 -->
@@ -355,6 +360,11 @@
 					<hr>
 					<dt>监控手机列表</dt>
 					<c:forEach var="item" items="${apply.monitorPhones}"><dd>${item.telephone }</dd></c:forEach>
+					<dd>
+						<span class="pull-right">
+							<a href="${ctx}/apply/monitorPhone/update/applyId/${apply.id}">修改</a>&nbsp;
+						</span>
+					</dd>
 				</c:if>
 				
 				<!-- 服务器监控monitorCompute -->

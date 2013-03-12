@@ -53,33 +53,23 @@
 			</div>
 			
 			<div class="control-group">
-					<label class="control-label" for="monitorMail">监控邮件列表</label>
-					<div class="controls">
-						<table class="table table-bordered table-condensed"  >
-							<tbody>
-								<tr class="clone">
-									<td><input type="text" id="monitorMails" name="monitorMails" class="required" maxlength="45" placeholder="...Email"></td>
-									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-								</tr>
-							</tbody>
-						</table>	
-					</div>
+				<label class="control-label" for="monitorMail">监控邮件列表</label>
+				<div class="controls">
+					<c:forEach var="email" items="${monitorElb.apply.monitorMails  }">
+						<p class="help-inline plain-text">${email.email }</p><br>
+					</c:forEach>
 				</div>
+			</div>
 				
-				<div class="control-group">
-					<label class="control-label" for="monitorPhone">监控手机列表</label>
-					<div class="controls">
-						 <table class="table table-bordered table-condensed"  >
-							<tbody>
-								<tr class="clone">
-									<td><input type="text" id="monitorPhones" name="monitorPhones" class="required" maxlength="45" placeholder="...Phone"></td>
-									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+			<div class="control-group">
+				<label class="control-label" for="monitorPhone">监控手机列表</label>
+				<div class="controls">
+					<c:forEach var="phone" items="${monitorElb.apply.monitorPhones  }">
+						<p class="help-inline plain-text">${phone.telephone }</p><br>
+					</c:forEach>
 				</div>
-			
+			</div>
+		
 			<div class="control-group">
 				<label class="control-label" for="monitorElbType">监控ELB</label>
 				<div class="controls">

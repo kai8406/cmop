@@ -118,7 +118,7 @@ public class NetworkElbItem implements java.io.Serializable {
 		this.elbPortItems = elbPortItems;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkElbItem")
+	@OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "networkElbItem")
 	public MonitorElb getMonitorElb() {
 		return this.monitorElb;
 	}

@@ -113,6 +113,18 @@ public class ResourcesController extends BaseController {
 
 			updateUrl = "resource/form/dns";
 
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
+
+			model.addAttribute("monitorCompute", comm.monitorComputeServcie.getMonitorCompute(serviceId));
+
+			updateUrl = "resource/form/monitorCompute";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
+
+			model.addAttribute("monitorElb", comm.monitorElbServcie.getMonitorElb(serviceId));
+
+			updateUrl = "resource/form/monitorElb";
+
 		} else {
 
 			updateUrl = "resource/resourceList";
@@ -190,6 +202,18 @@ public class ResourcesController extends BaseController {
 			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
 
 			detailUrl = "resource/detail/dnsDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
+
+			model.addAttribute("monitorCompute", comm.monitorComputeServcie.getMonitorCompute(serviceId));
+
+			detailUrl = "resource/detail/monitorComputeDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
+
+			model.addAttribute("monitorElb", comm.monitorElbServcie.getMonitorElb(serviceId));
+
+			detailUrl = "resource/detail/monitorElbDetail";
 
 		} else {
 

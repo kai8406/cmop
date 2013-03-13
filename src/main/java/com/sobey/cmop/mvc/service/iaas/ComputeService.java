@@ -199,8 +199,11 @@ public class ComputeService extends BaseSevcie {
 	 * @param computeItem
 	 *            变更后的实例
 	 * @param applicationNames
+	 *            应用名
 	 * @param applicationVersions
+	 *            应用版本
 	 * @param applicationDeployPaths
+	 *            应用部署路径
 	 * @return
 	 */
 	@Transactional(readOnly = false)
@@ -221,7 +224,7 @@ public class ComputeService extends BaseSevcie {
 
 		if (isChange) {
 
-			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 
 			comm.serviceTagService.saveOrUpdate(serviceTag);

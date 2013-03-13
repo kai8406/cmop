@@ -131,4 +131,20 @@ public class ResourcesExtensionController extends BaseController {
 		return REDIRECT_SUCCESS_URL;
 	}
 
+	/**
+	 * 变更ELB监控monitorElb
+	 */
+	@RequestMapping(value = "/monitorElb", method = RequestMethod.POST)
+	public String updatemonitorElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "elbId", required = false) Integer elbId, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.monitorElbServcie.saveResourcesByMonitorElb(resources, serviceTagId, elbId, changeDescription);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
+	}
 }

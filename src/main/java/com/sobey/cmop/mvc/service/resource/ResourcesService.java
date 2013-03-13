@@ -314,7 +314,7 @@ public class ResourcesService extends BaseSevcie {
 
 		resourcesList.add(resources);
 
-		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
 
 		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
 				monitorElbs);
@@ -530,6 +530,30 @@ public class ResourcesService extends BaseSevcie {
 
 			comm.dnsService.saveOrUpdate(networkDnsItem);
 
+		} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
+
+			MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				// TODO
+
+			}
+
+			comm.monitorComputeServcie.saveOrUpdate(monitorCompute);
+
+		} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
+
+			MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.monitorElb.监控ELB.toString().equals(changeItem.getFieldName())) {
+					monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
+				}
+
+			}
+			comm.monitorElbServcie.saveOrUpdate(monitorElb);
 		}
 
 		// TODO 其它资源的还原
@@ -586,7 +610,7 @@ public class ResourcesService extends BaseSevcie {
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
 	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,
-			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems) {
+			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
 
 		for (Resources resources : resourcesList) {
 
@@ -618,6 +642,15 @@ public class ResourcesService extends BaseSevcie {
 				// DNS
 				dnsItems.add(comm.dnsService.getNetworkDnsItem(serviceId));
 
+			} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
+
+				// monitorCompute
+				monitorComputes.add(comm.monitorComputeServcie.getMonitorCompute(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
+
+				// monitorElb
+				monitorElbs.add(comm.monitorElbServcie.getMonitorElb(serviceId));
 			}
 
 			// TODO 其它资源处理

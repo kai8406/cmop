@@ -100,7 +100,7 @@ public class FailureService extends BaseSevcie {
 
 			/* 封装各个资源对象 */
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
 
 			logger.info("--->拼装邮件内容...");
 

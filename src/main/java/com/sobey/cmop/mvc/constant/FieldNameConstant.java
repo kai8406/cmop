@@ -79,4 +79,18 @@ public class FieldNameConstant {
 		域名, 域名类型, 目标IP, CNAME域名;
 	}
 
+	/**
+	 * entity MonitorElb 里的参数
+	 * 
+	 * <pre>
+	 * 监控Elb
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum monitorElb {
+		监控ELB;
+	}
+
 }

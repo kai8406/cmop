@@ -312,59 +312,15 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Eip.关联实例.toString().equals(fieldName)) {
 
-								ComputeItem oldComputeItem = comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue()));
-								ComputeItem newComputeItem = comm.computeService.getComputeItem(Integer.valueOf(changeItem.getNewValue()));
-
-								String oldValue = "";
-								String newValue = "";
-
-								if (oldComputeItem != null) {
-
-									String innerIp = "";
-									if (oldComputeItem.getInnerIp() != null) {
-										innerIp = oldComputeItem.getInnerIp();
-									}
-									oldValue += oldComputeItem.getIdentifier() + "(" + innerIp + ")";
-								}
-
-								if (newComputeItem != null) {
-
-									String innerIp = "";
-									if (newComputeItem.getInnerIp() != null) {
-										innerIp = newComputeItem.getInnerIp();
-									}
-									newValue += newComputeItem.getIdentifier() + "(" + innerIp + ")";
-								}
+								String oldValue = this.wrapStringByComputeItem(Integer.valueOf(changeItem.getOldValue()));
+								String newValue = this.wrapStringByComputeItem(Integer.valueOf(changeItem.getNewValue()));
 
 								content.append(FieldNameConstant.Eip.关联实例 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
 
 							} else if (FieldNameConstant.Eip.关联ELB.toString().equals(fieldName)) {
 
-								NetworkElbItem oldNetworkElbItem = comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
-								NetworkElbItem newNetworkElbItem = comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
-
-								String oldValue = "";
-								String newValue = "";
-
-								if (oldNetworkElbItem != null) {
-
-									String virtualIp = "";
-									if (oldNetworkElbItem.getVirtualIp() != null) {
-										virtualIp = oldNetworkElbItem.getVirtualIp();
-									}
-
-									oldValue += oldNetworkElbItem.getIdentifier() + "(" + virtualIp + ")";
-								}
-
-								if (newNetworkElbItem != null) {
-
-									String virtualIp = "";
-									if (newNetworkElbItem.getVirtualIp() != null) {
-										virtualIp = newNetworkElbItem.getVirtualIp();
-									}
-
-									newValue += newNetworkElbItem.getIdentifier() + "(" + virtualIp + ")";
-								}
+								String oldValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
+								String newValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
 
 								content.append(FieldNameConstant.Eip.关联ELB + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
 
@@ -397,6 +353,22 @@ public class RedmineUtilService extends BaseSevcie {
 								content.append(FieldNameConstant.Dns.目标IP + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
 
 							}
+
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
+
+							// TODO
+
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
+
+							if (FieldNameConstant.monitorElb.监控ELB.toString().equals(fieldName)) {
+
+								String oldValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
+								String newValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
+
+								content.append(FieldNameConstant.monitorElb.监控ELB + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+
+							}
+
 						}
 
 					}
@@ -420,6 +392,57 @@ public class RedmineUtilService extends BaseSevcie {
 			return null;
 
 		}
+	}
+
+	/**
+	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.有空好好看看.
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	private String wrapStringByNetworkElbItem(Integer elbId) {
+
+		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(elbId);
+
+		String value = "";
+
+		if (networkElbItem != null) {
+
+			String virtualIp = "";
+			if (networkElbItem.getVirtualIp() != null) {
+				virtualIp = networkElbItem.getVirtualIp();
+			}
+
+			value += networkElbItem.getIdentifier() + "(" + virtualIp + ")";
+		}
+
+		return value;
+
+	}
+
+	/**
+	 * 将ComputeItem组合成字符串. 避免ip为null时抱错.有空好好看看.
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	private String wrapStringByComputeItem(Integer computeId) {
+
+		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
+
+		String value = "";
+
+		if (computeItem != null) {
+
+			String innerIp = "";
+			if (computeItem.getInnerIp() != null) {
+				innerIp = computeItem.getInnerIp();
+			}
+			value += computeItem.getIdentifier() + "(" + innerIp + ")";
+		}
+
+		return value;
+
 	}
 
 }

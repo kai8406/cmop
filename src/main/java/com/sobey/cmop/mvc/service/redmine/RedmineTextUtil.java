@@ -327,6 +327,7 @@ public class RedmineTextUtil {
 	}
 
 	public static void generateMonitorElb(StringBuilder content, List<MonitorElb> monitorElbs) {
+
 		if (!monitorElbs.isEmpty()) {
 
 			content.append("# +*ELB监控*+").append(NEWLINE);

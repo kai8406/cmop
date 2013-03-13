@@ -148,6 +148,24 @@ public class DnsService extends BaseSevcie {
 
 	}
 
+	/**
+	 * 变更DNS
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @param domainName
+	 *            域名
+	 * @param domainType
+	 *            域名类型
+	 * @param cnameDomain
+	 *            CNAME域名
+	 * @param eipIds
+	 *            关联EIPId
+	 * @param changeDescription
+	 *            变更说明
+	 */
 	@Transactional(readOnly = false)
 	public void saveResourcesByDns(Resources resources, Integer serviceTagId, String domainName, Integer domainType, String cnameDomain, String[] eipIds, String changeDescription) {
 
@@ -165,7 +183,7 @@ public class DnsService extends BaseSevcie {
 
 		if (isChange) {
 
-			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 

@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -538,6 +539,20 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 		}
 
+		return isChange;
+	}
+
+	@Override
+	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId) {
+		boolean isChange = false;
+
+		// 监控ELB
+
+		if (!monitorElb.getNetworkElbItem().getId().equals(elbId)) {
+
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorElb.监控ELB.toString(), monitorElb.getNetworkElbItem().getId().toString(), elbId.toString());
+
+		}
 		return isChange;
 	}
 }

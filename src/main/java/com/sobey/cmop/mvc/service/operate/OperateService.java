@@ -22,6 +22,8 @@ import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -392,8 +394,10 @@ public class OperateService extends BaseSevcie {
 			List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
 			List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
 			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
+			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
+			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
 
 			// 发送邮件通知下个指派人
 

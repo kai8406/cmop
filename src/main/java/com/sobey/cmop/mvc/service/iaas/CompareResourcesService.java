@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -127,5 +128,18 @@ public interface CompareResourcesService {
 	 * @return
 	 */
 	public boolean compareDns(Resources resources, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds);
+
+	/**
+	 * 比较monitorElb变更前后的值
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param monitorElb
+	 *            变更前的monitorElb对象
+	 * @param elbId
+	 *            监控ElbId
+	 * @return
+	 */
+	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId);
 
 }

@@ -305,6 +305,38 @@ table {
 										 
 									</td>
 									
+								<#elseif resource.serviceType == 9 ><!--   monitorCompute  -->
+									
+								<#elseif resource.serviceType == 10 ><!--   monitorElb  -->
+								
+									<td class="is-hidden">
+									
+										<#if item.fieldName == '监控ELB' >
+										
+											<#list allElbs as elb >
+											<#if item.oldValue?string == elb.id?string >
+												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#else>${item.oldValue}</#if>
+										
+									</td>
+									
+									<td class="is-visible">
+									
+										<#if item.fieldName == '监控ELB' >
+											
+											<#list allElbs as elb >
+											<#if item.newValue?string == elb.id?string >
+												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
+											</#if>
+											</#list>
+											
+										<#else>${item.newValue}</#if>
+										 
+									</td>
+									
 								<#else>
 								
 								

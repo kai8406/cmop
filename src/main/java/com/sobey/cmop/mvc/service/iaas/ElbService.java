@@ -202,6 +202,22 @@ public class ElbService extends BaseSevcie {
 	/**
 	 * 变更变更负载均衡器ELB
 	 * 
+	 * @param resources
+	 *            资源对象
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @param keepSession
+	 *            是否保持会话
+	 * @param protocols
+	 *            协议数组
+	 * @param sourcePorts
+	 *            源端口数组
+	 * @param targetPorts
+	 *            目标端口数组
+	 * @param computeIds
+	 *            关联实例ID数组
+	 * @param changeDescription
+	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
 	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds,
@@ -221,7 +237,7 @@ public class ElbService extends BaseSevcie {
 
 		if (isChange) {
 
-			// 当资源Compute有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
 

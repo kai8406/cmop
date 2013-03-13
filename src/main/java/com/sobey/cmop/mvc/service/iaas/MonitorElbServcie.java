@@ -12,6 +12,8 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MonitorElbDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorElb;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * Elb监控MonitorElb相关的管理类.
@@ -84,7 +86,41 @@ public class MonitorElbServcie extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveResourcesByMonitorElb() {
+	public void saveResourcesByMonitorElb(Resources resources, Integer serviceTagId, Integer elbId, String changeDescription) {
+
+		/* 新增或更新资源Resources的服务变更Change. */
+
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+
+		MonitorElb monitorElb = this.getMonitorElb(resources.getServiceId());
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareMonitorElb(resources, monitorElb, elbId);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		if (isChange) {
+
+			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+
+			resources.setServiceTag(serviceTag);
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+		}
+
+		// TODO 看是否需要变更.
+		// monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(elbId));
+
+		this.saveOrUpdate(monitorElb);
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
 
 	}
 

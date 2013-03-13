@@ -241,6 +241,41 @@
 									
 									</c:if><!-- DNS End -->
 									
+									
+					            	<!-- monitorCompute-->
+	            					<c:if test="${resource.serviceType == 9 }">
+	            					
+	            					</c:if><!-- monitorCompute End -->
+	            					
+	            					
+					            	<!-- monitorElb-->
+	            					<c:if test="${resource.serviceType == 10 }">
+									
+										<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == '监控ELB'}">
+													<c:forEach var="elb" items="${allElbs }">
+														<c:if test="${elb.id == item.oldValue }">${elb.identifier }(${elb.virtualIp })</c:if>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == '监控ELB'}">
+													<c:forEach var="elb" items="${allElbs }">
+														<c:if test="${elb.id == item.newValue }">${elb.identifier }(${elb.virtualIp })</c:if>
+													</c:forEach></c:forEach>
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+											
+										</td>
+									
+									</c:if><!-- monitorElb End -->
+									
 								</tr>
 								
 							</c:forEach>

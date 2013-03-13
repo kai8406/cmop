@@ -167,7 +167,7 @@
 		    		var mountPoint = "";
 			    	var mountPointText = "";
 			    	
-			    	$(".monitorMountPath").each(function(){
+			    	$(".monitorMountPoint").each(function(){
 			    		var $this = $(this);
 			    		mountPoint += $this.val() + splitStr;
 			    		mountPointText += $this.val() + blank;
@@ -421,12 +421,12 @@
 							</div>
 							
 							<div class="control-group">
-								<label class="control-label" for="monitorMountPath">挂载路径</label>
+								<label class="control-label" for="monitorMountPoint">挂载路径</label>
 								<div class="controls">
 									<table class="table table-bordered table-condensed"  >
 										<tbody>
 											<tr class="clone">
-												<td><input type="text" value="test" class="monitorMountPath" maxlength="45" placeholder="...挂载路径"></td>
+												<td><input type="text" value="test" class="monitorMountPoint" maxlength="45" placeholder="...挂载路径"></td>
 												<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 											</tr>
 										</tbody>

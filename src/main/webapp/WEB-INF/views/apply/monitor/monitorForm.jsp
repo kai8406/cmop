@@ -602,7 +602,7 @@
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr><th><input type="checkbox"></th><th>ELB标识符</th><th>负载均衡虚拟IP</th></tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="elb" items="${allElbs}">
+						<c:forEach var="elb" items="${monitorElbs}">
 							<tr>
 								<td><input type="checkbox" value="${elb.id }"></td>
 								<td>${elb.identifier}</td>

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 
 /**
  * 负责ELB监控MonitorElb & 实例监控MonitorCompute的管理
@@ -194,9 +196,9 @@ public class MonitorController extends BaseController {
 	 */
 	@RequestMapping(value = "/compute/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateComputeForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
-		
+
 		MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(id);
-		
+
 		model.addAttribute("monitorCompute", monitorCompute);
 		model.addAttribute("ports", this.wrapMonitorComputeParametToList(monitorCompute.getPort()));
 		model.addAttribute("processes", this.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
@@ -312,6 +314,15 @@ public class MonitorController extends BaseController {
 		redirectAttributes.addFlashAttribute("message", "删除实例监控成功");
 
 		return "redirect:/apply/update/" + applyId;
+	}
+
+	/**
+	 * 
+	 * @return 指定用户的所有负载均衡器ELB(用于监控申请中,只列出未被监控的ELB)List
+	 */
+	@ModelAttribute("monitorElbs")
+	public List<NetworkElbItem> allElbs() {
+		return comm.elbService.getNetworkElbItemListByMonitorApply(getCurrentUserId());
 	}
 
 }

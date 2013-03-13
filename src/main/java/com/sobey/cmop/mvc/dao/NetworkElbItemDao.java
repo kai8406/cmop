@@ -17,4 +17,6 @@ public interface NetworkElbItemDao extends PagingAndSortingRepository<NetworkElb
 
 	List<NetworkElbItem> findByApplyUserId(Integer userId);
 
+	List<NetworkElbItem> findByApplyUserIdAndMonitorElbIsNull(Integer userId);
+
 }

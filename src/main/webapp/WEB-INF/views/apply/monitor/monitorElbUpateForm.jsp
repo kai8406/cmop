@@ -74,12 +74,9 @@
 				<label class="control-label" for="monitorElbType">监控ELB</label>
 				<div class="controls">
 					<select id="elbId" name="elbId" class="required">
-						<c:forEach var="item" items="${allElbs }">
-							<option value="${item.id }" 
-								<c:if test="${item.id == monitorElb.networkElbItem.id }">
-									selected="selected"
-								</c:if>
-							>${item.identifier}(${item.virtualIp })</option>
+						<option value="${monitorElb.networkElbItem.id }" selected="selected">${monitorElb.networkElbItem.identifier}(${monitorElb.networkElbItem.virtualIp })</option>
+						<c:forEach var="item" items="${monitorElbs }">
+							<option value="${item.id }" >${item.identifier}(${item.virtualIp })</option>
 						</c:forEach>
 					</select>
 				</div>

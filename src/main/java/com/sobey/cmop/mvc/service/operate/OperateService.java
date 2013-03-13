@@ -136,6 +136,7 @@ public class OperateService extends BaseSevcie {
 	 * resourceId != null 表示资源回收.
 	 * 三种字段都为null 表示故障申报.
 	 * 3.更新RedmineIssue的状态
+	 * </pre>
 	 * 
 	 * @param issue
 	 * @return

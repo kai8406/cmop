@@ -20,6 +20,10 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.MonitorElb;
+import com.sobey.cmop.mvc.entity.MonitorMail;
+import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -83,6 +87,10 @@ public class FailureService extends BaseSevcie {
 			List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
 			List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
 			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
+			List<MonitorMail> monitorMails = new ArrayList<MonitorMail>();
+			List<MonitorPhone> monitorPhones = new ArrayList<MonitorPhone>();
+			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
+			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 
 			String[] resourcesIds = failure.getRelatedId().split(",");
 			for (String resourcesId : resourcesIds) {
@@ -98,7 +106,8 @@ public class FailureService extends BaseSevcie {
 
 			// 拼装Redmine内容
 
-			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems);
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
+					monitorElbs);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
 

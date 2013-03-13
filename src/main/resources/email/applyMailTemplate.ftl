@@ -169,6 +169,101 @@
 				
 			</#if><!-- DNS域名映射 End -->
 			
+			<!-- 监控邮件列表 -->
+			<#if (monitorMails?exists) && (monitorMails?size > 0) >
+				<strong>监控邮件列表</strong>
+				
+				 <#list monitorMails as monitorMail>
+					<ul>
+						<li>${monitorMail.email}</li>
+					</ul>
+				</#list>
+			
+			</#if><!-- 监控邮件列表 End -->
+			
+			<!-- 监控手机列表 -->
+			<#if (monitorPhones?exists) && (monitorPhones?size > 0) >
+				<strong>监控手机列表</strong>
+				
+				 <#list monitorPhones as monitorPhone>
+					<ul>
+						<li>${monitorPhone.telephone}</li>
+					</ul>
+				</#list>
+			
+			</#if><!-- 监控手机列表 End -->
+			
+			<!-- ELB监控 -->
+			<#if (monitorElbs?exists) && (monitorElbs?size > 0) >
+				<strong>ELB监控</strong>
+				
+				 <#list monitorElbs as monitorElb>
+				 	<ul>
+					 	<li><em>标识符</em>&nbsp;:${monitorElb.identifier}</li>
+						<li><em>监控ELB</em>&nbsp;:${monitorElb.networkElbItem.identifier}<#if monitorElb.networkElbItem.virtualIp?exists>(${monitorElb.networkElbItem.virtualIp})</#if></li>
+						<br>
+						
+					</ul>
+				</#list>
+			
+			</#if><!-- ELB监控 End -->
+			
+			<!-- 实例监控 -->
+			<#if (monitorComputes?exists) && (monitorComputes?size > 0) >
+				<strong>实例监控</strong>
+				
+				 
+				 <#list monitorComputes as monitorCompute>
+				 	<ul>
+					 	<li><em>标识符</em>&nbsp;:${monitorCompute.identifier}</li>
+						<li><em>IP地址</em>&nbsp;:${monitorCompute.ipAddress}</li>
+						
+						<li><em>CPU占用率</em>&nbsp;:
+						报警阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.cpuWarn?string == k>${thresholdGtMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.cpuCritical?string == k>${thresholdGtMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>内存占用率</em>&nbsp;:
+						报警阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.memoryWarn?string == k>${thresholdGtMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.memoryCritical?string == k>${thresholdGtMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>网络丢包率</em>&nbsp;:
+						报警阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.pingLossWarn?string == k>${thresholdGtMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.pingLossCritical?string == k>${thresholdGtMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>硬盘可用率</em>&nbsp;:
+						报警阀值&nbsp;<#list thresholdLtMap?keys as k ><#if monitorCompute.diskWarn?string == k>${thresholdLtMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list thresholdLtMap?keys as k ><#if monitorCompute.diskCritical?string == k>${thresholdLtMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>网络延时率</em>&nbsp;:
+						报警阀值&nbsp;<#list thresholdNetGtMap?keys as k ><#if monitorCompute.pingDelayWarn?string == k>${thresholdNetGtMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list thresholdNetGtMap?keys as k ><#if monitorCompute.pingDelayCritical?string == k>${thresholdNetGtMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>最大进程数</em>&nbsp;:
+						报警阀值&nbsp;<#list maxProcessMap?keys as k ><#if monitorCompute.maxProcessWarn?string == k>${maxProcessMap[k]}</#if></#list>
+						&nbsp;&nbsp;
+						警告阀值&nbsp;<#list maxProcessMap?keys as k ><#if monitorCompute.maxProcessCritical?string == k>${maxProcessMap[k]}</#if></#list>
+						</li>
+						
+						<li><em>监控端口</em>&nbsp;:${monitorCompute.port}</li>
+						<li><em>监控进程</em>&nbsp;:${monitorCompute.process}</li>
+						<li><em>挂载路径</em>&nbsp;:${monitorCompute.mountPoint}</li>
+						
+						<br>
+					</ul>
+				</#list>
+			
+			</#if><!-- 实例监控 End -->
+			
 		</li>
 		
 		<#if passUrl?exists>

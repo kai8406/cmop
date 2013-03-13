@@ -197,7 +197,7 @@
 				<c:if test="${not empty apply.monitorMails}">
 					<hr>
 					<dt>监控邮件列表</dt>
-					<c:forEach var="item" items="${apply.monitorMails}"><dd>${item.email }</dd>	</c:forEach>
+					<c:forEach var="item" items="${apply.monitorMails}"><dd>${item.email }</dd></c:forEach>
 				</c:if>
 				
 				<!-- 监控手机列表 -->
@@ -247,6 +247,10 @@
 							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
 							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
 						</dd>
+						
+						<dd><em>监控端口</em>&nbsp;&nbsp;${item.port}</dd>
+						<dd><em>监控进程</em>&nbsp;&nbsp;${item.process}</dd>
+						<dd><em>挂载路径</em>&nbsp;&nbsp;${item.mountPoint}</dd>
 							
 						<br>
 					</c:forEach>

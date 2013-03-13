@@ -78,9 +78,13 @@ public class ApplyAuditController extends BaseController {
 	/**
 	 * 跳转到Apply审批页面.<br>
 	 * 
+	 * <pre>
+	 * 通过userId来区分页面或邮件进入
+	 * 页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
+	 * </pre>
+	 * 
 	 * @param userId
-	 *            通过userId来区分页面或邮件进入.<br>
-	 *            页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
+	 * 
 	 */
 	@RequestMapping(value = "/apply/{id}", method = RequestMethod.GET)
 	public String apply(@PathVariable("id") Integer applyId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
@@ -119,8 +123,11 @@ public class ApplyAuditController extends BaseController {
 	@RequestMapping(value = "/apply/{applyId}", method = RequestMethod.POST)
 	public String saveApply(@PathVariable(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
+
 		// 获得指定apply当前审批记录
+
 		Audit audit = this.getCurrentApplyAudit(userId, applyId);
+
 		audit.setOpinion(opinion);
 		audit.setResult(result);
 

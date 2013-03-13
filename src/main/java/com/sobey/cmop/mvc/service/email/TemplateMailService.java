@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -94,6 +95,10 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("KeepSessionMap", NetworkConstant.KeepSession.mapKeyStr);
 		map.put("ispTypeMap", NetworkConstant.ISPType.mapKeyStr);
 		map.put("domainTypeMap", NetworkConstant.DomainType.mapKeyStr);
+		map.put("thresholdGtMap", MonitorConstant.THRESHOLD_GT_STRING_KEY);
+		map.put("thresholdLtMap", MonitorConstant.THRESHOLD_LT_STRING_KEY);
+		map.put("thresholdNetGtMap", MonitorConstant.THRESHOLD_NET_GT_STRING_KEY);
+		map.put("maxProcessMap", MonitorConstant.MAX_PROCESS_STRING_KEY);
 
 		map.put("allESGs", comm.esgService.getAllEsgList());
 
@@ -131,6 +136,8 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
 		map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("monitorMails", apply.getMonitorMails());
+		map.put("monitorPhones", apply.getMonitorPhones());
 
 		// 申请 审批Audit
 
@@ -175,6 +182,8 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
 		map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("monitorMails", apply.getMonitorMails());
+		map.put("monitorPhones", apply.getMonitorPhones());
 
 		// 工单处理URL
 
@@ -214,6 +223,8 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
 		map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("monitorMails", apply.getMonitorMails());
+		map.put("monitorPhones", apply.getMonitorPhones());
 
 		// 工单处理完成提示文字
 

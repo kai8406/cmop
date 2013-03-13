@@ -286,7 +286,9 @@ public class AuditService extends BaseSevcie {
 		 */
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
+
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
+
 		audit.setApply(apply);
 		audit.setAuditFlow(auditFlow);
 		audit.setCreateTime(new Date());
@@ -318,10 +320,12 @@ public class AuditService extends BaseSevcie {
 
 				Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
 				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
+
 				issue.setTracker(tracker);
 				issue.setSubject(apply.getTitle());
 				issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
 				issue.setDescription(description);
+
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
 

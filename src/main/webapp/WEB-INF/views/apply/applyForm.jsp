@@ -406,7 +406,11 @@
 						<dd><em>最大进程数</em>
 							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
 							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
-							
+						</dd>
+						
+						<dd><em>监控端口</em>&nbsp;&nbsp;${item.port}</dd>
+						<dd><em>监控进程</em>&nbsp;&nbsp;${item.process}</dd>
+						<dd><em>挂载路径</em>&nbsp;&nbsp;${item.mountPoint}
 							<span class="pull-right">
 								<a href="${ctx}/apply/monitor/compute/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
 								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>

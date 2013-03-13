@@ -29,6 +29,10 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.MonitorElb;
+import com.sobey.cmop.mvc.entity.MonitorMail;
+import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -259,7 +263,18 @@ public class ResourcesService extends BaseSevcie {
 
 		}
 
-		// TODO 还有其它资源的插入.
+		// 实例监控
+		for (MonitorCompute monitorCompute : apply.getMonitorComputes()) {
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger(), serviceTag, monitorCompute.getId(), monitorCompute.getIdentifier(),
+					monitorCompute.getIpAddress());
+		}
+
+		// Elb监控
+		for (MonitorElb monitorElb : apply.getMonitorElbs()) {
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+		}
+
+		// TODO 还有MDN,CP资源
 
 	}
 
@@ -292,12 +307,17 @@ public class ResourcesService extends BaseSevcie {
 		List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
 		List<NetworkEipItem> eipItems = new ArrayList<NetworkEipItem>();
 		List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
+		List<MonitorMail> monitorMails = new ArrayList<MonitorMail>();
+		List<MonitorPhone> monitorPhones = new ArrayList<MonitorPhone>();
+		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
+		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 
 		resourcesList.add(resources);
 
 		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems);
 
-		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems);
+		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
+				monitorElbs);
 
 		// 写入工单Issue到Redmine
 

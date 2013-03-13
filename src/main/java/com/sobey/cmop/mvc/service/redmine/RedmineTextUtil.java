@@ -6,12 +6,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.MonitorElb;
+import com.sobey.cmop.mvc.entity.MonitorMail;
+import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -231,6 +236,105 @@ public class RedmineTextUtil {
 
 					content.append("目标IP:").append(BLANK).append(networkDnsItem.getMountElbs()).append(NEWLINE + NEWLINE);
 				}
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
+	}
+
+	/**
+	 * 生成监控邮件列表MonitorMail 的Redmine文本
+	 * 
+	 * @param content
+	 * @param monitorMails
+	 */
+	public static void generateMonitorMail(StringBuilder content, List<MonitorMail> monitorMails) {
+
+		if (!monitorMails.isEmpty()) {
+
+			content.append("# +*监控邮件列表*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			for (MonitorMail monitorMail : monitorMails) {
+				content.append(BLANK).append(monitorMail.getEmail()).append(NEWLINE);
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
+	}
+
+	/**
+	 * 生成监控手机列表MonitorPhone 的Redmine文本
+	 * 
+	 * @param content
+	 * @param monitorPhones
+	 */
+	public static void generateMonitorPhone(StringBuilder content, List<MonitorPhone> monitorPhones) {
+
+		if (!monitorPhones.isEmpty()) {
+
+			content.append("# +*监控手机列表*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			for (MonitorPhone monitorPhone : monitorPhones) {
+				content.append(BLANK).append(monitorPhone.getTelephone()).append(NEWLINE);
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+	}
+
+	public static void generateMonitorCompute(StringBuilder content, List<MonitorCompute> monitorComputes) {
+
+		if (!monitorComputes.isEmpty()) {
+
+			content.append("# +*监控手机列表*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			for (MonitorCompute monitorCompute : monitorComputes) {
+				content.append("标识符:").append(BLANK).append(monitorCompute.getIdentifier()).append(NEWLINE);
+				content.append("IP地址:").append(BLANK).append(monitorCompute.getIpAddress() != null ? monitorCompute.getIpAddress() : "").append(NEWLINE);
+
+				content.append("CPU占用率:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuCritical())).append(NEWLINE);
+
+				content.append("内存占用率:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryCritical())).append(NEWLINE);
+
+				content.append("网络丢包率:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossCritical())).append(NEWLINE);
+
+				content.append("硬盘可用率:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskCritical())).append(NEWLINE);
+
+				content.append("网络延时率:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayCritical())).append(NEWLINE);
+
+				content.append("最大进程数:").append(BLANK).append("报警阀值").append(BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessWarn())).append(BLANK + BLANK)
+						.append("警告阀值").append(BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessCritical())).append(NEWLINE);
+
+				content.append("监控端口:").append(BLANK).append(monitorCompute.getPort()).append(NEWLINE);
+				content.append("监控进程:").append(BLANK).append(monitorCompute.getProcess()).append(NEWLINE);
+				content.append("挂载路径:").append(BLANK).append(monitorCompute.getMountPoint()).append(NEWLINE);
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
+	}
+
+	public static void generateMonitorElb(StringBuilder content, List<MonitorElb> monitorElbs) {
+		if (!monitorElbs.isEmpty()) {
+
+			content.append("# +*ELB监控*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			for (MonitorElb monitorElb : monitorElbs) {
+				content.append("标识符:").append(BLANK).append(monitorElb.getIdentifier()).append(NEWLINE);
+				content.append("监控ELB:").append(BLANK).append(monitorElb.getNetworkElbItem().getIdentifier())
+						.append("(" + (monitorElb.getNetworkElbItem().getVirtualIp() != null ? monitorElb.getNetworkElbItem().getVirtualIp() : "") + ")").append(NEWLINE + NEWLINE);
 			}
 
 			content.append("</pre>").append(NEWLINE);

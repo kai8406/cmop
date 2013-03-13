@@ -221,7 +221,7 @@
 			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 			
 			<div class="form-actions">
-				<input class="btn backStep" type="button" value="返回">
+				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 			

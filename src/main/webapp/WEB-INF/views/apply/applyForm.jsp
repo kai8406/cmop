@@ -201,8 +201,8 @@
 							<em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}
 							<span class="pull-right">
 								<a href="${ctx}/apply/es3/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
-								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
-								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<a href="#deleteStorageModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteStorageModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
@@ -244,8 +244,8 @@
 						
 						<span class="pull-right">
 							<a href="${ctx}/apply/elb/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
-							<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
-							<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+							<a href="#deleteElbModal${item.id}" data-toggle="modal">删除</a>
+							<div id="deleteElbModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 								<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 								<div class="modal-body">是否删除?</div>
 								<div class="modal-footer">
@@ -286,8 +286,8 @@
 						
 						<span class="pull-right">
 							<a href="${ctx}/apply/eip/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
-							<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
-							<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+							<a href="#deleteEipModal${item.id}" data-toggle="modal">删除</a>
+							<div id="deleteEipModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 								<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 								<div class="modal-body">是否删除?</div>
 								<div class="modal-footer">
@@ -324,8 +324,8 @@
 							
 							<span class="pull-right">
 								<a href="${ctx}/apply/dns/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
-								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
-								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<a href="#deleteDnsModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteDnsModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
@@ -368,7 +368,62 @@
 				</c:if>
 				
 				<!-- 服务器监控monitorCompute -->
-				<c:if test="${not empty apply.monitorComputes}"></c:if>
+				<c:if test="${not empty apply.monitorComputes}">
+				
+					<hr>
+					<dt>实例监控</dt>
+					<c:forEach var="item" items="${apply.monitorComputes}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>IP地址</em>&nbsp;&nbsp;${item.ipAddress}</dd>
+						
+						<dd><em>CPU占用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.cpuWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.cpuCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>内存占用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.memoryWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.memoryCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>网络丢包率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.pingLossWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.pingLossCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>硬盘可用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${item.diskWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${item.diskCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>网络延时率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${item.pingDelayWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${item.pingDelayCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>最大进程数</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							
+							<span class="pull-right">
+								<a href="${ctx}/apply/monitor/compute/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否删除?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="${ctx}/apply/monitor/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</span>
+						</dd>
+							
+						<br>
+					</c:forEach>
+				</c:if>
 				
 				<!-- ELB监控monitorElb -->
 				<c:if test="${not empty apply.monitorElbs}">
@@ -383,8 +438,8 @@
 						
 							<span class="pull-right">
 								<a href="${ctx}/apply/monitor/elb/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
-								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>
-								<div id="deleteComputeModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<a href="#deleteElbModal${item.id}" data-toggle="modal">删除</a>
+								<div id="deleteElbModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">

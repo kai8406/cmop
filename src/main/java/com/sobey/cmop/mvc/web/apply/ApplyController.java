@@ -70,8 +70,7 @@ public class ApplyController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(RedirectAttributes redirectAttributes, Apply apply) {
 
-		Integer serviceType = ApplyConstant.ServiceType.基础设施.toInteger();
-		comm.applyService.saveApplyByServiceType(apply, serviceType);
+		comm.applyService.saveApplyByServiceType(apply, ApplyConstant.ServiceType.基础设施.toInteger());
 
 		redirectAttributes.addFlashAttribute("message", "创建服务申请 " + apply.getTitle() + " 成功");
 

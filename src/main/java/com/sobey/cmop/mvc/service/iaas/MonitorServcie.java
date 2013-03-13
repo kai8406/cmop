@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
-import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.MonitorCompute;
-import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
 import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.User;
@@ -79,18 +76,17 @@ public class MonitorServcie extends BaseSevcie {
 	 *            监控端口数组
 	 * @param processes
 	 *            监控进程数组
-	 * @param mountPaths
+	 * @param mountPoints
 	 *            挂载路径数组
 	 */
 	@Transactional(readOnly = false)
 	public void saveMonitorToApply(Apply apply, String[] monitorMails, String[] monitorPhones, String[] elbIds, String[] computeIds, String[] cpuWarns, String[] cpuCriticals, String[] memoryWarns,
 			String[] memoryCriticals, String[] pingLossWarns, String[] pingLossCriticals, String[] diskWarns, String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals,
-			String[] maxProcessWarns, String[] maxProcessCriticals, String[] networkFlowWarns, String[] networkFlowCriticals, String[] ports, String[] processes, String[] mountPaths) {
+			String[] maxProcessWarns, String[] maxProcessCriticals, String[] networkFlowWarns, String[] networkFlowCriticals, String[] ports, String[] processes, String[] mountPoints) {
 
 		// Step1. 创建一个服务申请Apply
 
-		Integer serviceType = ApplyConstant.ServiceType.监控.toInteger();
-		comm.applyService.saveApplyByServiceType(apply, serviceType);
+		comm.applyService.saveApplyByServiceType(apply, ApplyConstant.ServiceType.监控.toInteger());
 
 		// Step2. 创建邮件和电话监控列表
 
@@ -112,35 +108,15 @@ public class MonitorServcie extends BaseSevcie {
 			comm.monitorPhoneService.saveOrUpdate(monitorPhone);
 		}
 
-		// Step3. 创建ELB监控
+		// Step3.
 
-		if (elbIds != null) {
+		// 创建ELB监控
 
-			for (int i = 0; i < elbIds.length; i++) {
-
-				MonitorElb monitorElb = new MonitorElb();
-
-				monitorElb.setApply(apply);
-				monitorElb.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger()));
-				monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(elbIds[i])));
-
-				comm.monitorElbServcie.saveOrUpdate(monitorElb);
-
-			}
-		}
+		comm.monitorElbServcie.saveMonitorElbToApply(apply, elbIds);
 
 		// 创建实例Compute监控
-
-		if (computeIds != null) {
-
-			for (int i = 0; i < computeIds.length; i++) {
-
-				MonitorCompute monitorCompute = new MonitorCompute();
-				monitorCompute.setApply(apply);
-				monitorCompute.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger()));
-			}
-
-		}
+		comm.monitorComputeServcie.saveMonitorComputeToApply(apply, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals, diskWarns, diskCriticals,
+				pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, networkFlowWarns, networkFlowCriticals, ports, processes, mountPoints);
 
 	}
 }

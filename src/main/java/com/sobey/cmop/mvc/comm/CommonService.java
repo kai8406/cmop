@@ -66,7 +66,7 @@ public class CommonService {
 
 	@Resource
 	public DepartmentService departmentService;
-	
+
 	@Resource
 	public DnsService dnsService;
 

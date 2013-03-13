@@ -8,14 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
-import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MonitorElbDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorElb;
-import com.sobey.cmop.mvc.entity.MonitorMail;
-import com.sobey.cmop.mvc.entity.MonitorPhone;
-import com.sobey.cmop.mvc.entity.User;
 
 /**
  * Elb监控MonitorElb相关的管理类.
@@ -48,61 +44,27 @@ public class MonitorElbServcie extends BaseSevcie {
 	/**
 	 * 保存1个或多个ELB监控的服务申请.(在服务申请时调用)<br>
 	 * 
-	 * <pre>
-	 * 1.新增一个Apply
-	 * 2.新增邮件和电话监控列表
-	 * 3.新增ELB监控
-	 * </pre>
-	 * 
 	 * @param apply
 	 *            服务申请单
-	 * @param monitorMails
-	 *            监控邮件数组
-	 * @param monitorPhones
-	 *            监控电话数组
 	 * @param elbIds
 	 *            监控的ELBId数组
 	 */
 	@Transactional(readOnly = false)
-	public void saveMonitorElbToApply(Apply apply, String[] monitorMails, String[] monitorPhones, String[] elbIds) {
+	public void saveMonitorElbToApply(Apply apply, String[] elbIds) {
 
-		// Step1. 创建一个服务申请Apply
+		if (elbIds != null) {
 
-		Integer serviceType = ApplyConstant.ServiceType.监控.toInteger();
-		comm.applyService.saveApplyByServiceType(apply, serviceType);
+			for (int i = 0; i < elbIds.length; i++) {
 
-		// Step2. 创建邮件和电话监控列表
+				MonitorElb monitorElb = new MonitorElb();
 
-		User user = comm.accountService.getCurrentUser();
+				monitorElb.setApply(apply);
+				monitorElb.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger()));
+				monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(elbIds[i])));
 
-		for (int i = 0; i < monitorMails.length; i++) {
-			MonitorMail monitorMail = new MonitorMail();
-			monitorMail.setApply(apply);
-			monitorMail.setUser(user);
-			monitorMail.setEmail(monitorMails[i]);
-			comm.monitorMailService.saveOrUpdate(monitorMail);
-		}
+				this.saveOrUpdate(monitorElb);
 
-		for (int i = 0; i < monitorPhones.length; i++) {
-			MonitorPhone monitorPhone = new MonitorPhone();
-			monitorPhone.setApply(apply);
-			monitorPhone.setUser(user);
-			monitorPhone.setTelephone(monitorPhones[i]);
-			comm.monitorPhoneService.saveOrUpdate(monitorPhone);
-		}
-
-		// Step3. 创建ELB监控
-
-		for (int i = 0; i < elbIds.length; i++) {
-
-			MonitorElb monitorElb = new MonitorElb();
-
-			monitorElb.setApply(apply);
-			monitorElb.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger()));
-			monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(elbIds[i])));
-
-			this.saveOrUpdate(monitorElb);
-
+			}
 		}
 
 	}

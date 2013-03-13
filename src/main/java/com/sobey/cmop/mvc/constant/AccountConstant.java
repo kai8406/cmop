@@ -187,20 +187,4 @@ public class AccountConstant {
 
 	}
 
-	/**
-	 * 枚举的示例
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// System.out.println(UserStatus.get(1));
-		// System.out.println(UserStatus.get(3));
-		// System.out.println(UserStatus.admin);
-		// System.out.println(UserStatus.admin.name());
-		// System.out.println(UserStatus.map);
-		// for (Entry<Integer, String> s : DefaultGroups.map.entrySet()) {
-		// System.out.println(s.getValue());
-		// System.out.println(s.getKey());
-		// }
-	}
 }

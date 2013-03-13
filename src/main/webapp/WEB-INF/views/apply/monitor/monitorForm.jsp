@@ -164,18 +164,18 @@
 	
 			    	//挂载路径
 			    	
-		    		var mountPath = "";
-			    	var mountPathText = "";
+		    		var mountPoint = "";
+			    	var mountPointText = "";
 			    	
 			    	$(".monitorMountPath").each(function(){
 			    		var $this = $(this);
-			    		mountPath += $this.val() + splitStr;
-			    		mountPathText += $this.val() + blank;
+			    		mountPoint += $this.val() + splitStr;
+			    		mountPointText += $this.val() + blank;
 			    	});
 			    	
 			    	html +='<input type="hidden" value="'+port+'" name="ports">';
 			    	html +='<input type="hidden" value="'+process+'" name="processes">';
-			    	html +='<input type="hidden" value="'+mountPath+'" name="mountPaths">';
+			    	html +='<input type="hidden" value="'+mountPoint+'" name="mountPoints">';
 			    	
 			    	if(portText != blank){
 				    	html += '<dd><em>监控端口</em>&nbsp;&nbsp;<strong>'+portText+'</strong>';
@@ -185,8 +185,8 @@
 				    	html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>'+processText+'</strong>';
 			    	}
 			    	
-			    	if(mountPathText != blank){
-			    		html += '<dd><em>挂载路径</em>&nbsp;&nbsp;<strong>'+mountPathText+'</strong>';
+			    	if(mountPointText != blank){
+			    		html += '<dd><em>挂载路径</em>&nbsp;&nbsp;<strong>'+mountPointText+'</strong>';
 			    	}
 			    	
 			    	//CPU

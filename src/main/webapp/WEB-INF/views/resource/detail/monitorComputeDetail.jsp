@@ -28,7 +28,7 @@
 			 <div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.apply.title}</p>
+					<p class="help-inline plain-text">${monitorCompute.apply.title}</p>
 				</div>
 			</div>
 			
@@ -44,28 +44,85 @@
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.identifier}</p>
+					<p class="help-inline plain-text">${monitorCompute.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="ipAddress">监控实例</label>
 				<div class="controls">
-					<c:forEach var="map" items="${storageTypeMap}"><c:if test="${map.key == storage.storageType }">${map.value}</c:if></c:forEach>
+					<p class="help-inline plain-text">${resources.ipAddress}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="space">容量空间</label>
+				<label class="control-label" for="monitorMail">监控邮件列表</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.space}GB</p>		
+					<c:forEach var="email" items="${monitorCompute.apply.monitorMails  }">
+						<p class="help-inline plain-text">${email.email }</p><br>
+					</c:forEach>
+				</div>
+			</div>
+				
+			<div class="control-group">
+				<label class="control-label" for="monitorPhone">监控手机列表</label>
+				<div class="controls">
+					<c:forEach var="phone" items="${monitorCompute.apply.monitorPhones  }">
+						<p class="help-inline plain-text">${phone.telephone }</p><br>
+					</c:forEach>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="mountComputes">挂载实例</label>
+				<label class="control-label" for="monitorParameter">监控参数</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.mountComputes}</p>	
+					<p class="help-inline plain-text">
+				 		CPU占用率
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.cpuWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.cpuCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+				 		内存占用率
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.memoryWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.memoryCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+				 		网络丢包率
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.pingLossWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${monitorCompute.pingLossCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+				 		硬盘可用率
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${monitorCompute.diskWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${monitorCompute.diskCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+				 		网络延时率
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${monitorCompute.pingDelayWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${monitorCompute.pingDelayCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+				 		最大进程数
+				 		&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${monitorCompute.maxProcessWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${monitorCompute.maxProcessCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						<br>
+					</p>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="port">监控端口</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${monitorCompute.port}</p><br>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="process">监控进程</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${monitorCompute.process}</p><br>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="mountPoint">挂载路径</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${monitorCompute.mountPoint}</p><br>
 				</div>
 			</div>
 			

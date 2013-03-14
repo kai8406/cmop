@@ -81,7 +81,7 @@
 				<label class="control-label" for="elbPortItem">端口映射</label>
 				<div class="controls">
 					<table class="table table-bordered table-condensed"  >
-						<thead><tr><th>协议</th><th>负载端口</th><th>实例端口</th></tr></thead>
+						<thead><tr><th>协议</th><th>源端口</th><th>目标端口</th></tr></thead>
 						<tbody>
 							<c:forEach var="item" items="${elb.elbPortItems}">
 								<tr>
@@ -94,7 +94,6 @@
 					</table>	
 				</div>
 			</div>
-			
 			
 			<hr>
 			

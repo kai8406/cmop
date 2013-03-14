@@ -28,7 +28,7 @@
 			 <div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.apply.title}</p>
+					<p class="help-inline plain-text">${dns.apply.title}</p>
 				</div>
 			</div>
 			
@@ -44,84 +44,42 @@
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${compute.identifier}</p>
+					<p class="help-inline plain-text">${dns.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="ipAddress">IP地址</label>
+				<label class="control-label" for="domainName">域名</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${resources.ipAddress}</p>
+					<p class="help-inline plain-text">${dns.domainName}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="osType">操作系统</label>
+				<label class="control-label" for="domainType">存储类型</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="map" items="${osTypeMap}"><c:if test="${map.key == compute.osType }">${map.value}</c:if></c:forEach>
+						<c:forEach var="map" items="${domainTypeMap}"><c:if test="${map.key == dns.domainType }">${map.value}</c:if></c:forEach>
 					</p>
 				</div>
 			</div>
 			
-			<div class="control-group">
-				<label class="control-label" for="osBit">操作位数</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:forEach var="map" items="${osBitMap}"><c:if test="${map.key == compute.osBit }">${map.value}</c:if></c:forEach>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="serverType">规格</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:choose>
-							<c:when test="${compute.computeType == 1 }">
-								<c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${map.key == compute.serverType }">${map.value}</c:if></c:forEach>
-							</c:when>
-							<c:otherwise>
-								<c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${map.key == compute.serverType }">${map.value}</c:if></c:forEach>
-							</c:otherwise>
-						</c:choose>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:forEach var="item" items="${esgList}"><c:if test="${item.id == compute.networkEsgItem.id}">${item.identifier}(${item.description})</c:if></c:forEach>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="remark">用途信息</label>
-				<div class="controls">
-					<p class="help-inline plain-text">${compute.remark}</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="application">应用信息</label>
-				<div class="controls">
-					<table class="table table-bordered table-condensed"  >
-						<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th></tr></thead>
-						<tbody>
-							<c:forEach var="item" items="${compute.applications}">
-								<tr>
-									<td>${item.name }</td>
-									<td>${item.version }</td>
-									<td>${item.deployPath }</td>
-								</tr>
-							</c:forEach>
-		 				</tbody>
-					</table>	
-				</div>
-			</div>
+			<c:choose>
+				<c:when test="${not empty dns.cnameDomain }">
+					<div class="control-group">
+						<label class="control-label" for="cnameDomain">CNAME域名</label>
+						<div class="controls"><p class="help-inline plain-text">${dns.domainName}</p></div>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="control-group">
+						<label class="control-label" for="mountElbs">目标IP</label>
+						<div class="controls">
+							<p class="help-inline plain-text">${dns.mountElbs}</p>
+						</div>
+					</div>
+				</c:otherwise>
+			</c:choose>
 			
 			<hr>
 			

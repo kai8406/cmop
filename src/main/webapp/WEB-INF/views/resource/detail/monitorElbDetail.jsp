@@ -28,7 +28,7 @@
 			 <div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.apply.title}</p>
+					<p class="help-inline plain-text">${monitorElb.apply.title}</p>
 				</div>
 			</div>
 			
@@ -44,28 +44,32 @@
 			<div class="control-group">
 				<label class="control-label" for="identifier">标识符</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.identifier}</p>
+					<p class="help-inline plain-text">${monitorElb.identifier}</p>
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="storageType">存储类型</label>
+				<label class="control-label" for="monitorMail">监控邮件列表</label>
 				<div class="controls">
-					<c:forEach var="map" items="${storageTypeMap}"><c:if test="${map.key == storage.storageType }">${map.value}</c:if></c:forEach>
+					<c:forEach var="email" items="${monitorElb.apply.monitorMails  }">
+						<p class="help-inline plain-text">${email.email }</p><br>
+					</c:forEach>
 				</div>
 			</div>
-			
+				
 			<div class="control-group">
-				<label class="control-label" for="space">容量空间</label>
+				<label class="control-label" for="monitorPhone">监控手机列表</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.space}GB</p>		
+					<c:forEach var="phone" items="${monitorElb.apply.monitorPhones  }">
+						<p class="help-inline plain-text">${phone.telephone }</p><br>
+					</c:forEach>
 				</div>
 			</div>
-			
+		
 			<div class="control-group">
-				<label class="control-label" for="mountComputes">挂载实例</label>
+				<label class="control-label" for="monitorElbType">监控ELB</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${storage.mountComputes}</p>	
+					<p class="help-inline plain-text">${monitorElb.networkElbItem.identifier}(${monitorElb.networkElbItem.virtualIp })</p>
 				</div>
 			</div>
 			

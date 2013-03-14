@@ -15,15 +15,9 @@
 			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-	
+				rules:{remarks:"required"},
+				errorClass: "text-error",
+				errorElement: "span"
 			});
 			
 			/* ajax获得esgList*/ 

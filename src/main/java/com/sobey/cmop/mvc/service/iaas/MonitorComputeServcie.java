@@ -1,5 +1,9 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -228,6 +232,32 @@ public class MonitorComputeServcie extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveResourcesByMonitorCompute() {
 
+	}
+
+	/**
+	 * 根据","分拆字符串,然后组装成List返回页面
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public List<String> wrapMonitorComputeParametToList(String str) {
+
+		if (StringUtils.isNotBlank(str)) {
+
+			// 按","切割成数组后转换成List
+
+			return Arrays.asList(StringUtils.split(str, ","));
+
+		} else {
+
+			// 返回一个只有""值的list
+
+			List<String> list = new ArrayList<String>();
+
+			list.add("");
+
+			return list;
+		}
 	}
 
 }

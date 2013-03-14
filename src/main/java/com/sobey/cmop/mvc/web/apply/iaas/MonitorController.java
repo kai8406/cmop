@@ -1,10 +1,7 @@
 package com.sobey.cmop.mvc.web.apply.iaas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -200,39 +197,13 @@ public class MonitorController extends BaseController {
 		MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(id);
 
 		model.addAttribute("monitorCompute", monitorCompute);
-		model.addAttribute("ports", this.wrapMonitorComputeParametToList(monitorCompute.getPort()));
-		model.addAttribute("processes", this.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
-		model.addAttribute("mountPoints", this.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
+		model.addAttribute("ports", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
+		model.addAttribute("processes", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
+		model.addAttribute("mountPoints", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
 		model.addAttribute("monitorMails", comm.monitorMailService.getMonitorMailByApplyList(applyId));
 		model.addAttribute("monitorPhones", comm.monitorPhoneService.getMonitorPhoneByApplyList(applyId));
 
 		return "apply/monitor/monitorComputeUpateForm";
-	}
-
-	/**
-	 * 根据","分拆字符串,然后组装成List返回页面
-	 * 
-	 * @param str
-	 * @return
-	 */
-	private List<String> wrapMonitorComputeParametToList(String str) {
-
-		if (StringUtils.isNotBlank(str)) {
-
-			// 按","切割成数组后转换成List
-
-			return Arrays.asList(StringUtils.split(str, ","));
-
-		} else {
-
-			// 返回一个只有""值的list
-
-			List<String> list = new ArrayList<String>();
-
-			list.add("");
-
-			return list;
-		}
 	}
 
 	/**

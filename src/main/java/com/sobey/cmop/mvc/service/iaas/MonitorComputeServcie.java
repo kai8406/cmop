@@ -17,6 +17,8 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MonitorComputeDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 
 /**
  * 实例监控MonitorCompute相关的管理类.
@@ -230,7 +232,57 @@ public class MonitorComputeServcie extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveResourcesByMonitorCompute() {
+	public void saveResourcesByMonitorCompute(Resources resources, Integer serviceTagId, String changeDescription, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
+			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
+			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
+
+		/* 新增或更新资源Resources的服务变更Change. */
+
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+
+		MonitorCompute monitorCompute = this.getMonitorCompute(resources.getServiceId());
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareMonitorCompute(resources, monitorCompute, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn, pingLossCritical,
+				diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, networkFlowWarn, networkFlowCritical, port, process, mountPoint);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		if (isChange) {
+
+			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+
+			resources.setServiceTag(serviceTag);
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+
+		}
+
+		monitorCompute.setCpuWarn(cpuWarn);
+		monitorCompute.setCpuCritical(cpuCritical);
+		monitorCompute.setMemoryWarn(memoryWarn);
+		monitorCompute.setMemoryCritical(memoryCritical);
+		monitorCompute.setDiskWarn(diskWarn);
+		monitorCompute.setDiskCritical(diskCritical);
+		monitorCompute.setPingDelayWarn(pingDelayWarn);
+		monitorCompute.setPingDelayCritical(pingDelayCritical);
+		monitorCompute.setPingLossWarn(pingLossWarn);
+		monitorCompute.setPingLossCritical(pingLossCritical);
+		monitorCompute.setMaxProcessWarn(maxProcessWarn);
+		monitorCompute.setMaxProcessCritical(maxProcessCritical);
+		monitorCompute.setPort(port);
+		monitorCompute.setProcess(process);
+		monitorCompute.setMountPoint(mountPoint);
+
+		this.saveOrUpdate(monitorCompute);
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
 
 	}
 

@@ -12,6 +12,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -356,9 +357,97 @@ public class RedmineUtilService extends BaseSevcie {
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
 
-							// TODO
+							// monitorCompute
+
+							if (FieldNameConstant.monitorCompute.监控实例.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.监控实例 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.监控端口.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.监控端口 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.监控进程.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.监控进程 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.挂载路径.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.挂载路径 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.CPU占用率报警阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.CPU占用率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.内存占用率报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.内存占用率报警阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.内存占用率警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.内存占用率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网络丢包率报警阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网络丢包率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网络丢包率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.硬盘可用率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网络延时率报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网络延时率报警阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网络延时率警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网络延时率警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.最大进程数报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.最大进程数报警阀值 + ":" + BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.最大进程数警告阀值 + ":" + BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.MAX_PROCESS_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网卡流量报警阀值.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.monitorCompute.网卡流量报警阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+
+							} else if (FieldNameConstant.monitorCompute.网卡流量警告阀值.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.monitorCompute.网卡流量警告阀值 + ":" + BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getOldValue())).append(RARR)
+										.append(BLANK).append(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(changeItem.getNewValue())).append(NEWLINE);
+							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
+
+							// monitorElb
 
 							if (FieldNameConstant.monitorElb.监控ELB.toString().equals(fieldName)) {
 

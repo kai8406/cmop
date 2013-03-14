@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -141,5 +142,9 @@ public interface CompareResourcesService {
 	 * @return
 	 */
 	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId);
+
+	public boolean compareMonitorCompute(Resources resources, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
+			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical,
+			String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint);
 
 }

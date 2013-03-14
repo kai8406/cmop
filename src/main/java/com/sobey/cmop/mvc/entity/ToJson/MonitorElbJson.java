@@ -1,5 +1,11 @@
 package com.sobey.cmop.mvc.entity.ToJson;
 
+/**
+ * Json格式返回到页面的MonitorElb对象.
+ * 
+ * @author liukai
+ * 
+ */
 public class MonitorElbJson implements java.io.Serializable {
 
 	// Fields

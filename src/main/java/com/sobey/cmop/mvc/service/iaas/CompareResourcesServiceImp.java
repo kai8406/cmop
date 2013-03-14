@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -544,6 +545,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 
 	@Override
 	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId) {
+
 		boolean isChange = false;
 
 		// 监控ELB
@@ -553,6 +555,82 @@ public class CompareResourcesServiceImp extends BaseSevcie implements CompareRes
 			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorElb.监控ELB.toString(), monitorElb.getNetworkElbItem().getId().toString(), elbId.toString());
 
 		}
+		return isChange;
+	}
+
+	@Override
+	public boolean compareMonitorCompute(Resources resources, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
+			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical,
+			String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
+
+		// 监控实例
+
+		boolean isChange = false;
+
+		if (!monitorCompute.getIpAddress().equals(ipAddress)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控实例.toString(), monitorCompute.getIpAddress(), ipAddress);
+		}
+
+		if (!monitorCompute.getPort().equals(port)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控端口.toString(), monitorCompute.getPort(), port);
+		}
+
+		if (!monitorCompute.getProcess().equals(process)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控进程.toString(), monitorCompute.getProcess(), process);
+		}
+
+		if (!monitorCompute.getMountPoint().equals(mountPoint)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.挂载路径.toString(), monitorCompute.getMountPoint(), mountPoint);
+		}
+
+		if (!monitorCompute.getCpuWarn().equals(cpuWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString(), monitorCompute.getCpuWarn(), cpuWarn);
+		}
+
+		if (!monitorCompute.getCpuCritical().equals(cpuCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString(), monitorCompute.getCpuCritical(), cpuCritical);
+		}
+
+		if (!monitorCompute.getMemoryWarn().equals(memoryWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率报警阀值.toString(), monitorCompute.getMemoryWarn(), memoryWarn);
+		}
+
+		if (!monitorCompute.getMemoryCritical().equals(memoryCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率警告阀值.toString(), monitorCompute.getMemoryCritical(), memoryCritical);
+		}
+
+		if (!monitorCompute.getPingLossWarn().equals(pingLossWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString(), monitorCompute.getPingLossWarn(), pingLossWarn);
+		}
+
+		if (!monitorCompute.getPingLossCritical().equals(pingLossCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString(), monitorCompute.getPingLossCritical(), pingLossCritical);
+		}
+
+		if (!monitorCompute.getDiskWarn().equals(diskWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString(), monitorCompute.getDiskWarn(), diskWarn);
+		}
+
+		if (!monitorCompute.getDiskCritical().equals(diskCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString(), monitorCompute.getDiskCritical(), diskCritical);
+		}
+
+		if (!monitorCompute.getPingDelayWarn().equals(pingDelayWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率报警阀值.toString(), monitorCompute.getPingDelayWarn(), pingDelayWarn);
+		}
+
+		if (!monitorCompute.getPingDelayCritical().equals(pingDelayCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率警告阀值.toString(), monitorCompute.getPingDelayCritical(), pingDelayCritical);
+		}
+
+		if (!monitorCompute.getMaxProcessWarn().equals(maxProcessWarn)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数报警阀值.toString(), monitorCompute.getMaxProcessWarn(), maxProcessWarn);
+		}
+
+		if (!monitorCompute.getMaxProcessCritical().equals(maxProcessCritical)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数警告阀值.toString(), monitorCompute.getMaxProcessCritical(), maxProcessCritical);
+		}
+
 		return isChange;
 	}
 }

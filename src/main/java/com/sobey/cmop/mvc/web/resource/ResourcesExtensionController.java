@@ -147,4 +147,29 @@ public class ResourcesExtensionController extends BaseController {
 
 		return REDIRECT_SUCCESS_URL;
 	}
+
+	/**
+	 * 变更实例监控monitorCompute
+	 */
+	@RequestMapping(value = "/monitorCompute", method = RequestMethod.POST)
+	public String updatemonitorCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "changeDescription") String changeDescription, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "cpuWarn") String cpuWarn,
+			@RequestParam(value = "cpuCritical") String cpuCritical, @RequestParam(value = "memoryWarn") String memoryWarn, @RequestParam(value = "memoryCritical") String memoryCritical,
+			@RequestParam(value = "pingLossWarn") String pingLossWarn, @RequestParam(value = "pingLossCritical") String pingLossCritical, @RequestParam(value = "diskWarn") String diskWarn,
+			@RequestParam(value = "diskCritical") String diskCritical, @RequestParam(value = "pingDelayWarn") String pingDelayWarn,
+			@RequestParam(value = "pingDelayCritical") String pingDelayCritical, @RequestParam(value = "maxProcessWarn") String maxProcessWarn,
+			@RequestParam(value = "maxProcessCritical") String maxProcessCritical, @RequestParam(value = "networkFlowWarn") String networkFlowWarn,
+			@RequestParam(value = "networkFlowCritical") String networkFlowCritical, @RequestParam(value = "port", required = false) String port,
+			@RequestParam(value = "process", required = false) String process, @RequestParam(value = "mountPoint", required = false) String mountPoint, RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.monitorComputeServcie.saveResourcesByMonitorCompute(resources, serviceTagId, changeDescription, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn,
+				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, networkFlowWarn, networkFlowCritical, port, process, mountPoint);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
+	}
 }

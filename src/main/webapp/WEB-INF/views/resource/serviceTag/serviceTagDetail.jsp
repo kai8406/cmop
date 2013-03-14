@@ -241,12 +241,104 @@
 									
 									</c:if><!-- DNS End -->
 									
-									
 					            	<!-- monitorCompute-->
 	            					<c:if test="${resource.serviceType == 9 }">
-	            					
+	            						<td class="is-hidden">
+											<c:choose>
+												<c:when test="${item.fieldName == 'CPU占用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == 'CPU占用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '内存占用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '内存占用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络丢包率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络丢包率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '硬盘可用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdLtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '硬盘可用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdLtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络延时率报警阀值'}">
+													<c:forEach var="map" items="${thresholdNetGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络延时率警告阀值'}">
+													<c:forEach var="map" items="${thresholdNetGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '最大进程数报警阀值'}">
+													<c:forEach var="map" items="${maxProcessMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '最大进程数警告阀值'}">
+													<c:forEach var="map" items="${maxProcessMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网卡流量报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网卡流量警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.oldValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.oldValue}</c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td class="is-visible">
+											<c:choose>
+												<c:when test="${item.fieldName == 'CPU占用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == 'CPU占用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '内存占用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '内存占用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络丢包率报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络丢包率警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '硬盘可用率报警阀值'}">
+													<c:forEach var="map" items="${thresholdLtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '硬盘可用率警告阀值'}">
+													<c:forEach var="map" items="${thresholdLtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络延时率报警阀值'}">
+													<c:forEach var="map" items="${thresholdNetGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网络延时率警告阀值'}">
+													<c:forEach var="map" items="${thresholdNetGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '最大进程数报警阀值'}">
+													<c:forEach var="map" items="${maxProcessMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '最大进程数警告阀值'}">
+													<c:forEach var="map" items="${maxProcessMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网卡流量报警阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:when test="${item.fieldName == '网卡流量警告阀值'}">
+													<c:forEach var="map" items="${thresholdGtMap }"><c:if test="${item.newValue == map.key}">${map.value}</c:if></c:forEach>
+												</c:when>
+												<c:otherwise>${item.newValue}</c:otherwise>
+											</c:choose>
+										</td>
 	            					</c:if><!-- monitorCompute End -->
-	            					
 	            					
 					            	<!-- monitorElb-->
 	            					<c:if test="${resource.serviceType == 10 }">
@@ -267,11 +359,10 @@
 												<c:when test="${item.fieldName == '监控ELB'}">
 													<c:forEach var="elb" items="${allElbs }">
 														<c:if test="${elb.id == item.newValue }">${elb.identifier }(${elb.virtualIp })</c:if>
-													</c:forEach></c:forEach>
+													</c:forEach>
 												</c:when>
 												<c:otherwise>${item.newValue}</c:otherwise>
 											</c:choose>
-											
 										</td>
 									
 									</c:if><!-- monitorElb End -->

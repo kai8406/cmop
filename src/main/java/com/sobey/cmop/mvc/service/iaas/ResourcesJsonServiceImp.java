@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -19,6 +21,7 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
@@ -176,6 +179,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 	@Override
 	public MonitorElbJson convertMonitorElbJsonToMonitorElb(MonitorElb monitorElb) {
+
 		MonitorElbJson json = new MonitorElbJson();
 
 		json.setId(monitorElb.getId());
@@ -183,6 +187,39 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 		json.setNetworkElbItem(monitorElb.getNetworkElbItem().getIdentifier() + "(" + (monitorElb.getNetworkElbItem().getVirtualIp() != null ? monitorElb.getNetworkElbItem().getVirtualIp() : "")
 				+ ")");
+
+		return json;
+	}
+
+	@Override
+	public MonitorComputeJson convertMonitorComputeJsonToMonitorCompute(MonitorCompute monitorCompute) {
+
+		MonitorComputeJson json = new MonitorComputeJson();
+
+		json.setId(monitorCompute.getId());
+		json.setIdentifier(monitorCompute.getIdentifier());
+		json.setIpAddress(monitorCompute.getIpAddress());
+		json.setPort(monitorCompute.getPort());
+		json.setProcess(monitorCompute.getProcess());
+		json.setMountPoint(monitorCompute.getMountPoint());
+
+		json.setCpuWarn(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuWarn()));
+		json.setCpuCritical(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuCritical()));
+
+		json.setMemoryWarn(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryWarn()));
+		json.setMemoryCritical(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryCritical()));
+
+		json.setPingLossWarn(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossWarn()));
+		json.setPingLossCritical(MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossCritical()));
+
+		json.setDiskWarn(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskWarn()));
+		json.setDiskCritical(MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskCritical()));
+
+		json.setPingDelayWarn(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayWarn()));
+		json.setPingDelayCritical(MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayCritical()));
+
+		json.setMaxProcessWarn(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessWarn()));
+		json.setMaxProcessCritical(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessCritical()));
 
 		return json;
 	}

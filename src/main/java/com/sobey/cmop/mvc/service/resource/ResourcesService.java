@@ -536,7 +536,43 @@ public class ResourcesService extends BaseSevcie {
 
 			for (ChangeItem changeItem : changeItems) {
 
-				// TODO
+				if (FieldNameConstant.monitorCompute.监控实例.toString().equals(changeItem.getFieldName())) {
+
+					monitorCompute.setIpAddress(changeItem.getOldValue());
+
+				} else if (FieldNameConstant.monitorCompute.监控端口.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setPort(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.监控进程.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setProcess(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.挂载路径.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setMountPoint(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setCpuWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setCpuCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.内存占用率报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setMemoryWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.内存占用率警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setPingLossWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setPingLossCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setDiskWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setDiskCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.网络延时率报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setPingLossWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.网络延时率警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setPingLossCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.最大进程数报警阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setMaxProcessWarn(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(changeItem.getFieldName())) {
+					monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
+				} else if (FieldNameConstant.monitorCompute.网卡流量报警阀值.toString().equals(changeItem.getFieldName())) {
+				} else if (FieldNameConstant.monitorCompute.网卡流量警告阀值.toString().equals(changeItem.getFieldName())) {
+				}
 
 			}
 
@@ -551,12 +587,11 @@ public class ResourcesService extends BaseSevcie {
 				if (FieldNameConstant.monitorElb.监控ELB.toString().equals(changeItem.getFieldName())) {
 					monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
 				}
-
 			}
 			comm.monitorElbServcie.saveOrUpdate(monitorElb);
 		}
 
-		// TODO 其它资源的还原
+		// TODO 还有MDN,CP资源的还原
 
 		// 清除服务变更Change的内容
 

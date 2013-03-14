@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.framework.utils.Servlets;
 
@@ -115,7 +116,13 @@ public class ResourcesController extends BaseController {
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
 
-			model.addAttribute("monitorCompute", comm.monitorComputeServcie.getMonitorCompute(serviceId));
+			MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(serviceId);
+
+			model.addAttribute("monitorCompute", monitorCompute);
+
+			model.addAttribute("ports", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
+			model.addAttribute("processes", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
+			model.addAttribute("mountPoints", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
 
 			updateUrl = "resource/form/monitorCompute";
 

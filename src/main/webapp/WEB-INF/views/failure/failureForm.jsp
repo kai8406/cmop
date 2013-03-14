@@ -219,7 +219,35 @@
 				});
 				
 			}else if(serviceType == 9){
+				
 				//monitorCompute
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getmonitorCompute?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>监控实例</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
+						html += '<dd><em>监控端口</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
+						html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
+						html += '<dd><em>挂载路径</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
+						html += '<dd><em>CPU占用率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.cpuWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.cpuCritical + '</strong></dd>';
+						html += '<dd><em>内存占用率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.memoryWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.memoryCritical + '</strong></dd>';
+						html += '<dd><em>网络丢包率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.diskWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.diskCritical + '</strong></dd>';
+						html += '<dd><em>硬盘可用率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.pingLossWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.pingLossCritical + '</strong></dd>';
+						html += '<dd><em>网络延时率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.pingDelayWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.pingDelayCritical + '</strong></dd>';
+						html += '<dd><em>最大进程数</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.maxProcessWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.maxProcessCritical + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				
+				
 			}else if(serviceType == 10){
 			
 				//monitorElb

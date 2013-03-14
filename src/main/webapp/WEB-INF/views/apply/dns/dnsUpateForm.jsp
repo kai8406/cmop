@@ -182,7 +182,7 @@
 				<c:otherwise>class="hidden control-group"</c:otherwise>
 				</c:choose>
 			 >
-				<label class="control-label" for="domainType">目标IP</label>
+				<label class="control-label" for="networkEipItemList">目标IP</label>
 				<div class="controls">
 					 <a id="addEipBtn" class="btn" data-toggle="modal" href="#eipModal" >EIP资源</a>
 				</div>

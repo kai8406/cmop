@@ -384,6 +384,7 @@
 	
 		</form>
 		
+		<div class="singlePage">
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
 				<tr>
@@ -395,7 +396,7 @@
 			</thead>
 			<tbody id="resources-tbody"></tbody>
 		</table>
-		
+		</div>
 		
 		</div>
 		<div class="modal-footer">

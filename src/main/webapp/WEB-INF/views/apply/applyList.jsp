@@ -114,7 +114,7 @@
 				<th>优先级</th>
 				<th>状态</th>
 				<th>申请时间</th>
-				<th>管理</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>

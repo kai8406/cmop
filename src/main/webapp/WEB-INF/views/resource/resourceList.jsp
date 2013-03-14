@@ -137,7 +137,7 @@
 				<th>服务类型</th>
 				<th>IP地址</th>
 				<th>状态</th>
-				<th>管理</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>

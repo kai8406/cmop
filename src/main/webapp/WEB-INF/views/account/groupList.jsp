@@ -46,7 +46,7 @@
 			<tr>
 				<th>权限角色</th>
 				<th>授权</th>
-				<th>管理</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -277,7 +277,7 @@
 			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				
+				<!-- 
 				<a class="btn btn-primary" href="#auditModal" data-toggle="modal">提交审批</a>
 				<div id="auditModal" class="modal hide fade" tabindex="-1" data-width="250">
 					<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
@@ -288,7 +288,7 @@
 					</div>
 				</div>
 			</div>
-		
+			 -->
 		</fieldset>
 		
 	</form>

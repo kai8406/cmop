@@ -54,7 +54,7 @@
 				<th>用户名</th>
 				<th>权限角色</th>
 				<th>注册时间</th>
-				<th>管理</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>

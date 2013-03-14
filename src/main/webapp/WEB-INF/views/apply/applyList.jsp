@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>服务申请管理</title>
+	<title>服务申请</title>
 	
 	<script>
 		$(document).ready(function() {
@@ -15,7 +15,7 @@
 		    	trigger: "hover",
 		    	placement: "right",
 		    	title: "Note",
-		    	content: "申请任何资源前,必须有一个服务申请单."
+		    	content: "申请任何资源前,需要一个服务申请单."
 		    });
 			
 		});

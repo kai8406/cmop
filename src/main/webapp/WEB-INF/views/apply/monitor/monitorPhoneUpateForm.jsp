@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>监控手机管理</title>
+	<title>服务申请</title>
 	
 	<script>
 		$(document).ready(function() {

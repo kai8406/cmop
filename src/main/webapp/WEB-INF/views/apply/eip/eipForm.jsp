@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>EIP管理</title>
+	<title>服务申请</title>
 
 	<script>
 		$(document).ready(function() {

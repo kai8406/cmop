@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -9,6 +10,7 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 /**
@@ -57,5 +59,13 @@ public interface ResourcesJsonService {
 	 * @return
 	 */
 	public DnsJson convertDnsJsonToNetworkDnsItem(NetworkDnsItem networkDnsItem);
+
+	/**
+	 * 将MonitorElb转化成MonitorElbJson格式.
+	 * 
+	 * @param MonitorElb
+	 * @return
+	 */
+	public MonitorElbJson convertMonitorElbJsonToMonitorElb(MonitorElb monitorElb);
 
 }

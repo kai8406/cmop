@@ -218,6 +218,28 @@
 					}
 				});
 				
+			}else if(serviceType == 9){
+				//monitorCompute
+			}else if(serviceType == 10){
+			
+				//monitorElb
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getmonitorElb?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>监控ELB</em>&nbsp;&nbsp;<strong>' + data.networkElbItem + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				
 			} 
 			
 		};

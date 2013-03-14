@@ -26,6 +26,8 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MonitorCompute;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -355,13 +357,20 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送MIME格式的工单处理邮件(资源回收).
 	 */
-	public void sendRecycleResourcesNotificationMail(List<ComputeItem> computeItems, User assigneeUser) {
+	public void sendRecycleResourcesNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
 		Map<String, Object> map = this.freemarkerParameterMap();
 
 		map.put("computes", computeItems);
+		map.put("storageItems", storageItems);
+		map.put("elbs", elbItems);
+		map.put("eips", eipItems);
+		map.put("dnses", dnsItems);
+		map.put("monitorComputes", monitorComputes);
+		map.put("monitorElbs", monitorElbs);
 
 		// TODO 其它资源缺少
 
@@ -382,7 +391,7 @@ public class TemplateMailService extends BaseSevcie {
 	 * TOTO 发送工单处理邮件(资源回收)
 	 */
 	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, User assigneeUser) {
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -393,6 +402,8 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("elbs", elbItems);
 		map.put("eips", eipItems);
 		map.put("dnses", dnsItems);
+		map.put("monitorComputes", monitorComputes);
+		map.put("monitorElbs", monitorElbs);
 
 		// TODO 其它资源缺少
 
@@ -443,7 +454,8 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送MIME格式的工单处理邮件(故障申报Failure).
 	 */
-	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, User assigneeUser) {
+	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -451,6 +463,17 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("failure", failure);
 		map.put("computes", computeItems);
+		map.put("storageItems", storageItems);
+		map.put("elbs", elbItems);
+		map.put("eips", eipItems);
+		map.put("dnses", dnsItems);
+		map.put("monitorComputes", monitorComputes);
+		map.put("monitorElbs", monitorElbs);
+
+		// 申请人所创建的所有实例和ELB
+
+		map.put("allComputes", comm.computeService.getComputeListByUserId(failure.getUser().getId()));
+		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(failure.getUser().getId()));
 
 		// TODO 其它资源缺少
 

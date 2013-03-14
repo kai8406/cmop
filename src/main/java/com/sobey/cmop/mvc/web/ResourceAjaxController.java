@@ -10,10 +10,12 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 /**
- * 页面AJAX操作Resource相关的 Controller
+ * 页面AJAX操作Resource相关的 Controller<br>
+ * 注意区分申请中的资源和审批通过的资源.
  * 
  * @author liukai
  * 
@@ -81,6 +83,18 @@ public class ResourceAjaxController extends BaseController {
 	public @ResponseBody
 	DnsJson getDns(@RequestParam(value = "id") Integer id) {
 		return comm.resourcesJsonService.convertDnsJsonToNetworkDnsItem(comm.dnsService.getNetworkDnsItem(comm.resourcesService.getResources(id).getServiceId()));
+	}
+
+	/**
+	 * Ajax请求根据resourcesId获得MonitorElbJson的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getmonitorElb")
+	public @ResponseBody
+	MonitorElbJson getmonitorElb(@RequestParam(value = "id") Integer id) {
+		return comm.resourcesJsonService.convertMonitorElbJsonToMonitorElb(comm.monitorElbServcie.getMonitorElb(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 }

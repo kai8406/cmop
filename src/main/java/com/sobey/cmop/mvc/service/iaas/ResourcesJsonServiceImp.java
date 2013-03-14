@@ -10,6 +10,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -18,6 +19,7 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 @Service
@@ -141,6 +143,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 
 	@Override
 	public DnsJson convertDnsJsonToNetworkDnsItem(NetworkDnsItem networkDnsItem) {
+
 		DnsJson json = new DnsJson();
 
 		json.setId(networkDnsItem.getId());
@@ -167,6 +170,19 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements ResourcesJson
 			json.setTargetEip(targetEip);
 
 		}
+
+		return json;
+	}
+
+	@Override
+	public MonitorElbJson convertMonitorElbJsonToMonitorElb(MonitorElb monitorElb) {
+		MonitorElbJson json = new MonitorElbJson();
+
+		json.setId(monitorElb.getId());
+		json.setIdentifier(monitorElb.getIdentifier());
+
+		json.setNetworkElbItem(monitorElb.getNetworkElbItem().getIdentifier() + "(" + (monitorElb.getNetworkElbItem().getVirtualIp() != null ? monitorElb.getNetworkElbItem().getVirtualIp() : "")
+				+ ")");
 
 		return json;
 	}

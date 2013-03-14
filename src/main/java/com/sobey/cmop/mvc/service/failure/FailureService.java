@@ -169,7 +169,7 @@ public class FailureService extends BaseSevcie {
 
 				// 发送工单处理邮件
 
-				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, assigneeUser);
+				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
 
 			}
 

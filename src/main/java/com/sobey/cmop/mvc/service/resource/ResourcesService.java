@@ -367,7 +367,7 @@ public class ResourcesService extends BaseSevcie {
 
 			// 发送工单处理邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
 
 		}
 

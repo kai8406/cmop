@@ -15,7 +15,6 @@
 			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
 			
 			$("#inputForm").validate({
-				rules:{remarks:"required"},
 				errorClass: "text-error",
 				errorElement: "span"
 			});

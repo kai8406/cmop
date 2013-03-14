@@ -40,8 +40,6 @@ $(document).ready(function() {
  		
  		$(this).find("i").toggleClass("icon-resize-small icon-resize-full");
  		
- 		
- 		
  	});
  	
  	

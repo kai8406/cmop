@@ -481,9 +481,9 @@ $.extend($.validator, {
 				}
 
 				// select only the first element for each name, and only those with rules specified
-				if ( this.name in rulesCache || !validator.objectLength($(this).rules()) ) {
+				/*if ( this.name in rulesCache || !validator.objectLength($(this).rules()) ) {
 					return false;
-				}
+				}*/
 
 				rulesCache[this.name] = true;
 				return true;

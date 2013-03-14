@@ -185,11 +185,11 @@ public class ResourcesService extends BaseSevcie {
 		}
 
 		if (StringUtils.isNotBlank(serviceTagName)) {
-			filters.put("resources.serviceTag.name", new SearchFilter("serviceTag.name", Operator.LIKE, serviceIdentifier));
+			filters.put("resources.serviceTag.name", new SearchFilter("serviceTag.name", Operator.LIKE, serviceTagName));
 		}
 
 		if (StringUtils.isNotBlank(ipAddress)) {
-			filters.put("resources.ipAddress", new SearchFilter("ipAddress", Operator.EQ, serviceIdentifier));
+			filters.put("resources.ipAddress", new SearchFilter("ipAddress", Operator.EQ, ipAddress));
 		}
 
 		if (StringUtils.isNotBlank(serviceIdentifier)) {

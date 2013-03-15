@@ -10,20 +10,15 @@
 		$(document).ready(function() {
 			
 			$("ul#navbar li#apply").addClass("active");
-			
 		
 			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
 			
-			$("#inputForm").validate({
-				errorClass: "text-error",
-				errorElement: "span"
-			});
+			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
 			
 			/* ajax获得esgList*/ 
 			
 			//注意该变量是全局变量!!!
-			var esgHTML = '';
-			
+			var esgHTML;
 			$.ajax({
 				type: "GET",
 				url: "${ctx}/ajax/getEsgList",
@@ -37,7 +32,6 @@
 			
 			
 			/*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
-			
 			$(".serverTypeBtn").click(function() {
 				
 				var $parent = $(this).parent().parent();
@@ -61,7 +55,6 @@
 			
 			
 			 /*点击弹出窗口保存时.*/
-			 
 			$("#modalSave").click(function() {
 				
 				$("input[id^='inputCount']").each(function() { 
@@ -70,22 +63,16 @@
 					
 					var nCount = $this.val();//数量输入框值
 					
-					
 					//数量输入框不为空时
-					
 					if (nCount != "") {
 						
 						//输入框的ID是有字符串"inputCount"+规格ID组成的. 所以获得字符串"inputCount"的长度,用于截取规格的ID
-						
 						var nLen = "inputCount".length;
-						
 						var serverTypeId = this.id.substring(nLen);
 						
 						var serverTypeText = $.trim($this.parent().parent().find("td:first").text());//规格名
 						
-						
 						//从隐藏域中取出之前选择的操作系统和位数.
-						
 						var osId = $("#osIdTmp").val();
 						var osNAME = $("#osNameTmp").val();
 						var osBitId = $("#bitValueTemp").val();
@@ -93,14 +80,12 @@
 						
 						
 						//页面已生成的实例个数.
-						
 						var instanceCount = $("#resourcesDIV div.resources").size();
 						
-						
-						for (var i = 0; i < nCount; i++) {
+						var i = 0;
+						for (; i < nCount; i++) {
 							
 							//获得页面已有的alert数量,再加上i.用于区别不同的remark,以便检验.
-							
 							var loopId = instanceCount+ i; 
 							
 							var html = '<div class="resources alert alert-block alert-info fade in">';
@@ -112,13 +97,9 @@
 							html += '<input type="hidden" name="osTypes" value="'+osId+'">';
 							html += '<input type="hidden" name="osBits" value="'+osBitId+'">';
 							html += '<input type="hidden" name="serverTypes" value="'+serverTypeId+'">';
-							html += '';
-							html += '';
-							html += '';
 							html += '</div>';
 							
-							
-						$("#resourcesDIV dl").append(html);
+							$("#resourcesDIV dl").append(html);
 						}
 						
 					}
@@ -138,7 +119,7 @@
 
 	<style>body{background-color: #f5f5f5;}</style>
 
-	<form id="inputForm" action="." method="post" class="input-form form-horizontal" style="max-width: 960px;">
+	<form id="inputForm" action="." method="post" class="input-form form-horizontal">
 		
 		<input type="hidden" id="computeType" name="computeType" value="${computeType}">
 		

@@ -15,10 +15,9 @@
 			
 			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
 			
-			/* ajax获得esgList*/ 
-			
 			//注意该变量是全局变量!!!
 			var esgHTML;
+			/* ajax获得esgList*/ 
 			$.ajax({
 				type: "GET",
 				url: "${ctx}/ajax/getEsgList",

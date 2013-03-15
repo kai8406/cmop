@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<title>实例变更</title>
+	<title>资源管理</title>
 	
 	<script>
 		$(document).ready(function() {

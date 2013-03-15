@@ -148,31 +148,25 @@ function checkTimeReset(){
 
 
 function cloneParamTable() {
-	 
-	$(document).on("click","a.clone" , function() {
-		
+	$(document).on("click", "a.clone", function() {
 		var $this = $(this);
 		var $tr = $this.closest('tr.clone');
-		
 		if ($this.hasClass("disabled")) {
-			if($tr.parent().find("tr.clone").length === 1){
+			if ($tr.parent().find("tr.clone").length === 1) {
 				alert("至少要有一个信息");
 				return false;
 			}
-			 $tr.remove();
+			$tr.remove();
 		} else {
-			/*  
-			if(!$this.closest("form").valid()){
-	    		return false;
-	    	}
-			 */
+			if (!$this.closest("form").valid()) {
+				return false;
+			}
 			var $clone = $tr.clone();
 			$clone.find('input[type=text]').val(''); //清空文本
 			$clone.find("span,p").empty();
 			$tr.after($clone);
 		}
 	});
-	
 }
 
 

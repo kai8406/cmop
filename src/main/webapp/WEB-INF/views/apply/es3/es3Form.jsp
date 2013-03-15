@@ -23,8 +23,8 @@
 	
 			});
 			
-			$("#addComputeBtn").click(function(){
-				if(!$("#inputForm").valid()){
+			$("#addComputeBtn").click(function() {
+				if (!$("#inputForm").valid()) {
 					return false;
 				}
 			});
@@ -34,7 +34,9 @@
 		/*点击弹出窗口保存时,连同ES3的信息生成HTML代码插入页面.*/
 		$(document).on("click", "#ModalSave", function() {
 			
-			var html = "" ,computeIds = "",computeInfo = "";
+			var html = "",
+				computeIds = "",
+				computeInfo = "";
 			
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
@@ -43,36 +45,32 @@
 			var space = $("#space").val();
 			
 			//遍历挂载Compute的Id和identifier.
-			$CheckedIds.each(function(){
-				
+			$CheckedIds.each(function() {
 				var $this = $(this);
 				var $td = $this.closest("tr").find("td");
-				
-				computeIds +=  $this.val() +"-";
-				
-		    	computeInfo += "<br>"+$td.eq(1).text();
-		    	computeInfo += "("+$td.eq(4).text()+")";
+				computeIds += $this.val() + "-";
+				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(4).text() + ")";
 			});
 			
 			//判断是否选中实例,拼装HTML文本
-			if($CheckedIds.length > 0){
-				html +='<div class="resources alert alert-block alert-info fade in">';
-				html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-				html +='<input type="hidden" value="'+computeIds+'" name="computeIds">';
-				html +='<input type="hidden" value="'+space+'" name="spaces">';
-				html +='<input type="hidden" value="'+storageType+'" name="storageTypes">';
-				html +='<dd><em>存储类型</em>&nbsp;&nbsp;<strong>'+storageTypeText+'</strong></dd>';
-				html +='<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>'+space+'</strong></dd>';
-				html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeInfo+'</strong></dd>';
-				html +='</div> ';
+			if ($CheckedIds.length > 0) {
+				html += '<div class="resources alert alert-block alert-info fade in">';
+				html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+				html += '<input type="hidden" value="' + computeIds + '" name="computeIds">';
+				html += '<input type="hidden" value="' + space + '" name="spaces">';
+				html += '<input type="hidden" value="' + storageType + '" name="storageTypes">';
+				html += '<dd><em>存储类型</em>&nbsp;&nbsp;<strong>' + storageTypeText + '</strong></dd>';
+				html += '<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>' + space + '</strong></dd>';
+				html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>' + computeInfo + '</strong></dd>';
+				html += '</div> ';
 			}
 			
-			//初始化
-			$("input[type=checkbox]").removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
-			
-			//插入HTML文本
-			$("#resourcesDIV dl").append(html);
+		    //初始化
+		    $("input[type=checkbox]").removeAttr('checked');
+		    $ModalDiv.find(".checker > span").removeClass("checked"); //uniform checkbox的处理
+		    
+		    //插入HTML文本
+		    $("#resourcesDIV dl").append(html);
 			
 		}); 
 		 

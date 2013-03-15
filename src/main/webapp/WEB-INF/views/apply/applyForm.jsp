@@ -230,9 +230,7 @@
 						
 						<dd><em>关联实例</em>&nbsp; 
 							<c:forEach var="compute" items="${allComputes}">
-								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}
-									<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
-								</c:if>
+								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}(${compute.innerIp})&nbsp;&nbsp;</c:if>
 							</c:forEach>
 						</dd>
 						

@@ -1,7 +1,10 @@
 package com.sobey.cmop.mvc.web.apply.iaas;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 
 /**
@@ -121,6 +125,14 @@ public class ELBController extends BaseController {
 		redirectAttributes.addFlashAttribute("message", "删除ELB成功");
 
 		return "redirect:/apply/update/" + applyId;
+	}
+
+	/**
+	 * @return 获得当前登录用户创建的未和ELB关联的ComputeList.
+	 */
+	@ModelAttribute("computeByElbIsNullList")
+	public List<ComputeItem> getComputeByElbIsNullList() {
+		return comm.computeService.getComputeByElbIsNullList();
 	}
 
 }

@@ -28,33 +28,29 @@
 	  	 
 		$(document).on("click", "#ModalSave", function() {
 			
-			var selectedArray = [];
+			var selectedArray = [],
+				html = "";
+			
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
-			var html = '';
 			
 			//遍历页面,将页面存在的computeId放入临时数组中.
-			$("div.resources").each(function(){
+			$("div.resources").each(function() {
 				selectedArray.push($(this).find("#computeIds").val());
 			});
 			
 			//遍历挂载Compute的Id,先判断页面是否有选中的computeId,有的话跳过.
 			$CheckedIds.each(function(){
-				
 				var $this = $(this);
-		    	
-		    	if($.inArray($this.val(),selectedArray) == -1){
-		    		
+				if ($.inArray($this.val(), selectedArray) == -1) {
 					var $td = $this.closest("tr").find("td");
-			    	var computeInfo = $td.eq(1).text()+"("+$td.eq(4).text()+")";
-			    	
-					html +='<div class="resources alert alert-block alert-info fade in">';
-					html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-					html +='<input type="hidden" value="'+$this.val()+'" id="computeIds" name="computeIds">';
-					html +='<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>'+computeInfo+'</strong></dd>';
-					html +='</div> ';
+					var computeInfo = $td.eq(1).text() + "(" + $td.eq(4).text() + ")";
+					html += '<div class="resources alert alert-block alert-info fade in">';
+					html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+					html += '<input type="hidden" value="' + $this.val() + '" id="computeIds" name="computeIds">';
+					html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>' + computeInfo + '</strong></dd>';
+					html += '</div> ';
 				}
-		    	
 			});
 			
 			//初始化

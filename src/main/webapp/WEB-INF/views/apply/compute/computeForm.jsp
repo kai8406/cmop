@@ -22,34 +22,27 @@
 				type: "GET",
 				url: "${ctx}/ajax/getEsgList",
 				dataType: "json",
-				success: function(data){
-					for ( var i = 0; i < data.length; i++) {
-						esgHTML += '<option value="'+data[i].id+'">'+data[i].description+'</option>';
+				success: function(data) {
+					for (var i = 0; i < data.length; i++) {
+						esgHTML += '<option value="' + data[i].id + '">' + data[i].description + '</option>';
 					}
- 				}		
+				}
 			});
 			
 			
 			/*点击选择规格时,将选中的操作系统,位数等保存在临时隐藏域中..*/
 			$(".serverTypeBtn").click(function() {
-				
 				var $parent = $(this).parent().parent();
-				
-				var osId = $parent.find("#osId").val();//操作系统ID
-				
+				var osId = $parent.find("#osId").val(); //操作系统ID
 				var osNAME = $parent.find("span").text(); //操作系统名
-	
-				var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val();//选中的位数Id
-	
-				var osBitText =  $.trim($parent.find("input[name='osBit" + osId + "']:checked").closest("label").text()); //选中的位数文本.
-				
+				var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val(); //选中的位数Id
+				var osBitText = $.trim($parent.find("input[name='osBit" + osId + "']:checked").closest("label").text()); //选中的位数文本.
 				
 				//装入临时隐藏域
 				$("#osIdTmp").val(osId);
 				$("#osNameTmp").val(osNAME);
 				$("#bitValueTemp").val(osBitId);
 				$("#bitTextTmp").val(osBitText);
-				
 			});
 			
 			
@@ -68,18 +61,14 @@
 						//输入框的ID是有字符串"inputCount"+规格ID组成的. 所以获得字符串"inputCount"的长度,用于截取规格的ID
 						var nLen = "inputCount".length;
 						var serverTypeId = this.id.substring(nLen);
-						
-						var serverTypeText = $.trim($this.parent().parent().find("td:first").text());//规格名
+						var serverTypeText = $.trim($this.parent().parent().find("td:first").text()); //规格名
 						
 						//从隐藏域中取出之前选择的操作系统和位数.
 						var osId = $("#osIdTmp").val();
 						var osNAME = $("#osNameTmp").val();
 						var osBitId = $("#bitValueTemp").val();
 						var osBitText = $("#bitTextTmp").val();
-						
-						
-						//页面已生成的实例个数.
-						var instanceCount = $("#resourcesDIV div.resources").size();
+						var instanceCount = $("#resourcesDIV div.resources").size();//页面已生成的实例个数.
 						
 						var i = 0;
 						for (; i < nCount; i++) {
@@ -89,13 +78,12 @@
 							
 							var html = '<div class="resources alert alert-block alert-info fade in">';
 							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
-							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>'+osNAME+' &nbsp;'+osBitText+' &nbsp;'+serverTypeText+'</strong></dd>';
-							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required span2" name="remarks" id="remarks'+loopId+'"></dd>';
-							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" class="required span2">'+esgHTML+'</select></dd>';
-							
-							html += '<input type="hidden" name="osTypes" value="'+osId+'">';
-							html += '<input type="hidden" name="osBits" value="'+osBitId+'">';
-							html += '<input type="hidden" name="serverTypes" value="'+serverTypeId+'">';
+							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + ' &nbsp;' + serverTypeText + '</strong></dd>';
+							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required span2" name="remarks" id="remarks' + loopId + '"></dd>';
+							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" class="required span2">' + esgHTML + '</select></dd>';
+							html += '<input type="hidden" name="osTypes" value="' + osId + '">';
+							html += '<input type="hidden" name="osBits" value="' + osBitId + '">';
+							html += '<input type="hidden" name="serverTypes" value="' + serverTypeId + '">';
 							html += '</div>';
 							
 							$("#resourcesDIV dl").append(html);

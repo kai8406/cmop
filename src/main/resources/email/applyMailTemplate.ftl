@@ -216,7 +216,7 @@
 				 <#list monitorComputes as monitorCompute>
 				 	<ul>
 					 	<li><em>标识符</em>&nbsp;:${monitorCompute.identifier}</li>
-						<li><em>IP地址</em>&nbsp;:${monitorCompute.ipAddress}</li>
+						<li><em>IP地址</em>&nbsp;:<#if monitorCompute.ipAddress?exists >${monitorCompute.ipAddress}</#if></li>
 						
 						<li><em>CPU占用率</em>&nbsp;:
 						报警阀值&nbsp;<#list thresholdGtMap?keys as k ><#if monitorCompute.cpuWarn?string == k>${thresholdGtMap[k]}</#if></#list>

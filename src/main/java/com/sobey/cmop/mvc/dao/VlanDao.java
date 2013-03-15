@@ -15,8 +15,8 @@ import com.sobey.cmop.mvc.entity.Vlan;
  */
 public interface VlanDao extends PagingAndSortingRepository<Vlan, Integer>, JpaSpecificationExecutor<Vlan> {
 
-	Vlan findByName(String name);
-
 	List<Vlan> findByLocationId(Integer locationId);
+
+	Vlan findByName(String name);
 
 }

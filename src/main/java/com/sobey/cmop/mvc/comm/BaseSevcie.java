@@ -32,16 +32,6 @@ public class BaseSevcie {
 	public static PropertiesLoader CONFIG_LOADER = new PropertiesLoader("classpath:/config.properties");
 
 	/**
-	 * 获得当前登录用户的ID
-	 * 
-	 * @return
-	 */
-	public Integer getCurrentUserId() {
-		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-		return user != null ? user.id : null;
-	}
-
-	/**
 	 * 创建分页请求.<br>
 	 * 默认以id为DESC 倒序查询
 	 */
@@ -55,6 +45,16 @@ public class BaseSevcie {
 	 */
 	public PageRequest buildPageRequest(int pageNumber, int pagzSize, Sort sort) {
 		return new PageRequest(pageNumber - 1, pagzSize, sort);
+	}
+
+	/**
+	 * 获得当前登录用户的ID
+	 * 
+	 * @return
+	 */
+	public Integer getCurrentUserId() {
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		return user != null ? user.id : null;
 	}
 
 }

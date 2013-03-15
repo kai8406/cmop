@@ -22,27 +22,7 @@
 				}
 			});
 			
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getEipList",
-				dataType: "json",
-				success: function(data){
-					var html = '';
-					for ( var i = 0; i < data.length; i++) {
-						html += '<tr>';
-						html += '<td><input type="checkbox" value="'+data[i].id+'"></td>';
-						html += '<td>'+data[i].identifier+'</td>';
-						html += '<td>'+data[i].ispType+'</td>';
-						html += '<td>'+(data[i].ipAddress == null ? "" : data[i].ipAddress ) +'</td>';
-						html += '<td>'+data[i].link+'</td>';
-						html += '</tr> ';
-					}
-					$("#resources-tbody").append(html);
- 				}		
-			});
-			
 		});
-		
 		
 		/*
 			选择域名类型时,根据不同的类型切换不同的目标IP/CNAME域名
@@ -52,79 +32,56 @@
 		$(document).on("change", "#domainType", function(){
 			
 			var $this = $(this);
-			
-			if ( $this.val()== 3 ) {
+			if ($this.val() == 3) {
 				//CNAME
-				
 				$("#cnameDomainDiv").addClass("show").removeClass("hidden");
 				$("#targetEIPDiv").addClass("hidden").removeClass("show");
-				
-				
-			}else{
+			} else {
 				//GSLB,A
-				
 				$("#targetEIPDiv").addClass("show").removeClass("hidden");
 				$("#cnameDomainDiv").addClass("hidden").removeClass("show");
-				
 			}
-			
-			//
-				
 			$("#resourcesDIV dl").empty();
 			$("#cnameDomain").val('');
 				
 		});
 		
-		
-		 /*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
-	  	 
+		/*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
 		$(document).on("click", "#ModalSave", function() {
 			
-			var selectedArray = [];
+			var selectedArray = [],
+				html = "";
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
 			
 			//Step.1
 			$("div.resources").each(function(){
-				selectedArray.push($(this).find("#computeIds").val());
+				selectedArray.push($(this).find("#eipIds").val());
 			});
 			
-			var html = '';
-			
-			//遍历挂载Compute的Id 
-			
-			$CheckedIds.each(function(){
-				
+			//遍历挂载EIP的Id和identifier.
+			$CheckedIds.each(function() {
 				var $this = $(this);
-		    	var computeIdentifier = $this.closest("tr").find("td").eq(1).text()+"&nbsp;";
-		    	
-		    	if($.inArray($this.val(),selectedArray) == -1){
-		    		
-		    		//拼装HTML文本
-					
-					html +='<div class="resources alert alert-block alert-info fade in">';
-					html +='<button type="button" class="close" data-dismiss="alert">×</button>';
-					html +='<input type="hidden" value="'+$this.val()+'" id="eipIds" name="eipIds">';
-					html +='<dd><em>目标IP</em>&nbsp;&nbsp;<strong>'+computeIdentifier+'</strong></dd>';
-					html +='</div> ';
-					
+				var $td = $this.closest("tr").find("td");
+				var eipInfo = $td.eq(1).text() + "(" + $td.eq(3).text() + ")";
+				if ($.inArray($this.val(), selectedArray) == -1) {
+					html += '<div class="resources alert alert-block alert-info fade in">';
+					html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+					html += '<input type="hidden" value="' + $this.val() + '" id="eipIds" name="eipIds">';
+					html += '<dd><em>目标IP</em>&nbsp;&nbsp;<strong>' + eipInfo + '</strong></dd>';
+					html += '</div> ';
 				}
-				
 			});
-			
 			
 			//初始化
 			selectedArray = [];
 			$("input[type=checkbox]").removeAttr('checked');
 			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
-			 
 			
 			//插入HTML文本
-			
 			$("#resourcesDIV dl").append(html);
 			
 		}); 
-		 
 		 
 	</script>
 </head>
@@ -135,7 +92,7 @@
 	
 	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${dns.apply.id }">
+		<input type="hidden" name="applyId" value="${dns.apply.id}">
 		
 		<fieldset>
 			<legend><small>修改DNS域名映射</small></legend>
@@ -178,7 +135,7 @@
 			
 			<div id="targetEIPDiv" 
 				<c:choose>
-				<c:when test="${ empty dns.cnameDomain  }">class="show"</c:when>
+				<c:when test="${ empty dns.cnameDomain}">class="show"</c:when>
 				<c:otherwise>class="hidden control-group"</c:otherwise>
 				</c:choose>
 			 >
@@ -237,7 +194,22 @@
 						<th>IP</th>
 						<th>关联实例/ELB</th>
 					</tr></thead>
-					<tbody id="resources-tbody"></tbody>
+					<tbody id="resources-tbody">
+						<c:forEach var="item" items="${allEips }">
+							<tr>
+								<td><input type="checkbox" value="${item.id }"></td>
+								<td>${item.identifier}</td>
+								<td><c:forEach var="map" items="${ispTypeMap}"><c:if test="${item.ispType == map.key}">${map.value}</c:if></c:forEach></td>
+								<td>${item.ipAddress }</td>
+								<td>
+									<c:choose>
+										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.innerIp })</c:when>
+										<c:otherwise>${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+									</c:choose>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
 				</table>
 			</div>
 				

@@ -22,24 +22,24 @@ public interface IpPoolDao extends PagingAndSortingRepository<IpPool, Integer>, 
 
 	Page<IpPool> findAllByPoolTypeAndIpAddressLike(Integer poolType, String ipAddress, Pageable pageable);
 
-	Page<IpPool> findAllByStatusAndIpAddressLike(Integer status, String ipAddress, Pageable pageable);
-
 	Page<IpPool> findAllByPoolTypeAndStatusAndIpAddressLike(Integer poolType, Integer status, String ipAddress, Pageable pageable);
 
-	List<IpPool> findByIpAddress(String ipAddress);
-
-	IpPool findByIpAddressAndVlan_location_alias(String ipAddress, String location);
+	Page<IpPool> findAllByStatusAndIpAddressLike(Integer status, String ipAddress, Pageable pageable);
 
 	List<IpPool> findByHostServer(HostServer hostServer);
 
-	List<IpPool> findByPoolType(Integer poolType);
-
-	List<IpPool> findByVlanAliasAndStatus(String vlan, int i);
+	List<IpPool> findByIpAddress(String ipAddress);
 
 	IpPool findByIpAddressAndStatus(String ipAddress, Integer ipStatus);
+
+	IpPool findByIpAddressAndVlan_location_alias(String ipAddress, String location);
+
+	List<IpPool> findByPoolType(Integer poolType);
 
 	List<IpPool> findByPoolTypeAndStatus(Integer poolType, Integer ipStatus);
 
 	List<IpPool> findByStatus(Integer ipStatus);
+
+	List<IpPool> findByVlanAliasAndStatus(String vlan, int i);
 
 }

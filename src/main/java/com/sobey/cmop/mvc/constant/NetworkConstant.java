@@ -13,6 +13,62 @@ import com.google.common.collect.Maps;
 public class NetworkConstant {
 
 	/**
+	 * 域名类型
+	 * 
+	 * <pre>
+	 * 1-GSLB
+	 * 2-A
+	 * 3-CNAME
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum DomainType implements CommonEnum {
+		A(2), CNAME(3), GSLB(1);
+
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
+		static {
+			for (DomainType e : DomainType.values()) {
+
+				map.put(e.code, e.name());
+
+			}
+		}
+		static {
+			for (DomainType e : DomainType.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
+		public static String get(Integer code) {
+			return map.get(code);
+		}
+
+		private int code;
+
+		private DomainType(int code) {
+			this.code = code;
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
+	}
+
+	/**
 	 * ESG的协议.<br>
 	 * 注意:返回的map key和value均为String类型
 	 * 
@@ -25,7 +81,7 @@ public class NetworkConstant {
 	 */
 	public enum EsgProtocol {
 
-		TCP, UDP, ICMP, HTTP, HTTPS, SSH, DNS, MYSQL;
+		DNS, HTTP, HTTPS, ICMP, MYSQL, SSH, TCP, UDP;
 
 		public static final Map<String, String> map = Maps.newLinkedHashMap();
 		static {
@@ -38,27 +94,59 @@ public class NetworkConstant {
 	}
 
 	/**
-	 * 网络资源的协议类型
+	 * 运营商ISP
 	 * 
 	 * <pre>
-	 * HTTP,HTTPS,TCP,SSL,ALL
+	 * 1-中国电信 
+	 * 2-中国联通
+	 * 3-中国移动
 	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum Protocol {
+	public enum ISPType implements CommonEnum {
+		中国电信(1), 中国联通(2), 中国移动(3);
 
-		HTTP, HTTPS, TCP, SSL, ALL;
+		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
-		public static final Map<String, String> map = Maps.newLinkedHashMap();
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
-			for (Protocol e : Protocol.values()) {
+			for (ISPType e : ISPType.values()) {
 
-				map.put(e.name(), e.name());
+				map.put(e.code, e.name());
 
 			}
 		}
+		static {
+			for (ISPType e : ISPType.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
+		public static String get(Integer code) {
+			return map.get(code);
+		}
+
+		private int code;
+
+		private ISPType(int code) {
+			this.code = code;
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
 	}
 
 	/**
@@ -76,13 +164,10 @@ public class NetworkConstant {
 	public enum KeepSession implements CommonEnum {
 		保持(true), 不保持(false);
 
-		private boolean code;
-
-		private KeepSession(boolean code) {
-			this.code = code;
-		}
-
 		public static final Map<Boolean, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
 			for (KeepSession e : KeepSession.values()) {
 
@@ -90,8 +175,6 @@ public class NetworkConstant {
 
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (KeepSession e : KeepSession.values()) {
 
@@ -104,9 +187,10 @@ public class NetworkConstant {
 			return map.get(code);
 		}
 
-		@Override
-		public Integer toInteger() {
-			return this.code ? 1 : 0;
+		private boolean code;
+
+		private KeepSession(boolean code) {
+			this.code = code;
 		}
 
 		public Boolean toBoolean() {
@@ -115,58 +199,8 @@ public class NetworkConstant {
 		}
 
 		@Override
-		public String toString() {
-			return String.valueOf(this.code);
-		}
-
-	}
-
-	/**
-	 * 域名类型
-	 * 
-	 * <pre>
-	 * 1-GSLB
-	 * 2-A
-	 * 3-CNAME
-	 * </pre>
-	 * 
-	 * @author liukai
-	 * 
-	 */
-	public enum DomainType implements CommonEnum {
-		GSLB(1), A(2), CNAME(3);
-
-		private int code;
-
-		private DomainType(int code) {
-			this.code = code;
-		}
-
-		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
-		static {
-			for (DomainType e : DomainType.values()) {
-
-				map.put(e.code, e.name());
-
-			}
-		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
-		static {
-			for (DomainType e : DomainType.values()) {
-
-				mapKeyStr.put(String.valueOf(e.code), e.name());
-
-			}
-		}
-
-		public static String get(Integer code) {
-			return map.get(code);
-		}
-
-		@Override
 		public Integer toInteger() {
-			return this.code;
+			return this.code ? 1 : 0;
 		}
 
 		@Override
@@ -189,15 +223,12 @@ public class NetworkConstant {
 	 * 
 	 */
 	public enum LinkType implements CommonEnum {
-		关联实例(1), 关联ELB(2);
-
-		private int code;
-
-		private LinkType(int code) {
-			this.code = code;
-		}
+		关联ELB(2), 关联实例(1);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
 			for (LinkType e : LinkType.values()) {
 
@@ -205,8 +236,6 @@ public class NetworkConstant {
 
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (LinkType e : LinkType.values()) {
 
@@ -217,6 +246,12 @@ public class NetworkConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private LinkType(int code) {
+			this.code = code;
 		}
 
 		@Override
@@ -232,58 +267,27 @@ public class NetworkConstant {
 	}
 
 	/**
-	 * 运营商ISP
+	 * 网络资源的协议类型
 	 * 
 	 * <pre>
-	 * 1-中国电信 
-	 * 2-中国联通
-	 * 3-中国移动
+	 * HTTP,HTTPS,TCP,SSL,ALL
 	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum ISPType implements CommonEnum {
-		中国电信(1), 中国联通(2), 中国移动(3);
+	public enum Protocol {
 
-		private int code;
+		ALL, HTTP, HTTPS, SSL, TCP;
 
-		private ISPType(int code) {
-			this.code = code;
-		}
-
-		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+		public static final Map<String, String> map = Maps.newLinkedHashMap();
 		static {
-			for (ISPType e : ISPType.values()) {
+			for (Protocol e : Protocol.values()) {
 
-				map.put(e.code, e.name());
+				map.put(e.name(), e.name());
 
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
-		static {
-			for (ISPType e : ISPType.values()) {
-
-				mapKeyStr.put(String.valueOf(e.code), e.name());
-
-			}
-		}
-
-		public static String get(Integer code) {
-			return map.get(code);
-		}
-
-		@Override
-		public Integer toInteger() {
-			return this.code;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(this.code);
-		}
-
 	}
 
 }

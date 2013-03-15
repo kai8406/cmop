@@ -13,26 +13,22 @@
 			
 			$("#serviceTag").focus();
 			
-			
 			// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
-			
 			$("#serviceStart").val(getDatePlusMonthNum(0));
 			$("#serviceEnd").val(getDatePlusMonthNum(3));
 			
-			$( "#serviceStart" ).datepicker({
+			$("#serviceStart").datepicker({
 				changeMonth: true,
-				onClose: function( selectedDate ) {
-				$( "#serviceEnd" ).datepicker( "option", "minDate", selectedDate );
+				onClose: function(selectedDate) {
+					$("#serviceEnd").datepicker("option", "minDate", selectedDate);
 				}
 			});
-			
-			$( "#serviceEnd" ).datepicker({
+			$("#serviceEnd").datepicker({
 				changeMonth: true,
-				onClose: function( selectedDate ) {
-				$( "#serviceStart" ).datepicker( "option", "maxDate", selectedDate );
+				onClose: function(selectedDate) {
+					$("#serviceStart").datepicker("option", "maxDate", selectedDate);
 				}
 			});
-				
 			
 			$("#inputForm").validate({
 				errorClass: "help-inline",

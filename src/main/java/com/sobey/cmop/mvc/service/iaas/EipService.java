@@ -83,7 +83,7 @@ public class EipService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
-	public List<NetworkEipItem> getEIPListByUserId(Integer userId) {
+	public List<NetworkEipItem> getNetworkEipItemListByUserId(Integer userId) {
 		return networkEipItemDao.findByApplyUserId(userId);
 	}
 

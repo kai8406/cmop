@@ -11,101 +11,99 @@
 			
 			$("ul#navbar li#apply").addClass("active");
 			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-	
+			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
+			
+			/*禁用回车提交form表单.*/
+			$("#inputForm").keypress(function(e) {
+				if (e.which == 13) {return false;}
 			});
 			
-			 /* 获得当前用户拥有的EIP拼装至实例相关资源的modal中.*/
-			
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getEipList",
-				dataType: "json",
-				success: function(data){
-					var html = '';
-					for ( var i = 0; i < data.length; i++) {
-						html += '<tr>';
-						html += '<td><input type="checkbox" value="'+data[i].id+'"></td>';
-						html += '<td>'+data[i].identifier+'</td>';
-						html += '<td>'+data[i].ispType+'</td>';
-						html += '<td>'+(data[i].ipAddress == null ? "" : data[i].ipAddress ) +'</td>';
-						html += '<td>'+data[i].link+'</td>';
-						html += '</tr> ';
+			$("input[type=submit]").click(function() {
+				/*
+				提交时,验证DNS绑定的EIP数量.
+					类型为GSLB时至少需要两个目标IP
+					类型为A时只能选一个目标IP
+				页面默认是有一个p.eipInfoText,用于标注插入点,所以统计都是+1.
+				*/
+				var flag = true;
+				$("tr.clone").each(function() {
+					var $this = $(this);
+					var domainType = $this.find("#domainType").val();
+					var count = $this.find(".eipInfoText").length;
+					if (domainType == 1 && count < 3) {
+						//GSLB
+						alert("类型为GSLB时至少需要两个目标IP.");
+						flag = false;
+					} else if (domainType == 2 && count != 2) {
+						//A
+						alert("类型为A时只能选一个目标IP.");
+						flag = false;
+					} else {
+						//CNAME
 					}
-					$("#resources-tbody").append(html);
- 				}		
+				});
+				
+				return flag;
+				
 			});
-			 
+			
 			
 		});
 		
-		/*
-			选择域名类型时,根据不同的类型切换不同的目标IP/CNAME域名
-			GSLB,A : 选择EIP
-			CNAME : 输入文本框
-		*/
+		
 		$(document).on("change", "#domainType", function(){
+			
+			/*
+				选择域名类型时,根据不同的类型切换不同的目标IP/CNAME域名
+				GSLB,A : 选择EIP
+				CNAME : 输入文本框
+			*/
+		
 			var $parent = $(this).parent().parent();
 			$parent.find("#cnameDomainDiv").empty();
-			
-			if ($parent.find("#domainType").val()== 3 ) {
+			if ($parent.find("#domainType").val() == 3) {
 				//CNAME
-				$parent.find("#cnameDomainDiv").append('<input type="text" name="eipIds" id="eipIds" maxlength="45">');
-				
-			}else{
+				$parent.find("#cnameDomainDiv").append('<input type="text" name="eipIds" id="eipIds" class="required span2" maxlength="45">');
+			} else {
 				//GSLB,A
-				$parent.find("#cnameDomainDiv").append('<input type="hidden" name="eipIds" id="eipIds" maxlength="45"><a id="addEipBtn" class="btn selectEip" data-toggle="modal" href="#eipModal" >EIP资源</a><p class="text-info eipIdentifierText"></p>');
+				$parent.find("#cnameDomainDiv").append('<input type="hidden" name="eipIds" id="eipIds" maxlength="45"><a id="addEipBtn" class="btn selectEip" data-toggle="modal" href="#eipModal" >EIP资源</a><p class="text-info eipInfoText"></p>');
 			}
 				
 		});
 		
 		 /*目前没有办法区分modal到底是谁点击的.只有设置点击a标签一个临时的name,标示其被点击.*/
-		
-		$(document).on("click", "#addEipBtn", function(){
-			
+		$(document).on("click", "#addEipBtn", function() {
 			//将class为selectEip的a标签name初始化为""
-			$("a.selectEip").attr("name", ""); 
+			$("a.selectEip").attr("name", "");
 			
-			  //为了区分哪一行,设置当前点击a标签的name为"selectedRow".
+			//为了区分哪一行,设置当前点击a标签的name为"selectedRow".
 			$(this).attr("name", "selectedRow");
-			
 		});
-		
+				
 		
 		 /*点击弹出窗口保存时,连同Eip的信息生成HTML代码插入页面.*/
-	  	 
 		$(document).on("click", "#ModalSave", function() {
 			
 			var $ModalDiv = $(this).parent().parent();
 			var $CheckedIds = $ModalDiv.find("tbody input:checked");
-			
-			var html = '';
-			var eipIds = "";
-			var eipIdentifier = "";
+			var eipIds = "",
+				eipInfo = "";
 			
 			//遍历挂载EIP的Id和identifier.
-			
-			$CheckedIds.each(function(){
+			$CheckedIds.each(function() {
 				var $this = $(this);
-				eipIds +=  $this.val() +"-";
-				eipIdentifier += $this.closest("tr").find("td").eq(1).text()+"&nbsp;";
+				var $td = $this.closest("tr").find("td");
+				eipIds += $this.val() + "-";
+				eipInfo += '<p class="text-info eipInfoText">'+ $td.eq(1).text() + "(" + $td.eq(3).text() + ")<br></p>";
+				
 			});
 			
 			//初始化
-			
 			$("input[type=checkbox]").removeAttr('checked');
 			$ModalDiv.find(".checker > span").removeClass("checked");//uniform checkbox的处理
 			
 			//插入HTML文本	
-			$("a.selectEip[name='selectedRow']").parent().parent().find("p.eipIdentifierText").empty().append(eipIdentifier).end().find("#eipIds").val(eipIds);
+			$("a.selectEip[name='selectedRow']").parent().parent().find("p.eipInfoText").empty().append(eipInfo).end().find("#eipIds").val(eipIds);
 			
 		}); 
 		 
@@ -136,7 +134,7 @@
 				<thead><tr><th>域名</th><th>域名类型</th><th>目标IP/CNAME域名</th><th></th></tr></thead>
 				<tbody>
 					<tr class="clone">
-						<td><input type="text" id="domainName" name="domainNames" class="input-small " maxlength="45" placeholder="...域名"></td>
+						<td><input type="text" id="domainName" name="domainNames" class="input-small required" maxlength="45" placeholder="...域名"></td>
 						<td>
 							<select id="domainType" name="domainTypes" class="input-small required">
 								<c:forEach var="map" items="${domainTypeMap}"><option value="${map.key }">${map.value }</option></c:forEach>
@@ -146,7 +144,7 @@
 							<div id="cnameDomainDiv">
 								<input type="hidden" name="eipIds" id="eipIds" maxlength="45">
 								<a id="addEipBtn" class="btn selectEip" data-toggle="modal" href="#eipModal" >EIP资源</a>
-								<p class="text-info eipIdentifierText"></p>
+								<p class="text-info eipInfoText"></p>
 							</div>
 						
 						</td>
@@ -181,7 +179,22 @@
 						<th>IP</th>
 						<th>关联实例/ELB</th>
 					</tr></thead>
-					<tbody id="resources-tbody"></tbody>
+					<tbody id="resources-tbody">
+						<c:forEach var="item" items="${allEips }">
+							<tr>
+								<td><input type="checkbox" value="${item.id }"></td>
+								<td>${item.identifier}</td>
+								<td><c:forEach var="map" items="${ispTypeMap}"><c:if test="${item.ispType == map.key}">${map.value}</c:if></c:forEach></td>
+								<td>${item.ipAddress }</td>
+								<td>
+									<c:choose>
+										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.innerIp })</c:when>
+										<c:otherwise>${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+									</c:choose>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
 				</table>
 			</div>
 				

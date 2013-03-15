@@ -20,7 +20,11 @@
 				unhighlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').removeClass('error');
 				}
-	
+			});
+			
+			/*禁用回车提交form表单.*/
+			$("#inputForm").keypress(function(e) {
+				if (e.which == 13) {return false;}
 			});
 			
 			$("#addComputeBtn").click(function() {

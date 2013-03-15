@@ -25,13 +25,10 @@ public class StorageConstant {
 	public enum storageType implements CommonEnum {
 		Fimas_高吞吐量(1), Netapp_高IOPS(2);
 
-		private int code;
-
-		private storageType(int code) {
-			this.code = code;
-		}
-
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
 			for (storageType e : storageType.values()) {
 
@@ -39,8 +36,6 @@ public class StorageConstant {
 
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (storageType e : storageType.values()) {
 
@@ -51,6 +46,12 @@ public class StorageConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private storageType(int code) {
+			this.code = code;
 		}
 
 		@Override

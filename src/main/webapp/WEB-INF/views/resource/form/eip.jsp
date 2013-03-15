@@ -36,33 +36,6 @@
 			
 		});
 		
-		/**
-		 * 提交form的时候.将关联类型和关联ID写入隐藏域中.
-		 */
-		function fillLinkType(){
-			
-			var $elbSelect = $("#elbSelectDiv.show #elbSelect");
-			var $computeSelect = $("#computeSelectDiv.show #computeSelect");
-			var linkType;
-			var linkId;
-			
-			if($elbSelect.val() != undefined){
-				
-				//关联ELB
-				linkType = "0";
-				linkId = $elbSelect.val();
-				
-			}else{
-				
-				//关联实例
-				linkType = "1";
-				linkId = $computeSelect.val();
-				
-			}
-			$("#linkType").val(linkType);
-			$("#linkId").val(linkId);
-			
-		};
 	</script>
 	
 </head>

@@ -25,15 +25,12 @@ public class ApplyConstant {
 	 * 
 	 */
 	public enum ServiceType implements CommonEnum {
-		基础设施(1), MDN(2), 云生产(3), 监控(4);
-
-		private int code;
-
-		private ServiceType(int code) {
-			this.code = code;
-		}
+		MDN(2), 基础设施(1), 监控(4), 云生产(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
 			for (ServiceType e : ServiceType.values()) {
 
@@ -41,8 +38,6 @@ public class ApplyConstant {
 
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (ServiceType e : ServiceType.values()) {
 
@@ -53,6 +48,12 @@ public class ApplyConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private ServiceType(int code) {
+			this.code = code;
 		}
 
 		@Override
@@ -83,15 +84,10 @@ public class ApplyConstant {
 	 * 
 	 */
 	public enum Status implements CommonEnum {
-		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
-
-		private int code;
-
-		private Status(int code) {
-			this.code = code;
-		}
+		处理中(5), 待审批(1), 审批中(2), 已创建(6), 已申请(0), 已审批(4), 已退回(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
 		static {
 			for (Status e : Status.values()) {
 
@@ -102,6 +98,12 @@ public class ApplyConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private Status(int code) {
+			this.code = code;
 		}
 
 		@Override

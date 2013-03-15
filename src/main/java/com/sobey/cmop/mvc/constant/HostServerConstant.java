@@ -22,20 +22,15 @@ public class HostServerConstant {
 	public enum HostServerType implements CommonEnum {
 		宿主机(1), 物理机(2);
 
-		private int code;
-
-		private HostServerType(int code) {
-			this.code = code;
-		}
-
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
 		static {
 			for (HostServerType e : HostServerType.values()) {
 				map.put(e.code, e.name());
 			}
 		}
-
-		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 		static {
 			for (HostServerType e : HostServerType.values()) {
 				mapKeyStr.put(String.valueOf(e.code), e.name());
@@ -44,6 +39,12 @@ public class HostServerConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private HostServerType(int code) {
+			this.code = code;
 		}
 
 		@Override

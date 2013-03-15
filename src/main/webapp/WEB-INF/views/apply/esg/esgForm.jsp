@@ -13,7 +13,6 @@
 			
 			$("#description").focus();
 			
-			
 			/*禁用回车提交form表单.*/
 			$("#inputForm").keypress(function(e) {
 				if (e.which == 13) {return false;}
@@ -29,84 +28,61 @@
 				unhighlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').removeClass('error');
 				}
-	
 			});
 			
 			
 			/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
 			$(document).on("click", "#createBtn", function() {
-	
+				
 				if (!$("#inputForm").valid()) {
 					return false;
 				}
-	
+				
 				var protocol = $("#protocol").val();
 				var portRange = $("#portRange").val();
 				var visitSource = $("#visitSource").val();
-	
-				if (!$("#inputForm").valid()) {
-					return false;
-				}
 				
-	
 				//如果重复,则删除重复的项.
-				
-				$("#resourcesDIV div.resources").each(function() {
+				$("div.resources").each(function() {
 					var $this = $(this);
 					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.remove();
 				});
 				
-	
-				//拼装资源alert信息
-				
 				var html = '<div class="resources alert alert-block alert-info fade in">';
 				html += '<button data-dismiss="alert" class="close" type="button">×</button>';
-				html += '<div class="row">';
-				html += '<span class="span1">' + protocol + '</span>';
-				html += '<span class="span2">' + portRange + '</span>';
-				html += '<span class="span3">' + visitSource + '</span>';
 				html += '<input type="hidden" value="' + protocol + '" name="protocols">';
 				html += '<input type="hidden" value="' + portRange + '" name="portRanges">';
 				html += '<input type="hidden" value="' + visitSource + '" name="visitSources">';
+				html += '<dd><em>协议</em>&nbsp;&nbsp;<strong>' + protocol + '</strong></dd>';
+				html += '<dd><em>端口范围</em>&nbsp;&nbsp;<strong>' + portRange + '</strong></dd>';
+				html += '<dd><em>访问源</em>&nbsp;&nbsp;<strong>' + visitSource + '</strong></dd>';
 				html += '</div>';
-				html += '</div>';
-	
-				$("#resourcesDIV").append(html);
-	
+				
+				$("#resourcesDIV dl").append(html);
 			});
 			
 			
 			/*根据alert中的资源信息,组成汇总信息.*/
 			$(".nextStep").click(function() {
-	
 				var html = '<dl class="dl-horizontal">';
 				html += ' <dt>安全组描述</dt>';
 				html += '<dd>' + $("#description").val() + '</dd>';
-	
+				html += '<hr>';
 				$("#resourcesDIV div.resources").each(function() {
-					
 					var $this = $(this);
-	
 					var protocol = $this.find("input[name='protocols']").val();
 					var portRange = $this.find("input[name='portRanges']").val();
 					var visitSource = $this.find("input[name='visitSources']").val();
-	
-					html += '<hr>';
-					html += '<dt>协议</dt>';
-					html += '<dd>' + protocol + '</dd>';
-					html += '<dt>端口范围</dt>';
-					html += '<dd>' + portRange + '</dd>';
-					html += '<dt>访问源</dt>';
-					html += '<dd>' + visitSource + '</dd>';
-	
+					html += '<dt>安全规则</dt>';
+					html += '<dd><em>协议</em>&nbsp;&nbsp;' + protocol + '</dd>';
+					html += '<dd><em>端口范围</em>&nbsp;&nbsp;' + portRange + '</dd>';
+					html += '<dd><em>访问源</em>&nbsp;&nbsp;' + visitSource + '</dd>';
+					html += '<br>';
 				});
-	
 				html += '</dl>';
-	
 				$("#resourcesList").append(html);
 			});
 			 
-			
 		});
 	</script>
 	
@@ -182,7 +158,7 @@
 				</div>
 				
 				<!-- 生成的资源 -->
-				<div id="resourcesDIV"></div>
+				<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 				
 				<div class="form-actions">
 					<input class="btn" type="button" value="返回" onclick="history.back()">

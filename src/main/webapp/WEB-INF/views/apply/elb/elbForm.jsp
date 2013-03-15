@@ -13,6 +13,11 @@
 			
 			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
 			
+			/*禁用回车提交form表单.*/
+			$("#inputForm").keypress(function(e) {
+				if (e.which == 13) {return false;}
+			});
+			
 			$("#addComputeBtn").click(function() {
 				if (!$("#inputForm").valid()) {
 					return false;

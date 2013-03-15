@@ -31,15 +31,10 @@ public class ResourcesConstant {
 	 * 
 	 */
 	public enum ServiceType implements CommonEnum {
-		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10);
-
-		private int code;
-
-		private ServiceType(int code) {
-			this.code = code;
-		}
+		DNS(6), ECS(2), EIP(5), ELB(4), ES3(3), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10), PCS(1);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
 		static {
 			for (ServiceType e : ServiceType.values()) {
 
@@ -50,6 +45,12 @@ public class ResourcesConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private ServiceType(int code) {
+			this.code = code;
 		}
 
 		@Override
@@ -82,15 +83,10 @@ public class ResourcesConstant {
 	 * 
 	 */
 	public enum Status implements CommonEnum {
-		未变更(-1), 已变更(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 创建中(5), 已创建(6), 回收中(7);
-
-		private int code;
-
-		private Status(int code) {
-			this.code = code;
-		}
+		创建中(5), 待审批(1), 回收中(7), 审批中(2), 未变更(-1), 已变更(0), 已创建(6), 已审批(4), 已退回(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
+
 		static {
 			for (Status e : Status.values()) {
 
@@ -101,6 +97,12 @@ public class ResourcesConstant {
 
 		public static String get(Integer code) {
 			return map.get(code);
+		}
+
+		private int code;
+
+		private Status(int code) {
+			this.code = code;
 		}
 
 		@Override

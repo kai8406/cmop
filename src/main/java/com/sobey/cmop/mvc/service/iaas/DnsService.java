@@ -15,7 +15,6 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.NetworkDnsItemDao;
-import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -35,9 +34,6 @@ public class DnsService extends BaseSevcie {
 
 	@Resource
 	private NetworkDnsItemDao networkDnsItemDao;
-
-	@Resource
-	private BasicUnitDaoCustom basicUnitDao;
 
 	public NetworkDnsItem getNetworkDnsItem(Integer id) {
 		return networkDnsItemDao.findOne(id);
@@ -84,6 +80,7 @@ public class DnsService extends BaseSevcie {
 				networkDnsItem.setCnameDomain(eipIds[i]);
 
 			} else {
+
 				String[] eipIdArray = StringUtils.split(eipIds[i], "-");
 
 				List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();

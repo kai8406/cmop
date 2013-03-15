@@ -130,7 +130,7 @@ public class MonitorController extends BaseController {
 		comm.monitorServcie.saveMonitorToApply(apply, monitorMails, monitorPhones, elbIds, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals,
 				diskWarns, diskCriticals, pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, networkFlowWarns, networkFlowCriticals, ports, processes, mountPoints);
 
-		redirectAttributes.addFlashAttribute("message", "创建ELB监控成功.");
+		redirectAttributes.addFlashAttribute("message", "创建监控成功.");
 
 		return REDIRECT_SUCCESS_URL;
 	}

@@ -291,7 +291,7 @@ public class RedmineTextUtil {
 
 		if (!monitorComputes.isEmpty()) {
 
-			content.append("# +*监控手机列表*+").append(NEWLINE);
+			content.append("# +*实例监控列表*+").append(NEWLINE);
 			content.append("<pre>").append(NEWLINE);
 			for (MonitorCompute monitorCompute : monitorComputes) {
 				content.append("标识符:").append(BLANK).append(monitorCompute.getIdentifier()).append(NEWLINE);
@@ -317,9 +317,8 @@ public class RedmineTextUtil {
 
 				content.append("监控端口:").append(BLANK).append(monitorCompute.getPort()).append(NEWLINE);
 				content.append("监控进程:").append(BLANK).append(monitorCompute.getProcess()).append(NEWLINE);
-				content.append("挂载路径:").append(BLANK).append(monitorCompute.getMountPoint()).append(NEWLINE);
+				content.append("挂载路径:").append(BLANK).append(monitorCompute.getMountPoint()).append(NEWLINE + NEWLINE);
 			}
-
 			content.append("</pre>").append(NEWLINE);
 
 		}

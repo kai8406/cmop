@@ -61,7 +61,7 @@ public class EIPController extends BaseController {
 
 		comm.eipService.saveEIPToApply(applyId, ispTypes, linkTypes, linkIds, protocols, sourcePorts, targetPorts);
 
-		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
+		redirectAttributes.addFlashAttribute("message", "创建EIP成功.");
 
 		return REDIRECT_SUCCESS_URL;
 	}

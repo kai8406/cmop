@@ -58,6 +58,13 @@
 			</div>
 			
 			<div class="control-group">
+				<label class="control-label" for="innerIp">IP地址</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${compute.innerIp}</p>
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<label class="control-label" for="osType">操作系统</label>
 				<div class="controls">
 					<select id="osType" name="osType" class="required">
@@ -88,7 +95,6 @@
 				<label class="control-label" for="serverType">规格</label>
 				<div class="controls">
 					<select id="serverType" name="serverType" class="required">
-						
 						<c:choose>
 							<c:when test="${compute.computeType == 1 }">
 								<c:forEach var="map" items="${pcsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
@@ -97,7 +103,6 @@
 								<c:forEach var="map" items="${ecsServerTypeMap}"><option value="${map.key }" <c:if test="${map.key == compute.serverType }"> selected="selected" </c:if> >${map.value }</option></c:forEach>
 							</c:otherwise>
 						</c:choose>
-				
 					</select>
 				</div>
 			</div>

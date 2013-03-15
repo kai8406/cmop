@@ -50,7 +50,7 @@ public class ES3Controller extends BaseController {
 
 		comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes, computeIds);
 
-		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
+		redirectAttributes.addFlashAttribute("message", "创建ES3存储空间成功.");
 
 		return REDIRECT_SUCCESS_URL;
 	}

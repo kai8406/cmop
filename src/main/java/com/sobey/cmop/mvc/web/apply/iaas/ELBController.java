@@ -62,7 +62,7 @@ public class ELBController extends BaseController {
 
 		comm.elbService.saveELBToApply(applyId, keepSessions, protocols, sourcePorts, targetPorts, computeIds);
 
-		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
+		redirectAttributes.addFlashAttribute("message", "创建负载均衡器ELB成功.");
 
 		return REDIRECT_SUCCESS_URL;
 	}

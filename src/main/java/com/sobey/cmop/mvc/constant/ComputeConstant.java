@@ -22,8 +22,9 @@ public class ComputeConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ComputeType implements CommonEnum {
-		ECS(2), PCS(1);
+	public enum ComputeType implements ICommonEnum {
+
+		PCS(1), ECS(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -77,8 +78,9 @@ public class ComputeConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ECSServerType implements CommonEnum {
-		Large(3), Middle(2), Small(1);
+	public enum ECSServerType implements ICommonEnum {
+
+		Small(1), Middle(2), Large(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -136,8 +138,9 @@ public class ComputeConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum PCSServerType implements CommonEnum {
-		Aisino_6510(9), DELL_C6100(7), DELL_R410(4), DELL_R510(5), DELL_R710(6), HP_DL2000(8), SO_5201NR(10);
+	public enum PCSServerType implements ICommonEnum {
+
+		DELL_R410(4), DELL_R510(5), DELL_R710(6), DELL_C6100(7), HP_DL2000(8), Aisino_6510(9), SO_5201NR(10);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -184,10 +187,19 @@ public class ComputeConstant {
 	 * 操作系统位数
 	 */
 	public static final Map<Integer, String> OS_BIT_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_BIT_MAP.put(1, "32bit");
+		OS_BIT_MAP.put(2, "64bit");
+	}
+
 	/**
 	 * 操作系统位数(key为String)<br>
 	 */
 	public static final Map<String, String> OS_BIT_STRING_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_BIT_STRING_MAP.put("1", "32bit");
+		OS_BIT_STRING_MAP.put("2", "64bit");
+	}
 
 	/**
 	 * 操作系统类型<br>
@@ -198,6 +210,14 @@ public class ComputeConstant {
 	 * 5.Windows7<br>
 	 */
 	public static final Map<Integer, String> OS_TYPE_MAP = Maps.newLinkedHashMap();
+	static {
+		OS_TYPE_MAP.put(1, "Windows2003R2");
+		OS_TYPE_MAP.put(2, "Windows2008R2");
+		OS_TYPE_MAP.put(3, "CentOS5.6");
+		OS_TYPE_MAP.put(4, "CentOS6.3");
+		OS_TYPE_MAP.put(5, "Windows7");
+	}
+
 	/**
 	 * 操作系统类型(key为String)<br>
 	 * 1.Windows2003R2<br>
@@ -207,30 +227,12 @@ public class ComputeConstant {
 	 * 5.Windows7<br>
 	 */
 	public static final Map<String, String> OS_TYPE_STRING_MAP = Maps.newLinkedHashMap();
-
-	static {
-		OS_TYPE_MAP.put(1, "Windows2003R2");
-		OS_TYPE_MAP.put(2, "Windows2008R2");
-		OS_TYPE_MAP.put(3, "CentOS5.6");
-		OS_TYPE_MAP.put(4, "CentOS6.3");
-		OS_TYPE_MAP.put(5, "Windows7");
-	}
 	static {
 		OS_TYPE_STRING_MAP.put("1", "Windows2003R2");
 		OS_TYPE_STRING_MAP.put("2", "Windows2008R2");
 		OS_TYPE_STRING_MAP.put("3", "CentOS5.6");
 		OS_TYPE_STRING_MAP.put("4", "CentOS6.3");
 		OS_TYPE_STRING_MAP.put("5", "Windows7");
-	}
-
-	static {
-		OS_BIT_MAP.put(1, "32bit");
-		OS_BIT_MAP.put(2, "64bit");
-	}
-
-	static {
-		OS_BIT_STRING_MAP.put("1", "32bit");
-		OS_BIT_STRING_MAP.put("2", "64bit");
 	}
 
 }

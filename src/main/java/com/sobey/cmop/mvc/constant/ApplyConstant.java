@@ -24,8 +24,9 @@ public class ApplyConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ServiceType implements CommonEnum {
-		MDN(2), 基础设施(1), 监控(4), 云生产(3);
+	public enum ServiceType implements ICommonEnum {
+
+		基础设施(1), MDN(2), 云生产(3), 监控(4);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -83,8 +84,9 @@ public class ApplyConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum Status implements CommonEnum {
-		处理中(5), 待审批(1), 审批中(2), 已创建(6), 已申请(0), 已审批(4), 已退回(3);
+	public enum Status implements ICommonEnum {
+		
+		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

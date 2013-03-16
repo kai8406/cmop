@@ -6,45 +6,9 @@ import java.util.Map;
 public class MonitorConstant {
 
 	/**
-	 * 最大进程数
-	 */
-	public static final Map<Integer, String> MAX_PROCESS = new LinkedHashMap<Integer, String>();
-	/**
-	 * 最大进程数<br>
-	 * key String
-	 */
-	public static final Map<String, String> MAX_PROCESS_STRING_KEY = new LinkedHashMap<String, String>();
-
-	/**
 	 * 阀值. 大于 >
 	 */
 	public static final Map<Integer, String> THRESHOLD_GT = new LinkedHashMap<Integer, String>();
-	/**
-	 * 阀值. 大于 > <br>
-	 * key String
-	 */
-	public static final Map<String, String> THRESHOLD_GT_STRING_KEY = new LinkedHashMap<String, String>();
-
-	/**
-	 * 阀值 小于 <
-	 */
-	public static final Map<Integer, String> THRESHOLD_LT = new LinkedHashMap<Integer, String>();
-	/**
-	 * 阀值.小于 < <br>
-	 * key String
-	 */
-	public static final Map<String, String> THRESHOLD_LT_STRING_KEY = new LinkedHashMap<String, String>();
-
-	/**
-	 * 网络阀值 大于>
-	 */
-	public static final Map<Integer, String> THRESHOLD_NET_GT = new LinkedHashMap<Integer, String>();
-	/**
-	 * 网络阀值 大于><br>
-	 * key String
-	 */
-	public static final Map<String, String> THRESHOLD_NET_GT_STRING_KEY = new LinkedHashMap<String, String>();
-
 	static {
 		THRESHOLD_GT.put(1, "&gt;&nbsp;90%");
 		THRESHOLD_GT.put(2, "&gt;&nbsp;80%");
@@ -57,6 +21,12 @@ public class MonitorConstant {
 		THRESHOLD_GT.put(9, "&gt;&nbsp;10%");
 		THRESHOLD_GT.put(10, "&gt;&nbsp;5%");
 	}
+
+	/**
+	 * 阀值. 大于 > <br>
+	 * key String
+	 */
+	public static final Map<String, String> THRESHOLD_GT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
 		THRESHOLD_GT_STRING_KEY.put("1", "&gt;&nbsp;90%");
 		THRESHOLD_GT_STRING_KEY.put("2", "&gt;&nbsp;80%");
@@ -70,6 +40,10 @@ public class MonitorConstant {
 		THRESHOLD_GT_STRING_KEY.put("10", "&gt;&nbsp;5%");
 	}
 
+	/**
+	 * 阀值 小于 <
+	 */
+	public static final Map<Integer, String> THRESHOLD_LT = new LinkedHashMap<Integer, String>();
 	static {
 		THRESHOLD_LT.put(1, "&lt;&nbsp;5%");
 		THRESHOLD_LT.put(2, "&lt;&nbsp;10%");
@@ -82,6 +56,12 @@ public class MonitorConstant {
 		THRESHOLD_LT.put(9, "&lt;&nbsp;80%");
 		THRESHOLD_LT.put(10, "&lt;&nbsp;90%");
 	}
+
+	/**
+	 * 阀值.小于 < <br>
+	 * key String
+	 */
+	public static final Map<String, String> THRESHOLD_LT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
 		THRESHOLD_LT_STRING_KEY.put("1", "&lt;&nbsp;5%");
 		THRESHOLD_LT_STRING_KEY.put("2", "&lt;&nbsp;10%");
@@ -95,6 +75,10 @@ public class MonitorConstant {
 		THRESHOLD_LT_STRING_KEY.put("10", "&lt;&nbsp;90%");
 	}
 
+	/**
+	 * 网络阀值 大于>
+	 */
+	public static final Map<Integer, String> THRESHOLD_NET_GT = new LinkedHashMap<Integer, String>();
 	static {
 		THRESHOLD_NET_GT.put(1, "&gt;&nbsp;20ms");
 		THRESHOLD_NET_GT.put(2, "&gt;&nbsp;30ms");
@@ -109,6 +93,12 @@ public class MonitorConstant {
 		THRESHOLD_NET_GT.put(11, "&gt;&nbsp;150ms");
 		THRESHOLD_NET_GT.put(12, "&gt;&nbsp;200ms");
 	}
+
+	/**
+	 * 网络阀值 大于><br>
+	 * key String
+	 */
+	public static final Map<String, String> THRESHOLD_NET_GT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
 		THRESHOLD_NET_GT_STRING_KEY.put("1", "&gt;&nbsp;20ms");
 		THRESHOLD_NET_GT_STRING_KEY.put("2", "&gt;&nbsp;30ms");
@@ -124,6 +114,10 @@ public class MonitorConstant {
 		THRESHOLD_NET_GT_STRING_KEY.put("12", "&gt;&nbsp;200ms");
 	}
 
+	/**
+	 * 最大进程数
+	 */
+	public static final Map<Integer, String> MAX_PROCESS = new LinkedHashMap<Integer, String>();
 	static {
 		MAX_PROCESS.put(1, "1");
 		MAX_PROCESS.put(2, "2");
@@ -141,6 +135,12 @@ public class MonitorConstant {
 		MAX_PROCESS.put(14, "14");
 		MAX_PROCESS.put(15, "15");
 	}
+
+	/**
+	 * 最大进程数<br>
+	 * key String
+	 */
+	public static final Map<String, String> MAX_PROCESS_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
 		MAX_PROCESS_STRING_KEY.put("1", "1");
 		MAX_PROCESS_STRING_KEY.put("2", "2");

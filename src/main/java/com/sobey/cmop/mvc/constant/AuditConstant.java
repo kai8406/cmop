@@ -23,8 +23,9 @@ public class AuditConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum AuditResult implements CommonEnum {
-		不同意但继续(2), 不同意且退回(3), 同意(1);
+	public enum AuditResult implements ICommonEnum {
+
+		同意(1), 不同意但继续(2), 不同意且退回(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -78,8 +79,9 @@ public class AuditConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum AuditStatus implements CommonEnum {
-		待审批(0), 已过期(-1), 有效(1);
+	public enum AuditStatus implements ICommonEnum {
+
+		已过期(-1), 待审批(0), 有效(1);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -131,7 +133,8 @@ public class AuditConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum FlowType implements CommonEnum {
+	public enum FlowType implements ICommonEnum {
+		
 		资源申请_变更的审批流程(1);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();

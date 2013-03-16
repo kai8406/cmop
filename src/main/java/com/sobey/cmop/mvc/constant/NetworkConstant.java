@@ -24,8 +24,9 @@ public class NetworkConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum DomainType implements CommonEnum {
-		A(2), CNAME(3), GSLB(1);
+	public enum DomainType implements ICommonEnum {
+		
+		GSLB(1), A(2), CNAME(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -73,7 +74,7 @@ public class NetworkConstant {
 	 * 注意:返回的map key和value均为String类型
 	 * 
 	 * <pre>
-	 * TCP,UDP,ICMP,HTTP,HTTPS, SSH, DNS, MYSQL;
+	 * DNS, HTTP, HTTPS, ICMP, MYSQL, SSH, TCP, UDP;
 	 * </pre>
 	 * 
 	 * @author liukai
@@ -105,7 +106,8 @@ public class NetworkConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ISPType implements CommonEnum {
+	public enum ISPType implements ICommonEnum {
+
 		中国电信(1), 中国联通(2), 中国移动(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
@@ -161,7 +163,8 @@ public class NetworkConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum KeepSession implements CommonEnum {
+	public enum KeepSession implements ICommonEnum {
+		
 		保持(true), 不保持(false);
 
 		public static final Map<Boolean, String> map = Maps.newLinkedHashMap();
@@ -222,8 +225,9 @@ public class NetworkConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum LinkType implements CommonEnum {
-		关联ELB(2), 关联实例(1);
+	public enum LinkType implements ICommonEnum {
+
+		关联实例(1), 关联ELB(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -270,7 +274,7 @@ public class NetworkConstant {
 	 * 网络资源的协议类型
 	 * 
 	 * <pre>
-	 * HTTP,HTTPS,TCP,SSL,ALL
+	 * ALL, HTTP, HTTPS, SSL, TCP;
 	 * </pre>
 	 * 
 	 * @author liukai

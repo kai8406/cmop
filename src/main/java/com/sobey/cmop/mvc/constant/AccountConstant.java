@@ -13,6 +13,34 @@ import com.google.common.collect.Maps;
 public class AccountConstant {
 
 	/**
+	 * 默认密码:111111
+	 */
+	public static final String DEFAULT_PASSWORD = "111111";
+
+	/**
+	 * 定义一个userId为0的常量,用以区分 通过邮件 还是 页面审批的情景.<br>
+	 * 如果是userId = 0 表示页面审批,取当前用户的ID.<br>
+	 * 如果userId > 0 表示邮件审批,取userId.
+	 * 
+	 */
+	public static final Integer FROM_PAGE_USER_ID = 0;
+
+	/**
+	 * 加密方式 : SHA-1
+	 */
+	public static final String HASH_ALGORITHM = "SHA-1";
+
+	/**
+	 * 迭代次数 : 1024
+	 */
+	public static final int HASH_INTERATIONS = 1024;
+
+	/**
+	 * salt的数组大小 : 8
+	 */
+	public static final int SALT_SIZE = 8;
+
+	/**
 	 * 默认的Group类型
 	 * <p>
 	 * 1.admin 超级管理员<br>
@@ -23,7 +51,7 @@ public class AccountConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum DefaultGroups implements CommonEnum {
+	public enum DefaultGroups implements ICommonEnum {
 
 		admin(1), apply(2), audit(3);
 
@@ -67,7 +95,7 @@ public class AccountConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum UserStatus implements CommonEnum {
+	public enum UserStatus implements ICommonEnum {
 
 		DISABLED(0), ENABLED(1);
 
@@ -126,7 +154,7 @@ public class AccountConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum UserTypes implements CommonEnum {
+	public enum UserTypes implements ICommonEnum {
 
 		admin(1), apply(2), audit(3), operation(4);
 
@@ -161,33 +189,5 @@ public class AccountConstant {
 		}
 
 	}
-
-	/**
-	 * 默认密码:111111
-	 */
-	public static final String DEFAULT_PASSWORD = "111111";
-
-	/**
-	 * 定义一个userId为0的常量,用以区分 通过邮件 还是 页面审批的情景.<br>
-	 * 如果是userId = 0 表示页面审批,取当前用户的ID.<br>
-	 * 如果userId > 0 表示邮件审批,取userId.
-	 * 
-	 */
-	public static final Integer FROM_PAGE_USER_ID = 0;
-
-	/**
-	 * 加密方式 : SHA-1
-	 */
-	public static final String HASH_ALGORITHM = "SHA-1";
-
-	/**
-	 * 迭代次数 : 1024
-	 */
-	public static final int HASH_INTERATIONS = 1024;
-
-	/**
-	 * salt的数组大小 : 8
-	 */
-	public static final int SALT_SIZE = 8;
 
 }

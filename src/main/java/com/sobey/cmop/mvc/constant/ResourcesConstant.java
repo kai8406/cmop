@@ -30,8 +30,9 @@ public class ResourcesConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum ServiceType implements CommonEnum {
-		DNS(6), ECS(2), EIP(5), ELB(4), ES3(3), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10), PCS(1);
+	public enum ServiceType implements ICommonEnum {
+
+		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10), ;
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -82,8 +83,9 @@ public class ResourcesConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum Status implements CommonEnum {
-		创建中(5), 待审批(1), 回收中(7), 审批中(2), 未变更(-1), 已变更(0), 已创建(6), 已审批(4), 已退回(3);
+	public enum Status implements ICommonEnum {
+
+		未变更(-1), 已变更(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 创建中(5), 已创建(6), 回收中(7);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

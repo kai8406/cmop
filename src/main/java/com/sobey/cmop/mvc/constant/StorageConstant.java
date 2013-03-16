@@ -22,7 +22,8 @@ public class StorageConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum storageType implements CommonEnum {
+	public enum storageType implements ICommonEnum {
+		
 		Fimas_高吞吐量(1), Netapp_高IOPS(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();

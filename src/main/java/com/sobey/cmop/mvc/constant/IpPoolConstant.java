@@ -13,13 +13,44 @@ import com.google.common.collect.Maps;
 public class IpPoolConstant {
 
 	/**
+	 * 默认IP : 0.0.0.0
+	 */
+	public static final String DEFAULT_IPADDRESS = "0.0.0.0";
+
+	/**
+	 * IP状态 1.未使用
+	 */
+	public static final Integer IP_STATUS_1 = 1;
+
+	/**
+	 * IP状态 2.已使用
+	 */
+	public static final Integer IP_STATUS_2 = 2;
+
+	/**
+	 * 1-公网IP池
+	 */
+	public static final Integer POOL_TYPE_1 = 1;
+
+	/**
+	 * 2-私网IP池
+	 */
+	public static final Integer POOL_TYPE_2 = 2;
+
+	/**
+	 * 3-互联网IP池
+	 */
+	public static final Integer POOL_TYPE_3 = 3;
+
+	/**
 	 * IP状态
 	 * <p>
 	 * 1-未使用<br>
 	 * 2-已使用<br>
 	 * <p>
 	 */
-	public enum IpStatus implements CommonEnum {
+	public enum IpStatus implements ICommonEnum {
+
 		未使用(1), 已使用(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
@@ -66,8 +97,9 @@ public class IpPoolConstant {
 	 * 3-互联网IP池<br>
 	 * <p>
 	 */
-	public enum PoolType implements CommonEnum {
-		公网IP池(1), 互联网IP池(3), 私网IP池(2);
+	public enum PoolType implements ICommonEnum {
+
+		公网IP池(1), 私网IP池(2), 互联网IP池(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 
@@ -104,35 +136,5 @@ public class IpPoolConstant {
 			return String.valueOf(this.code);
 		}
 	}
-
-	/**
-	 * 默认IP : 0.0.0.0
-	 */
-	public static final String DEFAULT_IPADDRESS = "0.0.0.0";
-
-	/**
-	 * IP状态 1.未使用
-	 */
-	public static final Integer IP_STATUS_1 = 1;
-
-	/**
-	 * IP状态 2.已使用
-	 */
-	public static final Integer IP_STATUS_2 = 2;
-
-	/**
-	 * 1-公网IP池
-	 */
-	public static final Integer POOL_TYPE_1 = 1;
-
-	/**
-	 * 2-私网IP池
-	 */
-	public static final Integer POOL_TYPE_2 = 2;
-
-	/**
-	 * 3-互联网IP池
-	 */
-	public static final Integer POOL_TYPE_3 = 3;
 
 }

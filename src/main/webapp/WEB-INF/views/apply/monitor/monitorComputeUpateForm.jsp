@@ -12,7 +12,7 @@
 			$("ul#navbar li#apply").addClass("active");
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
+				errorClass: "text-error",
 				errorElement: "span",
 				highlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').addClass('error');
@@ -28,7 +28,6 @@
 			});
 			
 		});
-		
 		 
 	</script>
 </head>
@@ -91,7 +90,7 @@
 						<tbody>
 							<c:forEach var="item" items="${ports }">
 								<tr class="clone">
-									<td><input type="text" value="${item}" name="port" maxlength="45" placeholder="...监控端口"></td>
+									<td><input type="text" value="${item}" name="port" class="required" maxlength="45" placeholder="...监控端口"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -107,7 +106,7 @@
 						<tbody>
 							<c:forEach var="item" items="${processes }">
 								<tr class="clone">
-									<td><input type="text" value="${item}" name="process" maxlength="45" placeholder="...监控进程"></td>
+									<td><input type="text" value="${item}" name="process" class="required" maxlength="45" placeholder="...监控进程"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -123,7 +122,7 @@
 						<tbody>
 							<c:forEach var="item" items="${mountPoints }">
 								<tr class="clone">
-									<td><input type="text" value="${item}"  name="mountPoint" maxlength="45" placeholder="...挂载路径"></td>
+									<td><input type="text" value="${item}"  name="mountPoint" class="required" maxlength="45" placeholder="...挂载路径"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>

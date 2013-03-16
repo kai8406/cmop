@@ -4,7 +4,7 @@
 <html>
 <head>
 
-	<<title>资源管理</title>
+	<title>资源管理</title>
 	
 	<script>
 		$(document).ready(function() {
@@ -12,7 +12,7 @@
 			$("ul#navbar li#resource").addClass("active");
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
+				errorClass: "text-error",
 				errorElement: "span",
 				highlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').addClass('error');
@@ -91,7 +91,7 @@
 						<tbody>
 							<c:forEach var="item" items="${ports }">
 								<tr class="clone">
-									<td><input type="text" value="${item}" name="port" maxlength="45" placeholder="...监控端口"></td>
+									<td><input type="text" value="${item}" name="port" class="required" maxlength="45" placeholder="...监控端口"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -107,7 +107,7 @@
 						<tbody>
 							<c:forEach var="item" items="${processes }">
 								<tr class="clone">
-									<td><input type="text" value="${item}" name="process" maxlength="45" placeholder="...监控进程"></td>
+									<td><input type="text" value="${item}" name="process" class="required" maxlength="45" placeholder="...监控进程"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -123,7 +123,7 @@
 						<tbody>
 							<c:forEach var="item" items="${mountPoints }">
 								<tr class="clone">
-									<td><input type="text" value="${item}"  name="mountPoint" maxlength="45" placeholder="...挂载路径"></td>
+									<td><input type="text" value="${item}"  name="mountPoint" class="required" maxlength="45" placeholder="...挂载路径"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -324,7 +324,7 @@
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr><th></th><th>实例标识符</th><th>用途信息</th><th>IP地址</th></tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="compute" items="${allComputes}">
+						<c:forEach var="compute" items="${computeResources}">
 							<tr>
 								<td>
 									<label><input type="radio" name="computeId" checked="checked" value="${compute.id }"></label>

@@ -12,7 +12,7 @@
 			$("ul#navbar li#resource").addClass("active");
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
+				errorClass: "text-error",
 				errorElement: "span",
 				highlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').addClass('error');
@@ -22,13 +22,18 @@
 				}
 			});
 			
-			/*关联实例和关联ELB select控件的切换*/
+			$("#addComputeBtn").click(function() {
+				if (!$("#inputForm").valid()) {
+					return false;
+				}
+			});
 			
-			$("input[name='linkRadio']").click(function(){
-				if($(this).val() == "isCompute"){
+			/*关联实例和关联ELB select控件的切换*/
+			$("input[name='linkRadio']").click(function() {
+				if ($(this).val() == "isCompute") {
 					$("#computeSelectDiv").addClass("show").removeClass("hidden");
 					$("#elbSelectDiv").addClass("hidden").removeClass("show");
-				}else{
+				} else {
 					$("#elbSelectDiv").addClass("show").removeClass("hidden");
 					$("#computeSelectDiv").addClass("hidden").removeClass("show");
 				}
@@ -68,6 +73,13 @@
 			</div>
 			
 			<div class="control-group">
+				<label class="control-label" for="ipAddress">IP地址</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${eip.ipAddress}</p>
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<label class="control-label" for="ispType">ISP运营商</label>
 				<div class="controls">
 					<p class="help-inline plain-text"><c:forEach var="map" items="${ispTypeMap }"><c:if test="${map.key == eip.ispType }">${map.value }</c:if></c:forEach></p>
@@ -97,7 +109,7 @@
 						</c:choose>
 					>
 						<select id="computeSelect" class="required">
-							<c:forEach var="item" items="${allComputes }">
+							<c:forEach var="item" items="${computeResources }">
 								<option value="${item.id }" <c:if test="${not empty eip.computeItem && item.id == eip.computeItem.id }">selected="selected"</c:if>>${item.identifier}(${item.innerIp })</option>
 							</c:forEach>
 						</select>					
@@ -110,7 +122,7 @@
 						</c:choose>
 					>
 						<select id="elbSelect" class="required">
-							<c:forEach var="item" items="${allElbs }">
+							<c:forEach var="item" items="${elbResources }">
 								<option value="${item.id }" <c:if test="${not empty eip.networkElbItem && item.id == eip.networkElbItem.id }">selected="selected"</c:if>>${item.identifier}(${item.virtualIp })</option>
 							</c:forEach>
 						</select>			
@@ -132,8 +144,8 @@
 									</c:forEach>
 								</select>
 							</td>
-							<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
-							<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+							<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small required" maxlength="45" placeholder="...SourcePort"></td>
+							<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small required" maxlength="45" placeholder="...TargetPort"></td>
 							<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 						</tr>
 					</c:forEach>

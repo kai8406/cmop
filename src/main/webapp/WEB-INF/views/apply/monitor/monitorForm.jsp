@@ -37,7 +37,7 @@
 			});
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
+				errorClass: "text-error",
 				errorElement: "span",
 				highlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').addClass('error');
@@ -371,7 +371,7 @@
 									<table class="table table-bordered table-condensed"  >
 										<tbody>
 											<tr class="clone">
-												<td><input type="text"  class="monitorPort" maxlength="45" placeholder="...监控端口"></td>
+												<td><input type="text"  class="monitorPort required" maxlength="45" placeholder="...监控端口"></td>
 												<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 											</tr>
 										</tbody>
@@ -385,7 +385,7 @@
 									<table class="table table-bordered table-condensed"  >
 										<tbody>
 											<tr class="clone">
-												<td><input type="text"  class="monitorMaxProcess" maxlength="45" placeholder="...监控进程"></td>
+												<td><input type="text"  class="monitorMaxProcess required" maxlength="45" placeholder="...监控进程"></td>
 												<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 											</tr>
 										</tbody>
@@ -399,7 +399,7 @@
 									<table class="table table-bordered table-condensed"  >
 										<tbody>
 											<tr class="clone">
-												<td><input type="text"  class="monitorMountPoint" maxlength="45" placeholder="...挂载路径"></td>
+												<td><input type="text"  class="monitorMountPoint required" maxlength="45" placeholder="...挂载路径"></td>
 												<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 											</tr>
 										</tbody>

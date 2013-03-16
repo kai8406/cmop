@@ -21,7 +21,7 @@
 			
 		});
 		
-		 /*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
+		/*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
 		$(document).on("click", "#ModalSave", function() {
 			
 			var selectedArray = [],

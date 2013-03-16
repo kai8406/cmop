@@ -12,7 +12,7 @@
 			$("ul#navbar li#resource").addClass("active");
 			
 			$("#inputForm").validate({
-				errorClass: "help-inline",
+				errorClass: "text-error",
 				errorElement: "span",
 				highlight: function(element, errorClass, validClass) {
 					$(element).closest('.control-group').addClass('error');

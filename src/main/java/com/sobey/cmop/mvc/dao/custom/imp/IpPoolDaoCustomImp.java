@@ -1,4 +1,4 @@
-package com.sobey.cmop.mvc.dao.custom;
+package com.sobey.cmop.mvc.dao.custom.imp;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.Vlan;
 

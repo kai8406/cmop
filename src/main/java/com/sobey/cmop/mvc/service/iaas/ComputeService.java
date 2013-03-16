@@ -346,7 +346,7 @@ public class ComputeService extends BaseSevcie {
 
 		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 
-		List list = basicUnitDao.getComputeItemListByResourcesId(userId);
+		List list = basicUnitDao.getComputeItemListByResourcesAndElbIsNull(userId);
 
 		for (int i = 0; i < list.size(); i++) {
 

@@ -22,7 +22,7 @@ import com.sobey.cmop.mvc.entity.StorageItem;
  * 返回的值 true : 变更 ; false : 未变更.
  * </pre>
  */
-public interface CompareResourcesService {
+public interface ICompareResourcesService {
 
 	/**
 	 * 比较实例资源computeItem 变更前和变更后的值<br>

@@ -23,7 +23,7 @@ import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
  * @author liukai
  * 
  */
-public interface ResourcesJsonService {
+public interface IResourcesJsonService {
 
 	/**
 	 * 将ComputeItem转化成ComputeJson格式.

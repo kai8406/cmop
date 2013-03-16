@@ -16,19 +16,20 @@ import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
 import com.sobey.cmop.mvc.service.failure.FailureService;
-import com.sobey.cmop.mvc.service.iaas.CompareResourcesService;
+import com.sobey.cmop.mvc.service.iaas.ICompareResourcesService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.sobey.cmop.mvc.service.iaas.DnsService;
 import com.sobey.cmop.mvc.service.iaas.EipService;
 import com.sobey.cmop.mvc.service.iaas.ElbService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
 import com.sobey.cmop.mvc.service.iaas.EsgService;
+import com.sobey.cmop.mvc.service.iaas.IBasicUnitService;
+import com.sobey.cmop.mvc.service.iaas.IResourcesJsonService;
 import com.sobey.cmop.mvc.service.iaas.MonitorComputeServcie;
 import com.sobey.cmop.mvc.service.iaas.MonitorElbServcie;
 import com.sobey.cmop.mvc.service.iaas.MonitorMailService;
 import com.sobey.cmop.mvc.service.iaas.MonitorPhoneService;
 import com.sobey.cmop.mvc.service.iaas.MonitorServcie;
-import com.sobey.cmop.mvc.service.iaas.ResourcesJsonService;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
@@ -59,7 +60,7 @@ public class CommonService {
 	public ChangeServcie changeServcie;
 
 	@Resource
-	public CompareResourcesService compareResourcesService;
+	public ICompareResourcesService compareResourcesService;
 
 	@Resource
 	public ComputeService computeService;
@@ -125,7 +126,10 @@ public class CommonService {
 	public RedmineUtilService redmineUtilService;
 
 	@Resource
-	public ResourcesJsonService resourcesJsonService;
+	public IResourcesJsonService resourcesJsonService;
+
+	@Resource
+	public IBasicUnitService basicUnitService;
 
 	@Resource
 	public ResourcesService resourcesService;

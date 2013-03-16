@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,11 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
-import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 
 /**
  * 页面AJAX操作相关的 Controller
@@ -77,7 +74,8 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "checkLoginName")
 	@ResponseBody
-	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
+	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName,
+			@RequestParam("loginName") String loginName) {
 		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
@@ -122,32 +120,11 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
 	public @ResponseBody
-	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType, @RequestParam(value = "serviceTagName", required = false) String serviceTagName,
-			@RequestParam(value = "ipAddress", required = false) String ipAddress, @RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
+	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
+			@RequestParam(value = "serviceTagName", required = false) String serviceTagName,
+			@RequestParam(value = "ipAddress", required = false) String ipAddress,
+			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
 		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
-	}
-
-	/**
-	 * Ajax请求获得当前登录用户创建的所有ComputeJson对象.
-	 * 
-	 * @return ComputeJson List
-	 */
-	@RequestMapping(value = "getComputeList")
-	public @ResponseBody
-	List<ComputeJson> getComputeList() {
-
-		List<ComputeItem> computeItems = comm.computeService.getComputeListByUserId(getCurrentUserId());
-
-		List<ComputeJson> computeJsons = new ArrayList<ComputeJson>();
-
-		for (ComputeItem computeItem : computeItems) {
-
-			ComputeJson json = comm.resourcesJsonService.convertComputeJsonToComputeItem(computeItem);
-
-			computeJsons.add(json);
-		}
-
-		return computeJsons;
 	}
 
 	/**
@@ -158,30 +135,6 @@ public class AjaxController extends BaseController {
 	public @ResponseBody
 	List<NetworkEsgItem> getEsgList() {
 		return comm.esgService.getESGList();
-	}
-
-	/**
-	 * Ajax请求获得当前登录用户创建的通过审批的实例Compute List<br>
-	 * 并且该实例没有被其它ELB关联过,即elb_id = null .
-	 * 
-	 * @return ComputeJson List
-	 */
-	@RequestMapping(value = "getResourcesComputeByElbIsNullList")
-	public @ResponseBody
-	List<ComputeJson> getResourcesComputeByElbIsNullList() {
-
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemListByResourcesId(getCurrentUserId());
-
-		List<ComputeJson> computeJsons = new ArrayList<ComputeJson>();
-
-		for (ComputeItem computeItem : computeItems) {
-
-			ComputeJson json = comm.resourcesJsonService.convertComputeJsonToComputeItem(computeItem);
-
-			computeJsons.add(json);
-		}
-
-		return computeJsons;
 	}
 
 	/**

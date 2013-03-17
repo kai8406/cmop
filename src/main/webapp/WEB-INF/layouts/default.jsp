@@ -1,10 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<!-- title Tag`s Template -->
+<title>Sobey云平台服务${ctx }&mdash; <sitemesh:title/></title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="description" content="cmop v2.0">
 <meta name="author" content="liukai">
 
@@ -24,77 +26,49 @@
 <link rel="shortcut icon" href="${ctx}/static/common/img/ico/favicon.png">
 
 <!-- Le css styles ==================================================== -->
-<link href="${ctx}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<style type="text/css">
+<link rel="stylesheet" href="${ctx}/static/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx}/static/bootstrap-modal/css/bootstrap-modal.css">
+<link rel="stylesheet" href="${ctx}/static/jquery-uniform/css/uniform.default.min.css">
+<link rel="stylesheet" href="${ctx}/static/jquery-ui/css/jquery-ui-1.10.1.custom.min.css">
+<link rel="stylesheet" href="${ctx}/static/common/css/style.css">
 
-	html,body {
-	
-		height: 100%;
-	}
-	body {
-	  padding-top: 60px;
-	  padding-bottom: 40px;
-	}
-	
-	/* Lastly, apply responsive CSS fixes as necessary */
-	@media ( max-width : 767px) {
-		#footer {
-			margin-left: -20px;
-			margin-right: -20px;
-			padding-left: 20px;
-			padding-right: 20px;
-		}
-	}
-</style>
-<link href="${ctx}/static/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet">
-<link href="${ctx}/static/jquery-uniform/css/uniform.default.min.css" rel="stylesheet">
-<link href="${ctx}/static/jquery-ui/css/jquery-ui-1.10.1.custom.min.css" rel="stylesheet">
-<link href="${ctx}/static/common/css/style.css" rel="stylesheet">
-
-<!--[if lt IE 7 ]><![endif]-->
-<!--[if IE 8 ]><![endif]-->
-<!--[if IE 9 ]><![endif]-->
-
- <!-- Le javascript  ================================================== -->
- <script src="${ctx}/static/jquery/jquery.min.js"></script>
- <script src="${ctx}/static/jquery-uniform/jquery.uniform.min.js"></script>
- <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
- <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
- <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
- <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modal.js"></script>
- <script src="${ctx}/static/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
- <script src="${ctx}/static/jquery-ui/js/jquery.ui.datepicker-zh-CN.js"></script>
- <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
- <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>
+ <!-- Le javascript -->
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+ <script>window.jQuery || document.write('<script src="${ctx}/static/jquery/jquery.min.js"><\/script>')</script>
  <script src="${ctx}/static/common/js/custom.js"></script>
- <script src="${ctx}/static/common/js/custom.wizard.js"></script>
-
+ 
 <!-- head Tag`s Template -->
 <sitemesh:head/>
-
-<!-- title Tag`s Template -->
-<title>Sobey云平台服务${ctx }&mdash; <sitemesh:title/></title>
-
 </head>
-
 <body>
-	
-	<!--  push down footer -->
-	<div style="min-height: 100%;height: auto !important;height: 100%;">
-	
-	<%@ include file="/WEB-INF/layouts/navbar.jsp"%>
-	
+	<div id="wrap">
+		<%@ include file="/WEB-INF/layouts/navbar.jsp"%>
 		<div class="container">
+			<!--[if lt IE 7]>
+        		<p class="chromeframe">您的浏览器不被支持！试试其他的：<a href="http://www.google.com/chrome">Google 浏览器</a>、<a href="http://firefox.com.cn/">火狐浏览器</a>、<a href="http://www.apple.com.cn/safari/">Safari</a>、<a href="http://www.google.com/chromeframe?hl=zh-CN">Google 浏览器框架</a></p>
+	     	<![endif]-->
 			<sitemesh:body/>
 		</div>
-		
+		<div id="push"></div>
 	</div>
-	 
-	<footer id="footer" style="text-align: center;height: 60px;background-color: #f5f5f5;">
+	
+	<footer id="footer">
 		<div class="container">
-			<p style="margin: 20px 0;">Copyright &copy; 2013 Sobey</p>
+			<p class="muted credit">Copyright &copy; 2013 Sobey</p>
 		</div>
 	</footer>
+	
+	 <!-- Le javascript -->
+	 <script src="${ctx}/static/jquery-uniform/jquery.uniform.min.js"></script>
+	 <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
+	 <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
+	 <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+	 <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modal.js"></script>
+	 <script src="${ctx}/static/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
+	 <script src="${ctx}/static/jquery-ui/js/jquery.ui.datepicker-zh-CN.js"></script>
+	 <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
+	 <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>
+	 <script src="${ctx}/static/common/js/custom.wizard.js"></script>
 	
 </body>
 </html>

@@ -11,7 +11,7 @@
 			
 			$("ul#navbar li#apply").addClass("active");
 			
-			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
+			$("#inputForm").validate();
 			
 			$("#addComputeBtn").click(function() {
 				if (!$("#inputForm").valid()) {

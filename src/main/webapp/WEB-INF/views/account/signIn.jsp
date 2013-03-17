@@ -20,15 +20,7 @@
 					 	minlength:6,
 						maxlength:20
 					}
-				},
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
+				} 
 			});
 			 
 		});
@@ -49,7 +41,7 @@
 				String error = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 				if(error != null){
 			%>
-					<span class="text-error">请输入正确的登录名或登录密码</span> 
+					<span class="text-warning">请输入正确的登录名或登录密码</span> 
 			<%
 				}
 			%>

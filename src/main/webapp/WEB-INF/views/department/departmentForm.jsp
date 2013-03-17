@@ -17,19 +17,10 @@
 				rules:{
 					name:{
 						remote: "${ctx}/ajax/checkDepartmentName?oldName=${department.name}"
-					},
-					permissionArray:"required"
+					}
 				},
 				messages:{
 					name:{remote:"部门名已存在"}
-				},
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
 				}
 			});
 			

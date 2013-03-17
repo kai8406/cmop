@@ -11,16 +11,7 @@
 			
 			$("ul#navbar li#resource").addClass("active");
 			
-			$("#inputForm").validate({
-				errorClass: "text-error",
-				errorElement: "span",
-				highlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
+			$("#inputForm").validate();
 			
 			$("#computeModalSave").click(function(){
 				var ipAddress = $("#computeModal").find("input:radio:checked").closest("tr").find("td:eq(3)").text();

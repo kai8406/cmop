@@ -1,4 +1,67 @@
-﻿/* 显示纯文本的时候,匹配 .controls 的高度 */
+﻿/* Sticky footer styles
+      -------------------------------------------------- */
+html,body {
+	height: 100%;
+	/* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,#footer {
+	height: 60px;
+	text-align: center;
+}
+
+#footer {
+	background-color: #f5f5f5;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media ( max-width : 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+
+/* Custom page CSS
+      -------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+#wrap>.container {
+	padding-top: 60px;
+}
+
+.container .credit {
+	margin: 20px 0;
+}
+
+/* Input Form
+      -------------------------------------------------- */
+.input-form {
+	max-width: 650px;
+	padding: 19px 29px 29px;
+	margin: 0 auto 20px;
+	background-color: #fff;
+	border: 1px solid #e5e5e5;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+/* 显示纯文本的时候,匹配 .controls 的高度 */
 .plain-text {
 	padding: 5px 0px;
 }
@@ -67,7 +130,7 @@ td.is-hidden { /* 	color: #ccc; */
 /* 分页时的固定高度
 ----------------------------------*/
 div.singlePage {
-	height: 40em;
+	height: 36m;
 	overflow: auto;
 }
 
@@ -106,15 +169,15 @@ div.singlePage {
 .widget-title,.modal-header,div.dataTables_wrapper .ui-widget-header {
 	background-color: #efefef;
 	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd),
-		to(#eaeaea) );
+		to(#eaeaea));
 	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
 	background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(  
+	filter: progid:DXImageTransform.Microsoft.gradient(               
 		                     startColorstr='#fdfdfd', endColorstr='#eaeaea',
-		GradientType=0 ); /* IE6-9 */
+		GradientType=0); /* IE6-9 */
 	border-bottom: 1px solid #CDCDCD;
 	height: 36px;
 }

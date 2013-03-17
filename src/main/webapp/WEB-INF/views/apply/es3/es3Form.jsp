@@ -11,16 +11,7 @@
 			
 			$("ul#navbar li#apply").addClass("active");
 			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
+			$("#inputForm").validate();
 			
 			/*禁用回车提交form表单.*/
 			$("#inputForm").keypress(function(e) {

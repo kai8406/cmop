@@ -13,6 +13,8 @@
 			
 			$("#serviceTag").focus();
 			
+			$("#inputForm").validate();
+			
 			// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
 			$("#serviceStart").val(getDatePlusMonthNum(0));
 			$("#serviceEnd").val(getDatePlusMonthNum(3));
@@ -30,16 +32,6 @@
 				}
 			});
 			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight:function(element, errorClass, validClass) {
-			   		$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
 			
 		});
 	</script>

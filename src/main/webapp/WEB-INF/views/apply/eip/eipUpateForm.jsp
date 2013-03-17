@@ -11,7 +11,7 @@
 			
 			$("ul#navbar li#apply").addClass("active");
 			
-			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
+			$("#inputForm").validate();
 			
 			/*关联实例和关联ELB select控件的切换*/
 			$("input[name='linkRadio']").click(function() {

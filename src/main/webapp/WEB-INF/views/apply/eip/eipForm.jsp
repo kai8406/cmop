@@ -11,7 +11,7 @@
 			
 			$("ul#navbar li#apply").addClass("active");
 			
-			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
+			$("#inputForm").validate();
 			
 			/*禁用回车提交form表单.*/
 			$("#inputForm").keypress(function(e) {

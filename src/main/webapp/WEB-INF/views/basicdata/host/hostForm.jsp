@@ -16,14 +16,6 @@ $(document).ready(function() {
 		},
 		messages:{
 			name:{remote:"服务器名称已存在"}
-		},
-		errorClass: "help-inline",
-		errorElement: "span",
-		highlight:function(element, errorClass, validClass) {
-			$(element).closest('.control-group').addClass('error');
-		},
-		unhighlight: function(element, errorClass, validClass) {
-			$(element).closest('.control-group').removeClass('error');
 		}
 	});
 });

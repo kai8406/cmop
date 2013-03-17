@@ -13,7 +13,7 @@
 		
 			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
 			
-			$("#inputForm").validate({errorClass: "text-error",errorElement: "span"});
+			$("#inputForm").validate();
 			
 			//注意该变量是全局变量!!!
 			var esgHTML;

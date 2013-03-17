@@ -18,18 +18,7 @@
 				if (e.which == 13) {return false;}
 			});
 			
-			$("#inputForm").validate({
-				errorClass: "help-inline",
-				errorElement: "span",
-				highlight: function(element, errorClass, validClass) {
-	
-					$(element).closest('.control-group').addClass('error');
-				},
-				unhighlight: function(element, errorClass, validClass) {
-					$(element).closest('.control-group').removeClass('error');
-				}
-			});
-			
+			$("#inputForm").validate();
 			
 			/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
 			$(document).on("click", "#createBtn", function() {

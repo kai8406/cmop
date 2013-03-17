@@ -22,4 +22,15 @@
 		max: $.validator.format("请输入一个最大为 {0} 的值"),
 		min: $.validator.format("请输入一个最小为 {0} 的值")
 	});
+	
+	$.extend($.validator.defaults,{
+		errorClass: "text-error",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).closest('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).closest('.control-group').removeClass('error');
+		}
+	});
 }(jQuery));

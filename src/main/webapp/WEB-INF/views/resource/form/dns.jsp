@@ -25,12 +25,15 @@
 				//CNAME
 				$("#cnameDomainDiv").addClass("show").removeClass("hidden");
 				$("#targetEIPDiv").addClass("hidden").removeClass("show");
+				//Hook,用于规避页面验证的情况.
+				$("#resourcesDIV dl").empty().append('<div class="resources"></div>');
+				
 			} else {
 				//GSLB,A
 				$("#targetEIPDiv").addClass("show").removeClass("hidden");
 				$("#cnameDomainDiv").addClass("hidden").removeClass("show");
+				$("#resourcesDIV dl").empty();
 			}
-			$("#resourcesDIV dl").empty();
 			$("#cnameDomain").val('');
 				
 		});

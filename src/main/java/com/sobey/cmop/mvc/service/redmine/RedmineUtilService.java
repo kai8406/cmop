@@ -10,13 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
-import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
-import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
-import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
@@ -29,7 +26,6 @@ import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
-import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -233,41 +229,28 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Compate.操作系统.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.操作系统 + ":" + BLANK).append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
-										.append(ComputeConstant.OS_TYPE_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.操作系统 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.操作位数.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.操作位数 + ":" + BLANK).append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getOldValue())).append(RARR)
-										.append(ComputeConstant.OS_BIT_STRING_MAP.get(changeItem.getNewValue())).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.操作位数 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.规格.toString().equals(fieldName)) {
 
-								String oldValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getOldValue())
-										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getOldValue());
-
-								String newValue = serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) ? ComputeConstant.PCSServerType.mapKeyStr.get(changeItem.getNewValue())
-										: ComputeConstant.ECSServerType.mapKeyStr.get(changeItem.getNewValue());
-
-								content.append(FieldNameConstant.Compate.规格 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.规格 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.用途信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getOldString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE)
-										.append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
+										.append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-								NetworkEsgItem OldESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue()));
-
-								NetworkEsgItem NewESG = comm.esgService.getEsg(Integer.valueOf(changeItem.getNewValue()));
-
-								content.append(FieldNameConstant.Compate.ESG + ":" + BLANK).append(OldESG.getIdentifier() + "(" + OldESG.getDescription() + ")").append(RARR)
-										.append(NewESG.getIdentifier() + "(" + NewESG.getDescription() + ")").append(NEWLINE);
+								content.append(FieldNameConstant.Compate.ESG + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							}
 
@@ -277,12 +260,11 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Storage.存储类型.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Storage.存储类型 + ":" + BLANK).append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
-										.append(StorageConstant.storageType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
+								content.append(FieldNameConstant.Storage.存储类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Storage.容量空间.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Storage.容量空间 + ":" + BLANK).append(changeItem.getOldValue()).append("GB").append(RARR).append(changeItem.getNewValue()).append("GB")
+								content.append(FieldNameConstant.Storage.容量空间 + ":" + BLANK).append(changeItem.getOldString()).append("GB").append(RARR).append(changeItem.getNewString()).append("GB")
 										.append(NEWLINE);
 
 							}
@@ -292,20 +274,19 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Elb.是否保持会话.toString().equals(fieldName)) {
 
-								Boolean OldKeepSession = NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false;
-								Boolean NewKeepSession = NetworkConstant.KeepSession.保持.toString().equals(changeItem.getNewValue()) ? true : false;
-
-								content.append(FieldNameConstant.Elb.是否保持会话 + ":" + BLANK).append(NetworkConstant.KeepSession.get(OldKeepSession)).append(RARR)
-										.append(NetworkConstant.KeepSession.get(NewKeepSession)).append(NEWLINE);
+								content.append(FieldNameConstant.Elb.是否保持会话 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE).append(changeItem.getNewValue())
-										.append(NEWLINE);
+								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
+										.append(changeItem.getNewString()).append(NEWLINE);
+
+							} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Elb.关联实例 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
+										.append(changeItem.getNewString()).append(NEWLINE);
 
 							}
-
-							// TODO 关联实例
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
@@ -313,22 +294,26 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Eip.关联实例.toString().equals(fieldName)) {
 
-								String oldValue = this.wrapStringByComputeItem(Integer.valueOf(changeItem.getOldValue()));
-								String newValue = this.wrapStringByComputeItem(Integer.valueOf(changeItem.getNewValue()));
+								// String oldValue =
+								// this.wrapStringByComputeItem(Integer.valueOf(changeItem.getOldValue()));
+								// String newValue =
+								// this.wrapStringByComputeItem(Integer.valueOf(changeItem.getNewValue()));
 
-								content.append(FieldNameConstant.Eip.关联实例 + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+								content.append(FieldNameConstant.Eip.关联实例 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Eip.关联ELB.toString().equals(fieldName)) {
 
-								String oldValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
-								String newValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
+								// String oldValue =
+								// this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
+								// String newValue =
+								// this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
 
-								content.append(FieldNameConstant.Eip.关联ELB + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+								content.append(FieldNameConstant.Eip.关联ELB + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Eip.端口信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldValue()).append(RARR).append(NEWLINE).append(changeItem.getNewValue())
-										.append(NEWLINE);
+								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
+										.append(changeItem.getNewString()).append(NEWLINE);
 
 							}
 
@@ -338,20 +323,19 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.Dns.域名类型.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Dns.域名类型 + ":" + BLANK).append(NetworkConstant.DomainType.get(Integer.valueOf(changeItem.getOldValue()))).append(RARR)
-										.append(NetworkConstant.DomainType.get(Integer.valueOf(changeItem.getNewValue()))).append(NEWLINE);
+								content.append(FieldNameConstant.Dns.域名类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Dns.域名.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Dns.域名 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Dns.域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Dns.CNAME域名 + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Dns.CNAME域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Dns.目标IP.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Dns.目标IP + ":" + BLANK).append(changeItem.getOldValue()).append(RARR).append(changeItem.getNewValue()).append(NEWLINE);
+								content.append(FieldNameConstant.Dns.目标IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							}
 
@@ -451,10 +435,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 							if (FieldNameConstant.monitorElb.监控ELB.toString().equals(fieldName)) {
 
-								String oldValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getOldValue()));
-								String newValue = this.wrapStringByNetworkElbItem(Integer.valueOf(changeItem.getNewValue()));
-
-								content.append(FieldNameConstant.monitorElb.监控ELB + ":" + BLANK).append(oldValue).append(RARR).append(newValue).append(NEWLINE);
+								content.append(FieldNameConstant.monitorElb.监控ELB + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							}
 
@@ -481,57 +462,6 @@ public class RedmineUtilService extends BaseSevcie {
 			return null;
 
 		}
-	}
-
-	/**
-	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.有空好好看看.
-	 * 
-	 * @param elbId
-	 * @return
-	 */
-	private String wrapStringByNetworkElbItem(Integer elbId) {
-
-		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(elbId);
-
-		String value = "";
-
-		if (networkElbItem != null) {
-
-			String virtualIp = "";
-			if (networkElbItem.getVirtualIp() != null) {
-				virtualIp = networkElbItem.getVirtualIp();
-			}
-
-			value += networkElbItem.getIdentifier() + "(" + virtualIp + ")";
-		}
-
-		return value;
-
-	}
-
-	/**
-	 * 将ComputeItem组合成字符串. 避免ip为null时抱错.有空好好看看.
-	 * 
-	 * @param elbId
-	 * @return
-	 */
-	private String wrapStringByComputeItem(Integer computeId) {
-
-		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
-
-		String value = "";
-
-		if (computeItem != null) {
-
-			String innerIp = "";
-			if (computeItem.getInnerIp() != null) {
-				innerIp = computeItem.getInnerIp();
-			}
-			value += computeItem.getIdentifier() + "(" + innerIp + ")";
-		}
-
-		return value;
-
 	}
 
 }

@@ -78,166 +78,38 @@
 									<!-- 实例Compute -->
 	            					<c:if test="${resource.serviceType == 1 || resource.serviceType == 2 }">
 									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '操作系统'}">
-													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '操作位数'}">
-													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
-													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
-													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == 'ESG'}">
-													<c:forEach var="esg" items="${esgList }"><c:if test="${esg.id == item.oldValue }">${esg.identifier}(${esg.description})</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '操作系统'}">
-													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '操作位数'}">
-													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
-													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
-													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == 'ESG'}">
-													<c:forEach var="esg" items="${esgList }"><c:if test="${esg.id == item.newValue }">${esg.identifier}(${esg.description})</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 									
 									</c:if><!-- 实例Compute End -->
 									
 									<!-- 存储 storage  -->
 					            	<c:if test="${resource.serviceType == 3 }">
-					            		<td class="is-hidden">
-					            			<c:choose>
-												<c:when test="${item.fieldName == '存储类型'}">
-													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '容量空间'}">${item.oldValue}GB</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '存储类型'}">
-													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '容量空间'}">${item.newValue}GB</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
+					            		<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 					            	</c:if><!-- 存储 storage  End -->
 					            	
 					            	<!-- 变更负载均衡器ELB -->
 	            					<c:if test="${resource.serviceType == 4 }">
 									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '是否保持会话'}">
-													<c:forEach var="map" items="${keepSessionKeyStrMap}"><c:if test="${item.oldValue == map.key }">${map.value}</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '是否保持会话'}">
-													<c:forEach var="map" items="${keepSessionKeyStrMap}"><c:if test="${item.newValue == map.key }">${map.value}</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 									
 									</c:if><!-- 变更负载均衡器ELB End -->
 									
 					            	<!-- EIP-->
 	            					<c:if test="${resource.serviceType == 5 }">
 									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '关联实例'}">
-													<c:forEach var="compute" items="${allComputes }">
-														<c:if test="${compute.id == item.oldValue }">${compute.identifier }(${compute.innerIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '关联ELB'}">
-													<c:forEach var="elb" items="${allElbs }">
-														<c:if test="${elb.id == item.oldValue }">${elb.identifier }(${elb.virtualIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '关联实例'}">
-													<c:forEach var="compute" items="${allComputes }">
-														<c:if test="${compute.id == item.newValue }">${compute.identifier }(${compute.innerIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '关联ELB'}">
-													<c:forEach var="elb" items="${allElbs }">
-														<c:if test="${elb.id == item.newValue }">${elb.identifier }(${elb.virtualIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 									
 									</c:if><!-- EIP End -->
 									
 					            	<!-- DNS-->
 	            					<c:if test="${resource.serviceType == 6 }">
 									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '域名类型'}">
-													<c:forEach var="map" items="${domainTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '目标IP'}">
-													${item.oldValue}
-												</c:when>
-												<c:when test="${item.fieldName == 'CNAME域名'}">
-													${item.oldValue}
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '域名类型'}">
-													<c:forEach var="map" items="${domainTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '目标IP'}">
-													${item.newValue}
-												</c:when>
-												<c:when test="${item.fieldName == 'CNAME域名'}">
-													${item.newValue}
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-											
-										</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 									
 									</c:if><!-- DNS End -->
 									
@@ -343,27 +215,8 @@
 					            	<!-- monitorElb-->
 	            					<c:if test="${resource.serviceType == 10 }">
 									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '监控ELB'}">
-													<c:forEach var="elb" items="${allElbs }">
-														<c:if test="${elb.id == item.oldValue }">${elb.identifier }(${elb.virtualIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '监控ELB'}">
-													<c:forEach var="elb" items="${allElbs }">
-														<c:if test="${elb.id == item.newValue }">${elb.identifier }(${elb.virtualIp })</c:if>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
 									
 									</c:if><!-- monitorElb End -->
 									

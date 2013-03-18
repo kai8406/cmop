@@ -416,11 +416,11 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Compate.ESG.toString().equals(changeItem.getFieldName())) {
 
-					computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.valueOf(changeItem.getOldValue())));
+					computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.valueOf(changeItem.getOldValue())));
 
 				} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 应用信息无法还原.
+					// 应用信息无法还原.
 
 				}
 
@@ -444,7 +444,18 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
+
+					if (computeIds != null) {
+						List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+						for (int i = 0; i < computeIds.length; i++) {
+							ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+							computeItemList.add(computeItem);
+						}
+
+						storageItem.setComputeItemList(computeItemList);
+					}
+
 				}
 
 			}
@@ -463,11 +474,19 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 端口信息无法还原.
+					// 端口信息无法还原.
 
 				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					// TODO
+					// 此处还原有问题!如果第一个ELB在变更流程中,实例被第二个ELB关联了.那么第一个ELB退回的时候就会将第二个ELB关联的实例覆盖掉!!
+
+					List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
+					for (ComputeItem computeItem : computeItems) {
+						computeItem.setNetworkElbItem(networkElbItem);
+						comm.elbService.saveOrUpdate(networkElbItem);
+					}
+
 				}
 
 			}
@@ -486,15 +505,15 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 端口信息无法还原.
+					// 端口信息无法还原.
 
 				} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
 
 				} else if (FieldNameConstant.Eip.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue())));
 
 				}
 
@@ -518,11 +537,25 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					networkDnsItem.setCnameDomain(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
 
 				} else if (FieldNameConstant.Dns.目标IP.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 暂时没有好的还原方式.
+					if (StringUtils.isNotBlank(changeItem.getOldValue())) {
+
+						String[] eipIds = StringUtils.split(changeItem.getOldValue(), ",");
+						if (eipIds != null) {
+							List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
+							for (String eipId : eipIds) {
+								NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipId));
+								networkEipItemList.add(networkEipItem);
+							}
+
+							networkDnsItem.setNetworkEipItemList(networkEipItemList);
+
+						}
+
+					}
 
 				}
 

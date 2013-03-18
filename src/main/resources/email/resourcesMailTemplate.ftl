@@ -123,186 +123,51 @@ table {
 								<#if resource.serviceType == 1 || resource.serviceType == 2 ><!-- 实例Compute  -->
 								
 									<td class="is-hidden">
-									
-										<#if item.fieldName == '操作系统' >
-										
-											<#list osTypeMap?keys as k ><#if item.oldValue?string == k>${osTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '操作位数' >
-											
-											<#list osBitMap?keys as k ><#if item.oldValue?string == k>${osBitMap[k]}</#if></#list>
-										
-										<#elseif item.fieldName == '规格' && resource.serviceType == 1 >
-											
-											<#list pcsServerTypeMap?keys as k ><#if item.oldValue?string == k>${pcsServerTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '规格' && resource.serviceType == 2 >
-											
-											<#list ecsServerTypeMap?keys as k ><#if item.oldValue?string == k>${ecsServerTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == 'ESG'  >
-											
-											<#list allESGs  as esg ><#if item.oldValue?string == esg.id?string>${esg.identifier}(${esg.description})</#if></#list>
-											
-										<#else>${item.oldValue}</#if>
-										
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-										
-										<#if item.fieldName == '操作系统' >
-										
-											<#list osTypeMap?keys as k ><#if item.newValue?string == k>${osTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '操作位数' >
-											
-											<#list osBitMap?keys as k ><#if item.newValue?string == k>${osBitMap[k]}</#if></#list>
-										
-										<#elseif item.fieldName == '规格' && resource.serviceType == 1 >
-											
-											<#list pcsServerTypeMap?keys as k ><#if item.newValue?string == k>${pcsServerTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '规格' && resource.serviceType == 2 >
-											
-											<#list ecsServerTypeMap?keys as k ><#if item.newValue?string == k>${ecsServerTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == 'ESG'  >
-											
-											<#list allESGs  as esg ><#if item.newValue?string == esg.id?string>${esg.identifier}(${esg.description})</#if></#list>
-											
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
 								
 								<#elseif resource.serviceType == 3 ><!-- 存储 storage  -->
 								
-								<td class="is-hidden">
-									
-										<#if item.fieldName == '存储类型' >
-										
-											<#list storageTypeMap?keys as k ><#if item.oldValue?string == k>${storageTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '容量空间' >
-										
-											${item.oldValue}GB
-											
-										<#else>${item.oldValue}</#if>
-										
+									<td class="is-hidden">
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-									
-									
-										<#if item.fieldName == '存储类型' >
-										
-											<#list storageTypeMap?keys as k ><#if item.newValue?string == k>${storageTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '容量空间' >
-										
-											${item.newValue}GB
-											
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
-									
 								
 								<#elseif resource.serviceType == 4 ><!--   ELB  -->
 									
 									<td class="is-hidden">
-									
-										<#if item.fieldName == '是否保持会话' >
-										
-											<#list KeepSessionMap?keys as k ><#if item.oldValue?string == k>${KeepSessionMap[k]}</#if></#list>
-											
-										<#else>${item.oldValue}</#if>
-										
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-										
-										<#if item.fieldName == '是否保持会话' >
-										
-											<#list KeepSessionMap?keys as k ><#if item.newValue?string == k>${KeepSessionMap[k]}</#if></#list>
-											
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
 									
 								<#elseif resource.serviceType == 5 ><!--   EIP  -->
 									
 									<td class="is-hidden">
-									
-										<#if item.fieldName == '关联实例' >
-											
-											<#list allComputes as compute >
-											<#if item.oldValue?string == compute.id?string >
-												${compute.identifier}(<#if compute.innerIp?exists>${compute.innerIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#elseif item.fieldName == '关联ELB' >
-										
-											<#list allElbs as elb >
-											<#if item.oldValue?string == elb.id?string >
-												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#else>${item.oldValue}</#if>
-										
-										
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-									
-										<#if item.fieldName == '关联实例' >
-											
-											<#list allComputes as compute >
-											<#if item.newValue?string == compute.id?string >
-												${compute.identifier}(<#if compute.innerIp?exists>${compute.innerIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#elseif item.fieldName == '关联ELB' >
-										
-											<#list allElbs as elb >
-											<#if item.newValue?string == elb.id?string >
-												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
-								
+									
 								<#elseif resource.serviceType == 6 ><!--   DNS  -->
 								
 									<td class="is-hidden">
-									
-										<#if item.fieldName == '域名类型' >
-										
-											<#list domainTypeMap?keys as k ><#if item.oldValue?string == k>${domainTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '目标IP' >
-											${item.oldValue}
-										<#elseif item.fieldName == 'CNAME域名' >
-											${item.oldValue}
-										<#else>${item.oldValue}</#if>
-										
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-									
-										<#if item.fieldName == '域名类型' >
-										
-											<#list domainTypeMap?keys as k ><#if item.newValue?string == k>${domainTypeMap[k]}</#if></#list>
-											
-										<#elseif item.fieldName == '目标IP' >
-											${item.newValue}
-										<#elseif item.fieldName == 'CNAME域名' >
-											${item.newValue}
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
 									
 								<#elseif resource.serviceType == 9 ><!--   monitorCompute  -->
@@ -382,31 +247,11 @@ table {
 								<#elseif resource.serviceType == 10 ><!--   monitorElb  -->
 								
 									<td class="is-hidden">
-									
-										<#if item.fieldName == '监控ELB' >
-										
-											<#list allElbs as elb >
-											<#if item.oldValue?string == elb.id?string >
-												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#else>${item.oldValue}</#if>
-										
+										${item.oldString}
 									</td>
 									
 									<td class="is-visible">
-									
-										<#if item.fieldName == '监控ELB' >
-											
-											<#list allElbs as elb >
-											<#if item.newValue?string == elb.id?string >
-												${elb.identifier}(<#if elb.virtualIp?exists>${elb.virtualIp}</#if>)
-											</#if>
-											</#list>
-											
-										<#else>${item.newValue}</#if>
-										 
+										 ${item.newString}
 									</td>
 									
 								<#else>

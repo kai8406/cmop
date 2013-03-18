@@ -24,7 +24,9 @@ public class ChangeItem implements java.io.Serializable {
 	private Change change;
 	private String fieldName;
 	private String oldValue;
+	private String oldString;
 	private String newValue;
+	private String newString;
 
 	// Constructors
 
@@ -80,6 +82,15 @@ public class ChangeItem implements java.io.Serializable {
 		this.oldValue = oldValue;
 	}
 
+	@Column(name = "old_String", length = 225)
+	public String getOldString() {
+		return oldString;
+	}
+
+	public void setOldString(String oldString) {
+		this.oldString = oldString;
+	}
+
 	@Column(name = "new_value", nullable = false, length = 200)
 	public String getNewValue() {
 		return newValue;
@@ -87,6 +98,15 @@ public class ChangeItem implements java.io.Serializable {
 
 	public void setNewValue(String newValue) {
 		this.newValue = newValue;
+	}
+
+	@Column(name = "new_String", length = 225)
+	public String getNewString() {
+		return newString;
+	}
+
+	public void setNewString(String newString) {
+		this.newString = newString;
 	}
 
 }

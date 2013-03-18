@@ -177,7 +177,7 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getEsg(esgId));
+		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
 
 		return comm.computeService.saveOrUpdate(computeItem);
 
@@ -238,7 +238,7 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getEsg(esgId));
+		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
 
 		// 更新compute
 
@@ -293,7 +293,7 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setOsBit(Integer.parseInt(osBits[i]));
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
-			computeItem.setNetworkEsgItem(comm.esgService.getEsg(Integer.parseInt(esgIds[i])));
+			computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
 
 			computes.add(computeItem);
 		}
@@ -366,7 +366,7 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setRemark(object[7].toString());
 			computeItem.setInnerIp(object[8] != null ? object[8].toString() : null);
 			computeItem.setOldIp(object[9] != null ? object[9].toString() : null);
-			computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getEsg(Integer.valueOf(object[10].toString())) : null);
+			computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getNetworkEsgItem(Integer.valueOf(object[10].toString())) : null);
 			computeItem.setNetworkElbItem(object[11] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[11].toString())) : null);
 			computeItem.setHostName(object[12] != null ? object[12].toString() : null);
 			computeItem.setServerAlias(object[13] != null ? object[13].toString() : null);

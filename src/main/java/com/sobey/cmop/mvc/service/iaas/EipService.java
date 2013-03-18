@@ -249,9 +249,9 @@ public class EipService extends BaseSevcie {
 
 		networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkType, linkId);
 
-		eipPortItemDao.delete(this.getEipPortItemListByEipId(networkEipItem.getId()));
-
 		this.saveOrUpdate(networkEipItem);
+
+		eipPortItemDao.delete(this.getEipPortItemListByEipId(networkEipItem.getId()));
 
 		// EIP的端口映射
 

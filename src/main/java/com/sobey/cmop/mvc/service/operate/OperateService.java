@@ -377,6 +377,47 @@ public class OperateService extends BaseSevcie {
 
 			// 删除资源.
 			for (Resources resources : resourcesList) {
+
+				Integer serviceType = resources.getServiceType();
+				Integer serviceId = resources.getServiceId();
+
+				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+
+					// PCS & ECS
+					comm.computeService.deleteCompute(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
+
+					// ES3
+					comm.es3Service.deleteStorageItem(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+
+					// ELB
+					comm.elbService.deleteNetworkElbItem(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
+
+					// EIP
+					comm.eipService.deleteNetworkEipItem(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
+
+					// DNS
+					comm.dnsService.deleteNetworkDnsItem(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
+
+					// monitorCompute
+					comm.monitorComputeServcie.deleteMonitorCompute(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
+
+					// monitorElb
+					comm.monitorElbServcie.deleteMonitorElb(serviceId);
+
+				}
+
 				sendToUser = resources.getUser();
 				comm.resourcesService.deleteResources(resources.getId());
 			}

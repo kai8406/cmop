@@ -223,10 +223,10 @@
 						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
 						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
 						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
-						html += '<dd><em>监控实例</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
-						html += '<dd><em>监控端口</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
-						html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
-						html += '<dd><em>挂载路径</em>&nbsp;&nbsp;<strong>' + data.ipAddress + '</strong></dd>';
+						html += '<dd><em>监控实例</em>&nbsp;&nbsp;<strong>' + (data.ipAddress == null ? "" : data.ipAddress) + '</strong></dd>';
+						html += '<dd><em>监控端口</em>&nbsp;&nbsp;<strong>' + data.port + '</strong></dd>';
+						html += '<dd><em>监控进程</em>&nbsp;&nbsp;<strong>' + data.process + '</strong></dd>';
+						html += '<dd><em>挂载路径</em>&nbsp;&nbsp;<strong>' + data.mountPoint + '</strong></dd>';
 						html += '<dd><em>CPU占用率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.cpuWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.cpuCritical + '</strong></dd>';
 						html += '<dd><em>内存占用率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.memoryWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.memoryCritical + '</strong></dd>';
 						html += '<dd><em>网络丢包率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.diskWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.diskCritical + '</strong></dd>';

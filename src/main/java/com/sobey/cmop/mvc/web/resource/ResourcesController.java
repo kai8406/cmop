@@ -36,8 +36,8 @@ public class ResourcesController extends BaseController {
 	 * 显示资源Resources的List
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
-			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 

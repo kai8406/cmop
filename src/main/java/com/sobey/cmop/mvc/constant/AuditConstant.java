@@ -134,7 +134,7 @@ public class AuditConstant {
 	 * 
 	 */
 	public enum FlowType implements ICommonEnum {
-		
+
 		资源申请_变更的审批流程(1);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();

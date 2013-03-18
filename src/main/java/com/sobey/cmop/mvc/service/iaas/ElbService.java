@@ -101,8 +101,7 @@ public class ElbService extends BaseSevcie {
 	 *            服务申请单ID
 	 */
 	@Transactional(readOnly = false)
-	public void saveELBToApply(Integer applyId, String[] keepSessions, String[] protocols, String[] sourcePorts, String[] targetPorts,
-			String[] computeIds) {
+	public void saveELBToApply(Integer applyId, String[] keepSessions, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
@@ -221,8 +220,8 @@ public class ElbService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts,
-			String[] targetPorts, String[] computeIds, String changeDescription) {
+	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds,
+			String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -232,8 +231,7 @@ public class ElbService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts,
-				computeIds);
+		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts, computeIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

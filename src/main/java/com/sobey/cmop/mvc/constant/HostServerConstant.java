@@ -20,7 +20,7 @@ public class HostServerConstant {
 	 * <p>
 	 */
 	public enum HostServerType implements ICommonEnum {
-		
+
 		宿主机(1), 物理机(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();

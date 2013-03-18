@@ -74,8 +74,7 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "checkLoginName")
 	@ResponseBody
-	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName,
-			@RequestParam("loginName") String loginName) {
+	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
 		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
 	}
 
@@ -120,10 +119,8 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
 	public @ResponseBody
-	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
-			@RequestParam(value = "serviceTagName", required = false) String serviceTagName,
-			@RequestParam(value = "ipAddress", required = false) String ipAddress,
-			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
+	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType, @RequestParam(value = "serviceTagName", required = false) String serviceTagName,
+			@RequestParam(value = "ipAddress", required = false) String ipAddress, @RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
 		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
 	}
 

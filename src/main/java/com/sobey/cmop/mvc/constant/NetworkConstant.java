@@ -25,7 +25,7 @@ public class NetworkConstant {
 	 * 
 	 */
 	public enum DomainType implements ICommonEnum {
-		
+
 		GSLB(1), A(2), CNAME(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
@@ -164,7 +164,7 @@ public class NetworkConstant {
 	 * 
 	 */
 	public enum KeepSession implements ICommonEnum {
-		
+
 		保持(true), 不保持(false);
 
 		public static final Map<Boolean, String> map = Maps.newLinkedHashMap();

@@ -12,6 +12,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 /**
  * ResourcesExtensionController负责扩展 ResourcesController<br>
  * 主要用于变更资源Resources<br>
+ * 
  * <pre>
  * 1.获得资源对象.  
  * 2.判断其参数是否改动. (资源只要有改动,则资源状态改变,并向change表插入数据. 如只改动了服务标签,运维人等,不改变资源状态)

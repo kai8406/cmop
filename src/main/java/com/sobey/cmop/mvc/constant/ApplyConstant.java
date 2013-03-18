@@ -85,7 +85,7 @@ public class ApplyConstant {
 	 * 
 	 */
 	public enum Status implements ICommonEnum {
-		
+
 		已申请(0), 待审批(1), 审批中(2), 已退回(3), 已审批(4), 处理中(5), 已创建(6);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();

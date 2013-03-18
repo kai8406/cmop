@@ -70,7 +70,7 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 		computeItem.setRemark(object[7].toString());
 		computeItem.setInnerIp(object[8] != null ? object[8].toString() : null);
 		computeItem.setOldIp(object[9] != null ? object[9].toString() : null);
-		computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getEsg(Integer.valueOf(object[10].toString())) : null);
+		computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getNetworkEsgItem(Integer.valueOf(object[10].toString())) : null);
 		computeItem.setNetworkElbItem(object[11] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[11].toString())) : null);
 		computeItem.setHostName(object[12] != null ? object[12].toString() : null);
 		computeItem.setServerAlias(object[13] != null ? object[13].toString() : null);

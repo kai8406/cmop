@@ -39,7 +39,7 @@ public class EsgService extends BaseSevcie {
 
 	// -- NetworkEsgItem Manager --//
 
-	public NetworkEsgItem getEsg(Integer id) {
+	public NetworkEsgItem getNetworkEsgItem(Integer id) {
 		return networkEsgItemDao.findOne(id);
 	}
 

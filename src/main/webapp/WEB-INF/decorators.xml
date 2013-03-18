@@ -2,6 +2,7 @@
 <decorators defaultdir="/WEB-INF/layouts/">
 	<excludes>
 		<pattern>/static/*</pattern>
+		<pattern>/WEB-INF/views/error/*</pattern>
 	</excludes>
 	
 	<decorator name="default" page="default.jsp">

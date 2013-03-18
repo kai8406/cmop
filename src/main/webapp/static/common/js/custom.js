@@ -46,6 +46,17 @@ $(document).ready(function() {
  	// === 所有input:submit的控件点击后,将其设置为disabled不可用,页面弹出遮罩层===//
  	
 	$("input[type=submit]").on('click', function(){
+		
+		//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
+		var $resourcesDIV = $("#resourcesDIV");
+		if($resourcesDIV.length > 0){
+			var $resources = $resourcesDIV.find("div.resources");
+			if($resources.length == 0){
+				alert("请创建资源.");
+				return false;
+			}
+		}
+		
 		var $this = $(this);
 		$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
 	});

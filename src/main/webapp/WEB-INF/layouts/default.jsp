@@ -32,11 +32,10 @@
 <link rel="stylesheet" href="${ctx}/static/jquery-ui/css/jquery-ui-1.10.1.custom.min.css">
 <link rel="stylesheet" href="${ctx}/static/common/css/style.css">
 
- <!-- Le javascript -->
- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
- <script>window.jQuery || document.write('<script src="${ctx}/static/jquery/jquery.min.js"><\/script>')</script>
- <script src="${ctx}/static/common/js/custom.js"></script>
- 
+<!-- Le javascript -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="${ctx}/static/jquery/jquery.min.js"><\/script>')</script>
+
 <!-- head Tag`s Template -->
 <sitemesh:head/>
 </head>
@@ -59,6 +58,7 @@
 	</footer>
 	
 	 <!-- Le javascript -->
+	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/jquery-uniform/jquery.uniform.min.js"></script>
 	 <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
 	 <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>

@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,13 +12,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.google.common.collect.Lists;
 
 /**
  * ComputeItem entity. @author MyEclipse Persistence Tools
@@ -45,6 +54,7 @@ public class ComputeItem implements java.io.Serializable {
 	private NetworkEsgItem networkEsgItem;
 	private NetworkElbItem networkElbItem;
 	private Set<Application> applications = new HashSet<Application>(0);
+	private List<StorageItem> storageItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -246,6 +256,23 @@ public class ComputeItem implements java.io.Serializable {
 
 	public void setApplications(Set<Application> applications) {
 		this.applications = applications;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "compute_storage_item", joinColumns = { @JoinColumn(name = "compute_item_id") }, inverseJoinColumns = { @JoinColumn(name = "storage_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.JOIN)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<StorageItem> getStorageItemList() {
+		return storageItemList;
+	}
+
+	public void setStorageItemList(List<StorageItem> storageItemList) {
+		this.storageItemList = storageItemList;
 	}
 
 	@Override

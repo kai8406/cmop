@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,11 +12,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.google.common.collect.Lists;
 
 /**
  * NetworkEipItem entity. @author MyEclipse Persistence Tools
@@ -35,6 +45,7 @@ public class NetworkEipItem implements java.io.Serializable {
 	private NetworkElbItem networkElbItem;
 	private ComputeItem computeItem;
 	private Set<EipPortItem> eipPortItems = new HashSet<EipPortItem>(0);
+	private List<NetworkDnsItem> networkDnsItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -149,6 +160,23 @@ public class NetworkEipItem implements java.io.Serializable {
 
 	public void setEipPortItems(Set<EipPortItem> eipPortItems) {
 		this.eipPortItems = eipPortItems;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "dns_eip_item", joinColumns = { @JoinColumn(name = "eip_item_id") }, inverseJoinColumns = { @JoinColumn(name = "dns_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.JOIN)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	public List<NetworkDnsItem> getNetworkDnsItemList() {
+		return networkDnsItemList;
+	}
+
+	public void setNetworkDnsItemList(List<NetworkDnsItem> networkDnsItemList) {
+		this.networkDnsItemList = networkDnsItemList;
 	}
 
 }

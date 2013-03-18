@@ -23,7 +23,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.google.common.collect.Lists;
-import com.sobey.framework.utils.Collections3;
 
 /**
  * NetworkEipItem entity. @author MyEclipse Persistence Tools
@@ -146,7 +145,22 @@ public class NetworkDnsItem implements java.io.Serializable {
 	// 非持久化属性.
 	@Transient
 	public String getMountElbs() {
-		return Collections3.extractToString(networkEipItemList, "identifier", ",");
+		return extractToString(networkEipItemList);
+	}
+
+	/**
+	 * 组装NetworkEipItem
+	 * 
+	 * @param computeItems
+	 * @return
+	 */
+	public static String extractToString(final List<NetworkEipItem> networkEipItems) {
+		StringBuilder sb = new StringBuilder();
+		for (NetworkEipItem networkEipItem : networkEipItems) {
+			sb.append(networkEipItem.getIdentifier()).append("(").append(networkEipItem.getIpAddress() == null ? "" : networkEipItem.getIpAddress()).append(")").append(",");
+		}
+		String str = sb.toString();
+		return str.length() > 0 ? str.substring(0, str.length()-1) : "";
 	}
 
 	@Override

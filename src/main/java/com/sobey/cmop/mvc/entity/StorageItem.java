@@ -23,7 +23,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.google.common.collect.Lists;
-import com.sobey.framework.utils.Collections3;
 
 /**
  * StorageItem entity. @author MyEclipse Persistence Tools
@@ -168,7 +167,22 @@ public class StorageItem implements java.io.Serializable {
 	// 非持久化属性.
 	@Transient
 	public String getMountComputes() {
-		return Collections3.extractToString(computeItemList, "identifier", ",");
+		return extractToString(computeItemList);
+	}
+
+	/**
+	 * 组装Compute
+	 * 
+	 * @param computeItems
+	 * @return
+	 */
+	public static String extractToString(final List<ComputeItem> computeItems) {
+		StringBuilder sb = new StringBuilder();
+		for (ComputeItem computeItem : computeItems) {
+			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getInnerIp() == null ? "" : computeItem.getInnerIp()).append(")").append(",");
+		}
+		String str = sb.toString();
+		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -175,12 +176,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.Compate.ESG.toString();
 
 			String oldValue = computeItem.getNetworkEsgItem().getId().toString();
-			String oldString = computeItem.getNetworkEsgItem().getIdentifier() + "(" + computeItem.getNetworkEsgItem().getDescription() + ")";
-
-			NetworkEsgItem networkEsgItem = comm.esgService.getNetworkEsgItem(esgId);
+			String oldString = this.wrapStringByNetworkEsgItem(computeItem.getNetworkEsgItem().getId());
 
 			String newValue = esgId.toString();
-			String newString = networkEsgItem.getIdentifier() + "(" + networkEsgItem.getDescription() + ")";
+			String newString = this.wrapStringByNetworkEsgItem(esgId);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -531,11 +530,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.Eip.关联实例.toString();
 
 			String oldValue = networkEipItem.getComputeItem().getId().toString();
-			String oldString = networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getInnerIp() == null ? "" : networkEipItem.getComputeItem().getInnerIp() + ")";
+			String oldString = this.wrapStringByComputeItem(networkEipItem.getComputeItem().getId());
 
 			String newValue = linkId.toString();
-			ComputeItem computeItem = comm.computeService.getComputeItem(linkId);
-			String newString = computeItem.getIdentifier() + "(" + computeItem.getInnerIp() == null ? "" : computeItem.getInnerIp() + ")";
+			String newString = this.wrapStringByComputeItem(linkId);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -546,12 +544,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.Eip.关联ELB.toString();
 
 			String oldValue = networkEipItem.getNetworkElbItem().getId().toString();
-			String oldString = networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() == null ? "" : networkEipItem.getNetworkElbItem()
-					.getVirtualIp() + ")";
+			String oldString = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
 
 			String newValue = linkId.toString();
-			NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(linkId);
-			String newString = networkElbItem.getIdentifier() + "(" + networkElbItem.getVirtualIp() == null ? "" : networkElbItem.getVirtualIp() + ")";
+			String newString = this.wrapStringByNetworkElbItem(linkId);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -581,8 +577,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldStringElb = "";
 
 				String newValueElb = linkId.toString();
-				NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(linkId);
-				String newStringElb = networkElbItem.getIdentifier() + "(" + networkElbItem.getVirtualIp() == null ? "" : networkElbItem.getVirtualIp() + ")";
+				String newStringElb = this.wrapStringByNetworkElbItem(linkId);
 
 				isChange = this.saveChangeItemByFieldName(resources, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
 
@@ -596,8 +591,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldStringCompute = "";
 
 				String newValueCompute = linkId.toString();
-				ComputeItem computeItem = comm.computeService.getComputeItem(linkId);
-				String newStringCompute = computeItem.getIdentifier() + "(" + computeItem.getInnerIp() == null ? "" : computeItem.getInnerIp() + ")";
+				String newStringCompute = this.wrapStringByComputeItem(linkId);
 
 				isChange = this.saveChangeItemByFieldName(resources, fieldNameCompute, oldValueCompute, oldStringCompute, newValueCompute, newStringCompute);
 
@@ -605,8 +599,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String fieldNameElb = FieldNameConstant.Eip.关联ELB.toString();
 
 				String oldValueElb = networkEipItem.getNetworkElbItem().getId().toString();
-				String oldStringElb = networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() == null ? "" : networkEipItem.getNetworkElbItem()
-						.getVirtualIp() + ")";
+				String oldStringElb = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
 
 				String newValueElb = UN_SELECTED_STRING;
 				String newStringElb = "";
@@ -869,11 +862,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.monitorElb.监控ELB.toString();
 
 			String oldValue = monitorElb.getNetworkElbItem().getId().toString();
-			String oldString = monitorElb.getNetworkElbItem().getIdentifier() + "(" + monitorElb.getNetworkElbItem().getVirtualIp() == null ? "" : monitorElb.getNetworkElbItem().getVirtualIp() + ")";
+			String oldString = this.wrapStringByNetworkElbItem(monitorElb.getNetworkElbItem().getId());
 
-			NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(elbId);
 			String newValue = elbId.toString();
-			String newString = networkElbItem.getIdentifier() + "(" + networkElbItem.getVirtualIp() == null ? "" : networkElbItem.getVirtualIp() + ")";
+			String newString = this.wrapStringByNetworkElbItem(elbId);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -908,68 +900,70 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		}
 
 		if (!monitorCompute.getCpuWarn().equals(cpuWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString(), monitorCompute.getCpuWarn(), monitorCompute.getCpuWarn(), cpuWarn, cpuWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString(), monitorCompute.getCpuWarn(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuWarn()), cpuWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(cpuWarn));
 		}
 
 		if (!monitorCompute.getCpuCritical().equals(cpuCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString(), monitorCompute.getCpuCritical(), monitorCompute.getCpuCritical(), cpuCritical,
-					cpuCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString(), monitorCompute.getCpuCritical(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuCritical()), cpuCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(cpuCritical));
 		}
 
 		if (!monitorCompute.getMemoryWarn().equals(memoryWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率报警阀值.toString(), monitorCompute.getMemoryWarn(), monitorCompute.getMemoryWarn(), memoryWarn,
-					memoryWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率报警阀值.toString(), monitorCompute.getMemoryWarn(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryWarn()), memoryWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(memoryWarn));
 		}
 
 		if (!monitorCompute.getMemoryCritical().equals(memoryCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率警告阀值.toString(), monitorCompute.getMemoryCritical(), monitorCompute.getMemoryCritical(),
-					memoryCritical, memoryCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率警告阀值.toString(), monitorCompute.getMemoryCritical(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryCritical()), memoryCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(memoryCritical));
 		}
 
 		if (!monitorCompute.getPingLossWarn().equals(pingLossWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString(), monitorCompute.getPingLossWarn(), monitorCompute.getPingLossWarn(),
-					pingLossWarn, pingLossWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString(), monitorCompute.getPingLossWarn(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossWarn()), pingLossWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(pingLossWarn));
 		}
 
 		if (!monitorCompute.getPingLossCritical().equals(pingLossCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString(), monitorCompute.getPingLossCritical(), monitorCompute.getPingLossCritical(),
-					pingLossCritical, pingLossCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString(), monitorCompute.getPingLossCritical(),
+					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossCritical()), pingLossCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(pingLossCritical));
 		}
 
 		if (!monitorCompute.getDiskWarn().equals(diskWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString(), monitorCompute.getDiskWarn(), monitorCompute.getDiskWarn(), diskWarn, diskWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString(), monitorCompute.getDiskWarn(),
+					MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskWarn()), diskWarn, MonitorConstant.THRESHOLD_LT_STRING_KEY.get(diskWarn));
 		}
 
 		if (!monitorCompute.getDiskCritical().equals(diskCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString(), monitorCompute.getDiskCritical(), monitorCompute.getDiskCritical(),
-					diskCritical, diskCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString(), monitorCompute.getDiskCritical(),
+					MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskCritical()), diskCritical, MonitorConstant.THRESHOLD_LT_STRING_KEY.get(diskCritical));
 		}
 
 		if (!monitorCompute.getPingDelayWarn().equals(pingDelayWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率报警阀值.toString(), monitorCompute.getPingDelayWarn(), monitorCompute.getPingDelayWarn(),
-					pingDelayWarn, pingDelayWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率报警阀值.toString(), monitorCompute.getPingDelayWarn(),
+					MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayWarn()), pingDelayWarn, MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(pingDelayWarn));
 		}
 
 		if (!monitorCompute.getPingDelayCritical().equals(pingDelayCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率警告阀值.toString(), monitorCompute.getPingDelayCritical(), monitorCompute.getPingDelayCritical(),
-					pingDelayCritical, pingDelayCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率警告阀值.toString(), monitorCompute.getPingDelayCritical(),
+					MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayCritical()), pingDelayCritical, MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(pingDelayCritical));
 		}
 
 		if (!monitorCompute.getMaxProcessWarn().equals(maxProcessWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数报警阀值.toString(), monitorCompute.getMaxProcessWarn(), monitorCompute.getMaxProcessWarn(),
-					maxProcessWarn, maxProcessWarn);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数报警阀值.toString(), monitorCompute.getMaxProcessWarn(),
+					MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessWarn()), maxProcessWarn, MonitorConstant.MAX_PROCESS_STRING_KEY.get(maxProcessWarn));
 		}
 
 		if (!monitorCompute.getMaxProcessCritical().equals(maxProcessCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数警告阀值.toString(), monitorCompute.getMaxProcessCritical(), monitorCompute.getMaxProcessCritical(),
-					maxProcessCritical, maxProcessCritical);
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数警告阀值.toString(), monitorCompute.getMaxProcessCritical(),
+					MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessCritical()), maxProcessCritical, MonitorConstant.MAX_PROCESS_STRING_KEY.get(maxProcessCritical));
 		}
 
 		return isChange;
 	}
 
 	/**
-	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.有空好好看看.
+	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.
 	 * 
 	 * @param elbId
 	 * @return
@@ -995,7 +989,33 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	/**
-	 * 将ComputeItem组合成字符串. 避免ip为null时抱错.有空好好看看.
+	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.
+	 * 
+	 * @param eipId
+	 * @return
+	 */
+	private String wrapStringByNetworkEipItem(Integer eipId) {
+
+		NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(eipId);
+
+		String value = "";
+
+		if (networkEipItem != null) {
+
+			String ipAddress = "";
+			if (networkEipItem.getIpAddress() != null) {
+				ipAddress = networkEipItem.getIpAddress();
+			}
+
+			value += networkEipItem.getIdentifier() + "(" + ipAddress + ")";
+		}
+
+		return value;
+
+	}
+
+	/**
+	 * 将ComputeItem组合成字符串. 避免ip为null时抱错.有空好好看看.看有没有更好的API或方法来实现.
 	 * 
 	 * @param elbId
 	 * @return
@@ -1013,6 +1033,31 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				innerIp = computeItem.getInnerIp();
 			}
 			value += computeItem.getIdentifier() + "(" + innerIp + ")";
+		}
+
+		return value;
+
+	}
+
+	/**
+	 * 将NetworkEsgItem组合成字符串. 避免ip为null时抱错.
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	private String wrapStringByNetworkEsgItem(Integer esgId) {
+
+		NetworkEsgItem networkEsgItem = comm.esgService.getNetworkEsgItem(esgId);
+
+		String value = "";
+
+		if (networkEsgItem != null) {
+
+			String description = "";
+			if (networkEsgItem.getDescription() != null) {
+				description = networkEsgItem.getDescription();
+			}
+			value += networkEsgItem.getIdentifier() + "(" + description + ")";
 		}
 
 		return value;

@@ -67,109 +67,21 @@ function setResult(result) {
 				<c:forEach var="resource" items="${resourcesList }">
 					<c:forEach var="change" items="${resource.changes }">
 						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
-						
 						<table class="table table-bordered">
 				            <thead><tr><th class="span2">变更项</th><th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
 				            <tbody>
-				            
-				            <c:forEach var="item" items="${change.changeItems }">
-				            
-								<tr>
-								
-									<td>${item.fieldName}</td>
-									
-									<!-- 实例Compute -->
-	            					<c:if test="${resource.serviceType == 1 || resource.serviceType == 2 }">
-									
-										<td class="is-hidden">
-											<c:choose>
-												<c:when test="${item.fieldName == '操作系统'}">
-													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '操作位数'}">
-													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
-													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
-													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.oldValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '操作系统'}">
-													<c:forEach var="map" items="${osTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '操作位数'}">
-													<c:forEach var="map" items="${osBitMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 1}">
-													<c:forEach var="map" items="${pcsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '规格' && resource.serviceType == 2}">
-													<c:forEach var="map" items="${ecsServerTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
-									
-									</c:if><!-- 实例Compute End -->
-									
-									<!-- 存储 storage  -->
-					            	<c:if test="${resource.serviceType == 3 }">
-					            		<td class="is-hidden">
-					            			<c:choose>
-												<c:when test="${item.fieldName == '存储类型'}">
-													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.oldValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '容量空间'}">${item.oldValue}GB</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
-										
-										<td class="is-visible">
-											<c:choose>
-												<c:when test="${item.fieldName == '存储类型'}">
-													<c:forEach var="map" items="${storageTypeMap }"><c:if test="${map.key == item.newValue }">${map.value }</c:if></c:forEach>
-												</c:when>
-												<c:when test="${item.fieldName == '容量空间'}">${item.newValue}GB</c:when>
-												<c:otherwise>${item.newValue}</c:otherwise>
-											</c:choose>
-										</td>
-					            	</c:if><!-- 存储 storage  End -->
-									
-								</tr>
-								
-							</c:forEach>
-								
+					            <c:forEach var="item" items="${change.changeItems }">
+									<tr>
+										<td>${item.fieldName}</td>
+										<td class="is-hidden">${item.oldString}</td>
+										<td class="is-visible">${item.newString}</td>
+									</tr>
+								</c:forEach>
 				            </tbody>
 			            </table>
-					 
 					</c:forEach>
-					
 					<hr>
-					
 				</c:forEach>
-				
-				<!-- 负载均衡器ELB -->
-				<c:if test="${not empty apply.networkElbItems}"></c:if>
-				
-				<!-- IP地址EIP -->
-				<c:if test="${not empty apply.networkEipItems}"></c:if>
-				
-				<!-- DNS -->
-				<c:if test="${not empty apply.networkDnsItems}"></c:if>
-				
-				<!-- 服务器监控monitorCompute -->
-				<c:if test="${not empty apply.monitorComputes}"></c:if>
-				
-				<!-- ELB监控monitorElb -->
-				<c:if test="${not empty apply.monitorElbs}"></c:if>
-				
 			</dl>
 			
 			<hr>

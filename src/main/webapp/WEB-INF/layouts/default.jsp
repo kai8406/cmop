@@ -58,9 +58,7 @@
 	</footer>
 	
 	 <!-- Le javascript -->
-	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/jquery-uniform/jquery.uniform.min.js"></script>
-	 <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
 	 <script src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
 	 <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
 	 <script src="${ctx}/static/bootstrap-modal/js/bootstrap-modal.js"></script>
@@ -68,6 +66,8 @@
 	 <script src="${ctx}/static/jquery-ui/js/jquery.ui.datepicker-zh-CN.js"></script>
 	 <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
 	 <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>
+	 <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
+	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/common/js/custom.wizard.js"></script>
 	
 </body>

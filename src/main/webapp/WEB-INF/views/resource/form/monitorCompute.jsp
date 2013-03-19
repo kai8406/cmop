@@ -36,6 +36,46 @@
 			<legend><small>变更实例监控</small></legend>
 			
 			<div class="control-group">
+				<label class="control-label" for="serviceTagId">服务标签</label>
+				<div class="controls">
+					<select id="serviceTagId" name="serviceTagId" class="required">
+						<c:forEach var="item" items="${tags}">
+							<option value="${item.id }" 
+								<c:if test="${item.id == resources.serviceTag.id }">
+									selected="selected"
+								</c:if>
+							>${item.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="usedby">运维人</label>
+				<div class="controls">
+					<select id="usedby" name="usedby" class="required">
+						<c:forEach var="map" items="${assigneeMap}">
+							<option value="${map.key}" 
+								<c:if test="${map.key == resources.usedby }">
+									selected="selected"
+								</c:if>
+							>${map.value}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="changeDescription">变更描述</label>
+				<div class="controls">
+					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
+						maxlength="200" class="required">${change.description}</textarea>
+				</div>
+			</div>
+			
+			<hr>
+			
+			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
 					<p class="help-inline plain-text">${monitorCompute.apply.title}</p>
@@ -256,46 +296,6 @@
 				</div>
 			</div>
 			
-			<hr>
-			
-			<div class="control-group">
-				<label class="control-label" for="serviceTagId">服务标签</label>
-				<div class="controls">
-					<select id="serviceTagId" name="serviceTagId" class="required">
-						<c:forEach var="item" items="${tags}">
-							<option value="${item.id }" 
-								<c:if test="${item.id == resources.serviceTag.id }">
-									selected="selected"
-								</c:if>
-							>${item.name}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="usedby">运维人</label>
-				<div class="controls">
-					<select id="usedby" name="usedby" class="required">
-						<c:forEach var="map" items="${assigneeMap}">
-							<option value="${map.key}" 
-								<c:if test="${map.key == resources.usedby }">
-									selected="selected"
-								</c:if>
-							>${map.value}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="changeDescription">变更描述</label>
-				<div class="controls">
-					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
-						maxlength="200" class="required">${change.description}</textarea>
-				</div>
-			</div>
-				 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

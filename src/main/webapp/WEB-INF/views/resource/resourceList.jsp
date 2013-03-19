@@ -152,22 +152,61 @@
 					</td>
 					<td>${item.ipAddress}</td>
 					<td>
-						<c:forEach var="map" items="${resourcesStatusMap}">
-							<c:if test="${map.key == item.status}">${map.value}</c:if>
+						<c:forEach var="map" items="${resourcesStatusMap }">
+							<c:if test="${map.key == item.status }">
+								<c:choose>
+									<c:when test="${item.status == -1 }">
+										<span class="label" style="background-color: #bbbbbb;">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 0 }">
+										<span class="label">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 1 }">
+										<span class="label label-warning tip-right" title="审批人: ${item.serviceTag.auditFlow.user.name }">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 2 }">
+										<span class="label label-important tip-right" title="审批人: ${item.serviceTag.auditFlow.user.name }">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 3 }">
+										<span class="label label-inverse">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 4 }">
+										<span class="label status4">${map.value }</span>
+									</c:when>
+									
+									<c:when test="${item.status == 5 }">
+										<span class="label status5">${map.value }</span>
+									</c:when>
+									
+									<c:otherwise>
+										<span class="label label-success">${map.value }</span>
+									</c:otherwise>
+									
+								</c:choose>
+							</c:if>
 						</c:forEach>
+						
 					</td>
 					<td>
-						<a href="update/${item.id}">变更</a>
-						<a href="#deleteModal${item.id}" data-toggle="modal">回收</a>
-						<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
-							<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
-							<div class="modal-body">是否回收?</div>
-							<div class="modal-footer">
-								<button class="btn" data-dismiss="modal">关闭</button>
-								<a href="delete/${item.id}" class="btn btn-primary">确定</a>
-							</div>
-						</div>
-						
+						<c:forEach var="allowResousStatus" items="${allowResousStatus }">
+							<c:if test="${ item.serviceTag.status == allowResousStatus }">
+								<a href="update/${item.id}">变更</a>
+								<a href="#deleteModal${item.id}" data-toggle="modal">回收</a>
+								<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
+									<div class="modal-body">是否回收?</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">关闭</button>
+										<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+									</div>
+								</div>
+							</c:if>
+						</c:forEach>
 					</td>
 				</tr>
 			</c:forEach>

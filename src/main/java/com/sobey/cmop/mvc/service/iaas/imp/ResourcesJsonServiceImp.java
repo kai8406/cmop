@@ -63,8 +63,6 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setNetworkEsgItem(computeItem.getNetworkEsgItem().getIdentifier() + "("
 				+ (computeItem.getNetworkEsgItem().getDescription() != null ? computeItem.getNetworkEsgItem().getDescription() : "") + ")");
 
-		// TODO application 视后期需不需要.
-
 		return json;
 
 	}
@@ -102,8 +100,6 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setVirtualIp(elbItem.getVirtualIp());
 
 		json.setRelationCompute(relationCompute);
-
-		// TODO port 也视后期的需求
 
 		return json;
 	}

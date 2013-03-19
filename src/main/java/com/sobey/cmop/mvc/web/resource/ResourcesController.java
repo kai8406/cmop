@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.web.resource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -59,6 +61,14 @@ public class ResourcesController extends BaseController {
 
 		}
 
+		// 页面管理链接只能在该状态下显示.
+		List<Integer> allowResousStatus = new ArrayList<Integer>();
+		allowResousStatus.add(ResourcesConstant.Status.未变更.toInteger());
+		allowResousStatus.add(ResourcesConstant.Status.已变更.toInteger());
+		allowResousStatus.add(ResourcesConstant.Status.已退回.toInteger());
+		allowResousStatus.add(ResourcesConstant.Status.已创建.toInteger());
+		model.addAttribute("allowResousStatus", allowResousStatus);
+
 		return "resource/resourceList";
 	}
 
@@ -67,8 +77,6 @@ public class ResourcesController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-
-		// TODO 获得审批历史
 
 		Resources resources = comm.resourcesService.getResources(id);
 

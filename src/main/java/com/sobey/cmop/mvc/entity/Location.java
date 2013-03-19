@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,21 +31,23 @@ public class Location implements java.io.Serializable {
 	private String postcode;
 	private String telephone;
 	private Set<Vlan> vlans = new HashSet<Vlan>(0);
+	private Date createTime;
 
 	/** default constructor */
 	public Location() {
 	}
 
 	/** minimal constructor */
-	public Location(Integer id, String name, String alias) {
+	public Location(Integer id, String name, String alias, Date createTime) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.alias = alias;
+		this.createTime = createTime;
 	}
 
 	/** full constructor */
-	public Location(Integer id, String name, String alias, String city, String address, String postcode, String telephone, Set<Vlan> vlans) {
+	public Location(Integer id, String name, String alias, String city, String address, String postcode, String telephone, Set<Vlan> vlans, Date createTime) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -54,6 +57,7 @@ public class Location implements java.io.Serializable {
 		this.postcode = postcode;
 		this.telephone = telephone;
 		this.vlans = vlans;
+		this.createTime = createTime;
 	}
 
 	@Id
@@ -128,6 +132,15 @@ public class Location implements java.io.Serializable {
 
 	public void setVlans(Set<Vlan> vlans) {
 		this.vlans = vlans;
+	}
+
+	@Column(name = "create_time", nullable = false, length = 19)
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

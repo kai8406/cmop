@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.operate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,15 +14,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.HostServer;
+import com.sobey.cmop.mvc.entity.IpPool;
+import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -32,6 +38,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
@@ -47,7 +54,6 @@ import com.taskadapter.redmineapi.bean.Issue;
 @Service
 @Transactional(readOnly = true)
 public class OperateService extends BaseSevcie {
-
 	private static Logger logger = LoggerFactory.getLogger(OperateService.class);
 
 	@Resource
@@ -88,11 +94,8 @@ public class OperateService extends BaseSevcie {
 	 * @return
 	 */
 	public Page<RedmineIssue> getReportedIssuePageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-
 		Specification<RedmineIssue> spec = DynamicSpecifications.bySearchFilter(filters.values(), RedmineIssue.class);
 
 		return redmineIssueDao.findAll(spec, pageRequest);
@@ -108,20 +111,13 @@ public class OperateService extends BaseSevcie {
 	 * @return
 	 */
 	public Page<RedmineIssue> getAssignedIssuePageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
-
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
-
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
-
 		User user = comm.accountService.getCurrentUser();
-
 		// 和redmine中的UserId关联的Id.
-
 		Integer assignee = user.getRedmineUserId();
-
 		filters.put("redmineIssue.assignee", new SearchFilter("assignee", Operator.EQ, assignee));
 		filters.put("redmineIssue.status", new SearchFilter("status", Operator.NOT, RedmineConstant.Status.关闭.toInteger()));
-
 		Specification<RedmineIssue> spec = DynamicSpecifications.bySearchFilter(filters.values(), RedmineIssue.class);
 
 		return redmineIssueDao.findAll(spec, pageRequest);
@@ -144,25 +140,25 @@ public class OperateService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean updateOperate(Issue issue) {
+	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes,
+			String innerIps, String eipIds, String eipAddresss, String location) {
+		long start = System.currentTimeMillis();
+		logger.info("--->工单处理...");
 
-		boolean result = false;
+		// 更新写入OneCMDB时需要人工选择填入的关联项
+		boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location);
+		if (!saveOk) {
+			return false;
+		}
 
 		try {
-
 			/* Step.1 更新redmine的数据 */
-
 			User user = comm.accountService.getCurrentUser();
 			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(user.getRedmineUserId()));
-
 			boolean isChanged = RedmineService.changeIssue(issue, mgr);
-
 			logger.info("---> Redmine isChanged?" + isChanged);
-
 			if (isChanged) {
-
 				// 设置工单的下一个接收人.
-
 				RedmineIssue redmineIssue = this.findByIssueId(issue.getId());
 				redmineIssue.setAssignee(issue.getAssignee().getId());
 
@@ -170,58 +166,38 @@ public class OperateService extends BaseSevcie {
 				 * Step.2 根据RedmineIssue对象中的applyId, serviceTagId,
 				 * recycleId进行不同的逻辑操作
 				 */
-
 				Integer applyId = redmineIssue.getApplyId();
 				Integer serviceTagId = redmineIssue.getServiceTagId();
 				String recycleId = redmineIssue.getResourceId();
+				logger.info("--->[applyId、serviceTagId、recycleId]：" + applyId + "、" + serviceTagId + "、" + recycleId);
 
+				// 服务申请
 				if (applyId != null) {
-
-					// 服务申请
-
 					this.applyOperate(issue, applyId);
-
-				} else if (serviceTagId != null) {
-
-					// 资源变更
-
+				} else if (serviceTagId != null) { // 资源变更
 					this.resourcesOperate(issue, serviceTagId);
-
-				} else if (recycleId != null) {
-
-					// 资源回收
-
+				} else if (recycleId != null) { // 资源回收
 					this.recycleOperate(issue, recycleId);
-
-				} else {
-
-					// 故障申报
-
+				} else { // 故障申报
 					this.failureOperate(issue);
 				}
 
 				/* Step.3 更新RedmineIssue状态 */
-
 				Integer status = RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio()) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
 				redmineIssue.setStatus(status);
-
 				this.saveOrUpdate(redmineIssue);
-
 				logger.info("--->工单处理结束！");
 
-				result = true;
+				logger.info("--->工单更新处理成功！耗时：" + (System.currentTimeMillis() - start) / 1000 + "s");
+				return true;
+			} else {
+				return false;
 			}
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 			logger.error("--->工单更新处理失败：" + e.getMessage());
-
+			return false;
 		}
-
-		return result;
-
 	}
 
 	/**
@@ -231,44 +207,50 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void applyOperate(Issue issue, Integer applyId) {
-
 		logger.info("--->服务申请处理...");
-
 		Apply apply = comm.applyService.getApply(applyId);
-
-		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
-
+		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) { // 处理完成,状态为已创建
 			logger.info("---> 完成度 = 100%的工单处理...");
 
+			// 拼装邮件内容
+			// logger.info("--->拼装邮件内容...");
+			// String content = MailUtil.buildMailDesc(apply, null, null,
+			// computeList, storageList, networkEipList, networkElbList,
+			// networkDnsList, networkEsgList, mdnList, true);
+			// if (content == null) {
+			// return false;
+			// }
+
+			// 更新服务申请状态
+			logger.info("--->更新服务申请状态...");
 			apply.setStatus(ApplyConstant.Status.已创建.toInteger());
 
 			// 向资源表 resources 写入记录
-
+			logger.info("--->向资源表写入记录...");
 			comm.resourcesService.insertResourcesAfterOperate(apply);
 
 			// TODO 写入基础数据到OneCMDB
+			logger.info("--->向OneCMDB写入服务申请数据...");
+			// auditManager.saveToOnecmdb(apply, null, computeList, storageList,
+			// networkElbList, networkEipList, networkDnsList, networkEsgList,
+			// mdnList);
 
 			// 工单处理完成，给申请人发送邮件
-
 			comm.templateMailService.sendApplyOperateDoneNotificationMail(apply);
-
 			logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
-
 		} else {
-
 			logger.info("---> 完成度 < 100%的工单处理...");
 
+			// 拼装邮件内容
+
+			// 更新服务申请状态
+			logger.info("--->更新服务申请状态...");
 			apply.setStatus(ApplyConstant.Status.处理中.toInteger());
-
 			// 发送邮件通知下个指派人
-
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-
 			comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
 		}
-
 		comm.applyService.saveOrUpateApply(apply);
-
 	}
 
 	/**
@@ -278,63 +260,44 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void resourcesOperate(Issue issue, Integer serviceTagId) {
-
 		logger.info("--->服务变更处理...");
-
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
-
 		List<Resources> resourcesList = comm.resourcesService.getChangedResourcesListByServiceTagId(serviceTagId);
-
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
-
 			logger.info("---> 完成度 = 100%的工单处理...");
-
 			// 更改服务标签和资源的状态
-
 			serviceTag.setStatus(ResourcesConstant.Status.已创建.toInteger());
-
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
 
 				// 清除服务变更Change的内容
-
 				Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
 				comm.changeServcie.deleteChange(change.getId());
-
 			}
 
 			// TODO 同步数据至OneCMDB
 
 			// 工单处理完成，给申请人发送邮件
-
 			comm.templateMailService.sendResourcesOperateDoneNotificationMail(serviceTag);
 
 			logger.info("--->工单处理完成,发送邮件通知申请人:" + serviceTag.getUser().getName());
-
 		} else {
-
 			logger.info("---> 完成度 < 100%的工单处理...");
 
 			// 更改服务标签和资源的状态
-
 			serviceTag.setStatus(ResourcesConstant.Status.创建中.toInteger());
-
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.创建中.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
 			}
 
 			// 发送邮件通知下个指派人
-
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-
 			comm.templateMailService.sendResourcesOperateNotificationMail(serviceTag, assigneeUser);
-
 		}
 
 		comm.serviceTagService.saveOrUpdate(serviceTag);
-
 	}
 
 	/**
@@ -344,19 +307,13 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void recycleOperate(Issue issue, String recycleId) {
-
 		logger.info("--->单个资源及其关联资源回收...");
-
 		// 拼装回收的资源resource,放入List中.
-
 		List<Resources> resourcesList = new ArrayList<Resources>();
-
 		for (String resourcesId : recycleId.split(",")) {
 			resourcesList.add(comm.resourcesService.getResources(Integer.valueOf(resourcesId)));
 		}
-
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
-
 			logger.info("---> 完成度 = 100%的工单处理...");
 
 			// TODO 同步数据至OneCMDB
@@ -368,11 +325,9 @@ public class OperateService extends BaseSevcie {
 				if (sendToUser != null) {
 					break;
 				}
-
 			}
 
 			// 工单处理完成，给申请人发送邮件
-
 			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);
 
 			// 删除资源.
@@ -423,13 +378,10 @@ public class OperateService extends BaseSevcie {
 			}
 
 			logger.info("--->资源回收处理完成");
-
 		} else {
-
 			logger.info("---> 完成度 < 100%的工单处理...");
 
 			/* 对resource做一些封装处理 */
-
 			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 			List<StorageItem> storageItems = new ArrayList<StorageItem>();
 			List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
@@ -437,17 +389,12 @@ public class OperateService extends BaseSevcie {
 			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
-
 			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
 
 			// 发送邮件通知下个指派人
-
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-
 			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
-
 		}
-
 	}
 
 	/**
@@ -456,37 +403,310 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void failureOperate(Issue issue) {
-
 		logger.info("--->故障申报处理...");
-
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
-
 			logger.info("---> 完成度 = 100%的工单处理...");
 
 			// 获得故障申报人的邮箱.
-
 			String loginName = issue.getSubject().substring(0, issue.getSubject().indexOf("-"));
 			User user = comm.accountService.findUserByLoginName(loginName);
-
 			// 工单处理完成，给申请人发送邮件
-
 			comm.simpleMailService.sendNotificationMail(user.getEmail(), issue.getSubject() + " 故障处理流程已完成", "故障处理流程已完成");
-
 		} else {
-
 			logger.info("---> 完成度 < 100%的工单处理...");
-
 			String contentText = "你有新的故障处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-
 			User assigneeUser = comm.accountService.getUser(issue.getAssignee().getId());
 
 			// 工单处理完成，给申请人发送邮件
-
 			comm.simpleMailService.sendNotificationMail(assigneeUser.getEmail(), "故障申报工单处理邮件", contentText);
 		}
 
 		logger.info("--->故障申报处理结束！");
+	}
 
+	/**
+	 * 根据工单获取其下关联的资源
+	 * 
+	 * @param redmineIssue
+	 * @return
+	 */
+	public List getComputeStorageElbEip(RedmineIssue redmineIssue) {
+		Integer applyId = null;
+		Integer serviceTagId = null;
+		String resourceId = null;
+
+		// 判断是服务申请、服务变更还是资源回收
+		boolean isApply = false;
+		boolean isFeature = false;
+		boolean isRecycle = false;
+		if (redmineIssue.getApplyId() != null) {
+			applyId = redmineIssue.getApplyId();
+			isApply = true;
+		}
+		if (redmineIssue.getServiceTagId() != null) {
+			serviceTagId = redmineIssue.getServiceTagId();
+			isFeature = true;
+		}
+		if (redmineIssue.getResourceId() != null) {
+			resourceId = redmineIssue.getResourceId();
+			isRecycle = true;
+		}
+		logger.info("--->isApply、isFeature、isRecycle?" + isApply + "、" + isFeature + "、" + isRecycle);
+
+		// 服务申请
+		List computeList = new ArrayList();
+		List storageList = new ArrayList();
+		List networkElbList = new ArrayList();
+		List networkEipList = new ArrayList();
+
+		if (isApply) {
+			computeList = comm.computeService.getComputeListByApplyId(applyId);
+			storageList = comm.es3Service.getStorageListByApplyId(applyId);
+			networkElbList = comm.elbService.getElbListByApplyId(applyId);
+			networkEipList = comm.eipService.getEipListByApplyId(applyId);
+		}
+
+		// 服务变更
+		if (isFeature && !isRecycle) {
+			ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+			List<Resources> resourcesList = comm.resourcesService.getChangedResourcesListByServiceTagId(serviceTagId);
+			for (Resources resources : resourcesList) {
+				Integer serviceType = resources.getServiceType(); // 服务类型ID
+				Integer serviceId = resources.getServiceId(); // 服务ID
+
+				// 按服务类型查询
+				if (serviceType == 1 || serviceType == 2) {// 1-PCS、2-ECS
+					computeList.add(comm.computeService.getComputeItem(serviceId));
+				} else if (serviceType == 3) {// 3-ES3
+					storageList.add(comm.es3Service.getStorageItem(serviceId));
+				} else if (serviceType == 4) {// 4-ELB
+					networkElbList.add(comm.elbService.getNetworkElbItem(serviceId));
+				} else if (serviceType == 5) {// 5-EIP
+					networkEipList.add(comm.eipService.getNetworkEipItem(serviceId));
+				}
+			}
+		}
+		List list = new ArrayList();
+		list.add(computeList);
+		list.add(storageList);
+		list.add(networkElbList);
+		list.add(networkEipList);
+		return list;
+	}
+
+	/**
+	 * 更新修改的IP和卷
+	 * 
+	 * @param computeIds
+	 * @param storageIds
+	 * @param hostNames
+	 * @param serverAlias
+	 * @param osStorageAlias
+	 * @param controllerAlias
+	 * @param volumes
+	 * @param innerIps
+	 * @param eipIds
+	 * @param eipAddresss
+	 * @param location
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
+			String eipIds, String eipAddresss, String location) {
+		try {
+			String sep = ",";
+			if (computeIds.length() > 0) {
+				String[] compute = computeIds.split(sep);
+				String[] hostName = hostNames.split(sep);
+				String[] server = serverAlias.split(sep);
+				String[] osStorage = osStorageAlias.split(sep);
+				String[] innerIp = innerIps.split(sep);
+				logger.info("--->更新写入OneCMDB关联项（计算资源）..." + compute.length);
+				IpPool ipPool;
+				ComputeItem computeItem;
+				for (int i = 0; i < compute.length; i++) {
+					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
+
+					// 释放原来的IP
+					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
+					if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
+						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
+						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setHostServer(null);
+						comm.ipPoolService.saveIpPool(ipPool);
+					}
+
+					// 更新新的IP
+					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
+					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+					ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
+					comm.ipPoolService.saveIpPool(ipPool);
+
+					computeItem.setHostName(hostName[i]);
+					if (computeItem.getComputeType() == 1) {
+						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
+						String alias = computeItem.getServerAlias();
+						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+							computeItem.setServerAlias(server[i]);
+						}
+					} else {
+						computeItem.setHostServerAlias(server[i]);
+						computeItem.setOsStorageAlias(osStorage[i]);
+					}
+					computeItem.setInnerIp(innerIp[i]);
+					comm.computeService.saveOrUpdate(computeItem);
+				}
+
+				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
+				if (compute.length > 0) {
+					int i = compute.length - 1;
+					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
+
+					// 释放原来的IP
+					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
+					if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
+						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
+						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setHostServer(null);
+						comm.ipPoolService.saveIpPool(ipPool);
+					}
+
+					// 更新新的IP
+					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
+					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+					ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
+					comm.ipPoolService.saveIpPool(ipPool);
+
+					computeItem.setHostName(hostName[i]);
+					if (computeItem.getComputeType() == 1) {
+						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
+						String alias = computeItem.getServerAlias();
+						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+							computeItem.setServerAlias(server[i]);
+						}
+					} else {
+						computeItem.setHostServerAlias(server[i]);
+						computeItem.setOsStorageAlias(osStorage[i]);
+					}
+					computeItem.setInnerIp(innerIp[i]);
+					comm.computeService.saveOrUpdate(computeItem);
+				}
+			}
+
+			if (storageIds.length() > 0) {
+				String[] storage = storageIds.split(sep);
+				String[] controller = controllerAlias.split(sep);
+				String[] volume = volumes.split(sep);
+
+				logger.info("--->更新写入OneCMDB关联项（存储资源）..." + storage.length);
+				for (int i = 0; i < storage.length; i++) {
+					StorageItem storageItem = comm.es3Service.getStorageItem(Integer.parseInt(storage[i]));
+					storageItem.setControllerAlias(controller[i]);
+					storageItem.setVolume(volume[i].trim());
+					comm.es3Service.saveOrUpdate(storageItem);
+				}
+			}
+
+			if (eipIds.length() > 0) {
+				String[] eipId = eipIds.split(sep);
+				String[] eipAddress = eipAddresss.split(sep);
+				logger.info("--->更新写入OneCMDB关联项（EIP）..." + eipId.length);
+				NetworkEipItem eipItem;
+				for (int i = 0; i < eipId.length; i++) {
+					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
+					// 释放原来的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IP_STATUS_1);
+					// 更新新的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IP_STATUS_2);
+					eipItem.setIpAddress(eipAddress[i]);
+					comm.eipService.saveOrUpdate(eipItem);
+				}
+
+				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
+				if (eipId.length > 0) {
+					int i = eipId.length - 1;
+					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
+					// 释放原来的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IP_STATUS_1);
+					// 更新新的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IP_STATUS_2);
+					eipItem.setIpAddress(eipAddress[i]);
+					comm.eipService.saveOrUpdate(eipItem);
+				}
+			}
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("--->更新写入OneCMDB关联出错：", e);
+			return false;
+		}
+	}
+
+	/**
+	 * 根据服务器类型查询Host
+	 * 
+	 * @return
+	 */
+	public Map findHostMapByServerType(int serverType) {
+		List<HostServer> list = comm.hostServerService.findByServerType(serverType);
+		Map map = new HashMap();
+		for (HostServer hostServer : list) {
+			int size = hostServer.getIpPools().size();
+			// 过滤掉已经关联的物理机
+			// if (serverType==2 && size>0) {
+			// continue;
+			// }
+			map.put(hostServer.getAlias(), hostServer.getDisplayName() + "(" + size + ")" + hostServer.getIpAddress()); // (size
+																														// ==
+																														// 0
+																														// ?
+																														// size
+																														// :
+																														// size
+																														// -
+																														// 1)
+		}
+		return map;
+	}
+
+	/**
+	 * 查询OneCMDB中的Location
+	 * 
+	 * @return
+	 */
+	public Map getLocationFromOnecmdb() {
+		List<Location> list = comm.locationService.getLocationList();
+		Map map = new HashMap();
+		for (Location location : list) {
+			map.put(location.getAlias(), location.getName());
+		}
+		return map;
+	}
+
+	/**
+	 * 查询OneCMDB中的Location
+	 * 
+	 * @return
+	 */
+	public Map getVlanFromOnecmdb() {
+		List<Vlan> list = comm.vlanService.getVlanList();
+		Map map = new HashMap();
+		for (Vlan vlan : list) {
+			map.put(vlan.getAlias(), "Vlan" + vlan.getName() + "(" + vlan.getDescription() + ")");
+		}
+		return map;
+	}
+
+	/**
+	 * 根据IP池类型查询
+	 * 
+	 * @param poolType
+	 * @return
+	 */
+	public List getAllIpPoolByPoolType(int poolType) {
+		return comm.ipPoolService.getAllIpPoolByPoolType(poolType);
 	}
 
 }

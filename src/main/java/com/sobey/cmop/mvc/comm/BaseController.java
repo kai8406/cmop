@@ -12,6 +12,7 @@ import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.HostServerConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
@@ -426,4 +427,15 @@ public class BaseController {
 	public Map<Integer, String> userTypeMap() {
 		return AccountConstant.UserTypes.map;
 	}
+
+	/**
+	 * 服务器类型
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("hostServerTypeMap")
+	public Map<Integer, String> hostServerTypeMap() {
+		return HostServerConstant.HostServerType.map;
+	}
+
 }

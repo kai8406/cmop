@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.web.basicdata;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -39,15 +40,11 @@ public class LocationCotroller extends BaseController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Location location, RedirectAttributes redirectAttributes) {
-
 		String alias = "Location" + Identities.uuid2();
-
 		location.setAlias(alias);
-
+		location.setCreateTime(new Date());
 		comm.locationService.saveLocation(location);
-
 		redirectAttributes.addFlashAttribute("message", "创建IDC成功");
-
 		return REDIRECT_SUCCESS_URL;
 	}
 
@@ -59,6 +56,7 @@ public class LocationCotroller extends BaseController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Location location, RedirectAttributes redirectAttributes) {
+		location.setCreateTime(new Date());
 		comm.locationService.saveLocation(location);
 		redirectAttributes.addFlashAttribute("message", "修改IDC成功");
 		return REDIRECT_SUCCESS_URL;

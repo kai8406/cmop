@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.basicdata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class IpPoolService extends BaseSevcie {
 	public boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Location location, Vlan vlan) {
 		List<IpPool> ipPoolList = new ArrayList<IpPool>();
 		for (String ipAddress : ipAddressList) {
-			IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus);
+			IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
 			ipPoolList.add(ipPool);
 		}
 		ipPoolDao.save(ipPoolList);
@@ -113,6 +114,7 @@ public class IpPoolService extends BaseSevcie {
 		ipPool.setIpAddress(ipAddress);
 		ipPool.setPoolType(poolType);
 		ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+		ipPool.setCreateTime(new Date());
 		return ipPoolDao.save(ipPool);
 	}
 
@@ -200,6 +202,7 @@ public class IpPoolService extends BaseSevcie {
 						ipPool.setIpAddress(ip);
 						ipPool.setPoolType(poolType);
 						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setCreateTime(new Date());
 						ipPoolList.add(ipPool);
 
 						// oneCMDB
@@ -468,16 +471,22 @@ public class IpPoolService extends BaseSevcie {
 	 * @param vlan
 	 * @return
 	 */
-	public List<IpPool> findIpPoolByVlan(String vlan) {
-		return ipPoolDao.findByVlanAliasAndStatus(vlan, 1);
+	public List<IpPool> findIpPoolByVlan(String vlanAlias) {
+		return ipPoolDao.findByVlanAliasAndStatus(vlanAlias, 1);
 	}
 
+	/**
+	 * 更新宿主机/物理机的IP状态
+	 * 
+	 * @param hostServer
+	 * @param status
+	 */
 	@Transactional(readOnly = false)
 	public void updateIpPoolByHostServer(HostServer hostServer, Integer status) {
 		List<IpPool> ipList = ipPoolDao.findByIpAddress(hostServer.getIpAddress());
 		if (ipList != null && ipList.size() > 0) {
 			ipList.get(0).setStatus(status);
-			ipList.get(0).setHostServer(hostServer);
+			// ipList.get(0).setHostServer(hostServer);
 			ipPoolDao.save(ipList.get(0));
 		}
 	}

@@ -40,6 +40,6 @@ public interface IpPoolDao extends PagingAndSortingRepository<IpPool, Integer>, 
 
 	List<IpPool> findByStatus(Integer ipStatus);
 
-	List<IpPool> findByVlanAliasAndStatus(String vlan, int i);
+	List<IpPool> findByVlanAliasAndStatus(String vlanAlias, int status);
 
 }

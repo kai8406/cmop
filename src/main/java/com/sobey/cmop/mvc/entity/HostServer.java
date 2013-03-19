@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ public class HostServer implements java.io.Serializable {
 	private String locationAlias;
 	private String ipAddress;
 	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
+	private Date createTime;
 
 	// Constructors
 	/** default constructor */
@@ -35,15 +37,15 @@ public class HostServer implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public HostServer(Integer serverType, Integer poolType, String displayName) {
+	public HostServer(Integer serverType, Integer poolType, String displayName, Date createTime) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;
-
+		this.createTime = createTime;
 	}
 
 	/** full constructor */
-	public HostServer(Integer serverType, Integer poolType, String displayName, String alias, String locationAlias, Set<IpPool> ipPools, String ipAddress) {
+	public HostServer(Integer serverType, Integer poolType, String displayName, String alias, String locationAlias, Set<IpPool> ipPools, String ipAddress, Date createTime) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;
@@ -51,6 +53,7 @@ public class HostServer implements java.io.Serializable {
 		this.locationAlias = locationAlias;
 		this.ipAddress = ipAddress;
 		this.ipPools = ipPools;
+		this.createTime = createTime;
 	}
 
 	// Property accessors
@@ -126,6 +129,15 @@ public class HostServer implements java.io.Serializable {
 
 	public void setIpPools(Set<IpPool> ipPools) {
 		this.ipPools = ipPools;
+	}
+
+	@Column(name = "create_time", nullable = false, length = 19)
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

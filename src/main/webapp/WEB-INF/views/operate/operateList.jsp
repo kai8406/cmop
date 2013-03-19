@@ -3,32 +3,25 @@
 
 <html>
 <head>
-
-	<title>工单管理</title>
+<title>工单管理</title>
+<script>
+$(document).ready(function() {
 	
-	<script>
-		$(document).ready(function() {
-			
-			$("ul#navbar li#operate").addClass("active");
-			
-		});
-	</script>
+	$("ul#navbar li#operate").addClass("active");
 	
+});
+</script>
 </head>
 
 <body>
-
 	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
 	<form class="form-inline well well-small" action="#">
-
 		<div class="row">
-
+		
 			<div class="span3">
-				<label class="control-label search-text">Subject</label> <input type="text" name="search_LIKE_subject" class="span2" maxlength="45" 
-					value="${param.search_LIKE_subject}">
+				<label class="control-label search-text">Subject</label> <input type="text" name="search_LIKE_subject" class="span2" maxlength="45"  value="${param.search_LIKE_subject}">
 			</div>
-			
 			
 			<div class="span3">
 				<label class="control-label search-text">Tracker</label> 
@@ -64,30 +57,24 @@
 			</div>
 
 		</div>
-		
 	</form>
 	
 	<div class="row">
-		<div class="span4"></div>
+		<c:choose>
+			<c:when test="${not empty toReported }">
+				<div class="span5"><a class="btn tip-bottom" title="跳转到所有工单列表" href="${ctx}/operate/reported/">所有工单</a></div>
+				<div class="span4" style="padding-top: 5px;"><b>Assigned Issues</b></div>
+			</c:when>
+			<c:otherwise>
+				<div class="span5"><a class="btn tip-bottom" title="跳转到分配给自己的工单列表"" href="${ctx}/operate/">分配给自己的工单</a></div>
+				<div class="span4" style="padding-top: 5px;"><b>All Reported Issues</b></div>
+			</c:otherwise>
+		</c:choose>	
 		<div class="pull-right"><tags:singlePage page="${page}" /></div>
 	</div>
 	
 	<div class="singlePage">
 	<table class="table table-striped table-bordered table-condensed">
-		<thead>
-			<tr>
-				<th colspan="5" style="text-align: center;">
-					<c:choose>
-						<c:when test="${not empty toReported }">
-							Issues Assigned To Me <a href="${ctx}/operate/reported/" class="btn btn-link tip-left pull-right" title="跳转到所有工单列表">&#8594;查看所有工单</a>
-						</c:when>
-						<c:otherwise>
-							Reported Issues <a href="${ctx}/operate/" class="btn btn-link tip-left pull-right" title="跳转到分配至自己的工单列表">&#8594;查看分配至自己的工单</a>
-						</c:otherwise>
-					</c:choose>
-				</th>
-			</tr>
-		</thead>
 		<tbody>
 			<tr>
 				<th>ID</th>
@@ -98,7 +85,9 @@
 			</tr>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
-					<td><a href="update/${item.issueId}">${item.issueId}</a></td>
+					<td>
+						<a href="${not empty toReported ? '' : '../'}update/${item.issueId}">${item.issueId}</a>
+					</td>
 					<td>${item.subject}</td>
 					<td><c:forEach var="map" items="${projectMap}"><c:if test="${item.projectId==map.key}">${map.value}</c:if></c:forEach></td>
 					<td><c:forEach var="map" items="${trackerMap}"><c:if test="${item.trackerId==map.key}">${map.value}</c:if></c:forEach></td>

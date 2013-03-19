@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.basicdata;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -140,8 +141,8 @@ public class HostServerService extends BaseSevcie {
 			System.out.println(updateCount);
 
 			// 3. 删除所有宿主机
-			int deleteCount = hostServerDaoCustom.deleteHostByServerType(1);
-			System.out.println(deleteCount);
+			// int deleteCount = hostServerDaoCustom.deleteHostByServerType(1);
+			// System.out.println(deleteCount);
 
 			List<String> hostList;
 			List<Map> hostListMap;
@@ -153,17 +154,17 @@ public class HostServerService extends BaseSevcie {
 
 				// 4. 写入新的宿主机
 				for (int i = 0; i < hostList.size(); i++) {
-					HostServer hostServer = new HostServer(1, 1, hostList.get(i));
+					HostServer hostServer = new HostServer(1, 1, hostList.get(i), new Date());
 					hostServer.setAlias(Identities.uuid2());
 					hostServer.setIpAddress(hostList.get(i));
-					// TODO 显示名称、IDC别名...
+					// 显示名称默认为IP、IDC别名...
 					hostServerDao.save(hostServer);
 					hostCount++;
 
 					// 5. 更新宿主机对应IP状态为：已使用
 					comm.ipPoolService.updateIpPoolByHostServer(hostServer, IpPoolConstant.IP_STATUS_2);
 
-					// 6. 更新其关联虚拟机IP状态为：已使用
+					// 6. 更新其关联虚拟机及其IP状态为：已使用
 					Map host = (Map) hostListMap.get(i);
 					List ecsList = (List) host.get(hostList.get(i));
 					String ipAddress;
@@ -181,6 +182,7 @@ public class HostServerService extends BaseSevcie {
 							ipPool.setIpAddress(ipAddress);
 							ipPool.setHostServer(hostServer);
 							ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+							ipPool.setCreateTime(new Date());
 							comm.ipPoolService.saveIpPool(ipPool);
 						}
 					}
@@ -203,6 +205,14 @@ public class HostServerService extends BaseSevcie {
 		Iterable<HostServer> hosts = hostServerDao.findAll();
 		PoiUtil.writeExcel("D:/Host_Vm.xls", "宿主机及其虚拟机关系表", new String[] { "宿主机IP", "DisplayName", "虚拟机IP" }, hosts);
 		return true;
+	}
+
+	public List<HostServer> findByServerType(int serverType) {
+		return hostServerDao.findByServerType(serverType);
+	}
+
+	public HostServer findByAlias(String alias) {
+		return hostServerDao.findByAlias(alias);
 	}
 
 }

@@ -2,6 +2,7 @@ package com.sobey.cmop.mvc.service.onecmdb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.onecmdb.core.utils.bean.CiBean;
 import org.onecmdb.core.utils.bean.ValueBean;
@@ -93,6 +94,33 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean router = new CiBean("ApplicationService", alias, false);
 		ciBeanList.add(router);
 		return OneCmdbService.delete(ciBeanList);
+	}
+
+	/**
+	 * 查询OneCMDB中的OS卷
+	 * 
+	 * @return
+	 */
+	public Map getOsStorageFromOnecmdb() {
+		return OneCmdbService.findCiByText("NFSVol", "NFS");
+	}
+
+	/**
+	 * 查询OneCMDB中的Fimas控制器
+	 * 
+	 * @return
+	 */
+	public Map getFimasHardWareFromOnecmdb() {
+		return OneCmdbService.findCiByText("Fimas");
+	}
+
+	/**
+	 * 查询OneCMDB中的Netapp控制器
+	 * 
+	 * @return
+	 */
+	public Map getNfsHardWareFromOnecmdb() {
+		return OneCmdbService.findCiByText("Controller");
 	}
 
 }

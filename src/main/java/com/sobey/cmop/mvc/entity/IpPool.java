@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +29,7 @@ public class IpPool implements java.io.Serializable {
 	private String ipAddress;
 	private Integer status;
 	private HostServer hostServer;
+	private Date createTime;
 
 	// Constructors
 
@@ -35,20 +38,22 @@ public class IpPool implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public IpPool(Integer poolType, Vlan vlan, String ipAddress, Integer status) {
+	public IpPool(Integer poolType, Vlan vlan, String ipAddress, Integer status, Date createTime) {
 		this.poolType = poolType;
 		this.vlan = vlan;
 		this.ipAddress = ipAddress;
 		this.status = status;
+		this.createTime = createTime;
 	}
 
 	/** full constructor */
-	public IpPool(Integer poolType, Vlan vlan, String ipAddress, Integer status, HostServer hostServer) {
+	public IpPool(Integer poolType, Vlan vlan, String ipAddress, Integer status, HostServer hostServer, Date createTime) {
 		this.poolType = poolType;
 		this.vlan = vlan;
 		this.ipAddress = ipAddress;
 		this.status = status;
 		this.hostServer = hostServer;
+		this.createTime = createTime;
 	}
 
 	// Property accessors
@@ -110,6 +115,15 @@ public class IpPool implements java.io.Serializable {
 
 	public void setHostServer(HostServer hostServer) {
 		this.hostServer = hostServer;
+	}
+
+	@Column(name = "create_time", nullable = false, length = 19)
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

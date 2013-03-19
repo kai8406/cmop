@@ -304,4 +304,8 @@ public class EipService extends BaseSevcie {
 
 	}
 
+	public List<NetworkEipItem> getEipListByApplyId(Integer applyId) {
+		return networkEipItemDao.findByApplyId(applyId);
+	}
+
 }

@@ -35,8 +35,11 @@
 		<spymemcached.version>2.8.9</spymemcached.version>
 		<mysql-connector.version>5.1.24</mysql-connector.version>
 		<redmine-java-api.version>1.18</redmine-java-api.version>
+		<onecmdb-core.version>2.1.0</onecmdb-core.version>
+		<vmware.version>5.1.0</vmware.version>
 		<poi.version>3.8</poi.version>
 		<poi-ooxml.version>3.8</poi-ooxml.version>
+		<xfire-all.version>1.2.6</xfire-all.version>
 		
 		<!-- 		
 		<mockito.version>1.9.5</mockito.version>
@@ -57,22 +60,29 @@
 		<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.8</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.8</version>
+            <version>${poi-ooxml.version}</version>
         </dependency>
         	
-		<!-- oneCMDB -->
+		<!-- OneCMDB -->
 		<dependency>
 			<groupId>org.onecmdb</groupId>
 			<artifactId>onecmdb-core</artifactId>
-			<version>2.1.0</version>
+			<version>${onecmdb-core.version}</version>
 		</dependency>
+
+		<!-- XFire -->
+		<dependency>
+			<groupId>com.sobey.cmop</groupId>
+			<artifactId>xfire-all</artifactId>
+			<version>${xfire-all.version}</version>
+		</dependency>		
 		
-		<!-- redmine -->
+		<!-- Redmine -->
 		<dependency>
 			<groupId>com.taskadapter</groupId>
 			<artifactId>redmine-java-api</artifactId>
@@ -83,7 +93,7 @@
 		<dependency>
 			<groupId>com.vmware</groupId>
 			<artifactId>vmware</artifactId>
-			<version>5.1.0</version>
+			<version>${vmware.version}</version>
 		</dependency>
 
 		<!-- SPRING basic begin(一般不需要显式定义) -->
@@ -459,7 +469,7 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!-- LOGGING end -->
-
+		
 		<!-- GENERAL UTILS begin -->
 		<dependency>
 			<groupId>commons-collections</groupId>

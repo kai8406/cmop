@@ -42,7 +42,7 @@ public class RedmineService extends BaseSevcie {
 	/**
 	 * redmine第一接收人
 	 */
-	public static Integer FIRST_REDMINE_ASSIGNEE = RedmineConstant.Assignee.余波.toInteger();
+	public static Integer FIRST_REDMINE_ASSIGNEE = RedmineConstant.Assignee.艾磊.toInteger();
 
 	/**
 	 * redmine第一接收人的RedmineManager 余波

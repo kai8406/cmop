@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,17 +26,19 @@ public class Vlan implements java.io.Serializable {
 	private String name;
 	private String alias;
 	private String description;
+	private Date createTime;
 
 	public Vlan() {
 	}
 
-	public Vlan(Integer id, String name, Location location, String alias, String description) {
+	public Vlan(Integer id, String name, Location location, String alias, String description, Date createTime) {
 		super();
 		this.id = id;
 		this.location = location;
 		this.name = name;
 		this.alias = alias;
 		this.description = description;
+		this.createTime = createTime;
 	}
 
 	@Id
@@ -83,6 +87,15 @@ public class Vlan implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "create_time", nullable = false, length = 19)
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

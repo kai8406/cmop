@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.Vlan;
@@ -34,8 +35,8 @@ public class AjaxController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "checkDepartmentName")
-	public @ResponseBody
-	String checkDepartmentName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+	@ResponseBody
+	public String checkDepartmentName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.departmentService.findDepartmentByName(name) == null ? "true" : "false";
 	}
 
@@ -60,8 +61,8 @@ public class AjaxController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "checkGroupName")
-	public @ResponseBody
-	String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+	@ResponseBody
+	public String checkGroupName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.accountService.findGroupByName(name) == null ? "true" : "false";
 	}
 
@@ -86,8 +87,8 @@ public class AjaxController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "checkLocation")
-	public @ResponseBody
-	String checkLocation(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+	@ResponseBody
+	public String checkLocation(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.locationService.findLocationByName(name) == null ? "true" : "false";
 	}
 
@@ -99,8 +100,8 @@ public class AjaxController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "checkVlan")
-	public @ResponseBody
-	String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+	@ResponseBody
+	public String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.vlanService.findVlanByName(name) == null ? "true" : "false";
 	}
 
@@ -118,9 +119,10 @@ public class AjaxController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
-	public @ResponseBody
-	List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType, @RequestParam(value = "serviceTagName", required = false) String serviceTagName,
-			@RequestParam(value = "ipAddress", required = false) String ipAddress, @RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
+	@ResponseBody
+	public List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
+			@RequestParam(value = "serviceTagName", required = false) String serviceTagName, @RequestParam(value = "ipAddress", required = false) String ipAddress,
+			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
 		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
 	}
 
@@ -129,8 +131,8 @@ public class AjaxController extends BaseController {
 	 * @return 当前用户创建的+公用的(user_id 为null) ESG列表.
 	 */
 	@RequestMapping(value = "getEsgList")
-	public @ResponseBody
-	List<NetworkEsgItem> getEsgList() {
+	@ResponseBody
+	public List<NetworkEsgItem> getEsgList() {
 		return comm.esgService.getESGList();
 	}
 
@@ -149,6 +151,44 @@ public class AjaxController extends BaseController {
 			map.put(vlan.getId(), vlan.getName());
 		}
 		return map;
+	}
+
+	@RequestMapping(value = "getVlanByLocationAlias")
+	@ResponseBody
+	public Map getVlanByLocationAlias(@RequestParam("locationAlias") String locationAlias) {
+		Set<Vlan> vlans = comm.locationService.findLocationByAlias(locationAlias).getVlans();
+		Map map = Maps.newHashMap();
+		for (Vlan vlan : vlans) {
+			map.put(vlan.getAlias(), "Vlan" + vlan.getName() + "(" + vlan.getDescription() + ")");
+		}
+		return map;
+	}
+
+	/**
+	 * 根据IDC获取VLAN
+	 * 
+	 * @param Location
+	 * @return
+	 */
+	@RequestMapping(value = "getIpPoolByVlan")
+	@ResponseBody
+	public List<IpPool> getIpPoolByVlan(@RequestParam("vlanAlias") String vlanAlias) {
+		return comm.ipPoolService.findIpPoolByVlan(vlanAlias);
+	}
+
+	/**
+	 * 判断所选Server是否已被关联（一个物理机只能被一个PCS关联）
+	 * 
+	 * @param Location
+	 * @return
+	 */
+	@RequestMapping(value = "checkServerIsUsed")
+	@ResponseBody
+	public String checkServerIsUsed(@RequestParam("serverAlias") String serverAlias) {
+		if (comm.hostServerService.findByAlias(serverAlias).getIpPools().size() > 0) {
+			return "used";
+		}
+		return "";
 	}
 
 }

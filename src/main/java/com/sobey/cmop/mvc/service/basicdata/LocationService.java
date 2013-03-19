@@ -65,4 +65,8 @@ public class LocationService extends BaseSevcie {
 		return locationDao.save(location);
 	}
 
+	public Location findLocationByAlias(String alias) {
+		return locationDao.findByAlias(alias);
+	}
+
 }

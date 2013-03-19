@@ -7,3 +7,8 @@
 * 回车
 * 上面的maven命令只能修改-Dfile后面的jar路径!
 * resoures/oneCMDB 有该jar包. 
+
+
+
+
+mvn install:install-file -Dfile=E:\xfire-all-1.2.6.jar -DgroupId=com.sobey.cmop -DartifactId=xfire-all -Dversion=1.2.6 -Dpackaging=jar

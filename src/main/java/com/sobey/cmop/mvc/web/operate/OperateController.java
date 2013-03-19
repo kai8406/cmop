@@ -1,10 +1,13 @@
 package com.sobey.cmop.mvc.web.operate;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +33,7 @@ import com.taskadapter.redmineapi.bean.User;
 @Controller
 @RequestMapping(value = "/operate")
 public class OperateController extends BaseController {
-
+	private static Logger logger = LoggerFactory.getLogger(OperateController.class);
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/operate/";
 
 	/**
@@ -39,15 +42,10 @@ public class OperateController extends BaseController {
 	@RequestMapping(value = { "list", "" })
 	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
-
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
-
 		model.addAttribute("page", comm.operateService.getAssignedIssuePageable(searchParams, pageNumber, pageSize));
-
 		// 将搜索条件编码成字符串,分页的URL
-
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
-
 		// 跳转到reported
 		model.addAttribute("toReported", "toReported");
 
@@ -60,13 +58,9 @@ public class OperateController extends BaseController {
 	@RequestMapping(value = "reported")
 	public String reported(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
-
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
-
 		model.addAttribute("page", comm.operateService.getReportedIssuePageable(searchParams, pageNumber, pageSize));
-
 		// 将搜索条件编码成字符串,分页的URL
-
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, REQUEST_PREFIX));
 
 		return "operate/operateList";
@@ -77,16 +71,81 @@ public class OperateController extends BaseController {
 	 */
 	@RequestMapping(value = "update/{id}")
 	public String update(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
-
+		logger.info("--->工单处理...issueId=" + id);
 		Issue issue = RedmineService.getIssue(id);
 		model.addAttribute("issue", issue);
-
+		model.addAttribute("user", comm.accountService.getCurrentUser());
 		RedmineIssue redmineIssue = comm.operateService.findByIssueId(id);
 		model.addAttribute("redmineIssue", redmineIssue);
+		if (issue != null) {
+			String desc = issue.getDescription();
+			desc = desc.replaceAll("\\*服务申请的详细信息\\*", "");
+			desc = desc.replaceAll("\\*服务变更的详细信息\\*", "");
+			desc = desc.replaceAll("\\*", "");
+			desc = desc.replaceAll("\\+", "");
+			if (desc.indexOf("# 基本信息") >= 0) {
+				desc = desc.replaceAll("# 基本信息", "<br># 基本信息");
+			} else {
+				desc = "<br>" + desc;
+			}
 
-		model.addAttribute("user", comm.accountService.getCurrentUser());
+			// 更新写入Redmine的IP
+			List list = comm.operateService.getComputeStorageElbEip(redmineIssue);
+			List computeList = (List) list.get(0);
+			List storageList = (List) list.get(1);
+			List networkElbList = (List) list.get(2);
+			List networkEipList = (List) list.get(3);
+			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
+			// TODO 添加计算资源的IP
+			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
+			// TODO 添加EIP的IP
+			model.addAttribute("description", desc);
 
-		return "operate/operateForm";
+			if (computeList.size() > 0) {
+				model.addAttribute("computeList", computeList);
+				int poolType = 0;
+				// if (desc.indexOf("资源类型：生产") > 0) {
+				// poolType = 4;
+				// } else if (desc.indexOf("资源类型：测试") > 0) {
+				// poolType = 6;
+				// } else if (desc.indexOf("资源类型：公测") > 0) {
+				// poolType = 5;
+				// }
+				logger.info("--->has compute: " + computeList.size() + ",poolType=" + poolType);
+				model.addAttribute("server", comm.operateService.findHostMapByServerType(2)); // 物理机
+				model.addAttribute("hostServer", comm.operateService.findHostMapByServerType(1));
+				model.addAttribute("osStorage", comm.oneCmdbUtilService.getOsStorageFromOnecmdb());
+				model.addAttribute("location", comm.operateService.getLocationFromOnecmdb());
+				// 默认都是西安IDC，所以去掉另外两个VLAN
+				Map map = comm.operateService.getVlanFromOnecmdb();
+				map.remove("Vlans1354090853077");
+				map.remove("Vlans1354090927684");
+				model.addAttribute("vlan", map);
+				// 根据第一个计算资源的IP获取初始化的IpPool
+				// model.addAttribute("initIpPool",
+				// ipPoolManager.findIpPoolByIpAddress(((Object[])computeList.get(0))[5].toString()));
+			}
+			if (storageList.size() > 0) {
+				model.addAttribute("storageList", storageList);
+				model.addAttribute("fimasController", comm.oneCmdbUtilService.getFimasHardWareFromOnecmdb());
+				model.addAttribute("netappController", comm.oneCmdbUtilService.getNfsHardWareFromOnecmdb());
+			}
+			if (networkEipList.size() > 0) {
+				model.addAttribute("eipList", networkEipList);
+				logger.info("--->has eip: " + networkEipList.size());
+				model.addAttribute("telecomIpPool", comm.operateService.getAllIpPoolByPoolType(3));
+				// model.addAttribute("unicomIpPool",comm.operateService.getAllIpPoolByPoolType(2));
+			}
+			if (networkElbList.size() > 0) {
+				model.addAttribute("elbList", networkElbList);
+				// 暂不处理ELB的虚拟IP池
+			}
+
+			return "operate/operateForm";
+		} else { // 查询Redmine中的Issue信息失败
+			redirectAttributes.addFlashAttribute("message", "查询工单信息失败，请稍后重试！");
+			return "redirect:/operate";
+		}
 	}
 
 	/**
@@ -94,7 +153,6 @@ public class OperateController extends BaseController {
 	 * 
 	 * @param id
 	 * @param authorId
-	 *            工单操作人
 	 * @param priority
 	 * @param assignTo
 	 * @param projectId
@@ -106,28 +164,29 @@ public class OperateController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "update")
-	public String updateForm(@RequestParam(value = "id") Integer id, @RequestParam(value = "authorId") Integer authorId, @RequestParam(value = "priority") Integer priority,
-			@RequestParam(value = "assignTo") Integer assignTo, @RequestParam(value = "projectId") Integer projectId, @RequestParam(value = "doneRatio") Integer doneRatio,
-			@RequestParam(value = "estimatedHours") Integer estimatedHours, @RequestParam(value = "dueDate") String dueDate, @RequestParam(value = "note") String note,
-			RedirectAttributes redirectAttributes) {
+	public String updateForm(@RequestParam(value = "issueId") int issueId, @RequestParam("projectId") int projectId, @RequestParam("note") String note, @RequestParam("priority") int priority,
+			@RequestParam("authorId") int authorId, @RequestParam("assignTo") int assignTo, @RequestParam("dueDate") String dueDate, @RequestParam("estimatedHours") float estimatedHours,
+			@RequestParam("doneRatio") int doneRatio, @RequestParam("computes") String computes, @RequestParam("storages") String storages, @RequestParam("hostNames") String hostNames,
+			@RequestParam("serverAlias") String serverAlias, @RequestParam("osStorageAlias") String osStorageAlias, @RequestParam("controllerAlias") String controllerAlias,
+			@RequestParam("volumes") String volumes, @RequestParam("innerIps") String innerIps, @RequestParam("eipIds") String eipIds, @RequestParam("eipAddresss") String eipAddresss,
+			@RequestParam("locationAlias") String locationAlias, RedirectAttributes redirectAttributes) {
+		logger.info("[issueId,projectId,priority,assignTo,dueDate,estimatedHours,doneRatio,note]：" + issueId + "," + projectId + "," + priority + "," + assignTo + "," + dueDate + "," + estimatedHours
+				+ "," + doneRatio + "," + note);
+		logger.info("[computes,storages,hostNames,serverAlias,osStorageAlias,controllerAlias, volumes]：" + computes + "|" + storages + "|" + hostNames + "|" + serverAlias + "|" + osStorageAlias + "|"
+				+ controllerAlias + "|" + volumes);
+		logger.info("[innerIps,eipIds,eipAddresss,locationAlias]：" + innerIps + "|" + eipIds + "|" + eipAddresss + "|" + locationAlias);
 
-		Issue issue = RedmineService.getIssue(id);
-
+		Issue issue = RedmineService.getIssue(issueId);
 		// 此处的User是redmine中的User对象.
-
 		User assignee = new User();
 		assignee.setId(assignTo);
-
 		User author = new User();
 		author.setId(authorId);
-
 		Project project = new Project();
 		project.setId(projectId);
 
 		// 当完成度为100时,设置状态 statusId 为 5.关闭; 其它完成度则为 2.处理中.
-
 		Integer statusId = RedmineConstant.MAX_DONERATIO.equals(doneRatio) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
-
 		issue.setAssignee(assignee);// 指派给
 		issue.setDoneRatio(doneRatio);// 完成率
 		issue.setStatusId(statusId); // 设置状态
@@ -138,13 +197,9 @@ public class OperateController extends BaseController {
 		issue.setPriorityId(priority); // 优先级
 		issue.setProject(project); // 所属项目
 		issue.setAuthor(author); // issue作者
-
 		// TODO 还有IP分配等功能,待以后完成.
-
-		boolean result = comm.operateService.updateOperate(issue);
-
-		String message = result ? "工单更新成功" : "工单更新失败,请稍后重试或联系管理员";
-
+		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias);
+		String message = result ? "工单更新成功！" : "工单更新失败，请稍后重试或联系管理员！";
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return REDIRECT_SUCCESS_URL;

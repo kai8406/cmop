@@ -1,13 +1,12 @@
 package com.sobey.cmop.mvc.web.basicdata;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.HostServerConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.entity.HostServer;
-import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.framework.utils.Servlets;
 
 @Controller
@@ -55,6 +52,7 @@ public class HostServerController extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(HostServer hostServer, RedirectAttributes redirectAttributes) {
+		hostServer.setCreateTime(new Date());
 		boolean flag = comm.hostServerService.saveHostServer(hostServer);
 		// 更改IP状态为 已使用
 		comm.ipPoolService.updateIpPoolByHostServer(hostServer, IpPoolConstant.IP_STATUS_2);
@@ -122,38 +120,6 @@ public class HostServerController extends BaseController {
 			redirectAttributes.addFlashAttribute("message", "导出宿主机及其虚拟机关系成功！D:\\Host_Vm.xls");
 		}
 		return REDIRECT_SUCCESS_URL;
-	}
-
-	// ============== 返回页面的参数 =============
-
-	/**
-	 * Ip类型
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("poolTypeMap")
-	public Map<Integer, String> poolTypeMap() {
-		return IpPoolConstant.PoolType.map;
-	}
-
-	/**
-	 * 服务器类型
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("hostServerTypeMap")
-	public Map<Integer, String> hostServerTypeMap() {
-		return HostServerConstant.HostServerType.map;
-	}
-
-	/**
-	 * LOCATION
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("locationList")
-	public List<Location> getLocationList() {
-		return comm.locationService.getLocationList();
 	}
 
 }

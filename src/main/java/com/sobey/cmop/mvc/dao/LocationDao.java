@@ -15,4 +15,6 @@ public interface LocationDao extends PagingAndSortingRepository<Location, Intege
 
 	Location findByName(String name);
 
+	Location findByAlias(String alias);
+
 }

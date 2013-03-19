@@ -186,4 +186,8 @@ public class Es3Service extends BaseSevcie {
 
 	}
 
+	public List<StorageItem> getStorageListByApplyId(Integer applyId) {
+		return storageItemDao.findByApplyId(applyId);
+	}
+
 }

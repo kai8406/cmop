@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -92,7 +93,7 @@ public class ComputeService extends BaseSevcie {
 		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
 
 		if (!applications.isEmpty()) {
-			applicationDao.delete(applications);
+			this.deleteApplication(applications);
 		}
 
 		this.saveApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
@@ -107,7 +108,16 @@ public class ComputeService extends BaseSevcie {
 	 */
 	public List<Application> getApplicationByComputeItemId(Integer computeItemId) {
 		return applicationDao.findByComputeItemId(computeItemId);
+	}
 
+	/**
+	 * 删除应用application信息
+	 * 
+	 * @param eipPortItems
+	 */
+	@Transactional(readOnly = false)
+	public void deleteApplication(Collection<Application> applications) {
+		applicationDao.delete(applications);
 	}
 
 	// === ComputeItem ===//

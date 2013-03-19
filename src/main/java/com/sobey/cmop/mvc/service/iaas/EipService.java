@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -59,7 +60,16 @@ public class EipService extends BaseSevcie {
 	 */
 	public List<EipPortItem> getEipPortItemListByEipId(Integer eipId) {
 		return eipPortItemDao.findByNetworkEipItemId(eipId);
+	}
 
+	/**
+	 * 删除端口信息
+	 * 
+	 * @param eipPortItems
+	 */
+	@Transactional(readOnly = false)
+	public void deleteEipPortItem(Collection<EipPortItem> eipPortItems) {
+		eipPortItemDao.delete(eipPortItems);
 	}
 
 	// ========= NetworkEipItem ==========//
@@ -172,7 +182,7 @@ public class EipService extends BaseSevcie {
 
 		// Step.1
 
-		eipPortItemDao.delete(this.getEipPortItemListByEipId(networkEipItem.getId()));
+		this.deleteEipPortItem(this.getEipPortItemListByEipId(networkEipItem.getId()));
 
 		// Step.2
 
@@ -226,6 +236,10 @@ public class EipService extends BaseSevcie {
 
 		NetworkEipItem networkEipItem = this.getNetworkEipItem(resources.getServiceId());
 
+		// 删除变更前的端口映射
+
+		this.deleteEipPortItem(this.getEipPortItemListByEipId(networkEipItem.getId()));
+
 		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareEip(resources, networkEipItem, linkType, linkId, protocols, sourcePorts, targetPorts);
@@ -250,8 +264,6 @@ public class EipService extends BaseSevcie {
 		networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkType, linkId);
 
 		this.saveOrUpdate(networkEipItem);
-
-		eipPortItemDao.delete(this.getEipPortItemListByEipId(networkEipItem.getId()));
 
 		// EIP的端口映射
 

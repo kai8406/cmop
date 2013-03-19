@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -61,6 +62,16 @@ public class ElbService extends BaseSevcie {
 	public List<ElbPortItem> getElbPortItemListByElbId(Integer elbId) {
 		return elbPortItemDao.findByNetworkElbItemId(elbId);
 
+	}
+
+	/**
+	 * 删除端口信息
+	 * 
+	 * @param eipPortItems
+	 */
+	@Transactional(readOnly = false)
+	public void deleteElbPortItem(Collection<ElbPortItem> elbPortItems) {
+		elbPortItemDao.delete(elbPortItems);
 	}
 
 	// ========= NetworkElbItem ==========//
@@ -170,7 +181,7 @@ public class ElbService extends BaseSevcie {
 
 		// Step.1
 
-		elbPortItemDao.delete(this.getElbPortItemListByElbId(networkElbItem.getId()));
+		this.deleteElbPortItem(this.getElbPortItemListByElbId(networkElbItem.getId()));
 
 		// Step.2
 
@@ -229,6 +240,10 @@ public class ElbService extends BaseSevcie {
 
 		NetworkElbItem networkElbItem = this.getNetworkElbItem(resources.getServiceId());
 
+		// 删除变更前的端口映射
+
+		this.deleteElbPortItem(this.getElbPortItemListByElbId(networkElbItem.getId()));
+
 		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts, computeIds);
@@ -249,12 +264,6 @@ public class ElbService extends BaseSevcie {
 		}
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
-
-		// TODO 审批退回操作的话映射端口如果处理.
-
-		// 更新networkElbItem
-
-		elbPortItemDao.delete(this.getElbPortItemListByElbId(networkElbItem.getId()));
 
 		this.initElbInCompute(networkElbItem.getId());
 

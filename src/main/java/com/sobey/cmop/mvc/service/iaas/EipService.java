@@ -97,6 +97,10 @@ public class EipService extends BaseSevcie {
 		return networkEipItemDao.findByApplyUserId(userId);
 	}
 
+	public List<NetworkEipItem> getNetworkEipItemListByComputeItemId(Integer computeItemId) {
+		return networkEipItemDao.findByComputeItemId(computeItemId);
+	}
+
 	/**
 	 * 保存EIP的服务申请.(在服务申请时调用)
 	 * 

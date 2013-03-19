@@ -177,8 +177,7 @@ public class ServiceTagService extends BaseSevcie {
 
 		filters.put("serviceTag.status", new SearchFilter("status", Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
 		filters.put("serviceTag.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
-		// filters.put("resources.status", new SearchFilter("status",
-		// Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
+
 		Specification<ServiceTag> spec = DynamicSpecifications.bySearchFilter(filters.values(), ServiceTag.class);
 
 		return serviceTagDao.findAll(spec, pageRequest);

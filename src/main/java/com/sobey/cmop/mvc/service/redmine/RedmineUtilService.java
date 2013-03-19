@@ -99,16 +99,16 @@ public class RedmineUtilService extends BaseSevcie {
 	/**
 	 * 生成满足redmine显示的资源回收Resources文本.
 	 */
-	public String recycleResourcesRedmineDesc(Resources resources, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+	public String recycleResourcesRedmineDesc(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
 			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
 
 		try {
 
 			StringBuilder content = new StringBuilder();
 
-			// 拼装计算资源Compute信息
+			// 拼装资源信息
 
-			this.generateContentByLists(resources.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs);
+			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs);
 
 			return content.toString();
 

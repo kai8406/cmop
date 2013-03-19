@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
@@ -143,6 +143,7 @@ public class OperateService extends BaseSevcie {
 	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes,
 			String innerIps, String eipIds, String eipAddresss, String location) {
 		long start = System.currentTimeMillis();
+
 		logger.info("--->工单处理...");
 
 		// 更新写入OneCMDB时需要人工选择填入的关联项
@@ -307,28 +308,25 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void recycleOperate(Issue issue, String recycleId) {
-		logger.info("--->单个资源及其关联资源回收...");
+
+		logger.info("--->联资源回收...");
+
+		// 收件人
+		User sendToUser = null;
+
 		// 拼装回收的资源resource,放入List中.
 		List<Resources> resourcesList = new ArrayList<Resources>();
-		for (String resourcesId : recycleId.split(",")) {
-			resourcesList.add(comm.resourcesService.getResources(Integer.valueOf(resourcesId)));
+		for (String resourcesId : StringUtils.split(recycleId, ",")) {
+			Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
+			resourcesList.add(resources);
+			sendToUser = resources.getUser();
 		}
+
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
 			logger.info("---> 完成度 = 100%的工单处理...");
 
 			// TODO 同步数据至OneCMDB
-
-			// 收件人
-			User sendToUser = null;
-			for (Resources resources : resourcesList) {
-				sendToUser = resources.getUser();
-				if (sendToUser != null) {
-					break;
-				}
-			}
-
-			// 工单处理完成，给申请人发送邮件
-			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);
 
 			// 删除资源.
 			for (Resources resources : resourcesList) {
@@ -373,9 +371,11 @@ public class OperateService extends BaseSevcie {
 
 				}
 
-				sendToUser = resources.getUser();
 				comm.resourcesService.deleteResources(resources.getId());
 			}
+
+			// 工单处理完成，给申请人发送邮件
+			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);
 
 			logger.info("--->资源回收处理完成");
 		} else {
@@ -393,7 +393,7 @@ public class OperateService extends BaseSevcie {
 
 			// 发送邮件通知下个指派人
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(sendToUser, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
 		}
 	}
 

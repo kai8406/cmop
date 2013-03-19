@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 
@@ -313,6 +314,15 @@ public class ComputeService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void deleteCompute(Integer id) {
+
+		// 将EIP中关联的实例设置为null.
+
+		List<NetworkEipItem> networkEipItems = comm.eipService.getNetworkEipItemListByComputeItemId(id);
+		for (NetworkEipItem networkEipItem : networkEipItems) {
+			networkEipItem.setComputeItem(null);
+			comm.eipService.saveOrUpdate(networkEipItem);
+		}
+
 		computeItemDao.delete(id);
 	}
 

@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.web.resource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -163,7 +165,10 @@ public class ResourcesController extends BaseController {
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
-		boolean result = comm.resourcesService.recycleResources(id);
+		List<Resources> resourcesList = new ArrayList<Resources>();
+		resourcesList.add(comm.resourcesService.getResources(id));
+
+		boolean result = comm.resourcesService.recycleResources(resourcesList);
 
 		redirectAttributes.addFlashAttribute("message", result ? "资源回收中..." : "资源回收失败,请稍后重试");
 

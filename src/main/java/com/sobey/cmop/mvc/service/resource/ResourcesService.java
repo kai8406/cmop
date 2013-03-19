@@ -42,6 +42,7 @@ import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
+import com.sobey.framework.utils.Collections3;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
@@ -289,29 +290,27 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 单个资源回收
+	 * 资源回收
 	 * 
-	 * @param id
-	 * @return
+	 * @param resourcesList
+	 *            资源列表
+	 * @return 回收结果. false:失败;true:成功.
 	 */
 	@Transactional(readOnly = false)
-	public boolean recycleResources(Integer id) {
-
-		Resources resources = this.getResources(id);
-		resources.setStatus(ResourcesConstant.Status.回收中.toInteger());
-		this.saveOrUpdate(resources);
-
-		// 回收结果. false:失败;true:成功.
+	public boolean recycleResources(List<Resources> resourcesList) {
 
 		boolean result = false;
 
-		// TODO 回收的资源ID.可能会有多个,用 "," 连接. 暂时只针对compute,此处去缺少一个验证回收资源的关联资源的方法.
-		/**
-		 * 根据resourceId获得与其相关的各个资源ID
-		 */
-		String resourceId = resources.getId().toString();
+		for (Resources resources : resourcesList) {
+			resources.setStatus(ResourcesConstant.Status.回收中.toInteger());
+			this.saveOrUpdate(resources);
+		}
 
-		List<Resources> resourcesList = new ArrayList<Resources>();
+		// TODO 回收的资源ID.可能会有多个,用 "," 连接. 暂时只针对compute,此处去缺少一个验证回收资源的关联资源的方法.
+
+		// 回收的资源ID
+		String recycleId = Collections3.extractToString(resourcesList, "id", ",");
+
 		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 		List<StorageItem> storageItems = new ArrayList<StorageItem>();
 		List<NetworkElbItem> elbItems = new ArrayList<NetworkElbItem>();
@@ -322,12 +321,10 @@ public class ResourcesService extends BaseSevcie {
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 
-		resourcesList.add(resources);
-
 		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
 
-		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(resources, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
-				monitorElbs);
+		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails,
+				monitorPhones, monitorComputes, monitorElbs);
 
 		// 写入工单Issue到Redmine
 
@@ -365,9 +362,9 @@ public class ResourcesService extends BaseSevcie {
 			redmineIssue.setAssignee(assignee);
 			redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
 			redmineIssue.setIssueId(issue.getId());
-			redmineIssue.setResourceId(resourceId);
+			redmineIssue.setResourceId(recycleId);
 
-			logger.info("--->回收的resourceId..." + resourceId);
+			logger.info("--->回收的resourceId..." + recycleId);
 
 			comm.operateService.saveOrUpdate(redmineIssue);
 
@@ -377,7 +374,8 @@ public class ResourcesService extends BaseSevcie {
 
 			// 发送工单处理邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes,
+					monitorElbs, assigneeUser);
 
 		}
 

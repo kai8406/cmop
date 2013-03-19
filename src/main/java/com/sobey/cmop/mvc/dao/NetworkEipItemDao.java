@@ -17,6 +17,8 @@ public interface NetworkEipItemDao extends PagingAndSortingRepository<NetworkEip
 
 	List<NetworkEipItem> findByApplyUserId(Integer userId);
 
+	List<NetworkEipItem> findByComputeItemId(Integer computeItemId);
+
 	List<NetworkEipItem> findByApplyId(Integer applyId);
 
 }

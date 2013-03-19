@@ -355,9 +355,9 @@ public class TemplateMailService extends BaseSevcie {
 	// ==========================//
 
 	/**
-	 * 发送MIME格式的工单处理邮件(资源回收).
+	 * 发送工单处理邮件(资源回收)
 	 */
-	public void sendRecycleResourcesNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+	public void sendRecycleResourcesOperateNotificationMail(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
 			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
@@ -372,38 +372,10 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorComputes", monitorComputes);
 		map.put("monitorElbs", monitorElbs);
 
-		// TODO 其它资源缺少
+		// 申请人所创建的所有实例和ELB
 
-		// 工单处理URL
-
-		String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
-
-		map.put("operateUrl", operateUrl);
-
-		// 邮件标题
-		String sendSubject = "资源回收工单处理邮件";
-
-		this.sendMailConfig(recycleTemplate, map, assigneeUser, sendSubject);
-
-	}
-
-	/**
-	 * TOTO 发送工单处理邮件(资源回收)
-	 */
-	public void sendRecycleResourcesOperateNotificationMail(List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
-
-		// 初始化数据,并将其放入一个HashMap中.
-
-		Map<String, Object> map = this.freemarkerParameterMap();
-
-		map.put("computes", computeItems);
-		map.put("storageItems", storageItems);
-		map.put("elbs", elbItems);
-		map.put("eips", eipItems);
-		map.put("dnses", dnsItems);
-		map.put("monitorComputes", monitorComputes);
-		map.put("monitorElbs", monitorElbs);
+		map.put("allComputes", comm.computeService.getComputeListByUserId(user.getId()));
+		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(user.getId()));
 
 		// TODO 其它资源缺少
 
@@ -431,8 +403,6 @@ public class TemplateMailService extends BaseSevcie {
 		// 初始化数据,并将其放入一个HashMap中.
 
 		Map<String, Object> map = this.freemarkerParameterMap();
-
-		// TODO 其它资源缺少
 
 		// 工单处理完成提示文字
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
@@ -139,6 +140,37 @@ public class ServiceTagController extends BaseController {
 		comm.serviceTagService.saveOrUpdate(serviceTag);
 
 		redirectAttributes.addFlashAttribute("message", "修改服务标签 " + serviceTag.getName() + " 成功");
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
+	/**
+	 * 服务标签的回收<br>
+	 * 有两个步骤:<br>
+	 * 1.将服务标签下所有的资源回收.<br>
+	 * 2.将服务标签本身回收
+	 * 
+	 * @param id
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@RequestMapping(value = "delete/{id}")
+	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+
+		List<Resources> resourcesList = comm.resourcesService.getResourcesListByServiceTagId(id);
+
+		boolean result = comm.resourcesService.recycleResources(resourcesList);
+
+		if (result) {
+
+			ServiceTag serviceTag = comm.serviceTagService.getServiceTag(id);
+			serviceTag.setStatus(ResourcesConstant.Status.回收中.toInteger());
+			comm.serviceTagService.saveOrUpdate(serviceTag);
+			redirectAttributes.addFlashAttribute("message", "资源回收中...");
+
+		} else {
+			redirectAttributes.addFlashAttribute("message", "资源回收失败,请稍后重试");
+		}
 
 		return REDIRECT_SUCCESS_URL;
 	}

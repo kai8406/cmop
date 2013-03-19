@@ -122,6 +122,16 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 获得服务标签下所有的资源列表.
+	 * 
+	 * @param serviceTagId
+	 * @return
+	 */
+	public List<Resources> getResourcesListByServiceTagId(Integer serviceTagId) {
+		return resourcesDao.findByServiceTagId(serviceTagId);
+	}
+
+	/**
 	 * 获得等待提交变更资源Resources列表.<br>
 	 * 
 	 * Status: 0.已变更

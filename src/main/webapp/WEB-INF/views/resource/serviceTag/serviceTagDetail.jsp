@@ -55,50 +55,236 @@
 				
 				<dt>创建日期</dt>
 				<dd><fmt:formatDate value="${serviceTag.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />&nbsp;</dd>
-				</dl>
 				
-				<hr>
-		
-				<c:forEach var="resource" items="${resourcesList }">
+				
+				<div class="page-header"><em>服务标签下所有资源</em></div>
+			
+				<!-- 实例Compute -->
+				<c:if test="${not empty computeItems}">
 					
-					<c:forEach var="change" items="${resource.changes }">
+					<dt>PCS & ECS实例</dt>
+					<c:forEach var="item" items="${computeItems}">
 					
-						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
-						<table class="table table-bordered">
-				            <thead><tr><th class="span2">变更项</th><th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
-				            <tbody>
-					            <c:forEach var="item" items="${change.changeItems }">
-									<tr>
-										<td>${item.fieldName}</td>
-										<td class="is-hidden">${item.oldString}</td>
-										<td class="is-visible">${item.newString}</td>
-									</tr>
-								</c:forEach>
-				            </tbody>
-			            </table>
-					 
+						<dd><em>用途信息</em>&nbsp;&nbsp;${item.remark}</dd>
+						
+						<dd>
+							<em>基本信息</em>
+							&nbsp;&nbsp;<c:forEach var="map" items="${osTypeMap}"><c:if test="${item.osType == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp;&nbsp;<c:forEach var="map" items="${osBitMap}"><c:if test="${item.osBit == map.key}">${map.value}</c:if></c:forEach>
+							&nbsp;&nbsp;
+							<c:choose>
+								<c:when test="${item.computeType == 1}"><c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:when>
+								<c:otherwise><c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:otherwise>
+							</c:choose>
+						</dd>
+						
+						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})</dd>
+						
+						<br>
+						
 					</c:forEach>
 					
 					<hr>
 					
-				</c:forEach>
+				</c:if>
+				
+				<!-- 存储空间ES3 -->
+				<c:if test="${not empty storageItems}">
+					
+					<dt>ES3存储空间</dt>
+					<c:forEach var="item" items="${storageItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>存储类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${storageTypeMap}"><c:if test="${item.storageType == map.key}">${map.value}</c:if></c:forEach></dd>
+						
+						<dd><em>容量空间</em>&nbsp;&nbsp;${item.space}&nbsp;GB</dd>
+						
+						<dd><em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
+						
+						<br>
+						
+					</c:forEach>
+					
+					<hr>
+					
+				</c:if>
+				
+				<!-- 负载均衡器ELB -->
+				<c:if test="${not empty elbItems}">
+					
+					<dt>负载均衡器ELB</dt>
+					<c:forEach var="item" items="${elbItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd><em>关联实例</em>&nbsp; 
+							<c:forEach var="compute" items="${allComputes}">
+								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}
+									<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
+								</c:if>
+							</c:forEach>
+						</dd>
+						
+						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
+						
+						<c:forEach var="port" items="${item.elbPortItems }">
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
+						</c:forEach>
+							
+						<br>
+						
+					</c:forEach>
+					
+					<hr>
+					
+				</c:if>
+				
+				<!-- IP地址EIP -->
+				<c:if test="${not empty eipItems}">
+				
+					<dt>EIP</dt>
+					<c:forEach var="item" items="${eipItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>ISP运营商</em>&nbsp;&nbsp;<c:forEach var="map" items="${ispTypeMap}"><c:if test="${item.ispType == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd>
+							<c:choose>
+								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.innerIp })</c:when>
+								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+							</c:choose>
+						</dd>
+						
+						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
+						
+						<c:forEach var="port" items="${item.eipPortItems }">
+							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
+						</c:forEach>
+							
+						<br>
+						
+					</c:forEach>
+				
+				</c:if>
+				
+				<!-- DNS -->
+				<c:if test="${not empty dnsItems}">
+				
+					<hr>
+					<dt>DNS域名映射</dt>
+					<c:forEach var="item" items="${dnsItems}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>域名</em>&nbsp;&nbsp;${item.domainName }</dd>
+						
+						<dd><em>域名类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${domainTypeMap}"><c:if test="${item.domainType == map.key }">${map.value}</c:if></c:forEach></dd>
+						
+						<dd>
+							<c:choose>
+								<c:when test="${item.domainType != 3 }"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
+								<c:otherwise><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:otherwise>
+							</c:choose>
+						</dd>
+						
+						<br>
+						
+					</c:forEach>
+					
+				</c:if>
+				
+				<!-- 监控邮件列表 -->
+				<c:if test="${not empty monitorMails}">
+					<hr>
+					<dt>监控邮件列表</dt>
+					<c:forEach var="item" items="${monitorMails}"><dd>${item.email }</dd></c:forEach>
+				</c:if>
+				
+				<!-- 监控手机列表 -->
+				<c:if test="${not empty monitorPhones}">
+					<hr>
+					<dt>监控手机列表</dt>
+					<c:forEach var="item" items="${monitorPhones}"><dd>${item.telephone }</dd></c:forEach>
+				</c:if>
+				
+				<!-- 服务器监控monitorCompute -->
+				<c:if test="${not empty monitorComputes}">
+				
+					<hr>
+					<dt>实例监控</dt>
+					<c:forEach var="item" items="${monitorComputes}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>IP地址</em>&nbsp;&nbsp;${item.ipAddress}</dd>
+						
+						<dd><em>CPU占用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.cpuWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.cpuCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>内存占用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.memoryWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.memoryCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>网络丢包率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.pingLossWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdGtMap}"><c:if test="${item.pingLossCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>硬盘可用率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${item.diskWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdLtMap}"><c:if test="${item.diskCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>网络延时率</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${item.pingDelayWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${thresholdNetGtMap}"><c:if test="${item.pingDelayCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>最大进程数</em>
+							&nbsp;&nbsp;报警阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessWarn == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+							&nbsp;&nbsp;警告阀值&nbsp;<c:forEach var="map" items="${maxProcessMap}"><c:if test="${item.maxProcessCritical == map.key }"><strong>${map.value }</strong></c:if></c:forEach>
+						</dd>
+						
+						<dd><em>监控端口</em>&nbsp;&nbsp;${item.port}</dd>
+						<dd><em>监控进程</em>&nbsp;&nbsp;${item.process}</dd>
+						<dd><em>挂载路径</em>&nbsp;&nbsp;${item.mountPoint}</dd>
+							
+						<br>
+					</c:forEach>
+					
+				</c:if>
+				
+				<!-- ELB监控monitorElb -->
+				<c:if test="${not empty monitorElbs}">
+				
+					<hr>
+					<dt>ELB监控</dt>
+					<c:forEach var="item" items="${monitorElbs}">
+					
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>监控ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp})</dd>
+						
+						<br>
+						
+					</c:forEach>
+				</c:if>
 			
-				<div class="form-actions">
-					<input class="btn" type="button" value="返回" onclick="history.back()">
-					
-					<a class="btn btn-primary" href="#commitModal${item.id}" data-toggle="modal">提交变更</a>
-					<div id="commitModal${item.id }" class="modal hide fade " tabindex="-1" data-width="250">
-						<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
-						<div class="modal-body">是否提交变更?</div>
-						<div class="modal-footer">
-							<button class="btn" data-dismiss="modal">关闭</button>
-							<a href="${ctx}/serviceTag/commit/${serviceTag.id}" class="btn btn-primary">确定</a>
-						</div>
-					</div>
-					
-				</div>
-		
+			</dl>
+			
+			<div class="form-actions">
+				<input class="btn" type="button" value="返回" onclick="history.back()">
+			</div>
+	
 		</fieldset>
 		
 	</form>

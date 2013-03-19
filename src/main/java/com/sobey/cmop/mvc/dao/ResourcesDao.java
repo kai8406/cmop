@@ -18,6 +18,8 @@ public interface ResourcesDao extends PagingAndSortingRepository<Resources, Inte
 
 	List<Resources> findByServiceTagIdAndStatusInOrderByIdDesc(Integer serviceTagId, Collection<Integer> status);
 
+	List<Resources> findByServiceTagId(Integer serviceTagId);
+
 	List<Resources> findByServiceTypeAndUserId(Integer serviceType, Integer userId);
 
 }

@@ -141,6 +141,24 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
+	 * 新增服务标签(如果这个标签名存在,则略过)
+	 * 
+	 * @param serviceTag
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public ServiceTag saveServiceTag(ServiceTag serviceTag) {
+
+		serviceTag.setUser(comm.accountService.getCurrentUser());
+		serviceTag.setStatus(ResourcesConstant.Status.未变更.toInteger());
+		serviceTag.setCreateTime(new Date());
+		this.saveOrUpdate(serviceTag);
+
+		return serviceTag;
+
+	}
+
+	/**
 	 * 提交服务标签ServiceTag的分页(status为 0.已变更 的数据)<br>
 	 * 资源变更后,资源本身和其所属的服务标签的状态都会变更为 0.已变更.<br>
 	 * 即此服务标签下有变更后等待提交的资源.
@@ -157,7 +175,31 @@ public class ServiceTagService extends BaseSevcie {
 
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
 
-		filters.put("resources.status", new SearchFilter("status", Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
+		filters.put("serviceTag.status", new SearchFilter("status", Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
+		filters.put("serviceTag.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+		// filters.put("resources.status", new SearchFilter("status",
+		// Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
+		Specification<ServiceTag> spec = DynamicSpecifications.bySearchFilter(filters.values(), ServiceTag.class);
+
+		return serviceTagDao.findAll(spec, pageRequest);
+	}
+
+	/**
+	 * 提交服务标签ServiceTag的分页
+	 * 
+	 * @param searchParams
+	 *            页面传递过来的参数
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<ServiceTag> getServiceTagPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("serviceTag.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
 
 		Specification<ServiceTag> spec = DynamicSpecifications.bySearchFilter(filters.values(), ServiceTag.class);
 

@@ -51,6 +51,7 @@
 					<ul class="site-stats">
 						<a href="${ctx}/resources/?search_EQ_serviceType=8"><li><i class="icon-globe"></i> <strong>${MDNCOUNT}</strong> <small>MDN</small></li></a>
 						<a href="${ctx}/resources/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>11</strong> <small>云生产</small></li></a>
+						<a href="${ctx}/serviceTag/"><li><strong>服务标签</strong>&nbsp;&raquo;</a>
 					</ul>
 				</div>
 				
@@ -124,7 +125,7 @@
 	</form>
 	
 	<div class="row">
-		<div class="span4"><a class="btn" href="${ctx}/serviceTag/">提交变更</a></div>
+		<div class="span4"><a class="btn" href="${ctx}/serviceTag/commitResources/">提交变更</a></div>
 		<div class="pull-right"><tags:singlePage page="${page}" /></div>
 	</div>
 
@@ -193,7 +194,7 @@
 						
 					</td>
 					<td>
-						<c:forEach var="allowResousStatus" items="${allowResousStatus }">
+						<c:forEach var="allowResousStatus" items="${allowResourcesStatus }">
 							<c:if test="${ item.serviceTag.status == allowResousStatus }">
 								<a href="update/${item.id}">变更</a>
 								<a href="#deleteModal${item.id}" data-toggle="modal">回收</a>

@@ -127,6 +127,19 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
+	 * Ajax请求校验服务标签名是否唯一
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "checkServiceTagName")
+	@ResponseBody
+	public String checkServiceTagName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		return name.equals(oldName) || comm.serviceTagService.findServiceTagByNameAndUserId(name, getCurrentUserId()) == null ? "true" : "false";
+	}
+
+	/**
 	 * 
 	 * @return 当前用户创建的+公用的(user_id 为null) ESG列表.
 	 */

@@ -161,7 +161,7 @@
 					</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
-						<c:forEach var="allowStatus" items="${allowStatus }">
+						<c:forEach var="allowStatus" items="${allowApplyStatus }">
 							<c:if test="${ item.status == allowStatus }">
 							
 								<a href="update/${item.id}">修改</a>

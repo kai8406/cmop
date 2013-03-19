@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.comm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -251,6 +252,42 @@ public class BaseController {
 	@ModelAttribute("keepSessionMap")
 	public Map<Boolean, String> keepSessionMap() {
 		return NetworkConstant.KeepSession.map;
+	}
+
+	/**
+	 * 
+	 * 资源resources页面管理链接只能在该状态下显示.
+	 * 
+	 * @return
+	 * 
+	 */
+	@ModelAttribute("allowResourcesStatus")
+	public List<Integer> allowResourcesStatus() {
+
+		List<Integer> allowResourcesStatus = new ArrayList<Integer>();
+		allowResourcesStatus.add(ResourcesConstant.Status.未变更.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已变更.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已退回.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已创建.toInteger());
+
+		return allowResourcesStatus;
+	}
+
+	/**
+	 * 
+	 * 服务申请apply页面管理链接只能在该状态下显示.
+	 * 
+	 * @return
+	 * 
+	 */
+	@ModelAttribute("allowApplyStatus")
+	public List<Integer> allowApplyStatus() {
+
+		List<Integer> allowApplyStatus = new ArrayList<Integer>();
+
+		allowApplyStatus.add(ApplyConstant.Status.已申请.toInteger());
+		allowApplyStatus.add(ApplyConstant.Status.已退回.toInteger());
+		return allowApplyStatus;
 	}
 
 	/**

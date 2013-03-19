@@ -18,7 +18,7 @@
 				if (e.which == 13) {return false;}
 			});
 			
-			$("#inputForm").validate();
+			 $('#inputForm').validate();
 			
 			/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
 			$(document).on("click", "#createBtn", function() {
@@ -101,14 +101,14 @@
 			<div class="control-group">
 				<label class="control-label" for="portRange">端口范围</label>
 				<div class="controls">
-					<input type="text" id="portRange" placeholder="80 or 8080/65535">
+					<input type="text" id="portRange" name="portRange" class="required portValidate" placeholder="80 or 8080/65535">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="visitSource">访问源</label>
 				<div class="controls">
-					<input type="text" id="visitSource" placeholder="192.168.0.1 or 192.168.0.1/10">
+					<input type="text" id="visitSource" name="visitSource" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			

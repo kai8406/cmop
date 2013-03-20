@@ -138,7 +138,8 @@
 						<li>
 							<#if eip.computeItem?exists>
 								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}<#if eip.computeItem.innerIp?exists>(${eip.computeItem.innerIp})</#if>
-							<#else>
+							</#if>
+							<#if eip.networkElbItem?exists>
 								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}<#if eip.networkElbItem.virtualIp?exists>(${eip.networkElbItem.virtualIp})</#if>
 							</#if>
 						</li>

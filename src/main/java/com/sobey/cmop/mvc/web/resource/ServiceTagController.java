@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
@@ -86,6 +87,9 @@ public class ServiceTagController extends BaseController {
 		model.addAttribute("dnsItems", dnsItems);
 		model.addAttribute("monitorComputes", monitorComputes);
 		model.addAttribute("monitorElbs", monitorElbs);
+
+		// 根据审批状态获得指定服务标签的审批记录(只取最新的,当前的审批记录.即audit的状态为0)
+		model.addAttribute("audits", comm.auditService.getAuditListByServiceTagIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
 
 		return "resource/serviceTag/serviceTagDetail";
 

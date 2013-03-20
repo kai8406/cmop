@@ -123,6 +123,17 @@ public class AuditService extends BaseSevcie {
 		return auditDao.findByServiceTagId(serviceTagId);
 	}
 
+	/**
+	 * 根据审批状态获得指定服务标签的审批记录.
+	 * 
+	 * @param serviceTagId
+	 * @param status
+	 * @return
+	 */
+	public List<Audit> getAuditListByServiceTagIdAndStatus(Integer serviceTagId, Integer status) {
+		return auditDao.findByServiceTagIdAndStatus(serviceTagId, status);
+	}
+
 	// ============ 审批流程 AuditFlow============ //
 
 	/**
@@ -262,12 +273,14 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 服务申请Apply的审批.<br>
+	 * 服务申请Apply的审批.
 	 * 
-	 * 首先根据审核结果的不同分为三种审批处理逻辑<br>
-	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. <br>
-	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象<br>
-	 * 3-审批退回. 发送退回邮件给Apply的申请人<br>
+	 * <pre>
+	 * 首先根据审核结果的不同分为三种审批处理逻辑.
+	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. 
+	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象.
+	 * 3-审批退回. 发送退回邮件给Apply的申请人.
+	 * </pre>
 	 * 
 	 * @param audit
 	 *            审批
@@ -281,9 +294,6 @@ public class AuditService extends BaseSevcie {
 	public boolean saveAuditToApply(Audit audit, Integer applyId, Integer userId) {
 		Apply apply = comm.applyService.getApply(applyId);
 
-		/*
-		 * true:通过页面审批 ;false :通过邮件直接审批同意
-		 */
 		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
@@ -387,13 +397,25 @@ public class AuditService extends BaseSevcie {
 		return true;
 	}
 
+	@Transactional(readOnly = false)
+	public void initAuditStatus(Integer serviceTagId) {
+
+		List<Audit> audits = auditDao.findByServiceTagId(serviceTagId);
+		for (Audit audit : audits) {
+			audit.setStatus(AuditConstant.AuditStatus.已过期.toInteger());
+			this.saveOrUpdateAudit(audit);
+		}
+
+	}
+
 	/**
-	 * 资源变更Resources的审批.<br>
+	 * 资源变更Resources的审批.
 	 * 
-	 * 首先根据审核结果的不同分为三种审批处理逻辑<br>
-	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. <br>
-	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象<br>
-	 * 3-审批退回. 发送退回邮件给资源变更Resources的申请人<br>
+	 * <pre>
+	 * 1-中间审批. 找到当前审批人的下级审批人,直接发送邮件. 
+	 * 2-终审审批. 首先拼装Redmine内容,并写入redmine;成功写入redmine后,创建工单对象.
+	 * 3-审批退回. 发送退回邮件给资源变更Resources的申请人.
+	 * </pre>
 	 * 
 	 * @param audit
 	 *            审批
@@ -431,15 +453,11 @@ public class AuditService extends BaseSevcie {
 			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
 
 			// 发送退回通知邮件
-
 			comm.simpleMailService.sendNotificationMail(serviceTag.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
 
 			for (Resources resources : resourcesList) {
-
 				/* 资源的变更项还原至变更前 */
-
 				resources = comm.resourcesService.restoreResources(resources);
-
 				resources.setStatus(ResourcesConstant.Status.已退回.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
 			}
@@ -530,15 +548,12 @@ public class AuditService extends BaseSevcie {
 				comm.templateMailService.sendResourcesNotificationMail(serviceTag, nextAuditFlow);
 
 				for (Resources resources : resourcesList) {
-
 					// 更改资源的状态为 2.审批中.
-
 					resources.setStatus(ResourcesConstant.Status.审批中.toInteger());
 					comm.resourcesService.saveOrUpdate(resources);
 				}
 
 				// 插入一条下级审批人所用到的audit.
-
 				this.saveSubAudit(userId, null, serviceTag);
 
 			}

@@ -249,18 +249,13 @@ public class MonitorComputeServcie extends BaseSevcie {
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
+		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 		if (isChange) {
-
-			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
-
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
-
-			comm.serviceTagService.saveOrUpdate(serviceTag);
-
-			resources.setServiceTag(serviceTag);
 			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
-
 		}
+		resources.setServiceTag(serviceTag);
+		comm.serviceTagService.saveOrUpdate(serviceTag);
 
 		monitorCompute.setCpuWarn(cpuWarn);
 		monitorCompute.setCpuCritical(cpuCritical);

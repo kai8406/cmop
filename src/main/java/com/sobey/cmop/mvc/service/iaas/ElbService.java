@@ -254,18 +254,13 @@ public class ElbService extends BaseSevcie {
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
+		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 		if (isChange) {
-
-			// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
-
 			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
-
-			comm.serviceTagService.saveOrUpdate(serviceTag);
-
-			resources.setServiceTag(serviceTag);
 			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
-
 		}
+		resources.setServiceTag(serviceTag);
+		comm.serviceTagService.saveOrUpdate(serviceTag);
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
@@ -315,7 +310,7 @@ public class ElbService extends BaseSevcie {
 		return networkElbItemDao.findByApplyUserId(userId);
 	}
 
-	public List getElbListByApplyId(Integer applyId) {
+	public List<NetworkElbItem> getElbListByApplyId(Integer applyId) {
 		return networkElbItemDao.findByApplyId(applyId);
 	}
 

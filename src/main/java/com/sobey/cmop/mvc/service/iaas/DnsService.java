@@ -189,9 +189,12 @@ public class DnsService extends BaseSevcie {
 		// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
 		networkDnsItem.setDomainType(domainType);
+		networkDnsItem.setDomainName(domainName);
+
 		List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
 
 		if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+
 			networkDnsItem.setNetworkEipItemList(networkEipItemList);
 			networkDnsItem.setCnameDomain(cnameDomain);
 

@@ -150,6 +150,9 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
+			
+				<c:if test="${not empty dns.cnameDomain }"><div class="resources"></div></c:if>
+				
 				<c:forEach var="eip" items="${dns.networkEipItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>

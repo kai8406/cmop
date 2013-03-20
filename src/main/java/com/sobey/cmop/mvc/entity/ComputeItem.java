@@ -24,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.common.collect.Lists;
@@ -267,6 +269,7 @@ public class ComputeItem implements java.io.Serializable {
 	@OrderBy("id")
 	// 集合中对象id的缓存.
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@NotFound(action = NotFoundAction.IGNORE)
 	public List<StorageItem> getStorageItemList() {
 		return storageItemList;
 	}

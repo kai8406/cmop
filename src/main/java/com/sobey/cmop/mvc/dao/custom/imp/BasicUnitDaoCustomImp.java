@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,31 @@ public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 				+ " and t1.user_id = ?";
 		logger.info(sqlString);
 		return em.createNativeQuery(sqlString).setParameter(1, userId).getResultList();
+	}
+
+	@Override
+	public void updateComputeItemToElbIdIsNull(Integer elbId) {
+		String sqlString = "update compute_item set elb_id = null where  elb_id = ?";
+		Query query = em.createNativeQuery(sqlString).setParameter(1, elbId);
+		logger.info(sqlString);
+		query.executeUpdate();
+	}
+
+	@Override
+	public void updateNetworkEipItemToElbIdIsNull(Integer elbId) {
+		String sqlString = "update network_eip_item set elb_id = null where  elb_id = ?";
+		Query query = em.createNativeQuery(sqlString).setParameter(1, elbId);
+		logger.info(sqlString);
+		query.executeUpdate();
+
+	}
+
+	@Override
+	public void updateNetworkEipItemToComputeIdIsNull(Integer computeId) {
+		String sqlString = "update network_eip_item set elb_id = null where  compute_id = ?";
+		Query query = em.createNativeQuery(sqlString).setParameter(1, computeId);
+		logger.info(sqlString);
+		query.executeUpdate();
 	}
 
 }

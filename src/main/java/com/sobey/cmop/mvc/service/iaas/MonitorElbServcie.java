@@ -40,7 +40,9 @@ public class MonitorElbServcie extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void deleteMonitorElb(Integer id) {
-		monitorElbDao.delete(id);
+		if (this.getMonitorElb(id) != null) {
+			monitorElbDao.delete(id);
+		}
 	}
 
 	/**

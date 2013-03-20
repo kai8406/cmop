@@ -172,15 +172,26 @@ public class OperateService extends BaseSevcie {
 				String recycleId = redmineIssue.getResourceId();
 				logger.info("--->[applyId、serviceTagId、recycleId]：" + applyId + "、" + serviceTagId + "、" + recycleId);
 
-				// 服务申请
 				if (applyId != null) {
+
+					// 服务申请
 					this.applyOperate(issue, applyId);
-				} else if (serviceTagId != null) { // 资源变更
+
+				} else if (serviceTagId != null && recycleId == null) {
+
+					// 资源变更
 					this.resourcesOperate(issue, serviceTagId);
-				} else if (recycleId != null) { // 资源回收
-					this.recycleOperate(issue, recycleId);
-				} else { // 故障申报
+
+				} else if (recycleId != null && StringUtils.isNotBlank(serviceTagId.toString())) {
+
+					// 资源回收
+					this.recycleOperate(issue, recycleId, serviceTagId);
+
+				} else {
+
+					// 故障申报
 					this.failureOperate(issue);
+
 				}
 
 				/* Step.3 更新RedmineIssue状态 */
@@ -307,7 +318,7 @@ public class OperateService extends BaseSevcie {
 	 * 
 	 */
 	@Transactional(readOnly = false)
-	private void recycleOperate(Issue issue, String recycleId) {
+	private void recycleOperate(Issue issue, String recycleId, Integer serviceTagId) {
 
 		logger.info("--->联资源回收...");
 
@@ -373,6 +384,9 @@ public class OperateService extends BaseSevcie {
 
 				comm.resourcesService.deleteResources(resources.getId());
 			}
+
+			// 删除服务标签
+			comm.serviceTagService.delete(serviceTagId);
 
 			// 工单处理完成，给申请人发送邮件
 			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);

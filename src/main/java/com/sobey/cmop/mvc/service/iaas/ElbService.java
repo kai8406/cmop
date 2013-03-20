@@ -16,6 +16,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ElbPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkElbItemDao;
+import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
@@ -39,6 +40,9 @@ public class ElbService extends BaseSevcie {
 
 	@Resource
 	private ElbPortItemDao elbPortItemDao;
+
+	@Resource
+	private BasicUnitDaoCustom basicUnitDao;
 
 	// ========= ElbPortItem ==========//
 
@@ -100,7 +104,7 @@ public class ElbService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteNetworkElbItem(Integer id) {
 
-		this.initElbInCompute(id);
+		this.initElbRelation(id);
 
 		networkElbItemDao.delete(id);
 	}
@@ -185,7 +189,7 @@ public class ElbService extends BaseSevcie {
 
 		// Step.2
 
-		this.initElbInCompute(networkElbItem.getId());
+		this.initElbRelation(networkElbItem.getId());
 
 		this.saveOrUpdate(networkElbItem);
 
@@ -265,7 +269,7 @@ public class ElbService extends BaseSevcie {
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
-		this.initElbInCompute(networkElbItem.getId());
+		this.initElbRelation(networkElbItem.getId());
 
 		this.saveOrUpdate(networkElbItem);
 
@@ -292,17 +296,14 @@ public class ElbService extends BaseSevcie {
 	}
 
 	/**
-	 * 初始化实例compute中的elb关联.(elb_id = null)
+	 * 初始化实例compute & Eip 中的elb关联.(elb_id = null)
 	 * 
 	 * @param elbId
 	 */
 	@Transactional(readOnly = false)
-	private void initElbInCompute(Integer elbId) {
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(elbId);
-		for (ComputeItem computeItem : computeItems) {
-			computeItem.setNetworkElbItem(null);
-			comm.computeService.saveOrUpdate(computeItem);
-		}
+	private void initElbRelation(Integer elbId) {
+		basicUnitDao.updateComputeItemToElbIdIsNull(elbId);
+		basicUnitDao.updateNetworkEipItemToElbIdIsNull(elbId);
 	}
 
 	/**

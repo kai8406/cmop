@@ -168,7 +168,7 @@ public class ResourcesController extends BaseController {
 		List<Resources> resourcesList = new ArrayList<Resources>();
 		resourcesList.add(comm.resourcesService.getResources(id));
 
-		boolean result = comm.resourcesService.recycleResources(resourcesList);
+		boolean result = comm.resourcesService.recycleResources(resourcesList,null);
 
 		redirectAttributes.addFlashAttribute("message", result ? "资源回收中..." : "资源回收失败,请稍后重试");
 

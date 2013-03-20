@@ -290,14 +290,15 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源回收
+	 * 资源回收<br>
+	 * serviceTagId 非空时表示是服务标签回收,为null or "" 表示单个回收.
 	 * 
 	 * @param resourcesList
 	 *            资源列表
 	 * @return 回收结果. false:失败;true:成功.
 	 */
 	@Transactional(readOnly = false)
-	public boolean recycleResources(List<Resources> resourcesList) {
+	public boolean recycleResources(List<Resources> resourcesList, Integer serviceTagId) {
 
 		boolean result = false;
 
@@ -363,6 +364,7 @@ public class ResourcesService extends BaseSevcie {
 			redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
 			redmineIssue.setIssueId(issue.getId());
 			redmineIssue.setResourceId(recycleId);
+			redmineIssue.setServiceTagId(serviceTagId);
 
 			logger.info("--->回收的resourceId..." + recycleId);
 

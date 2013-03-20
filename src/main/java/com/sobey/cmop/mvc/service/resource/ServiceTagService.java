@@ -57,6 +57,11 @@ public class ServiceTagService extends BaseSevcie {
 		return serviceTagDao.save(serviceTag);
 	}
 
+	@Transactional(readOnly = false)
+	public void delete(Integer id) {
+		serviceTagDao.delete(id);
+	}
+
 	/**
 	 * 根据服务标签名name 和创建人 userId 获得服务标签对象
 	 * 

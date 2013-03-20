@@ -159,7 +159,7 @@ public class ServiceTagController extends BaseController {
 
 		List<Resources> resourcesList = comm.resourcesService.getResourcesListByServiceTagId(id);
 
-		boolean result = comm.resourcesService.recycleResources(resourcesList);
+		boolean result = comm.resourcesService.recycleResources(resourcesList, id);
 
 		if (result) {
 

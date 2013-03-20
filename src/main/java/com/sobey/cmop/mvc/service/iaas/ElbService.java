@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -189,7 +190,11 @@ public class ElbService extends BaseSevcie {
 
 		// Step.2
 
-		this.initElbRelation(networkElbItem.getId());
+		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
+		for (ComputeItem computeItem : computeItems) {
+			computeItem.setNetworkElbItem(null);
+			comm.computeService.saveOrUpdate(computeItem);
+		}
 
 		this.saveOrUpdate(networkElbItem);
 
@@ -205,7 +210,6 @@ public class ElbService extends BaseSevcie {
 		}
 
 		// 关联实例
-
 		for (String computeId : computeIds) {
 			ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
 			computeItem.setNetworkElbItem(networkElbItem);
@@ -264,7 +268,11 @@ public class ElbService extends BaseSevcie {
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
-		this.initElbRelation(networkElbItem.getId());
+		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
+		for (ComputeItem computeItem : computeItems) {
+			computeItem.setNetworkElbItem(null);
+			comm.computeService.saveOrUpdate(computeItem);
+		}
 
 		this.saveOrUpdate(networkElbItem);
 

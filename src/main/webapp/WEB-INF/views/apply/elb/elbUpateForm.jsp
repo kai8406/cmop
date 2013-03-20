@@ -131,7 +131,7 @@
 						<button data-dismiss="alert" class="close" type="button">×</button>
 						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
 						<dd>
-							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier}(${compute.remark})</strong>
+							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier}(${compute.innerIp})</strong>
 						</dd>
 					</div>
 				</c:forEach>

@@ -82,7 +82,7 @@ public class ChangeItem implements java.io.Serializable {
 		this.oldValue = oldValue;
 	}
 
-	@Column(name = "old_String", length = 225)
+	@Column(name = "old_string", length = 500)
 	public String getOldString() {
 		return oldString;
 	}
@@ -100,7 +100,7 @@ public class ChangeItem implements java.io.Serializable {
 		this.newValue = newValue;
 	}
 
-	@Column(name = "new_String", length = 225)
+	@Column(name = "new_string", length = 500)
 	public String getNewString() {
 		return newString;
 	}

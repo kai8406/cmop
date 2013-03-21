@@ -15,6 +15,7 @@ import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.HostServerConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
@@ -466,13 +467,43 @@ public class BaseController {
 	}
 
 	/**
-	 * 服务器类型
-	 * 
-	 * @return
+	 * @return 服务器类型
 	 */
 	@ModelAttribute("hostServerTypeMap")
 	public Map<Integer, String> hostServerTypeMap() {
 		return HostServerConstant.HostServerType.map;
+	}
+
+	/**
+	 * @return 输出模式
+	 */
+	@ModelAttribute("outputModeMap")
+	public Map<Integer, String> outputModeMap() {
+		return MdnConstant.OutputMode.map;
+	}
+
+	/**
+	 * @return 编码器模式
+	 */
+	@ModelAttribute("encoderModeMap")
+	public Map<Integer, String> encoderModeMap() {
+		return MdnConstant.EncoderMode.map;
+	}
+
+	/**
+	 * @return 带宽
+	 */
+	@ModelAttribute("bandwidthMap")
+	public Map<Integer, String> bandwidthMap() {
+		return MdnConstant.BANDWIDTH_MAP;
+	}
+
+	/**
+	 * @return 播放协议
+	 */
+	@ModelAttribute("palyProtocolMap")
+	public Map<String, String> palyProtocolMap() {
+		return MdnConstant.Protocol.map;
 	}
 
 }

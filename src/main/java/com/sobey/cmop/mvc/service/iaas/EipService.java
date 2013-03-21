@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.EipPortItemDao;
@@ -136,6 +137,8 @@ public class EipService extends BaseSevcie {
 
 			networkEipItem.setApply(apply);
 			networkEipItem.setIdentifier(identifier);
+			networkEipItem.setIpAddress(IpPoolConstant.DEFAULT_IPADDRESS);
+			networkEipItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			networkEipItem.setIspType(Integer.valueOf(ispTypes[i]));
 
 			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.

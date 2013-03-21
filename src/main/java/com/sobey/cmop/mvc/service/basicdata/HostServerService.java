@@ -148,37 +148,58 @@ public class HostServerService extends BaseSevcie {
 			List<Map> hostListMap;
 			int hostCount = 0;
 			int vmCount = 0;
+			String ipAddress;
+			List hostServerList;
+			HostServer hostServer;
 			for (int k = 0; k < list.size(); k++) {
 				hostList = (List<String>) ((List) list.get(k)).get(0);
 				hostListMap = (List<Map>) ((List) list.get(k)).get(1);
 
-				// 4. 写入新的宿主机
 				for (int i = 0; i < hostList.size(); i++) {
-					HostServer hostServer = new HostServer(1, 1, hostList.get(i), new Date());
-					hostServer.setAlias(Identities.uuid2());
-					hostServer.setIpAddress(hostList.get(i));
-					// 显示名称默认为IP、IDC别名...
-					hostServerDao.save(hostServer);
+					ipAddress = hostList.get(i);
 					hostCount++;
-
+					
+					// 4. 写入新的宿主机
+					hostServerList = hostServerDao.findByIpAddress(ipAddress);
+					if ( hostServerList!= null && hostServerList.size()>0) {
+						System.out.println("已存在的宿主机：" + ipAddress+"，hostServerList.size="+hostServerList.size());
+						hostServer = (HostServer) hostServerList.get(0);
+					} else {
+						hostServer = new HostServer(1, 1, hostList.get(i), new Date()); // 名称默认为IP
+						hostServer.setAlias(Identities.uuid2());
+						hostServer.setIpAddress(ipAddress);
+						hostServer.setLocationAlias(comm.locationService.findLocationById(1).getAlias()); //IDC别名默认西安IDC
+						hostServerDao.save(hostServer);
+					}
+					
 					// 5. 更新宿主机对应IP状态为：已使用
-					comm.ipPoolService.updateIpPoolByHostServer(hostServer, IpPoolConstant.IP_STATUS_2);
+					if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
+						System.out.println("已存在的宿主机IP：" + ipAddress);
+						comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IP_STATUS_2, null);
+					} else {
+						IpPool ipPool = new IpPool();
+						ipPool.setPoolType(1);
+						ipPool.setVlan(comm.vlanService.getVlan(1)); //默认西安虚拟机内网VLAN
+						ipPool.setIpAddress(ipAddress);
+						ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+						ipPool.setCreateTime(new Date());
+						comm.ipPoolService.saveIpPool(ipPool);
+					}
 
 					// 6. 更新其关联虚拟机及其IP状态为：已使用
 					Map host = (Map) hostListMap.get(i);
 					List ecsList = (List) host.get(hostList.get(i));
-					String ipAddress;
 					for (int j = 0; j < ecsList.size(); j++) {
 						ipAddress = (String) ecsList.get(j);
 						vmCount++;
 
 						if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
-							System.out.println("已存在的IP：" + ipAddress);
+							System.out.println("已存在的虚拟机IP：" + ipAddress);
 							comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IP_STATUS_2, hostServer);
 						} else {
 							IpPool ipPool = new IpPool();
 							ipPool.setPoolType(1);
-							ipPool.setVlan(comm.vlanService.findVlanByName("1"));
+							ipPool.setVlan(comm.vlanService.getVlan(1)); //默认西安虚拟机内网VLAN
 							ipPool.setIpAddress(ipAddress);
 							ipPool.setHostServer(hostServer);
 							ipPool.setStatus(IpPoolConstant.IP_STATUS_2);

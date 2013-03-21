@@ -350,11 +350,11 @@ public class IpPoolService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void updateIpPoolByIpAddress(String ipAddress, Integer status, HostServer hostServer) {
-		List<IpPool> updateItem = ipPoolDao.findByIpAddress(ipAddress);
-		if (updateItem != null && updateItem.size() > 0) {
-			updateItem.get(0).setStatus(status);
-			updateItem.get(0).setHostServer(hostServer);
-			ipPoolDao.save(updateItem.get(0));
+		List<IpPool> ipPool = ipPoolDao.findByIpAddress(ipAddress);
+		if (ipPool != null && ipPool.size() > 0) {
+			ipPool.get(0).setStatus(status);
+			ipPool.get(0).setHostServer(hostServer);
+			ipPoolDao.save(ipPool.get(0));
 		}
 	}
 
@@ -473,22 +473,6 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	public List<IpPool> findIpPoolByVlan(String vlanAlias) {
 		return ipPoolDao.findByVlanAliasAndStatus(vlanAlias, 1);
-	}
-
-	/**
-	 * 更新宿主机/物理机的IP状态
-	 * 
-	 * @param hostServer
-	 * @param status
-	 */
-	@Transactional(readOnly = false)
-	public void updateIpPoolByHostServer(HostServer hostServer, Integer status) {
-		List<IpPool> ipList = ipPoolDao.findByIpAddress(hostServer.getIpAddress());
-		if (ipList != null && ipList.size() > 0) {
-			ipList.get(0).setStatus(status);
-			// ipList.get(0).setHostServer(hostServer);
-			ipPoolDao.save(ipList.get(0));
-		}
 	}
 
 }

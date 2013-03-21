@@ -55,7 +55,7 @@ public class HostServerController extends BaseController {
 		hostServer.setCreateTime(new Date());
 		boolean flag = comm.hostServerService.saveHostServer(hostServer);
 		// 更改IP状态为 已使用
-		comm.ipPoolService.updateIpPoolByHostServer(hostServer, IpPoolConstant.IP_STATUS_2);
+		comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IP_STATUS_2, null);
 
 		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "创建服务器成功！");

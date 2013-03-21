@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplicationDao;
 import com.sobey.cmop.mvc.dao.ComputeItemDao;
@@ -291,7 +292,6 @@ public class ComputeService extends BaseSevcie {
 			String identifier = comm.applyService.generateIdentifier(serviceType);
 
 			ComputeItem computeItem = new ComputeItem();
-
 			computeItem.setApply(apply);
 			computeItem.setIdentifier(identifier);
 			computeItem.setComputeType(computeType);
@@ -300,7 +300,8 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
 			computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
-
+			computeItem.setInnerIp(IpPoolConstant.DEFAULT_IPADDRESS);
+			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computes.add(computeItem);
 		}
 

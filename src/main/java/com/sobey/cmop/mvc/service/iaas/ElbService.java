@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ElbPortItemDao;
@@ -130,6 +131,7 @@ public class ElbService extends BaseSevcie {
 
 			networkElbItem.setApply(apply);
 			networkElbItem.setIdentifier(identifier);
+			networkElbItem.setVirtualIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSessions[i]) ? true : false);
 
 			this.saveOrUpdate(networkElbItem);

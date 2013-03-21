@@ -101,6 +101,7 @@ function checkValid() {
 		hostNames = hostNames+$(this).find("#hostName").val()+sep;
 		serverAlias = serverAlias+$(this).find("#server").val()+sep;
     });
+    /*
     var flag = true;
 	$("#updateDiv #osStorageDiv").each(function () {
 		osStorageAlias = osStorageAlias+$(this).find("#osStorage").val()+sep;
@@ -112,7 +113,7 @@ function checkValid() {
     if (!flag) {
     	alert("计算资源的内网IP不能为空！");
     	return false;
-    }
+    }*/
 	$("#updateDiv #storageDiv").each(function () {
 		storages = storages+$(this).find("#storageId").val()+sep;
 		controllerAlias = controllerAlias+$(this).find("#controller").val()+sep;
@@ -223,22 +224,29 @@ function changeServer(obj){
 			</div>
 			<div id="collapseOne" class="accordion-body collapse in" style="padding-bottom: 10px;">
 				<div class="accordion-inner">
-					<div class="row">
-				 		<div class="span8"><p class="help-inline plain-text span8"><em>Subject:</em>&nbsp;${issue.project.name}>>${issue.subject}</p></div>
-					 	<div class="span4>
-							<p class="help-inline plain-text span1"><em>Priority:</em>&nbsp;${issue.priorityText}</p>
-							<p class="help-inline plain-text span1"><em>Tracker:</em>&nbsp;${issue.tracker.name}</p>
-							<p class="help-inline plain-text span2"><em>Status:</em>&nbsp;${issue.statusName}</p>
+					<div class="row-fluid">
+					    <div class="row-fluid" style="padding-bottom: 5px;">
+							<div class="span8"><em>Subject:</em>&nbsp;${issue.project.name}>>${issue.subject}</p></div>
 						</div>
-						
-					 	<div class="span4">
-							<p class="help-inline plain-text span1"><em>Start Date:</em>&nbsp;<fmt:formatDate value="${issue.startDate}" pattern="yyyy-MM-dd"/></p>
-							<p class="help-inline plain-text span1"><em>Due Date:</em>&nbsp;<fmt:formatDate value="${issue.dueDate}" pattern="yyyy-MM-dd"/></p>
-							<p class="help-inline plain-text span2"><em>Done Ratio:</em>&nbsp;${issue.doneRatio}%</p>
+					    <div class="row-fluid" style="padding-bottom: 5px;">
+							<div class="span4"><em>Priority:</em>&nbsp;${issue.priorityText}</div>
+							<div class="span4"><em>Due Date:</em>&nbsp;<fmt:formatDate value="${issue.dueDate}" pattern="yyyy-MM-dd"/></div>	
 						</div>
-					</div>
-					<div class="page-header"><em>详细描述:</em></div>
-					<div><p class="help-inline plain-text span8">${issue.description}</p></div>
+					    <div class="row-fluid" style="padding-bottom: 5px;">
+							<div class="span4"><em>Status:</em>&nbsp;${issue.statusName}</div>
+							<div class="span4"><em>Start Date:</em>&nbsp;<fmt:formatDate value="${issue.startDate}" pattern="yyyy-MM-dd"/></div>	
+						</div>
+					    <div class="row-fluid" style="padding-bottom: 5px;">
+							<div class="span4"><em>Tracker:</em>&nbsp;${issue.tracker.name}</div>
+							<div class="span4"><em>Done Ratio:</em>&nbsp;${issue.doneRatio}%</div>	
+						</div>
+					    <div class="row-fluid">
+							<div class="span8"><em>详细描述:</em></div>	
+						</div>
+					    <div class="row-fluid" >
+							<div class="span12">${issue.description}</div>	
+						</div>
+					</div>		
 				</div>
 			</div>
 		</div>

@@ -158,20 +158,20 @@ public class HostServerService extends BaseSevcie {
 				for (int i = 0; i < hostList.size(); i++) {
 					ipAddress = hostList.get(i);
 					hostCount++;
-					
+
 					// 4. 写入新的宿主机
 					hostServerList = hostServerDao.findByIpAddress(ipAddress);
-					if ( hostServerList!= null && hostServerList.size()>0) {
-						System.out.println("已存在的宿主机：" + ipAddress+"，hostServerList.size="+hostServerList.size());
+					if (hostServerList != null && hostServerList.size() > 0) {
+						System.out.println("已存在的宿主机：" + ipAddress + "，hostServerList.size=" + hostServerList.size());
 						hostServer = (HostServer) hostServerList.get(0);
 					} else {
 						hostServer = new HostServer(1, 1, hostList.get(i), new Date()); // 名称默认为IP
 						hostServer.setAlias(Identities.uuid2());
 						hostServer.setIpAddress(ipAddress);
-						hostServer.setLocationAlias(comm.locationService.findLocationById(1).getAlias()); //IDC别名默认西安IDC
+						hostServer.setLocationAlias(comm.locationService.findLocationById(1).getAlias()); // IDC别名默认西安IDC
 						hostServerDao.save(hostServer);
 					}
-					
+
 					// 5. 更新宿主机对应IP状态为：已使用
 					if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
 						System.out.println("已存在的宿主机IP：" + ipAddress);
@@ -179,7 +179,7 @@ public class HostServerService extends BaseSevcie {
 					} else {
 						IpPool ipPool = new IpPool();
 						ipPool.setPoolType(1);
-						ipPool.setVlan(comm.vlanService.getVlan(1)); //默认西安虚拟机内网VLAN
+						ipPool.setVlan(comm.vlanService.getVlan(1)); // 默认西安虚拟机内网VLAN
 						ipPool.setIpAddress(ipAddress);
 						ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
 						ipPool.setCreateTime(new Date());
@@ -199,7 +199,7 @@ public class HostServerService extends BaseSevcie {
 						} else {
 							IpPool ipPool = new IpPool();
 							ipPool.setPoolType(1);
-							ipPool.setVlan(comm.vlanService.getVlan(1)); //默认西安虚拟机内网VLAN
+							ipPool.setVlan(comm.vlanService.getVlan(1)); // 默认西安虚拟机内网VLAN
 							ipPool.setIpAddress(ipAddress);
 							ipPool.setHostServer(hostServer);
 							ipPool.setStatus(IpPoolConstant.IP_STATUS_2);

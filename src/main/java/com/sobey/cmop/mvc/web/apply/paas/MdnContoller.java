@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.Apply;
 
 /**
  * 负责实例Compute (PCS,ECS)的管理
@@ -33,54 +34,97 @@ public class MdnContoller extends BaseController {
 	/**
 	 * 新增
 	 * 
-	 * @param applyId
-	 * @param spaces
-	 *            容量空间数组
-	 * @param storageTypes
-	 *            存储类型数组
-	 * @param computeIds
-	 *            挂载实例数组
-	 * @param redirectAttributes
+	 * @param serviceTag
+	 *            服务标签名
+	 * @param priority
+	 *            优先级
+	 * @param serviceStart
+	 *            服务开始时间
+	 * @param serviceEnd
+	 *            服务结束时间
+	 * @param description
+	 *            说明
+	 * @param coverArea
+	 *            覆盖地区
+	 * @param coverIsp
+	 *            覆盖ISP
+	 * @param vodDomains
+	 *            点播域名数组
+	 * @param vodBandwidths
+	 *            点播加速服务带宽（含单位）数组
+	 * @param vodProtocols
+	 *            播放协议数组
+	 * @param sourceOutBandwidths
+	 *            源站出口带宽（含单位）数组
+	 * @param sourceStreamerUrls
+	 *            源站Streamer公网地址 数组
+	 * @param liveDomains
+	 *            直播服务域名数组
+	 * @param liveBandwidths
+	 *            直播加速服务带宽（含单位）数组
+	 * @param liveProtocols
+	 *            播放协议数组
+	 * @param bandwidths
+	 *            出口带宽（含单位）数组
+	 * @param channelNames
+	 *            频道名称数组
+	 * @param channelGUIDs
+	 *            频道GUID数组
+	 * @param streamOutModes
+	 *            直播流输出模式：1-Encoder模式；2-Transfer模式 数组
+	 * @param encoderModes
+	 *            编码器模式：1-HTTP拉流；2-RTMP推流 数组
+	 * @param httpUrls
+	 *            HTTP流地址 数组
+	 * @param httpBitrates
+	 *            HTTP流混合码率数组
+	 * @param hlsUrls
+	 *            M3U8流地址数组
+	 * @param hlsBitrates
+	 *            M3U8流混合码率数组
+	 * @param rtspUrls
+	 *            RTSP流地址数组
+	 * @param rtspBitrates
+	 *            RTSP流混合码率数组
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(
 			// Apply
-	@RequestParam(value = "serviceTag") String serviceTag,
-	@RequestParam(value = "priority") Integer priority,
-	@RequestParam(value = "serviceStart") String serviceStart,
-	@RequestParam(value = "serviceEnd") String serviceEnd,
-	@RequestParam(value = "description") String description,
-	//common
-	@RequestParam(value = "coverArea") String coverArea, 
-	@RequestParam(value = "coverIsp") String[] coverIsp,
-	//vod
-	@RequestParam(value = "vodDomains",required=false) String[] vodDomains,
-	@RequestParam(value = "vodBandwidths",required=false) String[] vodBandwidths,
-	@RequestParam(value = "vodProtocols",required=false) String[] vodProtocols,
-	@RequestParam(value = "sourceOutBandwidths",required=false) String[] sourceOutBandwidths,
-	@RequestParam(value = "sourceStreamerUrls",required=false) String[] sourceStreamerUrls,
+			@RequestParam(value = "serviceTag") String serviceTag,
+			@RequestParam(value = "priority") Integer priority,
+			@RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd,
+			@RequestParam(value = "description") String description,
+			// common
+			@RequestParam(value = "coverArea") String coverArea,
+			@RequestParam(value = "coverIsp") String coverIsp,
+			// vod
+			@RequestParam(value = "vodDomains", required = false) String[] vodDomains,
+			@RequestParam(value = "vodBandwidths", required = false) String[] vodBandwidths,
+			@RequestParam(value = "vodProtocols", required = false) String[] vodProtocols,
+			@RequestParam(value = "sourceOutBandwidths", required = false) String[] sourceOutBandwidths,
+			@RequestParam(value = "sourceStreamerUrls", required = false) String[] sourceStreamerUrls,
+			// live
+			@RequestParam(value = "liveDomains", required = false) String[] liveDomains, @RequestParam(value = "liveBandwidths", required = false) String[] liveBandwidths,
+			@RequestParam(value = "liveProtocols", required = false) String[] liveProtocols, @RequestParam(value = "bandwidths", required = false) String[] bandwidths,
+			@RequestParam(value = "channelNames", required = false) String[] channelNames, @RequestParam(value = "channelGUIDs", required = false) String[] channelGUIDs,
+			@RequestParam(value = "streamOutModes", required = false) String[] streamOutModes, @RequestParam(value = "encoderModes", required = false) String[] encoderModes,
+			@RequestParam(value = "httpUrls", required = false) String[] httpUrls, @RequestParam(value = "httpBitrates", required = false) String[] httpBitrates,
+			@RequestParam(value = "hlsUrls", required = false) String[] hlsUrls, @RequestParam(value = "hlsBitrates", required = false) String[] hlsBitrates,
+			@RequestParam(value = "rtspUrls", required = false) String[] rtspUrls, @RequestParam(value = "rtspBitrates", required = false) String[] rtspBitrates,
 
-	//live
-	@RequestParam(value = "liveDomains",required=false) String[] liveDomains,
-	@RequestParam(value = "liveBandwidths",required=false) String[] liveBandwidths,
-	@RequestParam(value = "liveProtocols",required=false) String[] liveProtocols,
-	@RequestParam(value = "bandwidths",required=false) String[] bandwidths,
-	@RequestParam(value = "channelNames",required=false) String[] channelNames,
-	@RequestParam(value = "channelGUIDs",required=false) String[] channelGUIDs,
-	@RequestParam(value = "streamOutModes",required=false) String[] streamOutModes,
-	@RequestParam(value = "encoderModes",required=false) String[] encoderModes,
-	@RequestParam(value = "httpUrls",required=false) String[] httpUrls,
-	@RequestParam(value = "httpBitrates",required=false) String[] httpBitrates,
-	@RequestParam(value = "hlsUrls",required=false) String[] hlsUrls,
-	@RequestParam(value = "hlsBitrates",required=false) String[] hlsBitrates,
-	@RequestParam(value = "rtspUrls",required=false) String[] rtspUrls,
-	@RequestParam(value = "rtspBitrates",required=false) String[] rtspBitrates,
-	
-	RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes) {
 
-		// comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes,
-		// computeIds);
+		Apply apply = new Apply();
+		apply.setServiceTag(serviceTag);
+		apply.setPriority(priority);
+		apply.setServiceStart(serviceStart);
+		apply.setServiceEnd(serviceEnd);
+		apply.setDescription(description);
+
+		comm.mdnService.saveMdnToApply(apply, coverArea, coverIsp, vodDomains, vodBandwidths, vodProtocols, sourceOutBandwidths, sourceStreamerUrls, liveDomains, liveBandwidths, liveProtocols,
+				bandwidths, channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates, rtspUrls, rtspBitrates);
 
 		redirectAttributes.addFlashAttribute("message", "创建MDN成功.");
 
@@ -88,26 +132,17 @@ public class MdnContoller extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到ES3的修改页面.
+	 * 从服务申请表页面跳转到MDN的修改页面. 只是MDN.vod和live另外写个修改方法.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
-		// model.addAttribute("storage", comm.es3Service.getStorageItem(id));
+		model.addAttribute("mdn", comm.mdnService.getMdnItem(id));
 		return "apply/mdn/mdnUpateForm";
 	}
 
 	/**
-	 * 修改ES3信息后,跳转到applyId的服务申请修改页面
+	 * 修改MDN信息后,跳转到applyId的服务申请修改页面
 	 * 
-	 * @param id
-	 * @param applyId
-	 *            服务申请单ID
-	 * @param space
-	 *            容量空间
-	 * @param storageType
-	 *            存储类型
-	 * @param computeIds
-	 *            挂载实例数组
 	 * @param redirectAttributes
 	 * @return
 	 */
@@ -132,7 +167,7 @@ public class MdnContoller extends BaseController {
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
 	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
 
-		// comm.es3Service.deleteStorageItem(id);
+		comm.mdnService.deleteMdnItem(id);
 
 		redirectAttributes.addFlashAttribute("message", "删除MDN成功");
 

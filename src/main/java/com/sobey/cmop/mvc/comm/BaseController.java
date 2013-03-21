@@ -112,6 +112,42 @@ public class BaseController {
 	}
 
 	/**
+	 * 
+	 * 服务申请apply页面管理链接只能在该状态下显示.
+	 * 
+	 * @return
+	 * 
+	 */
+	@ModelAttribute("allowApplyStatus")
+	public List<Integer> allowApplyStatus() {
+
+		List<Integer> allowApplyStatus = new ArrayList<Integer>();
+
+		allowApplyStatus.add(ApplyConstant.Status.已申请.toInteger());
+		allowApplyStatus.add(ApplyConstant.Status.已退回.toInteger());
+		return allowApplyStatus;
+	}
+
+	/**
+	 * 
+	 * 资源resources页面管理链接只能在该状态下显示.
+	 * 
+	 * @return
+	 * 
+	 */
+	@ModelAttribute("allowResourcesStatus")
+	public List<Integer> allowResourcesStatus() {
+
+		List<Integer> allowResourcesStatus = new ArrayList<Integer>();
+		allowResourcesStatus.add(ResourcesConstant.Status.未变更.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已变更.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已退回.toInteger());
+		allowResourcesStatus.add(ResourcesConstant.Status.已创建.toInteger());
+
+		return allowResourcesStatus;
+	}
+
+	/**
 	 * @return 当前用户创建的所有服务标签
 	 */
 	@ModelAttribute("allTags")
@@ -152,6 +188,14 @@ public class BaseController {
 	@ModelAttribute("auditResultMap")
 	public Map<Integer, String> auditResultMap() {
 		return AuditConstant.AuditResult.map;
+	}
+
+	/**
+	 * @return 带宽
+	 */
+	@ModelAttribute("bandwidthMap")
+	public Map<Integer, String> bandwidthMap() {
+		return MdnConstant.BANDWIDTH_MAP;
 	}
 
 	/**
@@ -197,6 +241,14 @@ public class BaseController {
 	}
 
 	/**
+	 * @return 编码器模式
+	 */
+	@ModelAttribute("encoderModeMap")
+	public Map<Integer, String> encoderModeMap() {
+		return MdnConstant.EncoderMode.map;
+	}
+
+	/**
 	 * @return 当前用户创建的+公用的(user_id 为null) ESG列表.
 	 */
 	@ModelAttribute("esgList")
@@ -218,6 +270,14 @@ public class BaseController {
 	@ModelAttribute("vlanList")
 	public List<Vlan> getVlanList() {
 		return comm.vlanService.getVlanList();
+	}
+
+	/**
+	 * @return 服务器类型
+	 */
+	@ModelAttribute("hostServerTypeMap")
+	public Map<Integer, String> hostServerTypeMap() {
+		return HostServerConstant.HostServerType.map;
 	}
 
 	/**
@@ -253,42 +313,6 @@ public class BaseController {
 	@ModelAttribute("keepSessionMap")
 	public Map<Boolean, String> keepSessionMap() {
 		return NetworkConstant.KeepSession.map;
-	}
-
-	/**
-	 * 
-	 * 资源resources页面管理链接只能在该状态下显示.
-	 * 
-	 * @return
-	 * 
-	 */
-	@ModelAttribute("allowResourcesStatus")
-	public List<Integer> allowResourcesStatus() {
-
-		List<Integer> allowResourcesStatus = new ArrayList<Integer>();
-		allowResourcesStatus.add(ResourcesConstant.Status.未变更.toInteger());
-		allowResourcesStatus.add(ResourcesConstant.Status.已变更.toInteger());
-		allowResourcesStatus.add(ResourcesConstant.Status.已退回.toInteger());
-		allowResourcesStatus.add(ResourcesConstant.Status.已创建.toInteger());
-
-		return allowResourcesStatus;
-	}
-
-	/**
-	 * 
-	 * 服务申请apply页面管理链接只能在该状态下显示.
-	 * 
-	 * @return
-	 * 
-	 */
-	@ModelAttribute("allowApplyStatus")
-	public List<Integer> allowApplyStatus() {
-
-		List<Integer> allowApplyStatus = new ArrayList<Integer>();
-
-		allowApplyStatus.add(ApplyConstant.Status.已申请.toInteger());
-		allowApplyStatus.add(ApplyConstant.Status.已退回.toInteger());
-		return allowApplyStatus;
 	}
 
 	/**
@@ -343,6 +367,22 @@ public class BaseController {
 	@ModelAttribute("osTypeMap")
 	public Map<Integer, String> osTypeMap() {
 		return ComputeConstant.OS_TYPE_MAP;
+	}
+
+	/**
+	 * @return 输出模式
+	 */
+	@ModelAttribute("outputModeMap")
+	public Map<Integer, String> outputModeMap() {
+		return MdnConstant.OutputMode.map;
+	}
+
+	/**
+	 * @return 播放协议
+	 */
+	@ModelAttribute("palyProtocolMap")
+	public Map<String, String> palyProtocolMap() {
+		return MdnConstant.Protocol.map;
 	}
 
 	/**
@@ -464,46 +504,6 @@ public class BaseController {
 	@ModelAttribute("userTypeMap")
 	public Map<Integer, String> userTypeMap() {
 		return AccountConstant.UserTypes.map;
-	}
-
-	/**
-	 * @return 服务器类型
-	 */
-	@ModelAttribute("hostServerTypeMap")
-	public Map<Integer, String> hostServerTypeMap() {
-		return HostServerConstant.HostServerType.map;
-	}
-
-	/**
-	 * @return 输出模式
-	 */
-	@ModelAttribute("outputModeMap")
-	public Map<Integer, String> outputModeMap() {
-		return MdnConstant.OutputMode.map;
-	}
-
-	/**
-	 * @return 编码器模式
-	 */
-	@ModelAttribute("encoderModeMap")
-	public Map<Integer, String> encoderModeMap() {
-		return MdnConstant.EncoderMode.map;
-	}
-
-	/**
-	 * @return 带宽
-	 */
-	@ModelAttribute("bandwidthMap")
-	public Map<Integer, String> bandwidthMap() {
-		return MdnConstant.BANDWIDTH_MAP;
-	}
-
-	/**
-	 * @return 播放协议
-	 */
-	@ModelAttribute("palyProtocolMap")
-	public Map<String, String> palyProtocolMap() {
-		return MdnConstant.Protocol.map;
 	}
 
 }

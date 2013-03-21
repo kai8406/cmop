@@ -1,6 +1,6 @@
 /*
 
-Uniform v2.0.0
+Uniform v2.1.0
 Copyright © 2009 Josh Pyles / Pixelmatrix Design LLC
 http://pixelmatrixdesign.com
 
@@ -25,7 +25,7 @@ MIT License - http://www.opensource.org/licenses/mit-license.php
 Enjoy!
 
 */
-/*global jQuery, window, document*/
+/*global jQuery, window, document, navigator*/
 
 (function ($, undef) {
 	"use strict";
@@ -68,7 +68,7 @@ Enjoy!
 		for (name in events) {
 			if (events.hasOwnProperty(name)) {
 				namespaced = name.replace(/ |$/g, options.eventNamespace);
-				$el.bind(name, events[name]);
+				$el.bind(namespaced, events[name]);
 			}
 		}
 	}
@@ -203,6 +203,7 @@ Enjoy!
 		return null;
 	}
 
+
 	/**
 	 * Create a div/span combo for uniforming an element
 	 *
@@ -240,6 +241,10 @@ Enjoy!
 			$div.addClass(divSpanConfig.divClass);
 		}
 
+		if (options.wrapperClass) {
+			$div.addClass(options.wrapperClass);
+		}
+
 		if (divSpanConfig.spanClass) {
 			$span.addClass(divSpanConfig.spanClass);
 		}
@@ -261,6 +266,26 @@ Enjoy!
 			div: $div,
 			span: $span
 		};
+	}
+
+
+	/**
+	 * Wrap an element with a span to apply a global wrapper class
+	 *
+	 * @param jQuery $el Element to wrap
+	 * @param object options
+	 * @return jQuery Wrapper element
+	 */
+	function wrapWithWrapperClass($el, options) {
+		var $span;
+
+		if (!options.wrapperClass) {
+			return null;
+		}
+
+		$span = $('<span />').addClass(options.wrapperClass);
+		$span = divSpanWrap($el, $span, "wrap");
+		return $span;
 	}
 
 
@@ -306,6 +331,29 @@ Enjoy!
 		}
 
 		return $('<span />').text(text).html();
+	}
+
+	/**
+	 * If not MSIE, return false.
+	 * If it is, return the version number.
+	 *
+	 * @return false|number
+	 */
+	function isMsie() {
+		return navigator.cpuClass && !navigator.product;
+	}
+
+	/**
+	 * Return true if this version of IE allows styling
+	 *
+	 * @return boolean
+	 */
+	function isMsieSevenOrNewer() {
+		if (typeof window.XMLHttpRequest !== 'undefined') {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -391,12 +439,12 @@ Enjoy!
 	 * @param object newCss CSS values to swap out
 	 * @param Function callback Function to run
 	 */
-	function swap($el, newCss, callback) {
+	function swap($elements, newCss, callback) {
 		var restore, item;
 
 		restore = [];
 
-		$el.each(function () {
+		$elements.each(function () {
 			var name;
 
 			for (name in newCss) {
@@ -429,7 +477,14 @@ Enjoy!
 	 * @param String method
 	 */
 	function sizingInvisible($el, callback) {
-		swap($el.parents().andSelf().not(':visible'), {
+		var targets;
+
+		// We wish to target ourselves and any parents as long as
+		// they are not visible
+		targets = $el.parents();
+		targets.push($el[0]);
+		targets = targets.not(':visible');
+		swap(targets, {
 			visibility: "hidden",
 			display: "block",
 			position: "absolute"
@@ -480,7 +535,7 @@ Enjoy!
 
 					ds = divSpan($el, options, {
 						divClass: options.buttonClass,
-						spanHtml: getHtml()
+						spanHtml: getHtml(),
 					});
 					$div = ds.div;
 					bindUi($el, $div, options);
@@ -493,6 +548,10 @@ Enjoy!
 								return;
 							}
 
+							if ($el.is(':disabled')) {
+								return;
+							}
+
 							doingClickEvent = true;
 
 							if ($el[0].dispatchEvent) {
@@ -500,9 +559,7 @@ Enjoy!
 								ev.initEvent("click", true, true);
 								res = $el[0].dispatchEvent(ev);
 
-								// What about Chrome and Opera?
-								// Should the browser check be removed?
-								if ((jQuery.browser.msie || jQuery.browser.mozilla) && $el.is('a') && res) {
+								if ($el.is('a') && res) {
 									target = attrOrProp($el, 'target');
 									href = attrOrProp($el, 'href');
 
@@ -535,7 +592,8 @@ Enjoy!
 						update: function () {
 							classClearStandard($div, options);
 							classUpdateDisabled($div, $el, options);
-							ds.span.html(getHtml());
+							$el.detach();
+							ds.span.html(getHtml()).append($el);
 						}
 					};
 				}
@@ -609,7 +667,7 @@ Enjoy!
 					filenameUpdate();
 
 					// IE7 doesn't fire onChange until blur or second fire.
-					if ($.browser.msie) {
+					if (isMsie()) {
 						// IE considers browser chrome blocking I/O, so it
 						// suspends tiemouts until after the file has
 						// been selected.
@@ -656,12 +714,29 @@ Enjoy!
 
 					return false;
 				},
-				apply: function ($el) {
-					var elType = attrOrProp($el, "type");
-					$el.addClass(elType);
+				apply: function ($el, options) {
+					var elType, $wrapper;
+
+					elType = attrOrProp($el, "type");
+					$el.addClass(options.inputClass);
+					$wrapper = wrapWithWrapperClass($el, options);
+					bindUi($el, $el, options);
+
+					if (options.inputAddTypeAsClass) {
+						$el.addClass(elType);
+					}
+
 					return {
 						remove: function () {
-							$el.removeClass(elType);
+							$el.removeClass(options.inputClass);
+
+							if (options.inputAddTypeAsClass) {
+								$el.removeClass(elType);
+							}
+
+							if ($wrapper) {
+								$el.unwrap();
+							}
 						},
 						update: returnFalse
 					};
@@ -731,10 +806,15 @@ Enjoy!
 						// Use the width of the select and adjust the
 						// span and div accordingly
 						sizingInvisible($el, function () {
-							var spanPad;
-							spanPad = $span.outerWidth() - $span.width();
-							$div.width(origElemWidth + spanPad);
-							$span.width(origElemWidth);
+							// Force "display: block" - related to bug #287
+							swap($([ $span[0], $div[0] ]), {
+								display: "block"
+							}, function () {
+								var spanPad;
+								spanPad = $span.outerWidth() - $span.width();
+								$div.width(origElemWidth + spanPad);
+								$span.width(origElemWidth);
+							});
 						});
 					} else {
 						// Force the select to fill the size of the div
@@ -799,10 +879,19 @@ Enjoy!
 					return false;
 				},
 				apply: function ($el, options) {
+					var $wrapper;
+
 					$el.addClass(options.selectMultiClass);
+					$wrapper = wrapWithWrapperClass($el, options);
+					bindUi($el, $el, options);
+
 					return {
 						remove: function () {
 							$el.removeClass(options.selectMultiClass);
+
+							if ($wrapper) {
+								$el.unwrap();
+							}
 						},
 						update: returnFalse
 					};
@@ -814,10 +903,19 @@ Enjoy!
 					return $el.is("textarea");
 				},
 				apply: function ($el, options) {
+					var $wrapper;
+
 					$el.addClass(options.textareaClass);
+					$wrapper = wrapWithWrapperClass($el, options);
+					bindUi($el, $el, options);
+
 					return {
 						remove: function () {
 							$el.removeClass(options.textareaClass);
+
+							if ($wrapper) {
+								$el.unwrap();
+							}
 						},
 						update: returnFalse
 					};
@@ -826,7 +924,7 @@ Enjoy!
 		];
 
 	// IE6 can't be styled - can't set opacity on select
-	if ($.browser.msie && $.browser.version < 7) {
+	if (isMsie() && !isMsieSevenOrNewer()) {
 		allowStyling = false;
 	}
 
@@ -850,6 +948,8 @@ Enjoy!
 			focusClass: "focus",
 			hoverClass: "hover",
 			idPrefix: "uniform",
+			inputAddTypeAsClass: true,
+			inputClass: "uniform-input",
 			radioClass: "radio",
 			resetDefaultHtml: "Reset",
 			resetSelector: false,  // We'll use our own function when you don't specify one
@@ -858,7 +958,8 @@ Enjoy!
 			selectMultiClass: "uniform-multiselect",
 			submitDefaultHtml: "Submit",  // Only text allowed
 			textareaClass: "uniform",
-			useID: true
+			useID: true,
+			wrapperClass: null
 		},
 
 		// All uniformed elements - DOM objects

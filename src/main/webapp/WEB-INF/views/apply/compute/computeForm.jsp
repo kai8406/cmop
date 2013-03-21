@@ -34,10 +34,9 @@
 			$(".serverTypeBtn").click(function() {
 				var $parent = $(this).parent().parent();
 				var osId = $parent.find("#osId").val(); //操作系统ID
-				var osNAME = $parent.find("span").text(); //操作系统名
+				var osNAME = $parent.find("span.osName").text(); //操作系统名
 				var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val(); //选中的位数Id
-				var osBitText = $.trim($parent.find("input[name='osBit" + osId + "']:checked").closest("label").text()); //选中的位数文本.
-				
+				var osBitText = $.trim($parent.find("input[name='osBit" + osId + "']:checked").parent().parent().parent().find("span.radioText").text()); //选中的位数文本.
 				//装入临时隐藏域
 				$("#osIdTmp").val(osId);
 				$("#osNameTmp").val(osNAME);
@@ -70,12 +69,10 @@
 						var osBitText = $("#bitTextTmp").val();
 						var instanceCount = $("#resourcesDIV div.resources").size();//页面已生成的实例个数.
 						
-						var i = 0;
-						for (; i < nCount; i++) {
+						for (var i = 0; i < nCount; i++) {
 							
 							//获得页面已有的alert数量,再加上i.用于区别不同的remark,以便检验.
 							var loopId = instanceCount+ i; 
-							
 							var html = '<div class="resources alert alert-block alert-info fade in">';
 							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
 							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + ' &nbsp;' + serverTypeText + '</strong></dd>';
@@ -157,14 +154,14 @@
 					</div>
 					 
 					<!-- 操作系统名 -->
-					<div class="span4"><h4><span>${map.value}</span></h4></div>
+					<div class="span4"><h4><span class="osName">${map.value}</span></h4></div>
 					
 					<!-- 操作系统位数 -->
 					<div class="span2">
 						<c:forEach var="osBitMap" items="${osBitMap}">
 							<label class="radio"> 
 								<input type="radio" value="${osBitMap.key}" name="osBit${map.key }" <c:if test="${osBitMap.key == 2 }">checked="checked"</c:if> 
-									><label id="osBitLab"><c:out value="${osBitMap.value}"/></label>
+									><span class="radioText"><c:out value="${osBitMap.value}"/></span>
 							</label>
 						</c:forEach>
 					</div>

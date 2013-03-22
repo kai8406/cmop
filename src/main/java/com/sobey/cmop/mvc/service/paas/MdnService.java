@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MdnItemDao;
 import com.sobey.cmop.mvc.dao.MdnLiveItemDao;
@@ -238,21 +239,55 @@ public class MdnService extends BaseSevcie {
 		if (liveDomains != null) {
 			for (int i = 0; i < liveDomains.length; i++) {
 				MdnLiveItem mdnLiveItem = new MdnLiveItem();
+
+				Integer encoderMode = Integer.valueOf(encoderModes[i]);
+				Integer streamOutMode = Integer.valueOf(streamOutModes[i]);
+
 				mdnLiveItem.setMdnItem(mdnItem);
 				mdnLiveItem.setLiveDomain(liveDomains[i]);
 				mdnLiveItem.setLiveBandwidth(liveBandwidths[i]);
 				mdnLiveItem.setLiveProtocol(liveProtocols[i]);
-				mdnLiveItem.setStreamOutMode(Integer.valueOf(streamOutModes[i]));
+				mdnLiveItem.setStreamOutMode(streamOutMode);
 				mdnLiveItem.setName(channelNames[i]);
 				mdnLiveItem.setGuid(channelGUIDs[i]);
 				mdnLiveItem.setBandwidth(bandwidths[i]);
-				mdnLiveItem.setEncoderMode(Integer.valueOf(encoderModes[i]));
-				mdnLiveItem.setHttpBitrate(httpBitrates[i]);
-				mdnLiveItem.setHttpUrl(httpUrls[i]);
-				mdnLiveItem.setHlsBitrate(hlsBitrates[i]);
-				mdnLiveItem.setHlsUrl(hlsUrls[i]);
-				mdnLiveItem.setRtspBitrate(rtspBitrates[i]);
-				mdnLiveItem.setRtspUrl(rtspUrls[i]);
+				mdnLiveItem.setEncoderMode(encoderMode);
+
+				if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(streamOutMode)) {
+
+					if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
+
+						mdnLiveItem.setHttpBitrate(httpBitrates[i]);
+						mdnLiveItem.setHttpUrl(httpUrls[i]);
+
+						mdnLiveItem.setHlsBitrate(null);
+						mdnLiveItem.setHlsUrl(null);
+
+					} else {
+
+						mdnLiveItem.setHttpBitrate(null);
+						mdnLiveItem.setHttpUrl(null);
+
+						mdnLiveItem.setHlsBitrate(hlsBitrates[i]);
+						mdnLiveItem.setHlsUrl(hlsUrls[i]);
+
+					}
+
+					mdnLiveItem.setRtspBitrate(null);
+					mdnLiveItem.setRtspUrl(null);
+				} else {
+
+					mdnLiveItem.setHttpBitrate(httpBitrates[i]);
+					mdnLiveItem.setHttpUrl(httpUrls[i]);
+
+					mdnLiveItem.setHlsBitrate(hlsBitrates[i]);
+					mdnLiveItem.setHlsUrl(hlsUrls[i]);
+
+					mdnLiveItem.setRtspBitrate(rtspBitrates[i]);
+					mdnLiveItem.setRtspUrl(rtspUrls[i]);
+
+				}
+
 				this.saveOrUpdate(mdnLiveItem);
 			}
 		}

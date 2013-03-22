@@ -95,6 +95,7 @@
 				 	</td>
 					
 					<td>
+						<a href="update/${item.id}">修改</a>
 						<a data-toggle="modal" href="#deleteModal${item.id}">删除</a>
 						<div id="deleteModal${item.id }" class="modal hide fade form-horizontal">
 							<div class="modal-header">

@@ -26,6 +26,7 @@ $(document).ready(function() {
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 		<input type="hidden" name="id" value="${hostServer.id}"/>
+		<input type="hidden" name="alias" value="${hostServer.alias}">
 		
 		<fieldset>
 			<legend><small>服务器<c:if test="${not empty hostServer.id}">修改</c:if><c:if test="${ empty hostServer.id}">新增</c:if></small></legend>
@@ -57,7 +58,7 @@ $(document).ready(function() {
 				<div class="controls">
 					<select name="serverType" class="required">
 						<c:forEach var="map" items="${hostServerTypeMap}">
-						<option	<c:if test="${map.key == hostServer.serverType}">selected="selected"</c:if>
+						<option <c:if test="${map.key == hostServer.serverType}">selected="selected"</c:if>
 						 	value="<c:out value='${map.key}'/>"><c:out value='${map.value}'/></option>
 						</c:forEach>
 					</select>
@@ -68,7 +69,7 @@ $(document).ready(function() {
 			<div class="control-group">
 				<label class="control-label">IP</label>
 				<div class="controls">
-					<input type="text" id="ipAddress" name="ipAddress" size="50" class="required ipAddressValidate" />
+					<input type="text" id="ipAddress" name="ipAddress" size="50" class="required ipAddressValidate" value="${hostServer.ipAddress}"/>
 					<span class="help-inline">请输入可用IP</span>
 				</div>
 			</div>
@@ -78,7 +79,7 @@ $(document).ready(function() {
 				<div class="controls">
 					<select name="poolType" class="required">
 						<c:forEach var="map" items="${poolTypeMap}">
-						<option	<c:if test="${map.key == ipPool.poolType}">selected="selected"</c:if>
+						<option <c:if test="${map.key == hostServer.poolType}">selected="selected"</c:if>
 						 	value="<c:out value='${map.key}'/>"><c:out value='${map.value}'/></option>
 						</c:forEach>
 					</select>

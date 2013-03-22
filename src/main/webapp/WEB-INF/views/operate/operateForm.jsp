@@ -117,7 +117,7 @@ function checkValid() {
 	$("#updateDiv #storageDiv").each(function () {
 		storages = storages+$(this).find("#storageId").val()+sep;
 		controllerAlias = controllerAlias+$(this).find("#controller").val()+sep;
-		volumes = volumes+$(this).find("#volume").val()+sep;
+		volumes = volumes+$(this).find("#volume").val()+" "+sep;
     });
 	$("#updateDiv #eipDiv").each(function () {
 		eipIds = eipIds+$(this).find("#eipId").val()+sep;

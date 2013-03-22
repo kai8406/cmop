@@ -68,7 +68,7 @@ public class IpPoolService extends BaseSevcie {
 	public boolean saveIpPool(String ipAddress, Integer poolType, Location location, Vlan vlan) {
 		List<String> ipAddressList = this.getInsertIpAddressList(ipAddress);
 		ipAddressList.removeAll(customDao.findAllIpAddressList(location, vlan));
-		return saveIpPool(ipAddressList, poolType, IpPoolConstant.IP_STATUS_1, location, vlan);
+		return saveIpPool(ipAddressList, poolType, IpPoolConstant.IP_STATUS_1, vlan);
 	}
 
 	/**
@@ -82,13 +82,31 @@ public class IpPoolService extends BaseSevcie {
 	 *            IP状态
 	 */
 	@Transactional(readOnly = false)
-	public boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Location location, Vlan vlan) {
+	public boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Vlan vlan) {
 		List<IpPool> ipPoolList = new ArrayList<IpPool>();
 		for (String ipAddress : ipAddressList) {
 			IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
 			ipPoolList.add(ipPool);
 		}
 		ipPoolDao.save(ipPoolList);
+		return true;
+	}
+
+	/**
+	 * 保存单个IP
+	 * 
+	 * @param ipAddress
+	 * @param poolType
+	 * @param ipStatus
+	 * @param vlan
+	 * @param hostServer
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public boolean saveIpPool(String ipAddress, Integer poolType, Integer ipStatus, Vlan vlan, HostServer hostServer) {
+		IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
+		ipPool.setHostServer(hostServer);
+		ipPoolDao.save(ipPool);
 		return true;
 	}
 

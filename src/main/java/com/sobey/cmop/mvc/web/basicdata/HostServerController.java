@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.entity.HostServer;
+import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.Servlets;
 
 @Controller
@@ -52,6 +53,8 @@ public class HostServerController extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(HostServer hostServer, RedirectAttributes redirectAttributes) {
+		String alias = "Host" + Identities.uuid2();
+		hostServer.setAlias(alias);
 		hostServer.setCreateTime(new Date());
 		boolean flag = comm.hostServerService.saveHostServer(hostServer);
 		// 更改IP状态为 已使用
@@ -64,6 +67,20 @@ public class HostServerController extends BaseController {
 			redirectAttributes.addFlashAttribute("errorMessage", "创建服务器失败！");
 			return "redirect:/basicdata/host/save/";
 		}
+	}
+
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String updateForm(@PathVariable("id") Integer id, Model model) {
+		model.addAttribute("hostServer", comm.hostServerService.findById(id));
+		return "basicdata/host/hostForm";
+	}
+
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(HostServer hostServer, RedirectAttributes redirectAttributes) {
+		hostServer.setCreateTime(new Date());
+		comm.hostServerService.saveHostServer(hostServer);
+		redirectAttributes.addFlashAttribute("message", "修改成功");
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequestMapping(value = "delete/{id}")

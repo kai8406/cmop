@@ -591,13 +591,13 @@ public class OperateService extends BaseSevcie {
 							ipPool.setHostServer(null);
 							comm.ipPoolService.saveIpPool(ipPool);
 						}
-	
+
 						// 更新新的IP
 						ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
 						ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
 						ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
 						comm.ipPoolService.saveIpPool(ipPool);
-	
+
 						computeItem.setHostName(hostName[i]);
 						if (computeItem.getComputeType() == 1) {
 							// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联

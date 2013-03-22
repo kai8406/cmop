@@ -29,6 +29,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
@@ -285,7 +286,12 @@ public class ResourcesService extends BaseSevcie {
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
-		// TODO 还有MDN,CP资源
+		// MDN
+		for (MdnItem mdnItem : apply.getMdnItems()) {
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MDN.toInteger(), serviceTag, mdnItem.getId(), mdnItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+		}
+
+		// TODO 还有CP资源
 
 	}
 
@@ -321,11 +327,12 @@ public class ResourcesService extends BaseSevcie {
 		List<MonitorPhone> monitorPhones = new ArrayList<MonitorPhone>();
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
+		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 
-		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
 
 		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails,
-				monitorPhones, monitorComputes, monitorElbs);
+				monitorPhones, monitorComputes, monitorElbs, mdnItems);
 
 		// 写入工单Issue到Redmine
 
@@ -688,7 +695,7 @@ public class ResourcesService extends BaseSevcie {
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
 	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,
-			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
+			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
 
 		for (Resources resources : resourcesList) {
 
@@ -729,6 +736,11 @@ public class ResourcesService extends BaseSevcie {
 
 				// monitorElb
 				monitorElbs.add(comm.monitorElbServcie.getMonitorElb(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
+
+				// MDN
+				mdnItems.add(comm.mdnService.getMdnItem(serviceId));
 			}
 
 			// TODO 其它资源处理

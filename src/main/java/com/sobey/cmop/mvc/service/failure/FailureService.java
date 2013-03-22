@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
@@ -91,6 +92,7 @@ public class FailureService extends BaseSevcie {
 			List<MonitorPhone> monitorPhones = new ArrayList<MonitorPhone>();
 			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
+			List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 
 			String[] resourcesIds = failure.getRelatedId().split(",");
 			for (String resourcesId : resourcesIds) {
@@ -100,14 +102,14 @@ public class FailureService extends BaseSevcie {
 
 			/* 封装各个资源对象 */
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
 
 			logger.info("--->拼装邮件内容...");
 
 			// 拼装Redmine内容
 
 			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
-					monitorElbs);
+					monitorElbs, mdnItems);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
 

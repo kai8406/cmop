@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -124,6 +125,7 @@ public class FailureController extends BaseController {
 		List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
+		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 
 		String[] resourcesIds = failure.getRelatedId().split(",");
 		for (String resourcesId : resourcesIds) {
@@ -133,7 +135,7 @@ public class FailureController extends BaseController {
 
 		/* 封装各个资源对象 */
 
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
 
 		model.addAttribute("issue", issue);
 		model.addAttribute("failure", failure);

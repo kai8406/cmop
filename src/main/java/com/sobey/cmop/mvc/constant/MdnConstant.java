@@ -163,4 +163,23 @@ public class MdnConstant {
 		BANDWIDTH_MAP.put(12, "5G");
 	}
 
+	/**
+	 * 带宽Map key is String
+	 */
+	public static final Map<String, String> BANDWIDTH_MAP_STRING_KEY = Maps.newLinkedHashMap();
+	static {
+		BANDWIDTH_MAP_STRING_KEY.put("1", "5M");
+		BANDWIDTH_MAP_STRING_KEY.put("2", "10M");
+		BANDWIDTH_MAP_STRING_KEY.put("3", "30M");
+		BANDWIDTH_MAP_STRING_KEY.put("4", "50M");
+		BANDWIDTH_MAP_STRING_KEY.put("5", "100M");
+		BANDWIDTH_MAP_STRING_KEY.put("6", "200M");
+		BANDWIDTH_MAP_STRING_KEY.put("7", "300M");
+		BANDWIDTH_MAP_STRING_KEY.put("8", "500M");
+		BANDWIDTH_MAP_STRING_KEY.put("9", "1G");
+		BANDWIDTH_MAP_STRING_KEY.put("10", "2G");
+		BANDWIDTH_MAP_STRING_KEY.put("11", "3G");
+		BANDWIDTH_MAP_STRING_KEY.put("12", "5G");
+	}
+
 }

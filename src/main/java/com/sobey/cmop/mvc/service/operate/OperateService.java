@@ -28,6 +28,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.Location;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -403,7 +404,9 @@ public class OperateService extends BaseSevcie {
 			List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
+			List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
 
 			// 发送邮件通知下个指派人
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
@@ -541,6 +544,9 @@ public class OperateService extends BaseSevcie {
 				ComputeItem computeItem;
 				for (int i = 0; i < compute.length; i++) {
 					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
+					if (computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
+						continue;
+					}
 
 					// 释放原来的IP
 					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
@@ -576,35 +582,36 @@ public class OperateService extends BaseSevcie {
 				if (compute.length > 0) {
 					int i = compute.length - 1;
 					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
-
-					// 释放原来的IP
-					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
-					if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
-						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
-						ipPool.setHostServer(null);
-						comm.ipPoolService.saveIpPool(ipPool);
-					}
-
-					// 更新新的IP
-					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
-					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
-					ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
-					comm.ipPoolService.saveIpPool(ipPool);
-
-					computeItem.setHostName(hostName[i]);
-					if (computeItem.getComputeType() == 1) {
-						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
-						String alias = computeItem.getServerAlias();
-						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
-							computeItem.setServerAlias(server[i]);
+					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
+						// 释放原来的IP
+						// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
+						if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
+							ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
+							ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+							ipPool.setHostServer(null);
+							comm.ipPoolService.saveIpPool(ipPool);
 						}
-					} else {
-						computeItem.setHostServerAlias(server[i]);
-						computeItem.setOsStorageAlias(osStorage[i]);
+	
+						// 更新新的IP
+						ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
+						ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+						ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
+						comm.ipPoolService.saveIpPool(ipPool);
+	
+						computeItem.setHostName(hostName[i]);
+						if (computeItem.getComputeType() == 1) {
+							// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
+							String alias = computeItem.getServerAlias();
+							if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+								computeItem.setServerAlias(server[i]);
+							}
+						} else {
+							computeItem.setHostServerAlias(server[i]);
+							computeItem.setOsStorageAlias(osStorage[i]);
+						}
+						computeItem.setInnerIp(innerIp[i]);
+						comm.computeService.saveOrUpdate(computeItem);
 					}
-					computeItem.setInnerIp(innerIp[i]);
-					comm.computeService.saveOrUpdate(computeItem);
 				}
 			}
 

@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -73,10 +74,11 @@ public class ServiceTagController extends BaseController {
 		List<NetworkDnsItem> dnsItems = new ArrayList<NetworkDnsItem>();
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
+		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 
 		/* 封装各个资源对象 */
 
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
 
 		model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(id));
 		model.addAttribute("resourcesList", resourcesList);

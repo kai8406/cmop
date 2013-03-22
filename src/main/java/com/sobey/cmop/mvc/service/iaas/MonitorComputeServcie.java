@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.framework.utils.StringCommonUtils;
 
 /**
  * 实例监控MonitorCompute相关的管理类.
@@ -132,34 +133,14 @@ public class MonitorComputeServcie extends BaseSevcie {
 				// 遍历后的字符串1-2-3-.而我们需要用","将监控端口,监控进程,挂载路径中的数据隔开.
 				// 因此要将字符串中的'-'换成','
 
-				monitorCompute.setPort(replaceMoitorComputeInsertData(ports[i]));
-				monitorCompute.setProcess(replaceMoitorComputeInsertData(processes[i]));
-				monitorCompute.setMountPoint(replaceMoitorComputeInsertData(mountPoints[i]));
+				monitorCompute.setPort(StringCommonUtils.replaceAndSubstringText((ports[i]), "-", ","));
+				monitorCompute.setProcess(StringCommonUtils.replaceAndSubstringText((processes[i]), "-", ","));
+				monitorCompute.setMountPoint(StringCommonUtils.replaceAndSubstringText((mountPoints[i]), "-", ","));
 
 				this.saveOrUpdate(monitorCompute);
 			}
 
 		}
-	}
-
-	/**
-	 * 对实例监控中监控端口,监控进程,挂载路径的处理.<br>
-	 * 将字符串中的"-"替换成","并去掉最后一个"-"
-	 * 
-	 * @param str
-	 * @return
-	 */
-	private String replaceMoitorComputeInsertData(String str) {
-
-		if (StringUtils.isNotBlank(str)) {
-
-			String tempStr = str.substring(0, str.length() - 1);
-
-			return StringUtils.replace(tempStr, "-", ",");
-		}
-
-		return null;
-
 	}
 
 	/**

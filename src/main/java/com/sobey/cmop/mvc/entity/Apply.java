@@ -48,6 +48,7 @@ public class Apply implements java.io.Serializable {
 	private Set<Audit> audits = new HashSet<Audit>(0);
 	private Set<MonitorMail> monitorMails = new HashSet<MonitorMail>(0);
 	private Set<MonitorPhone> monitorPhones = new HashSet<MonitorPhone>(0);
+	private Set<MdnItem> mdnItems = new HashSet<MdnItem>(0);
 
 	// Constructors
 	/** default constructor */
@@ -71,7 +72,8 @@ public class Apply implements java.io.Serializable {
 	/** full constructor */
 	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status,
 			Integer redmineIssueId, AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems, Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems,
-			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits, Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones) {
+			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits, Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones,
+			Set<MdnItem> mdnItems) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;
@@ -94,6 +96,7 @@ public class Apply implements java.io.Serializable {
 		this.audits = audits;
 		this.monitorMails = monitorMails;
 		this.monitorPhones = monitorPhones;
+		this.mdnItems = mdnItems;
 	}
 
 	// Property accessors
@@ -307,6 +310,15 @@ public class Apply implements java.io.Serializable {
 
 	public void setMonitorElbs(Set<MonitorElb> monitorElbs) {
 		this.monitorElbs = monitorElbs;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<MdnItem> getMdnItems() {
+		return mdnItems;
+	}
+
+	public void setMdnItems(Set<MdnItem> mdnItems) {
+		this.mdnItems = mdnItems;
 	}
 
 }

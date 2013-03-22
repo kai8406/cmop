@@ -10,9 +10,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 
 /**
- * 负责实例Compute (PCS,ECS)的管理
+ * 负责MDN(Live & Vod)的管理
  * 
  * @author liukai
  * 
@@ -32,7 +35,7 @@ public class MdnContoller extends BaseController {
 	}
 
 	/**
-	 * 新增
+	 * 新增MDN(Live & Vod)
 	 * 
 	 * @param serviceTag
 	 *            服务标签名
@@ -96,7 +99,7 @@ public class MdnContoller extends BaseController {
 			@RequestParam(value = "serviceStart") String serviceStart,
 			@RequestParam(value = "serviceEnd") String serviceEnd,
 			@RequestParam(value = "description") String description,
-			// common
+			// mdn
 			@RequestParam(value = "coverArea") String coverArea,
 			@RequestParam(value = "coverIsp") String coverIsp,
 			// vod
@@ -112,9 +115,7 @@ public class MdnContoller extends BaseController {
 			@RequestParam(value = "streamOutModes", required = false) String[] streamOutModes, @RequestParam(value = "encoderModes", required = false) String[] encoderModes,
 			@RequestParam(value = "httpUrls", required = false) String[] httpUrls, @RequestParam(value = "httpBitrates", required = false) String[] httpBitrates,
 			@RequestParam(value = "hlsUrls", required = false) String[] hlsUrls, @RequestParam(value = "hlsBitrates", required = false) String[] hlsBitrates,
-			@RequestParam(value = "rtspUrls", required = false) String[] rtspUrls, @RequestParam(value = "rtspBitrates", required = false) String[] rtspBitrates,
-
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "rtspUrls", required = false) String[] rtspUrls, @RequestParam(value = "rtspBitrates", required = false) String[] rtspBitrates, RedirectAttributes redirectAttributes) {
 
 		Apply apply = new Apply();
 		apply.setServiceTag(serviceTag);
@@ -132,7 +133,8 @@ public class MdnContoller extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到MDN的修改页面. 只是MDN.vod和live另外写个修改方法.
+	 * 从服务申请表页面跳转到MDN的修改页面. <br>
+	 * MDN的vod和live另外写个修改方法.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
@@ -143,33 +145,179 @@ public class MdnContoller extends BaseController {
 	/**
 	 * 修改MDN信息后,跳转到applyId的服务申请修改页面
 	 * 
+	 * @param id
+	 *            mdnId
+	 * @param applyId
+	 *            服务申请ID
+	 * @param coverArea
+	 *            重点覆盖区域
+	 * @param coverIsp
+	 *            重点覆盖ISP
 	 * @param redirectAttributes
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "coverArea") String coverArea,
+			@RequestParam(value = "coverIsp") String coverIsp, RedirectAttributes redirectAttributes) {
 
-		// StorageItem storageItem = comm.es3Service.getStorageItem(id);
-		//
-		// comm.es3Service.updateES3ToApply(storageItem, space, storageType,
-		// computeIds);
+		MdnItem mdnItem = comm.mdnService.getMdnItem(id);
+		mdnItem.setCoverArea(coverArea);
+		mdnItem.setCoverIsp(coverIsp);
+		comm.mdnService.saveOrUpdate(mdnItem);
 
-		// redirectAttributes.addFlashAttribute("message", "修改ES3存储空间 " +
-		// storageItem.getIdentifier() + " 成功");
+		redirectAttributes.addFlashAttribute("message", "修改MDN " + mdnItem.getIdentifier() + " 成功");
+
+		return "redirect:/apply/update/" + applyId;
+	}
+
+	// ========== Vod ==========//
+	/**
+	 * 从服务申请表页面跳转到MDN vod的修改页面.
+	 */
+	@RequestMapping(value = "/mdnVod/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
+	public String updateVodForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
+		model.addAttribute("mdnVod", comm.mdnService.getMdnVodItem(id));
+		return "apply/mdn/mdnVodUpateForm";
+	}
+
+	/**
+	 * 修改MDNVod信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 *            mdnVodId
+	 * @param applyId
+	 *            服务申请ID
+	 * @param vodDomain
+	 *            服务域名
+	 * @param vodBandwidth
+	 *            加速服务带宽
+	 * @param vodProtocol
+	 *            播放协议选择
+	 * @param sourceOutBandwidth
+	 *            出口带宽
+	 * @param sourceStreamerUrl
+	 *            Streamer地址
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@RequestMapping(value = "/mdnVod/update/{id}/applyId", method = RequestMethod.POST)
+	public String updateVod(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "vodDomain") String vodDomain,
+			@RequestParam(value = "vodBandwidth") String vodBandwidth, @RequestParam(value = "vodProtocol") String vodProtocol, @RequestParam(value = "sourceOutBandwidth") String sourceOutBandwidth,
+			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, RedirectAttributes redirectAttributes) {
+
+		MdnVodItem mdnVodItem = comm.mdnService.getMdnVodItem(id);
+		mdnVodItem.setSourceOutBandwidth(sourceOutBandwidth);
+		mdnVodItem.setSourceStreamerUrl(sourceStreamerUrl);
+		mdnVodItem.setVodBandwidth(vodBandwidth);
+		mdnVodItem.setVodDomain(vodDomain);
+		mdnVodItem.setVodProtocol(vodProtocol);
+
+		comm.mdnService.saveOrUpdate(mdnVodItem);
+
+		redirectAttributes.addFlashAttribute("message", "修改MDN点播成功");
 
 		return "redirect:/apply/update/" + applyId;
 	}
 
 	/**
-	 * 删除ES3后,跳转到applyId的服务申请修改页面
+	 * 删除mdnVod后,跳转到applyId的服务申请修改页面
 	 */
-	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	@RequestMapping(value = "/mdnVod/delete/{id}/applyId/{applyId}")
+	public String deleteVod(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
 
-		comm.mdnService.deleteMdnItem(id);
+		comm.mdnService.deleteMdnVodItem(id);
 
-		redirectAttributes.addFlashAttribute("message", "删除MDN成功");
+		redirectAttributes.addFlashAttribute("message", "删除MDN点播成功");
+
+		return "redirect:/apply/update/" + applyId;
+	}
+
+	// ========== live ==========//
+	/**
+	 * 从服务申请表页面跳转到MDN live的修改页面.
+	 */
+	@RequestMapping(value = "/mdnLive/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
+	public String updateLiveForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
+		model.addAttribute("mdnLive", comm.mdnService.getMdnLiveItem(id));
+		return "apply/mdn/mdnLiveUpateForm";
+	}
+
+	/**
+	 * 修改MDNLive信息后,跳转到applyId的服务申请修改页面
+	 * 
+	 * @param id
+	 *            mdnLiveId
+	 * @param applyId
+	 *            服务申请ID
+	 * @param bandwidth
+	 *            出口带宽
+	 * @param name
+	 *            频道名称
+	 * @param guid
+	 *            GUID
+	 * @param liveDomain
+	 *            服务域名
+	 * @param liveBandwidth
+	 *            加速服务带宽
+	 * @param liveProtocol
+	 *            播放协议选择
+	 * @param streamOutMode
+	 *            直播流输出模式
+	 * @param encoderMode
+	 *            编码器模式
+	 * @param httpUrlEncoder
+	 *            编码器模式下的HTTP流地址
+	 * @param httpBitrateEncoder
+	 *            编码器模式下的HTTP流混合码率
+	 * @param hlsUrlEncoder
+	 *            编码器模式下的M3U8流地址
+	 * @param hlsBitrateEncoder
+	 *            编码器模式下的M3U8流混合码率
+	 * @param httpUrl
+	 *            HTTP流地址
+	 * @param httpBitrate
+	 *            HTTP流混合码率
+	 * @param hlsUrl
+	 *            M3U8流地址
+	 * @param hlsBitrate
+	 *            M3U8流混合码率
+	 * @param rtspUrl
+	 *            RTSP流地址
+	 * @param rtspBitrate
+	 *            RTSP流混合码率
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@RequestMapping(value = "/mdnLive/update/{id}/applyId", method = RequestMethod.POST)
+	public String updateLive(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
+			@RequestParam(value = "guid") String guid, @RequestParam(value = "liveDomain") String liveDomain, @RequestParam(value = "liveBandwidth") String liveBandwidth,
+			@RequestParam(value = "liveProtocol") String liveProtocol, @RequestParam(value = "streamOutMode") Integer streamOutMode,
+			@RequestParam(value = "encoderMode", required = false) Integer encoderMode, @RequestParam(value = "httpUrlEncoder", required = false) String httpUrlEncoder,
+			@RequestParam(value = "httpBitrateEncoder", required = false) String httpBitrateEncoder, @RequestParam(value = "hlsUrlEncoder", required = false) String hlsUrlEncoder,
+			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
+			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
+			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
+			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, RedirectAttributes redirectAttributes) {
+
+		MdnLiveItem mdnLiveItem = comm.mdnService.getMdnLiveItem(id);
+
+		comm.mdnService.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
+				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+
+		redirectAttributes.addFlashAttribute("message", "修改MDN直播成功");
+
+		return "redirect:/apply/update/" + applyId;
+	}
+
+	/**
+	 * 删除mdnLive后,跳转到applyId的服务申请修改页面
+	 */
+	@RequestMapping(value = "/mdnLive/delete/{id}/applyId/{applyId}")
+	public String deleteLive(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+
+		comm.mdnService.deleteMdnLiveItem(id);
+
+		redirectAttributes.addFlashAttribute("message", "删除MDN直播成功");
 
 		return "redirect:/apply/update/" + applyId;
 	}

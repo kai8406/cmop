@@ -196,7 +196,7 @@
 				<div class="control-group">
 					<label class="control-label" for="serviceTag">服务标签</label>
 					<div class="controls">
-						<input type="text"  id="serviceTag" name="serviceTag" value="TEST" class="required" maxlength="45" placeholder="...服务标签">
+						<input type="text"  id="serviceTag" name="serviceTag"  class="required" maxlength="45" placeholder="...服务标签">
 					</div>
 				</div>
 			
@@ -233,14 +233,14 @@
 					<label class="control-label" for="description">用途描述</label>
 					<div class="controls">
 						<textarea rows="3" id="description" name="description" placeholder="...用途描述"
-							maxlength="500" class="required ">TEST</textarea>
+							maxlength="500" class="required"></textarea>
 					</div>
 				</div>
 				
-				 <div class="control-group">
+				<div class="control-group">
 					<label class="control-label" for="coverArea">重点覆盖地域</label>
 					<div class="controls">
-						<input type="text" id="coverArea" name="coverArea" value="TEST" class="required" maxlength="45" placeholder="...重点覆盖地域">
+						<input type="text" id="coverArea" name="coverArea" class="required" maxlength="45" placeholder="...重点覆盖地域">
 					</div>
 				</div>
 				 
@@ -249,7 +249,7 @@
 					<div class="controls">
 						<c:forEach var="map" items="${ispTypeMap}">
 							<label class="checkbox">
-								<input type="checkbox" name="coverIsp" value="${map.key}" checked="checked" class="required"><span class="checkboxText ">${map.value}</span>
+								<input type="checkbox" name="coverIsp" value="${map.key}" class="required"><span class="checkboxText ">${map.value}</span>
 							</label>
 						</c:forEach>
 					</div>
@@ -261,88 +261,102 @@
 				</div>
 			
 			</div><!-- Step.1 End -->
-			 
 			
 			<!-- Step.2 -->
 			<div class="step">
+			
+			    <ul id="mdn-tab" class="nav nav-tabs">
+				    <li class="active"><a href="#vodTab" data-toggle="tab">MDN点播加速</a></li>
+				    <li><a href="#liveTab" data-toggle="tab">MDN直播加速</a></li>
+			    </ul>
+			    
+			    <div class="control-group">
+					<label class="control-label" for="domain">服务域名</label>
+					<div class="controls">
+						<input type="text" id="domain" name="domain" class="required" maxlength="45" placeholder="...服务域名">
+					</div>
+				</div>
 				
-			    <div>
-				    <ul id="mdn-tab" class="nav nav-tabs">
-					    <li class="active"><a href="#vodTab" data-toggle="tab">MDN点播加速</a></li>
-					    <li><a href="#liveTab" data-toggle="tab">MDN直播加速</a></li>
-				    </ul>
+				<div class="control-group">
+					<label class="control-label" for="speedBandwidth">加速服务带宽</label>
+					<div class="controls">
+						<select id="speedBandwidth" class="required">
+							<c:forEach var="map" items="${bandwidthMap}"><option value="${map.key }">${map.value }</option></c:forEach>
+						</select>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="playProtocol">播放协议选择</label>
+					<div class="controls">
+						<c:forEach var="map" items="${palyProtocolMap}">
+					 		<label class="checkbox inline">
+								<input type="checkbox" id="playProtocol" name="playProtocol" class="required" value="${map.key }"><span class="checkboxText">${map.value }</span>
+							</label>	
+						</c:forEach>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="exportBandwidth">出口带宽</label>
+					<div class="controls">
+						<input type="text" id="exportBandwidth" class="required" maxlength="45" placeholder="...出口带宽">
+					</div>
+				</div>
 				    
-				    <div class="control-group">
-						<label class="control-label" for="domain">服务域名</label>
-						<div class="controls">
-							<input type="text" id="domain" name="domain" class="required" maxlength="45" placeholder="...服务域名">
+			    <div class="tab-content">
+			    
+				    <!-- MDN点播加速 vodTab -->
+				    <div class="tab-pane active" id="vodTab">
+						
+						<div class="control-group">
+							<label class="control-label" for="vodStreamer">Streamer地址</label>
+							<div class="controls">
+								<input type="text" id="vodStreamer" name="vodStreamer" class="required" maxlength="45" placeholder="...源站Streamer公网地址">
+							</div>
 						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label" for="speedBandwidth">加速服务带宽</label>
-						<div class="controls">
-							<select id="speedBandwidth" class="required">
-								<c:forEach var="map" items="${bandwidthMap}"><option value="${map.key }">${map.value }</option></c:forEach>
-							</select>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label" for="playProtocol">播放协议选择</label>
-						<div class="controls">
-							<c:forEach var="map" items="${palyProtocolMap}">
-						 		<label class="checkbox inline">
-									<input type="checkbox" id="playProtocol" name="playProtocol" value="${map.key }"><span class="checkboxText">${map.value }</span>
-								</label>	
-							</c:forEach>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label" for="exportBandwidth">出口带宽</label>
-						<div class="controls">
-							<input type="text" id="exportBandwidth" class="required" maxlength="45" placeholder="...出口带宽">
-						</div>
-					</div>
+						
+				    </div><!-- MDN点播加速 vodTab End -->
 				    
-				    <div class="tab-content">
-				    
-					    <!-- MDN点播加速 vodTab -->
-					    <div class="tab-pane active" id="vodTab">
-							
-							<div class="control-group">
-								<label class="control-label" for="vodStreamer">Streamer地址</label>
-								<div class="controls">
-									<input type="text" id="vodStreamer" name="vodStreamer" class="required" maxlength="45" placeholder="...源站Streamer公网地址">
-								</div>
+			    	<!-- MDN直播加速 liveTab -->
+			    	<div class="tab-pane" id="liveTab">
+			    	
+			    		<div class="control-group">
+							<label class="control-label" for="channelName">频道名称</label>
+							<div class="controls">
+								<input type="text" id="channelName" name="channelName" class="required" maxlength="45" placeholder="...频道名称">
 							</div>
-							
-					    </div><!-- MDN点播加速 vodTab End -->
-					    
-				    	<!-- MDN直播加速 liveTab -->
-				    	<div class="tab-pane" id="liveTab">
-				    	
-				    		<div class="control-group">
-								<label class="control-label" for="channelName">频道名称</label>
-								<div class="controls">
-									<input type="text" id="channelName" name="channelName" class="required" maxlength="45" placeholder="...频道名称">
-								</div>
+						</div>
+						
+						<div class="control-group">
+							<label class="control-label" for="channelGUID">频道GUID</label>
+							<div class="controls">
+								<input type="text" id="channelGUID" name="channelGUID" class="required" maxlength="45" placeholder="...频道GUID">
 							</div>
-							
-							<div class="control-group">
-								<label class="control-label" for="channelGUID">频道GUID</label>
-								<div class="controls">
-									<input type="text" id="channelGUID" name="channelGUID" class="required" maxlength="45" placeholder="...频道GUID">
-								</div>
+						</div>
+						
+						<div class="control-group">
+							<label class="control-label" for="outputMode">直播流输出模式</label>
+							<div class="controls">
+								<c:forEach var="map" items="${outputModeMap }">
+									<label class="radio inline">
+										<input type="radio" id="outputMode" name="outputMode" value="${map.key }"
+											 <c:if test="${map.key == 1 }">checked="checked" </c:if>
+											><span class="radioText">${map.value }</span>
+									</label>
+								</c:forEach>
 							</div>
-							
+						</div>
+						
+						<!-- 选择Encoder -->
+						<div id="EncoderDiv" class="show">
+						
 							<div class="control-group">
-								<label class="control-label" for="outputMode">直播流输出模式</label>
+								<label class="control-label" for="encoderMode">编码器模式</label>
 								<div class="controls">
-									<c:forEach var="map" items="${outputModeMap }">
+									<c:forEach var="map" items="${encoderModeMap}">
 										<label class="radio inline">
-											<input type="radio" id="outputMode" name="outputMode" value="${map.key }"
+											<input type="radio" id="encoderMode" name="encoderMode" value="${map.key }"
 												 <c:if test="${map.key == 1 }">checked="checked" </c:if>
 												><span class="radioText">${map.value }</span>
 										</label>
@@ -350,120 +364,102 @@
 								</div>
 							</div>
 							
-							<!-- 选择Encoder -->
-							<div id="EncoderDiv" class="show">
+							<!-- HTTP拉流模式  -->
+							<div id="HTTPDIV" class="show">
+								<div class="control-group">
+									<label class="control-label" for="httpUrlEncoder">HTTP流地址</label>
+									<div class="controls">
+										<input type="text" id="httpUrlEncoder" class="required" maxlength="45" placeholder="...HTTP流地址">
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="httpBitrateEncoder">HTTP流混合码率</label>
+									<div class="controls">
+										<input type="text" id="httpBitrateEncoder" class="required" maxlength="45" placeholder="...HTTP流混合码率">
+									</div>
+								</div>
+							</div><!-- HTTP拉流模式 End -->
 							
+							<!-- M3U8DIV推流模式  -->
+							<div id="M3U8DIV" class="hidden">
 								<div class="control-group">
-									<label class="control-label" for="encoderMode">编码器模式</label>
+									<label class="control-label" for="hlsUrlEncoder">M3U8流地址</label>
 									<div class="controls">
-										<c:forEach var="map" items="${encoderModeMap}">
-											<label class="radio inline">
-												<input type="radio" id="encoderMode" name="encoderMode" value="${map.key }"
-													 <c:if test="${map.key == 1 }">checked="checked" </c:if>
-													><span class="radioText">${map.value }</span>
-											</label>
-										</c:forEach>
+										<input type="text" id="hlsUrlEncoder" class="required" maxlength="45" placeholder="...M3U8流地址">
 									</div>
 								</div>
 								
-								<!-- HTTP拉流模式  -->
-								<div id="HTTPDIV" class="show">
-									<div class="control-group">
-										<label class="control-label" for="httpUrlEncoder">HTTP流地址</label>
-										<div class="controls">
-											<input type="text" id="httpUrlEncoder" class="required" maxlength="45" placeholder="...HTTP流地址">
-										</div>
+								<div class="control-group">
+									<label class="control-label" for="hlsBitrateEncoder">M3U8混合码率</label>
+									<div class="controls">
+										<input type="text" id="hlsBitrateEncoder" class="required" maxlength="45" placeholder="...M3U8流混合码率">
 									</div>
-									<div class="control-group">
-										<label class="control-label" for="httpBitrateEncoder">HTTP流混合码率</label>
-										<div class="controls">
-											<input type="text" id="httpBitrateEncoder" class="required" maxlength="45" placeholder="...HTTP流混合码率">
-										</div>
-									</div>
-								</div><!-- HTTP拉流模式 End -->
-								
-								<!-- M3U8DIV推流模式  -->
-								<div id="M3U8DIV" class="hidden">
-									<div class="control-group">
-										<label class="control-label" for="hlsUrlEncoder">M3U8流地址</label>
-										<div class="controls">
-											<input type="text" id="hlsUrlEncoder" class="required" maxlength="45" placeholder="...M3U8流地址">
-										</div>
-									</div>
-									
-									<div class="control-group">
-										<label class="control-label" for="hlsBitrateEncoder">M3U8混合码率</label>
-										<div class="controls">
-											<input type="text" id="hlsBitrateEncoder" class="required" maxlength="45" placeholder="...M3U8流混合码率">
-										</div>
-									</div>
-								</div><!-- M3U8DIV推流模式 End -->
+								</div>
+							</div><!-- M3U8DIV推流模式 End -->
+						
+						</div><!-- 选择Encoder End -->
+						
+						<!-- 选择 Transfer -->
+						<div id="TransferDiv" class="hidden">
 							
-							</div><!-- 选择Encoder End -->
-							
-							<!-- 选择 Transfer -->
-							<div id="TransferDiv" class="hidden">
-								
-								<div class="control-group">
-									<label class="control-label" for="httpUrl">HTTP流地址</label>
-									<div class="controls">
-										<input type="text" id="httpUrl" class="required" maxlength="45" placeholder="...HTTP流地址">
-									</div>
+							<div class="control-group">
+								<label class="control-label" for="httpUrl">HTTP流地址</label>
+								<div class="controls">
+									<input type="text" id="httpUrl" class="required" maxlength="45" placeholder="...HTTP流地址">
 								</div>
-								
-								<div class="control-group">
-									<label class="control-label" for="httpBitrate">HTTP混合码率</label>
-									<div class="controls">
-										<input type="text" id="httpBitrate" class="required" maxlength="45" placeholder="...HTTP流混合码率">
-									</div>
-								</div>
-								
-								<div class="control-group">
-									<label class="control-label" for="hlsUrl">M3U8流地址</label>
-									<div class="controls">
-										<input type="text" id="hlsUrl" class="required" maxlength="45" placeholder="...M3U8流地址">
-									</div>
-								</div>
-								
-								<div class="control-group">
-									<label class="control-label" for="hlsBitrate">M3U8混合码率</label>
-									<div class="controls">
-										<input type="text" id="hlsBitrate"  class="required" maxlength="45" placeholder="...M3U8流混合码率">
-									</div>
-								</div>
-								
-								<div class="control-group">
-									<label class="control-label" for="rtspUrl">RTSP流地址</label>
-									<div class="controls">
-										<input type="text" id="rtspUrl" class="required" maxlength="45" placeholder="...RTSP流地址">
-									</div>
-								</div>
-								
-								<div class="control-group">
-									<label class="control-label" for="rtspBitrate">RTSP混合码率</label>
-									<div class="controls">
-										<input type="text" id="rtspBitrate"  class="required" maxlength="45" placeholder="...RTSP流混合码率">
-									</div>
-								</div>
-									
-							</div><!-- 选择Transfer End -->
-							
-				    		 
-					    </div><!--MDN直播加速 liveTab End -->
-					    
-					    <div class="control-group">
-							<div class="controls">
-								 <a id="createMDNBtn" class="btn btn-success">生成MDN</a>
 							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="httpBitrate">HTTP混合码率</label>
+								<div class="controls">
+									<input type="text" id="httpBitrate" class="required" maxlength="45" placeholder="...HTTP流混合码率">
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="hlsUrl">M3U8流地址</label>
+								<div class="controls">
+									<input type="text" id="hlsUrl" class="required" maxlength="45" placeholder="...M3U8流地址">
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="hlsBitrate">M3U8混合码率</label>
+								<div class="controls">
+									<input type="text" id="hlsBitrate"  class="required" maxlength="45" placeholder="...M3U8流混合码率">
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="rtspUrl">RTSP流地址</label>
+								<div class="controls">
+									<input type="text" id="rtspUrl" class="required" maxlength="45" placeholder="...RTSP流地址">
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="rtspBitrate">RTSP混合码率</label>
+								<div class="controls">
+									<input type="text" id="rtspBitrate"  class="required" maxlength="45" placeholder="...RTSP流混合码率">
+								</div>
+							</div>
+								
+						</div><!-- 选择Transfer End -->
+						
+			    		 
+				    </div><!--MDN直播加速 liveTab End -->
+				    
+				    <div class="control-group">
+						<div class="controls">
+							 <a id="createMDNBtn" class="btn btn-success">生成MDN</a>
 						</div>
-					    
-				    </div>
+					</div>
+				    
 			    </div>
 			    
 			    <hr>
 			
-				<div id="resourcesDIV"><dl class="dl-horizontal">
-				</dl></div>
+				<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 				
 				<div class="form-actions">
 					<input class="btn backStep" type="button" value="上一步">

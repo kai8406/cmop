@@ -304,7 +304,7 @@
 						
 						<c:if test="${not empty item.mdnLiveItems }">
 							<br>
-							<dt>MDN直播加速</dt>
+							<dt>MDN直播</dt>
 							<c:forEach var="live" items="${item.mdnLiveItems}">
 								<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
@@ -318,24 +318,24 @@
 										<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
 										<c:choose>
 											<c:when test="${live.encoderMode == 1 }">
-												<dd><em> HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
-												<dd><em> HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+												<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
+												<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
 											</c:when>
 											<c:otherwise>
-												<dd><em> M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-												<dd><em> M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+												<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+												<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
 											</c:otherwise>
 										</c:choose>
 									</c:when>
 									<c:otherwise>
-										<dd><em> HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
-										<dd><em> HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+										<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
+										<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
 										
-										<dd><em> M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-										<dd><em> M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+										<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+										<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
 										
-										<dd><em> RTSP流地址</em>&nbsp;&nbsp;${live.rtspUrl}</dd>
-										<dd><em> RTSP流混合码率</em>&nbsp;&nbsp;${live.rtspBitrate}</dd>
+										<dd><em>RTSP流地址</em>&nbsp;&nbsp;${live.rtspUrl}</dd>
+										<dd><em>RTSP流混合码率</em>&nbsp;&nbsp;${live.rtspBitrate}</dd>
 									</c:otherwise>
 								</c:choose>
 								<br>

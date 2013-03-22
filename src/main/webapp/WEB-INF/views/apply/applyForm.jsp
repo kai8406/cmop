@@ -509,24 +509,24 @@
 										<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
 										<c:choose>
 											<c:when test="${live.encoderMode == 1 }">
-												<dd><em> HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
-												<dd><em> HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+												<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
+												<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
 											</c:when>
 											<c:otherwise>
-												<dd><em> M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-												<dd><em> M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+												<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+												<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
 											</c:otherwise>
 										</c:choose>
 									</c:when>
 									<c:otherwise>
-										<dd><em> HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
-										<dd><em> HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+										<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
+										<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
 										
-										<dd><em> M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-										<dd><em> M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+										<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+										<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
 										
-										<dd><em> RTSP流地址</em>&nbsp;&nbsp;${live.rtspUrl}</dd>
-										<dd><em> RTSP流混合码率</em>&nbsp;&nbsp;${live.rtspBitrate}</dd>
+										<dd><em>RTSP流地址</em>&nbsp;&nbsp;${live.rtspUrl}</dd>
+										<dd><em>RTSP流混合码率</em>&nbsp;&nbsp;${live.rtspBitrate}</dd>
 									</c:otherwise>
 								</c:choose>
 								<dd>

@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
@@ -83,7 +84,7 @@ public class RedmineUtilService extends BaseSevcie {
 			this.generateContentByLists(apply.getUser(), content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
 					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()), new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()), new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()),
 					new ArrayList<MonitorMail>(apply.getMonitorMails()), new ArrayList<MonitorPhone>(apply.getMonitorPhones()), new ArrayList<MonitorCompute>(apply.getMonitorComputes()),
-					new ArrayList<MonitorElb>(apply.getMonitorElbs()));
+					new ArrayList<MonitorElb>(apply.getMonitorElbs()), new ArrayList<MdnItem>(apply.getMdnItems()));
 
 			return content.toString();
 
@@ -100,7 +101,7 @@ public class RedmineUtilService extends BaseSevcie {
 	 * 生成满足redmine显示的资源回收Resources文本.
 	 */
 	public String recycleResourcesRedmineDesc(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
 
 		try {
 
@@ -108,7 +109,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装资源信息
 
-			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs);
+			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems);
 
 			return content.toString();
 
@@ -125,7 +126,7 @@ public class RedmineUtilService extends BaseSevcie {
 	 * 生成满足redmine显示的故障申报Failure文本.
 	 */
 	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
 
 		try {
 
@@ -142,7 +143,7 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
 			content.append("</pre>");
 
-			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs);
+			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems);
 
 			return content.toString();
 
@@ -169,7 +170,7 @@ public class RedmineUtilService extends BaseSevcie {
 	 * @param dnsItems
 	 */
 	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
 
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
@@ -180,6 +181,7 @@ public class RedmineUtilService extends BaseSevcie {
 		RedmineTextUtil.generateMonitorPhone(content, monitorPhones);
 		RedmineTextUtil.generateMonitorCompute(content, monitorComputes);
 		RedmineTextUtil.generateMonitorElb(content, monitorElbs);
+		RedmineTextUtil.generateMonitorMdn(content, mdnItems);
 
 	}
 

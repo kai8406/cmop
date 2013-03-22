@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -13,6 +14,9 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
@@ -21,6 +25,7 @@ import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
+import com.sobey.framework.utils.StringCommonUtils;
 
 public class RedmineTextUtil {
 
@@ -335,6 +340,78 @@ public class RedmineTextUtil {
 				content.append("标识符:").append(BLANK).append(monitorElb.getIdentifier()).append(NEWLINE);
 				content.append("监控ELB:").append(BLANK).append(monitorElb.getNetworkElbItem().getIdentifier())
 						.append("(" + (monitorElb.getNetworkElbItem().getVirtualIp() != null ? monitorElb.getNetworkElbItem().getVirtualIp() : "") + ")").append(NEWLINE + NEWLINE);
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
+	}
+
+	public static void generateMonitorMdn(StringBuilder content, List<MdnItem> mdnItems) {
+
+		if (!mdnItems.isEmpty()) {
+
+			content.append("# +*MDN*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+
+			for (MdnItem mdnItem : mdnItems) {
+				content.append("标识符:").append(BLANK).append(mdnItem.getIdentifier()).append(NEWLINE);
+				content.append("重点覆盖地域:").append(BLANK).append(mdnItem.getCoverArea()).append(NEWLINE);
+
+				String[] isps = StringUtils.split(mdnItem.getCoverIsp(), ",");
+				String coverIsp = "";
+
+				for (String isp : isps) {
+					coverIsp += NetworkConstant.ISPType.mapKeyStr.get(isp) + ",";
+				}
+
+				content.append("重点覆盖ISP:").append(BLANK).append(StringCommonUtils.replaceAndSubstringText(coverIsp, ",", ",")).append(NEWLINE + NEWLINE);
+
+				if (!mdnItem.getMdnVodItems().isEmpty()) {
+					for (MdnVodItem mdnVodItem : mdnItem.getMdnVodItems()) {
+						content.append("MDN点播加速").append(NEWLINE);
+						content.append("服务域名:").append(BLANK).append(mdnVodItem.getVodDomain()).append(NEWLINE);
+						content.append("加速服务带宽:").append(BLANK).append(MdnConstant.BANDWIDTH_MAP.get(mdnVodItem.getVodBandwidth())).append(NEWLINE);
+						content.append("播放协议选择:").append(BLANK).append(mdnVodItem.getVodProtocol()).append(NEWLINE);
+						content.append("出口带宽:").append(BLANK).append(mdnVodItem.getSourceOutBandwidth()).append(NEWLINE);
+						content.append("Streamer地址:").append(BLANK).append(mdnVodItem.getSourceStreamerUrl()).append(NEWLINE + NEWLINE);
+					}
+				}
+
+				if (!mdnItem.getMdnLiveItems().isEmpty()) {
+					for (MdnLiveItem mdnLiveItem : mdnItem.getMdnLiveItems()) {
+						content.append("MDN点播加速").append(NEWLINE);
+						content.append("服务域名:").append(BLANK).append(mdnLiveItem.getLiveDomain()).append(NEWLINE);
+						content.append("加速服务带宽:").append(BLANK).append(MdnConstant.BANDWIDTH_MAP.get(mdnLiveItem.getLiveBandwidth())).append(NEWLINE);
+						content.append("播放协议选择:").append(BLANK).append(mdnLiveItem.getLiveProtocol()).append(NEWLINE);
+						content.append("出口带宽:").append(BLANK).append(mdnLiveItem.getBandwidth()).append(NEWLINE);
+						content.append("频道名称:").append(BLANK).append(mdnLiveItem.getName()).append(NEWLINE);
+						content.append("频道GUID:").append(BLANK).append(mdnLiveItem.getGuid()).append(NEWLINE);
+						content.append("直播流输出模式:").append(BLANK).append(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode())).append(NEWLINE);
+						if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {
+
+							if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(mdnLiveItem.getEncoderMode())) {
+								content.append("HTTP流地址:").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
+								content.append("HTTP流混合码率:").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
+							} else {
+								content.append("M3U8流地址:").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
+								content.append("M3U8流混合码率:").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
+							}
+
+						} else {
+							content.append("HTTP流地址:").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
+							content.append("HTTP流混合码率:").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
+							content.append("M3U8流地址:").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
+							content.append("M3U8流混合码率:").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
+							content.append("RTSP流地址:").append(BLANK).append(mdnLiveItem.getRtspUrl()).append(NEWLINE);
+							content.append("RTSP流混合码率 :").append(BLANK).append(mdnLiveItem.getRtspBitrate()).append(NEWLINE);
+						}
+
+						content.append(NEWLINE);
+					}
+				}
+
 			}
 
 			content.append("</pre>").append(NEWLINE);

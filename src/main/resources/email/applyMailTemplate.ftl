@@ -213,7 +213,6 @@
 			<#if (monitorComputes?exists) && (monitorComputes?size > 0) >
 				<strong>实例监控</strong>
 				
-				 
 				 <#list monitorComputes as monitorCompute>
 				 	<ul>
 					 	<li><em>标识符</em>&nbsp;:${monitorCompute.identifier}</li>
@@ -264,6 +263,78 @@
 				</#list>
 			
 			</#if><!-- 实例监控 End -->
+			
+			<!-- MDN -->
+			<#if (mdns?exists) && (mdns?size > 0) >
+				<strong>MDN</strong>
+			
+				<#list mdns as mdn>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${mdn.identifier}</li>
+						<li><em>重点覆盖地域</em>&nbsp;:${mdn.coverArea}</li>
+						<li><em>重点覆盖ISP</em>&nbsp;:
+							 <#list mdn.coverIsp?split(",") as coverIsp>
+								<#list ispTypeMap?keys as k ><#if coverIsp?string == k>${ispTypeMap[k]}</#if></#list>
+							</#list>
+						</li>
+						
+						<#if (mdn.mdnVodItems?exists) && (mdn.mdnVodItems?size > 0) >
+							<br>
+							<ul>
+								<strong>MDN点播加速</strong>
+								<#list mdn.mdnVodItems as vod>
+									<li><em>服务域名</em>&nbsp;:${vod.vodDomain}</li>
+									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if vod.vodBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
+									<li><em>播放协议选择</em>&nbsp;:${vod.vodProtocol}</li>
+									<li><em>出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
+									<li><em>Streamer地址</em>&nbsp;:${vod.sourceStreamerUrl}</li>
+									<br>
+								</#list>
+							</ul>
+						</#if>
+						
+						<#if (mdn.mdnLiveItems?exists) && (mdn.mdnLiveItems?size > 0) >
+							<br>
+							<ul>
+								<strong>MDN直播加速</strong>
+								<#list mdn.mdnLiveItems as live>
+									<li><em>服务域名</em>&nbsp;:${live.liveDomain}</li>
+									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if live.liveBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
+									<li><em>播放协议选择</em>&nbsp;:${live.liveProtocol}</li>
+									<li><em>出口带宽</em>&nbsp;:${live.bandwidth}</li>
+									<li><em>频道名称</em>&nbsp;:${live.name}</li>
+									<li><em>频道GUID</em>&nbsp;:${live.guid}</li>
+									<li><em>直播流输出模式</em>&nbsp;:<#list outputModeMap?keys as k ><#if live.streamOutMode?string == k>${outputModeMap[k]}</#if></#list></li>
+									
+									<#if live.streamOutMode == 1 >
+										<li><em>编码器模式</em>&nbsp;:<#list encoderModeMap?keys as k ><#if live.encoderMode?string == k>${encoderModeMap[k]}</#if></#list></li>
+										<#if live.encoderMode == 1>
+											<li><em>HTTP流地址</em>&nbsp;:${live.httpUrl}</li>
+											<li><em>HTTP流混合码率</em>&nbsp;:${live.httpBitrate}</li>
+										<#else>
+											<li><em>M3U8流地址</em>&nbsp;:${live.hlsUrl}</li>
+											<li><em>M3U8流混合码率</em>&nbsp;:${live.hlsBitrate}</li>
+										</#if>
+									<#else>
+									
+										<li><em>HTTP流地址</em>&nbsp;:${live.httpUrl}</li>
+										<li><em>HTTP流混合码率</em>&nbsp;:${live.httpBitrate}</li>
+										
+										<li><em>M3U8流地址</em>&nbsp;:${live.hlsUrl}</li>
+										<li><em>M3U8流混合码率</em>&nbsp;:${live.hlsBitrate}</li>
+										
+										<li><em>RTSP流地址</em>&nbsp;:${live.rtspUrl}</li>
+										<li><em>RTSP流混合码率</em>&nbsp;:${live.rtspBitrate}</li>
+									
+									</#if>
+									<br>
+								</#list>
+							</ul>
+						</#if>
+						<br>
+					</ul>
+				</#list>
+			</#if><!-- MDN End -->
 			
 		</li>
 		

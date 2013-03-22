@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
@@ -102,6 +103,10 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("thresholdNetGtMap", MonitorConstant.THRESHOLD_NET_GT_STRING_KEY);
 		map.put("maxProcessMap", MonitorConstant.MAX_PROCESS_STRING_KEY);
 
+		map.put("encoderModeMap", MdnConstant.EncoderMode.mapKeyStr);
+		map.put("outputModeMap", MdnConstant.OutputMode.mapKeyStr);
+		map.put("bandwidthMap", MdnConstant.BANDWIDTH_MAP_STRING_KEY);
+
 		map.put("allESGs", comm.esgService.getAllEsgList());
 
 		return map;
@@ -140,6 +145,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorElbs", apply.getMonitorElbs());
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
+		map.put("mdns", apply.getMdnItems());
 
 		// 申请 审批Audit
 
@@ -186,6 +192,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorElbs", apply.getMonitorElbs());
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
+		map.put("mdns", apply.getMdnItems());
 
 		// 工单处理URL
 
@@ -227,6 +234,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorElbs", apply.getMonitorElbs());
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
+		map.put("mdns", apply.getMdnItems());
 
 		// 工单处理完成提示文字
 

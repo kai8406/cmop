@@ -535,7 +535,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByComputeItem(linkId);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			if (!oldValue.equals(newValue)) {
+				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			}
 
 		} else if (newLinkType.equals(oldLinkType) && NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
 
@@ -549,7 +551,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByNetworkElbItem(linkId);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			if (!oldValue.equals(newValue)) {
+				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			}
 
 		} else if (!newLinkType.equals(oldLinkType)) {
 

@@ -182,6 +182,7 @@ function cloneParamTable() {
 
 /**
  * 修改EIP服务申请或变更EIP资源时提交form的时候.将关联类型和关联ID写入隐藏域中.
+ * linkType:  1.关联实例 ; 2.关联ELB
  * PS:注意元素ID
  */
 function fillLinkType() {
@@ -190,7 +191,7 @@ function fillLinkType() {
 	var linkType, linkId;
 	if ($elbSelect.val() != undefined) {
 		//关联ELB
-		linkType = "0";
+		linkType = "2";
 		linkId = $elbSelect.val();
 	} else {
 		//关联实例

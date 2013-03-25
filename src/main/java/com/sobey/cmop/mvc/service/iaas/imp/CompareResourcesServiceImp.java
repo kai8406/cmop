@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -23,6 +24,9 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -965,6 +969,327 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		return isChange;
 	}
 
+	@Override
+	public boolean compareMdnItem(Resources resources, MdnItem mdnItem, String coverArea, String coverIsp) {
+
+		boolean isChange = false;
+
+		if (!mdnItem.getCoverArea().equals(coverArea)) {
+
+			// coverArea
+
+			String fieldName = FieldNameConstant.MdnItem.重点覆盖地域.toString();
+
+			String oldValue = mdnItem.getCoverArea();
+			String oldString = mdnItem.getCoverArea();
+
+			String newValue = coverArea;
+			String newString = coverArea;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnItem.getCoverIsp().equals(coverIsp)) {
+
+			// coverIsp
+
+			String fieldName = FieldNameConstant.MdnItem.重点覆盖ISP.toString();
+
+			String oldValue = mdnItem.getCoverIsp();
+			String oldString = this.wrapStringByMDNCoverIsp(mdnItem.getCoverIsp());
+
+			String newValue = coverIsp;
+			String newString = this.wrapStringByMDNCoverIsp(coverIsp);
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		return isChange;
+	}
+
+	@Override
+	public boolean compareMdnVodItem(Resources resources, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+
+		boolean isChange = false;
+
+		if (!mdnVodItem.getVodDomain().equals(vodDomain)) {
+
+			String fieldName = FieldNameConstant.MdnVodItem.点播服务域名.toString();
+
+			String oldValue = mdnVodItem.getVodDomain();
+			String oldString = mdnVodItem.getVodDomain();
+
+			String newValue = vodDomain;
+			String newString = vodDomain;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnVodItem.getVodBandwidth().equals(vodBandwidth)) {
+
+			String fieldName = FieldNameConstant.MdnVodItem.点播加速服务带宽.toString();
+
+			String oldValue = mdnVodItem.getVodBandwidth();
+			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth());
+
+			String newValue = vodBandwidth;
+			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(vodBandwidth);
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnVodItem.getVodProtocol().equals(vodProtocol)) {
+
+			String fieldName = FieldNameConstant.MdnVodItem.点播播放协议选择.toString();
+
+			String oldValue = mdnVodItem.getVodProtocol();
+			String oldString = mdnVodItem.getVodProtocol();
+
+			String newValue = vodProtocol;
+			String newString = vodProtocol;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnVodItem.getSourceOutBandwidth().equals(sourceOutBandwidth)) {
+
+			String fieldName = FieldNameConstant.MdnVodItem.点播出口带宽.toString();
+
+			String oldValue = mdnVodItem.getSourceOutBandwidth();
+			String oldString = mdnVodItem.getSourceOutBandwidth();
+
+			String newValue = sourceOutBandwidth;
+			String newString = sourceOutBandwidth;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnVodItem.getSourceStreamerUrl().equals(sourceStreamerUrl)) {
+
+			String fieldName = FieldNameConstant.MdnVodItem.Streamer地址.toString();
+
+			String oldValue = mdnVodItem.getSourceStreamerUrl();
+			String oldString = mdnVodItem.getSourceStreamerUrl();
+
+			String newValue = sourceStreamerUrl;
+			String newString = sourceStreamerUrl;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		return isChange;
+	}
+
+	@Override
+	public boolean compareMdnLiveItem(Resources resources, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
+			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+
+		boolean isChange = false;
+
+		if (!mdnLiveItem.getLiveDomain().equals(liveDomain)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.直播服务域名.toString();
+
+			String oldValue = mdnLiveItem.getLiveDomain();
+			String oldString = mdnLiveItem.getLiveDomain();
+
+			String newValue = liveDomain;
+			String newString = liveDomain;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnLiveItem.getLiveBandwidth().equals(liveBandwidth)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString();
+
+			String oldValue = mdnLiveItem.getLiveBandwidth();
+			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth());
+
+			String newValue = liveBandwidth;
+			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(liveBandwidth);
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnLiveItem.getLiveProtocol().equals(liveProtocol)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.直播播放协议选择.toString();
+
+			String oldValue = mdnLiveItem.getLiveProtocol();
+			String oldString = mdnLiveItem.getLiveProtocol();
+
+			String newValue = liveProtocol;
+			String newString = liveProtocol;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnLiveItem.getBandwidth().equals(bandwidth)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.直播出口带宽.toString();
+
+			String oldValue = mdnLiveItem.getBandwidth();
+			String oldString = mdnLiveItem.getBandwidth();
+
+			String newValue = bandwidth;
+			String newString = bandwidth;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnLiveItem.getName().equals(name)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.频道名称.toString();
+
+			String oldValue = mdnLiveItem.getName();
+			String oldString = mdnLiveItem.getName();
+
+			String newValue = name;
+			String newString = name;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		if (!mdnLiveItem.getGuid().equals(guid)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.频道名称.toString();
+
+			String oldValue = mdnLiveItem.getGuid();
+			String oldString = mdnLiveItem.getGuid();
+
+			String newValue = guid;
+			String newString = guid;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		// 直播流输出模式变更
+		if (!mdnLiveItem.getStreamOutMode().equals(streamOutMode)) {
+
+			String fieldName = FieldNameConstant.MdnLiveItem.直播流输出模式.toString();
+
+			String oldValue = mdnLiveItem.getStreamOutMode().toString();
+			String oldString = MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode());
+
+			String newValue = streamOutMode.toString();
+			String newString = MdnConstant.OutputMode.get(streamOutMode);
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+			if (MdnConstant.OutputMode.Transfer模式.toInteger().equals(streamOutMode)) { // 变成Transfer模式模式
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrl, httpUrl);
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrate, httpBitrate);
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrl, hlsUrl);
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrate, hlsBitrate);
+
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), "", "", rtspUrl, rtspUrl);
+				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), "", "", rtspBitrate, rtspBitrate);
+
+			} else {// 变成Encoder模式
+
+				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrlEncoder, httpUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrateEncoder, httpBitrateEncoder);
+				} else {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrlEncoder, hlsUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrateEncoder, hlsBitrateEncoder);
+				}
+			}
+
+		} else {// 直播流输出模式未变更
+
+			if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {// Encoder模式
+
+				// 比较编码器模式
+
+				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {// HTTP拉流模式
+
+					if (!httpUrlEncoder.equals(mdnLiveItem.getHttpUrl())) {
+						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(), mdnLiveItem.getHttpUrl(), httpUrlEncoder,
+								httpUrlEncoder);
+					}
+					if (!httpBitrateEncoder.equals(mdnLiveItem.getHttpBitrate())) {
+						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(), mdnLiveItem.getHttpBitrate(),
+								httpBitrateEncoder, httpBitrateEncoder);
+					}
+				} else {// RTMP推流模式
+					if (!hlsUrlEncoder.equals(mdnLiveItem.getHlsUrl())) {
+						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(), mdnLiveItem.getHlsUrl(), hlsUrlEncoder,
+								hlsUrlEncoder);
+					}
+					if (!hlsBitrateEncoder.equals(mdnLiveItem.getHlsBitrate())) {
+						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(), mdnLiveItem.getHlsBitrate(),
+								hlsBitrateEncoder, hlsBitrateEncoder);
+					}
+				}
+
+			} else {// Transfer模式
+
+				if (!mdnLiveItem.getHttpUrl().equals(httpUrl)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(), mdnLiveItem.getHttpUrl(), httpUrl, httpUrl);
+				}
+				if (!mdnLiveItem.getHttpBitrate().equals(httpBitrate)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(), mdnLiveItem.getHttpBitrate(), httpBitrate,
+							httpBitrate);
+				}
+				if (!mdnLiveItem.getHlsUrl().equals(hlsUrl)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(), mdnLiveItem.getHlsUrl(), hlsUrl, hlsUrl);
+				}
+				if (!mdnLiveItem.getHlsBitrate().equals(hlsBitrate)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(), mdnLiveItem.getHlsBitrate(), hlsBitrate,
+							hlsBitrate);
+				}
+				if (!mdnLiveItem.getRtspUrl().equals(rtspUrl)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), mdnLiveItem.getRtspUrl(), mdnLiveItem.getRtspUrl(), rtspUrl, rtspUrl);
+				}
+				if (!mdnLiveItem.getRtspBitrate().equals(rtspBitrate)) {
+					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), mdnLiveItem.getRtspBitrate(), mdnLiveItem.getRtspBitrate(), rtspBitrate,
+							rtspBitrate);
+				}
+			}
+
+		}
+
+		return isChange;
+	}
+
+	/**
+	 * 将mdn中的coverIsp由Id字符串组合成文本字符串.
+	 * 
+	 * @param coverIsp
+	 * @return
+	 */
+	private String wrapStringByMDNCoverIsp(String coverIsp) {
+
+		String isp = "";
+
+		String[] coverIsps = StringUtils.split(coverIsp, ",");
+
+		for (String ispKey : coverIsps) {
+			isp += NetworkConstant.ISPType.get(Integer.valueOf(ispKey)) + ",";
+		}
+
+		return isp.substring(0, isp.length() - 1);
+
+	}
+
 	/**
 	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.
 	 * 
@@ -1066,4 +1391,5 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		return value;
 
 	}
+
 }

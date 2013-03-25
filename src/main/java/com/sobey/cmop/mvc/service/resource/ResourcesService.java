@@ -639,9 +639,23 @@ public class ResourcesService extends BaseSevcie {
 				}
 			}
 			comm.monitorElbServcie.saveOrUpdate(monitorElb);
+		} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
+
+			MdnItem mdnItem = comm.mdnService.getMdnItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
+					mdnItem.setCoverArea(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
+					mdnItem.setCoverIsp(changeItem.getOldValue());
+				}
+			}
+			comm.mdnService.saveOrUpdate(mdnItem);
 		}
 
-		// TODO 还有MDN,CP资源的还原
+		// TODO 还有CP资源的还原
 
 		// 清除服务变更Change的内容
 

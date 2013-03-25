@@ -5,6 +5,9 @@ import java.util.List;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -151,8 +154,68 @@ public interface ICompareResourcesService {
 	 */
 	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId);
 
+	/**
+	 * 比较monitorCompute变更前后的值
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param monitorCompute
+	 *            变更前的monitorCompute对象
+	 * @param ipAddress
+	 * @param cpuWarn
+	 * @param cpuCritical
+	 * @param memoryWarn
+	 * @param memoryCritical
+	 * @param pingLossWarn
+	 * @param pingLossCritical
+	 * @param diskWarn
+	 * @param diskCritical
+	 * @param pingDelayWarn
+	 * @param pingDelayCritical
+	 * @param maxProcessWarn
+	 * @param maxProcessCritical
+	 * @param networkFlowWarn
+	 * @param networkFlowCritical
+	 * @param port
+	 * @param process
+	 * @param mountPoint
+	 * @return
+	 */
 	public boolean compareMonitorCompute(Resources resources, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
 			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical,
 			String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint);
+
+	/**
+	 * 比较MdnItem变更前后的值
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param mdnItem
+	 *            变更前的MdnItem
+	 * @param coverArea
+	 *            重点覆盖区域
+	 * @param coverIsp
+	 *            重点覆盖ISP
+	 * @return
+	 */
+	public boolean compareMdnItem(Resources resources, MdnItem mdnItem, String coverArea, String coverIsp);
+
+	/**
+	 * 比较MdnVodItem变更前后的值
+	 * 
+	 * @param resources
+	 * @param mdnVodItem
+	 * @param vodDomain
+	 * @param vodBandwidth
+	 * @param vodProtocol
+	 * @param sourceOutBandwidth
+	 * @param sourceStreamerUrl
+	 * @return
+	 */
+	public boolean compareMdnVodItem(Resources resources, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl);
+
+	public boolean compareMdnLiveItem(Resources resources, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
+			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate);
 
 }

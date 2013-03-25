@@ -145,6 +145,12 @@ public class ResourcesController extends BaseController {
 
 			updateUrl = "resource/form/monitorElb";
 
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
+
+			model.addAttribute("mdn", comm.mdnService.getMdnItem(serviceId));
+
+			updateUrl = "resource/form/mdn";
+
 		} else {
 
 			updateUrl = "resource/resourceList";
@@ -237,6 +243,12 @@ public class ResourcesController extends BaseController {
 			model.addAttribute("monitorElb", comm.monitorElbServcie.getMonitorElb(serviceId));
 
 			detailUrl = "resource/detail/monitorElbDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
+
+			model.addAttribute("mdn", comm.mdnService.getMdnItem(serviceId));
+
+			detailUrl = "resource/detail/mdnDetail";
 
 		} else {
 

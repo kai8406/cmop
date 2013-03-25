@@ -20,6 +20,8 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
+import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.framework.utils.StringCommonUtils;
 
 /**
@@ -138,6 +140,53 @@ public class MdnService extends BaseSevcie {
 
 	}
 
+	/**
+	 * 变更MDN
+	 * 
+	 * @param resources
+	 *            资源
+	 * @param serviceTagId
+	 *            服务标签ID
+	 * @param changeDescription
+	 *            变更描述
+	 * @param coverArea
+	 *            重点覆盖地域
+	 * @param coverIsp
+	 *            重点覆盖ISP
+	 */
+	@Transactional(readOnly = false)
+	public void saveResourcesByMdn(Resources resources, Integer serviceTagId, String changeDescription, String coverArea, String coverIsp) {
+
+		/* 新增或更新资源Resources的服务变更Change. */
+
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+
+		MdnItem mdnItem = this.getMdnItem(resources.getServiceId());
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareMdnItem(resources, mdnItem, coverArea, coverIsp);
+
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+		if (isChange) {
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+		}
+		resources.setServiceTag(serviceTag);
+		comm.serviceTagService.saveOrUpdate(serviceTag);
+
+		mdnItem.setCoverArea(coverArea);
+		mdnItem.setCoverIsp(coverIsp);
+
+		this.saveOrUpdate(mdnItem);
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
+	}
+
 	/* ============== Vod ============== */
 
 	/**
@@ -195,6 +244,45 @@ public class MdnService extends BaseSevcie {
 	 */
 	public List<MdnVodItem> getMdnVodItemByMdnId(Integer mdnId) {
 		return mdnVodItemDao.findByMdnItemId(mdnId);
+	}
+
+	/**
+	 * 变更MDNVod
+	 */
+	@Transactional(readOnly = false)
+	public void saveResourcesByMdnVod(Resources resources, Integer vodId, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+
+		/* 新增或更新资源Resources的服务变更Change. */
+
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, "");
+
+		MdnVodItem mdnVodItem = this.getMdnVodItem(vodId);
+
+		ServiceTag serviceTag = resources.getServiceTag();
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareMdnVodItem(resources, mdnVodItem, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
+
+		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+		if (isChange) {
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+		}
+		resources.setServiceTag(serviceTag);
+		comm.serviceTagService.saveOrUpdate(serviceTag);
+
+		mdnVodItem.setSourceOutBandwidth(sourceOutBandwidth);
+		mdnVodItem.setSourceStreamerUrl(sourceStreamerUrl);
+		mdnVodItem.setVodBandwidth(vodBandwidth);
+		mdnVodItem.setVodDomain(vodDomain);
+		mdnVodItem.setVodProtocol(vodProtocol);
+
+		this.saveOrUpdate(mdnVodItem);
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
 	}
 
 	/* ============== Live ============== */
@@ -413,4 +501,40 @@ public class MdnService extends BaseSevcie {
 		return mdnLiveItemDao.findByMdnItemId(mdnId);
 	}
 
+	/**
+	 * 变更MDNVod
+	 */
+	@Transactional(readOnly = false)
+	public void saveResourcesByMdnLive(Resources resources, Integer liveId, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
+			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+
+		/* 新增或更新资源Resources的服务变更Change. */
+
+		comm.changeServcie.saveOrUpdateChangeByResources(resources, "");
+
+		MdnLiveItem mdnLiveItem = this.getMdnLiveItem(liveId);
+
+		ServiceTag serviceTag = resources.getServiceTag();
+
+		/* 比较资源变更前和变更后的值. */
+
+		boolean isChange = comm.compareResourcesService.compareMdnLiveItem(resources, mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode,
+				httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+
+		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
+		if (isChange) {
+			serviceTag.setStatus(ResourcesConstant.Status.已变更.toInteger());
+			resources.setStatus(ResourcesConstant.Status.已变更.toInteger());
+		}
+		resources.setServiceTag(serviceTag);
+		comm.serviceTagService.saveOrUpdate(serviceTag);
+
+		this.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder,
+				hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+
+		// 更新resources
+
+		comm.resourcesService.saveOrUpdate(resources);
+	}
 }

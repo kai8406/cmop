@@ -1,6 +1,8 @@
 package com.sobey.cmop.mvc.web.resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -138,7 +140,7 @@ public class ResourcesExtensionController extends BaseController {
 	 * 变更ELB监控monitorElb
 	 */
 	@RequestMapping(value = "/monitorElb", method = RequestMethod.POST)
-	public String updatemonitorElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+	public String updateMonitorElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
 			@RequestParam(value = "elbId", required = false) Integer elbId, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
@@ -155,7 +157,7 @@ public class ResourcesExtensionController extends BaseController {
 	 * 变更实例监控monitorCompute
 	 */
 	@RequestMapping(value = "/monitorCompute", method = RequestMethod.POST)
-	public String updatemonitorCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+	public String updateMonitorCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
 			@RequestParam(value = "changeDescription") String changeDescription, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "cpuWarn") String cpuWarn,
 			@RequestParam(value = "cpuCritical") String cpuCritical, @RequestParam(value = "memoryWarn") String memoryWarn, @RequestParam(value = "memoryCritical") String memoryCritical,
 			@RequestParam(value = "pingLossWarn") String pingLossWarn, @RequestParam(value = "pingLossCritical") String pingLossCritical, @RequestParam(value = "diskWarn") String diskWarn,
@@ -175,4 +177,90 @@ public class ResourcesExtensionController extends BaseController {
 
 		return REDIRECT_SUCCESS_URL;
 	}
+
+	/**
+	 * 变更MDN
+	 */
+	@RequestMapping(value = "/mdn", method = RequestMethod.POST)
+	public String updateMdn(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "changeDescription") String changeDescription, @RequestParam(value = "coverArea") String coverArea, @RequestParam(value = "coverIsp") String coverIsp,
+			RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.mdnService.saveResourcesByMdn(resources, serviceTagId, changeDescription, coverArea, coverIsp);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
+	}
+
+	/**
+	 * 跳转至mdnVod变更页面.
+	 * 
+	 * @param id
+	 *            资源ID
+	 * @param vodId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/{id}/vod/{vodId}", method = RequestMethod.GET)
+	public String updateMdnVodForm(@PathVariable("id") Integer id, @PathVariable("vodId") Integer vodId, Model model) {
+		model.addAttribute("mdnVod", comm.mdnService.getMdnVodItem(vodId));
+		model.addAttribute("resources", comm.resourcesService.getResources(id));
+		return "resource/form/mdnVod";
+	}
+
+	@RequestMapping(value = "/{id}/vod/{vodId}", method = RequestMethod.POST)
+	public String updateVod(@PathVariable("id") Integer id, @PathVariable("vodId") Integer vodId, @RequestParam(value = "vodDomain") String vodDomain,
+			@RequestParam(value = "vodBandwidth") String vodBandwidth, @RequestParam(value = "vodProtocol") String vodProtocol, @RequestParam(value = "sourceOutBandwidth") String sourceOutBandwidth,
+			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		// resources.setUsedby(usedby);
+
+		comm.mdnService.saveResourcesByMdnVod(resources, vodId, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
+
+		redirectAttributes.addFlashAttribute("message", "变更MDN点播成功");
+
+		return "redirect:/resources/update/" + id;
+	}
+
+	/**
+	 * 跳转至mdnLive变更页面.
+	 * 
+	 * @param mdnId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/{id}/live/{liveId}", method = RequestMethod.GET)
+	public String updateMdnLiveForm(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId, Model model) {
+		model.addAttribute("mdnLive", comm.mdnService.getMdnLiveItem(liveId));
+		model.addAttribute("resources", comm.resourcesService.getResources(id));
+		return "resource/form/mdnLive";
+	}
+
+	@RequestMapping(value = "/{id}/live/{liveId}", method = RequestMethod.POST)
+	public String updateVod(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId, @RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
+			@RequestParam(value = "guid") String guid, @RequestParam(value = "liveDomain") String liveDomain, @RequestParam(value = "liveBandwidth") String liveBandwidth,
+			@RequestParam(value = "liveProtocol") String liveProtocol, @RequestParam(value = "streamOutMode") Integer streamOutMode,
+			@RequestParam(value = "encoderMode", required = false) Integer encoderMode, @RequestParam(value = "httpUrlEncoder", required = false) String httpUrlEncoder,
+			@RequestParam(value = "httpBitrateEncoder", required = false) String httpBitrateEncoder, @RequestParam(value = "hlsUrlEncoder", required = false) String hlsUrlEncoder,
+			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
+			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
+			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
+			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		// resources.setUsedby(usedby);
+
+		comm.mdnService.saveResourcesByMdnLive(resources, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
+				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+
+		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
+
+		return "redirect:/resources/update/" + id;
+	}
+
 }

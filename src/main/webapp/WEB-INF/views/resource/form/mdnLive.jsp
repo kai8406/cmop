@@ -4,12 +4,12 @@
 <html>
 <head>
 
-	<title>服务申请</title>
+	<title>资源管理</title>
 	
 	<script>
 		$(document).ready(function() {
 			
-			$("ul#navbar li#apply").addClass("active");
+			$("ul#navbar li#resource").addClass("active");
 			
 			$("#inputForm").validate();
 			
@@ -41,12 +41,12 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 	
-	<form id="inputForm" action="." method="post" class="input-form form-horizontal" >
+	<form id="inputForm" action="${ctx}/resources/update/${resources.id}/live/${mdnLive.id}" method="post" class="input-form form-horizontal" >
 		
-		<input type="hidden" name="applyId" value="${mdnLive.mdnItem.apply.id }">
+		<input type="hidden" name="id" value="${resources.id }">
 		
 		<fieldset>
-			<legend><small>修改MDN直播加速</small></legend>
+			<legend><small>变更MDN直播加速</small></legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
@@ -242,7 +242,7 @@
 			</div><!-- 选择Transfer End -->
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/update/${mdnLive.mdnItem.id}/" class="btn">返回</a>
+				<a href="${ctx}/resources/update/${resources.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 			

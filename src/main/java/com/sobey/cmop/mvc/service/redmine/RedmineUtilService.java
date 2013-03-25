@@ -430,6 +430,76 @@ public class RedmineUtilService extends BaseSevcie {
 
 							}
 
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
+
+							// MDN
+							if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnItem.重点覆盖地域 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnItem.重点覆盖ISP.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnItem.重点覆盖ISP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							// MDNVod
+							if (FieldNameConstant.MdnVodItem.点播服务域名.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnVodItem.点播服务域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnVodItem.点播播放协议选择.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnVodItem.点播播放协议选择 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnVodItem.点播加速服务带宽.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnVodItem.点播加速服务带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnVodItem.点播出口带宽.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnVodItem.点播出口带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnVodItem.Streamer地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnVodItem.Streamer地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							// MDNLive
+							if (FieldNameConstant.MdnLiveItem.直播服务域名.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.直播服务域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.直播播放协议选择.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.直播播放协议选择 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.直播加速服务带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.直播出口带宽.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.直播出口带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.频道名称.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.频道GUID.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.频道GUID + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.直播流输出模式.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.直播流输出模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.编码器模式.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+
+							if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.HTTP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.M3U8流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.M3U8流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.M3U8流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.RTSP流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.RTSP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.RTSP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+
 						}
 
 					}

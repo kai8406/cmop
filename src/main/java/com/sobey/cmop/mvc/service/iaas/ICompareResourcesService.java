@@ -1,6 +1,10 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.List;
+
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -88,7 +92,8 @@ public interface ICompareResourcesService {
 	 *            关联实例Id
 	 * @return
 	 */
-	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds);
+	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts,
+			String[] computeIds);
 
 	/**
 	 * 比较公网IP EIP 变更前和变更后的值<br>
@@ -97,6 +102,8 @@ public interface ICompareResourcesService {
 	 *            资源
 	 * @param networkEipItem
 	 *            变更前的公网IP EIP
+	 * @param eipPortItems
+	 *            变更前的端口信息
 	 * @param linkType
 	 *            关联类型
 	 * @param linkId
@@ -109,7 +116,8 @@ public interface ICompareResourcesService {
 	 *            目标端口数组
 	 * @return
 	 */
-	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts);
+	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			String[] targetPorts);
 
 	/**
 	 * 比较dns变更前和变更后的值

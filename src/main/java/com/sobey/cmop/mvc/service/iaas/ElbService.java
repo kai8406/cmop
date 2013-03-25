@@ -249,13 +249,15 @@ public class ElbService extends BaseSevcie {
 
 		NetworkElbItem networkElbItem = this.getNetworkElbItem(resources.getServiceId());
 
-		// 删除变更前的端口映射
-
-		this.deleteElbPortItem(this.getElbPortItemListByElbId(networkElbItem.getId()));
+		List<ElbPortItem> elbPortItems = this.getElbPortItemListByElbId(networkElbItem.getId());
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, keepSession, protocols, sourcePorts, targetPorts, computeIds);
+		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, elbPortItems, keepSession, protocols, sourcePorts, targetPorts, computeIds);
+
+		// 删除变更前的端口映射
+
+		this.deleteElbPortItem(elbPortItems);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

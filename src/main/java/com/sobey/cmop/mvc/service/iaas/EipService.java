@@ -243,13 +243,15 @@ public class EipService extends BaseSevcie {
 
 		NetworkEipItem networkEipItem = this.getNetworkEipItem(resources.getServiceId());
 
-		// 删除变更前的端口映射
-
-		this.deleteEipPortItem(this.getEipPortItemListByEipId(networkEipItem.getId()));
+		List<EipPortItem> eipPortItems = this.getEipPortItemListByEipId(networkEipItem.getId());
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareEip(resources, networkEipItem, linkType, linkId, protocols, sourcePorts, targetPorts);
+		boolean isChange = comm.compareResourcesService.compareEip(resources, networkEipItem, eipPortItems, linkType, linkId, protocols, sourcePorts, targetPorts);
+
+		// 删除变更前的端口映射
+
+		this.deleteEipPortItem(eipPortItems);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

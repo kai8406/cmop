@@ -359,7 +359,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts,
+			String[] computeIds) {
 
 		boolean isChange = false;
 
@@ -380,10 +381,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		}
 
 		// 端口信息
-		if (this.compareElbPortItem(networkElbItem, protocols, sourcePorts, targetPorts)) {
+		if (this.compareElbPortItem(elbPortItems, protocols, sourcePorts, targetPorts)) {
 
 			String fieldName = FieldNameConstant.Elb.端口信息.toString();
-			String oldValue = Collections3.extractToString(networkElbItem.getElbPortItems(), "id", ",");
+			String oldValue = Collections3.extractToString(elbPortItems, "id", ",");
 			String oldString = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
 
 			String newValue = "";
@@ -435,15 +436,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 *            目标端口数组
 	 * @return
 	 */
-	private boolean compareElbPortItem(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	private boolean compareElbPortItem(List<ElbPortItem> elbPortItems, String[] protocols, String[] sourcePorts, String[] targetPorts) {
 
 		// === OldValue === //
 
 		List<String> oldProtocolList = new ArrayList<String>();
 		List<String> oldSourcePortList = new ArrayList<String>();
 		List<String> oldTargetPortList = new ArrayList<String>();
-
-		List<ElbPortItem> elbPortItems = comm.elbService.getElbPortItemListByElbId(networkElbItem.getId());
 
 		for (ElbPortItem elbPortItem : elbPortItems) {
 			oldProtocolList.add(elbPortItem.getProtocol());
@@ -511,7 +510,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			String[] targetPorts) {
 
 		boolean isChange = false;
 
@@ -615,11 +615,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		}
 
 		// 端口信息
-		if (this.compareEipPortItem(networkEipItem, protocols, sourcePorts, targetPorts)) {
+		if (this.compareEipPortItem(eipPortItems, protocols, sourcePorts, targetPorts)) {
 
 			String fieldName = FieldNameConstant.Eip.端口信息.toString();
 
-			String oldValue = Collections3.extractToString(networkEipItem.getEipPortItems(), "id", ",");
+			String oldValue = Collections3.extractToString(eipPortItems, "id", ",");
 			String oldString = this.wrapEipPortItemFromNetworkEipItemToString(networkEipItem);
 
 			String newValue = "";
@@ -656,7 +656,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 * 比较应用EipPortItem<br>
 	 * true:有变更;false:未变更.<br>
 	 * 
-	 * @param networkEipItem
+	 * @param eipPortItems
+	 *            端口信息
 	 * @param protocols
 	 *            协议数组
 	 * @param sourcePorts
@@ -665,15 +666,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 *            目标端口数组
 	 * @return
 	 */
-	private boolean compareEipPortItem(NetworkEipItem networkEipItem, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	private boolean compareEipPortItem(List<EipPortItem> eipPortItems, String[] protocols, String[] sourcePorts, String[] targetPorts) {
 
 		// === OldValue === //
 
 		List<String> oldProtocolList = new ArrayList<String>();
 		List<String> oldSourcePortList = new ArrayList<String>();
 		List<String> oldTargetPortList = new ArrayList<String>();
-
-		List<EipPortItem> eipPortItems = comm.eipService.getEipPortItemListByEipId(networkEipItem.getId());
 
 		for (EipPortItem eipPortItem : eipPortItems) {
 			oldProtocolList.add(eipPortItem.getProtocol());

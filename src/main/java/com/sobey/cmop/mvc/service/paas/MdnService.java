@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MdnItemDao;
 import com.sobey.cmop.mvc.dao.MdnLiveItemDao;
@@ -536,5 +538,25 @@ public class MdnService extends BaseSevcie {
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
+	}
+
+	/**
+	 * 将mdn中的coverIsp由Id字符串组合成文本字符串.
+	 * 
+	 * @param coverIsp
+	 * @return
+	 */
+	public String wrapStringByMDNCoverIsp(String coverIsp) {
+
+		String isp = "";
+
+		String[] coverIsps = StringUtils.split(coverIsp, ",");
+
+		for (String ispKey : coverIsps) {
+			isp += NetworkConstant.ISPType.get(Integer.valueOf(ispKey)) + ",";
+		}
+
+		return isp.substring(0, isp.length() - 1);
+
 	}
 }

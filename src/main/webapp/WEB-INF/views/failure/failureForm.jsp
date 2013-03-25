@@ -209,6 +209,27 @@
 					}
 				});
 				
+			}else if(serviceType == 8){
+			
+				//MDN
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getMdn?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>重点覆盖地域</em>&nbsp;&nbsp;<strong>' + data.coverArea + '</strong></dd>';
+						html += '<dd><em>重点覆盖ISP</em>&nbsp;&nbsp;<strong>' + data.coverIsp + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				
 			}else if(serviceType == 9){
 				
 				//monitorCompute

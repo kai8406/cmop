@@ -997,10 +997,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.MdnItem.重点覆盖ISP.toString();
 
 			String oldValue = mdnItem.getCoverIsp();
-			String oldString = this.wrapStringByMDNCoverIsp(mdnItem.getCoverIsp());
+			String oldString = comm.mdnService.wrapStringByMDNCoverIsp(mdnItem.getCoverIsp());
 
 			String newValue = coverIsp;
-			String newString = this.wrapStringByMDNCoverIsp(coverIsp);
+			String newString = comm.mdnService.wrapStringByMDNCoverIsp(coverIsp);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -1268,26 +1268,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		}
 
 		return isChange;
-	}
-
-	/**
-	 * 将mdn中的coverIsp由Id字符串组合成文本字符串.
-	 * 
-	 * @param coverIsp
-	 * @return
-	 */
-	private String wrapStringByMDNCoverIsp(String coverIsp) {
-
-		String isp = "";
-
-		String[] coverIsps = StringUtils.split(coverIsp, ",");
-
-		for (String ispKey : coverIsps) {
-			isp += NetworkConstant.ISPType.get(Integer.valueOf(ispKey)) + ",";
-		}
-
-		return isp.substring(0, isp.length() - 1);
-
 	}
 
 	/**

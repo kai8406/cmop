@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas.imp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,10 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -21,6 +26,9 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MdnJson;
+import com.sobey.cmop.mvc.entity.ToJson.MdnLiveJson;
+import com.sobey.cmop.mvc.entity.ToJson.MdnVodJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
@@ -217,6 +225,73 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 		json.setMaxProcessWarn(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessWarn()));
 		json.setMaxProcessCritical(MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessCritical()));
+
+		return json;
+	}
+
+	@Override
+	public MdnJson convertMdnJsonToMdn(MdnItem mdnItem) {
+
+		MdnJson json = new MdnJson();
+
+		json.setId(mdnItem.getId());
+		json.setIdentifier(mdnItem.getIdentifier());
+		json.setCoverArea(mdnItem.getCoverArea());
+		json.setCoverIsp(comm.mdnService.wrapStringByMDNCoverIsp(mdnItem.getCoverIsp()));
+
+		if (!mdnItem.getMdnLiveItems().isEmpty()) {
+
+			List<MdnLiveJson> mdnLiveJsons = new ArrayList<MdnLiveJson>();
+
+			for (MdnLiveItem mdnLiveItem : mdnItem.getMdnLiveItems()) {
+
+				MdnLiveJson mdnLiveJson = new MdnLiveJson();
+
+				mdnLiveJson.setId(mdnLiveItem.getId());
+				mdnLiveJson.setLiveDomain(mdnLiveItem.getLiveDomain());
+				mdnLiveJson.setLiveBandwidth(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth()));
+				mdnLiveJson.setLiveProtocol(mdnLiveItem.getLiveProtocol());
+				mdnLiveJson.setStreamOutMode(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode()));
+				mdnLiveJson.setName(mdnLiveItem.getName());
+				mdnLiveJson.setGuid(mdnLiveItem.getGuid());
+				mdnLiveJson.setBandwidth(mdnLiveItem.getBandwidth());
+				mdnLiveJson.setEncoderMode(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode()));
+
+				mdnLiveJson.setHttpUrl(mdnLiveItem.getHttpUrl());
+				mdnLiveJson.setHttpBitrate(mdnLiveItem.getHttpBitrate());
+
+				mdnLiveJson.setHlsUrl(mdnLiveItem.getHlsUrl());
+				mdnLiveJson.setHlsBitrate(mdnLiveItem.getHlsBitrate());
+
+				mdnLiveJson.setRtspUrl(mdnLiveItem.getRtspUrl());
+				mdnLiveJson.setRtspBitrate(mdnLiveItem.getRtspBitrate());
+
+				mdnLiveJsons.add(mdnLiveJson);
+			}
+
+			json.setMdnLiveJsons(mdnLiveJsons);
+		}
+
+		if (!mdnItem.getMdnVodItems().isEmpty()) {
+
+			List<MdnVodJson> mdnVodJsons = new ArrayList<MdnVodJson>();
+
+			for (MdnVodItem mdnVodItem : mdnItem.getMdnVodItems()) {
+
+				MdnVodJson mdnVodJson = new MdnVodJson();
+
+				mdnVodJson.setId(mdnVodItem.getId());
+				mdnVodJson.setVodDomain(mdnVodItem.getVodDomain());
+				mdnVodJson.setVodProtocol(mdnVodItem.getVodProtocol());
+				mdnVodJson.setVodBandwidth(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth()));
+				mdnVodJson.setSourceStreamerUrl(mdnVodItem.getSourceStreamerUrl());
+				mdnVodJson.setSourceOutBandwidth(mdnVodItem.getSourceOutBandwidth());
+
+				mdnVodJsons.add(mdnVodJson);
+			}
+
+			json.setMdnVodJsons(mdnVodJsons);
+		}
 
 		return json;
 	}

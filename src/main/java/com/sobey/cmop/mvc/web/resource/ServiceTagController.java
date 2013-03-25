@@ -89,6 +89,7 @@ public class ServiceTagController extends BaseController {
 		model.addAttribute("dnsItems", dnsItems);
 		model.addAttribute("monitorComputes", monitorComputes);
 		model.addAttribute("monitorElbs", monitorElbs);
+		model.addAttribute("mdnItems", mdnItems);
 
 		// 根据审批状态获得指定服务标签的审批记录(只取最新的,当前的审批记录.即audit的状态为0)
 		model.addAttribute("audits", comm.auditService.getAuditListByServiceTagIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));

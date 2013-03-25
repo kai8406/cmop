@@ -10,6 +10,7 @@ import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.MdnJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
@@ -108,6 +109,18 @@ public class ResourceAjaxController extends BaseController {
 	public @ResponseBody
 	MonitorComputeJson getmonitorCompute(@RequestParam(value = "id") Integer id) {
 		return comm.resourcesJsonService.convertMonitorComputeJsonToMonitorCompute(comm.monitorComputeServcie.getMonitorCompute(comm.resourcesService.getResources(id).getServiceId()));
+	}
+
+	/**
+	 * Ajax请求根据resourcesId获得MonitorElbJson的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getMdn")
+	public @ResponseBody
+	MdnJson getMdn(@RequestParam(value = "id") Integer id) {
+		return comm.resourcesJsonService.convertMdnJsonToMdn(comm.mdnService.getMdnItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 }

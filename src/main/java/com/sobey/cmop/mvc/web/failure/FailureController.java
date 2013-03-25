@@ -146,6 +146,7 @@ public class FailureController extends BaseController {
 		model.addAttribute("dnsItems", dnsItems);
 		model.addAttribute("monitorComputes", monitorComputes);
 		model.addAttribute("monitorElbs", monitorElbs);
+		model.addAttribute("mdnItems", mdnItems);
 
 		return "failure/failureDetail";
 	}

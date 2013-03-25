@@ -116,7 +116,7 @@ public class FieldNameConstant {
 	}
 
 	/**
-	 * entity StorageItem 里的参数<br>
+	 * entity StorageItem 里的参数
 	 * 
 	 * <pre>
 	 * 存储类型, 容量空间, 挂载实例
@@ -127,6 +127,52 @@ public class FieldNameConstant {
 	 */
 	public enum Storage {
 		存储类型, 挂载实例, 容量空间;
+	}
+
+	/**
+	 * entity MdnItem 里的参数
+	 * 
+	 * <pre>
+	 * 重点覆盖地域, 重点覆盖ISP;
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum MdnItem {
+		重点覆盖地域, 重点覆盖ISP;
+	}
+
+	/**
+	 * entity MdnVodItem 里的参数
+	 * 
+	 * <pre>
+	 * 服务域名, 加速服务带宽, 播放协议选择, 出口带宽, Streamer地址;
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum MdnVodItem {
+		点播服务域名, 点播加速服务带宽, 点播播放协议选择, 点播出口带宽, Streamer地址;
+	}
+
+	/**
+	 * entity MdnLiveItem 里的参数
+	 * 
+	 * <pre>
+	 * 服务域名, 加速服务带宽, 播放协议选择, 出口带宽,
+	 * 直播流输出模式, 频道名称, 频道GUID, 编码器模式,
+	 * HTTP流地址, HTTP流混合码率, 
+	 * M3U8流地址, M3U8流混合码率, 
+	 * RTSP流地址, RTSP流混合码率;
+	 * </pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum MdnLiveItem {
+		直播服务域名, 直播加速服务带宽, 直播播放协议选择, 直播出口带宽, 直播流输出模式, 频道名称, 频道GUID, 编码器模式, HTTP流地址, HTTP流混合码率, M3U8流地址, M3U8流混合码率, RTSP流地址, RTSP流混合码率;
 	}
 
 }

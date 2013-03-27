@@ -12,8 +12,10 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.CpItemDao;
+import com.sobey.cmop.mvc.dao.CpProgramItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.CpItem;
+import com.sobey.cmop.mvc.entity.CpProgramItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 
@@ -30,6 +32,31 @@ public class CPService extends BaseSevcie {
 
 	@Resource
 	private CpItemDao cpItemDao;
+	@Resource
+	private CpProgramItemDao cpProgramItemDao;
+
+	// ============cpProgramItem============
+
+	/**
+	 * 新增,更新CP的附件
+	 * 
+	 * @param cpProgramItem
+	 * @return
+	 */
+	public CpProgramItem saveOrUpdate(CpProgramItem cpProgramItem) {
+		return cpProgramItemDao.save(cpProgramItem);
+	}
+
+	/**
+	 * 根据ID删除云生产的附件
+	 * 
+	 * @param id
+	 */
+	public void deletecpProgramItem(Integer id) {
+		cpProgramItemDao.delete(id);
+	}
+
+	// ============cpItem============
 
 	/**
 	 * 新增,更新CP
@@ -63,7 +90,7 @@ public class CPService extends BaseSevcie {
 	public void saveCPToApply(Apply apply, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, String publishUrl, String isPushCtp,
 			String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
 			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia) {
+			String pictrueOutputGroup, String pictrueOutputMedia, String[] fileNames, String[] fileSizes) {
 
 		// TODO 附件暂时未做.
 
@@ -103,6 +130,15 @@ public class CPService extends BaseSevcie {
 		cpItem.setPictrueOutputMedia(pictrueOutputMedia);
 
 		this.saveOrUpdate(cpItem);
+
+		for (int i = 0; i < fileNames.length; i++) {
+			CpProgramItem cpProgramItem = new CpProgramItem();
+			cpProgramItem.setCpItem(cpItem);
+			cpProgramItem.setName(fileNames[i]);
+			cpProgramItem.setSize(Integer.valueOf(fileSizes[i]));
+			this.saveOrUpdate(cpProgramItem);
+		}
+
 	}
 
 	/**

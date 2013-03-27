@@ -591,6 +591,13 @@
 						<dd><em>FTP上传路径</em>&nbsp;&nbsp;${item.pictrueFtpUploadpath}</dd>
 						<dd><em>输出组类型</em>&nbsp;&nbsp;${item.pictrueOutputGroup}</dd>
 						<dd><em>输出媒体类型</em>&nbsp;&nbsp;${item.pictrueOutputMedia}</dd>
+						<c:if test="${not empty item.cpProgramItems }">
+							<br>
+							<dd><strong>拆条节目单</strong></dd>
+							<c:forEach var="program" items="${ item.cpProgramItems}">
+								<dd><a>${program.name }&nbsp;&nbsp;${program.size }K</a></dd>
+							</c:forEach>
+						</c:if>
 						<dd>
 							<span class="pull-right">
 								<a href="${ctx}/apply/cp/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;

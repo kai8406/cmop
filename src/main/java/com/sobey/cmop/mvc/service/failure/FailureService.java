@@ -1,10 +1,15 @@
 package com.sobey.cmop.mvc.service.failure;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
@@ -34,6 +40,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
+import com.sobey.cmop.mvc.web.failure.UploadedFile;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -50,6 +57,11 @@ import com.taskadapter.redmineapi.bean.Tracker;
 public class FailureService extends BaseSevcie {
 
 	private static Logger logger = LoggerFactory.getLogger(FailureService.class);
+
+	/**
+	 * 附件保存位置
+	 */
+	private static String UPLOAD_DIRECTORY = CONFIG_LOADER.getProperty("UPLOAD_DIRECTORY");
 
 	@Resource
 	private FailureDao failureDao;
@@ -71,11 +83,11 @@ public class FailureService extends BaseSevcie {
 	 * 
 	 * @param failure
 	 * @param fileNames
-	 * @param fileDescs
+	 *            上传附件名
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public boolean saveFailure(Failure failure, String fileNames, String fileDescs) {
+	public boolean saveFailure(Failure failure, String fileNames) {
 
 		logger.info("--->故障申报处理...");
 
@@ -207,4 +219,111 @@ public class FailureService extends BaseSevcie {
 		return failureDao.findAll(spec, pageRequest);
 	}
 
+	/**
+	 * AJAX上传附件
+	 * 
+	 * @param request
+	 * @param file
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<UploadedFile> saveUploadByAjax(HttpServletRequest request, MultipartFile file) {
+
+		// 得到文件保存目录的真实路径
+
+		String pathDir = request.getSession().getServletContext().getRealPath(UPLOAD_DIRECTORY);
+
+		UploadedFile uploadFile = new UploadedFile();
+		uploadFile.setName(file.getOriginalFilename());
+		uploadFile.setSize(Long.valueOf(file.getSize()).intValue());
+		uploadFile.setDeleteUrl("delete/?fileName=" + file.getOriginalFilename());
+		List<UploadedFile> uploadedFiles = new ArrayList<UploadedFile>();
+
+		try {
+
+			this.saveFileFromInputStream(file.getInputStream(), pathDir, file.getOriginalFilename());
+
+			uploadedFiles.add(uploadFile);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.info("上传附件失败!");
+		}
+
+		return uploadedFiles;
+
+	}
+
+	/**
+	 * AJAX删除页面上已经上传的附件.
+	 * 
+	 * @param request
+	 * @param fileName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public boolean deleteUploadByAjax(HttpServletRequest request, String fileName) {
+
+		boolean result = false;
+
+		// 得到文件保存目录的真实路径
+		String pathDir = request.getSession().getServletContext().getRealPath(UPLOAD_DIRECTORY);
+		fileName = pathDir + File.separator + fileName;
+
+		try {
+
+			File file = new File(fileName);
+			if (file.isFile() && file.exists()) {
+				file.delete();
+				logger.info("删除文件（" + fileName + "）成功！");
+			} else {
+				logger.info("此文件（" + fileName + "）不存在！");
+			}
+
+			result = true;
+
+		} catch (Exception e) {
+			logger.info("删除附件失败!");
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * 将上传附件保存至指定硬盘位置.
+	 * 
+	 * @param stream
+	 *            文件输入流
+	 * @param path
+	 *            保存路径
+	 * @param filename
+	 *            文件名
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unused")
+	public void saveFileFromInputStream(InputStream stream, String path, String filename) throws IOException {
+
+		File file = new File(path);
+		if (!file.exists()) {
+			file.mkdir();
+		}
+
+		logger.info(path + File.separator + filename);
+
+		FileOutputStream fs = new FileOutputStream(path + File.separator + filename);
+
+		byte[] buffer = new byte[1024 * 1024];
+
+		int bytesum = 0;
+		int byteread = 0;
+
+		while ((byteread = stream.read(buffer)) != -1) {
+			bytesum += byteread;
+			fs.write(buffer, 0, byteread);
+			fs.flush();
+		}
+		fs.close();
+		stream.close();
+	}
 }

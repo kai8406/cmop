@@ -38,7 +38,45 @@
 				}
 			});
 			
+			$("#upload").click(function() {
+				$(this).fileupload({
+					dataType: 'json',
+					done: function(e, data) {
+						$.each(data.result, function(index, file) {
+							//判断页面是否存在相同的文件名.如果存在,则不显示.
+							var isExist = false;
+							$(".fileuploadDiv").each(function() {
+								if (file.name == $(this).find("#fileInput").val()) {
+									isExist = true;
+								}
+							});
+							if (!isExist) {
+								$('#filename').append(formatCPFileDisplay(file));
+							}
+						});
+					}
+				});
+			});
+			
 		});
+		
+		/**
+		 * 插入上传文件的名称,大小,删除链接.
+		 * 
+		 * @param file
+		 * @returns {String}
+		 */
+		function formatCPFileDisplay(file) {
+			var size = (file.size / 1000).toFixed(2) ;
+			var html = "<div class='fileuploadDiv'>";
+			html += '<input type="hidden" value="' + file.name + '" id="fileInput" name="fileName">';
+			html += '<input type="hidden" value="' + file.size + '" id="fileSize" name="fileSize">';
+			html += '<span class="text-warning">' + file.name + ' (' + size + 'K)&nbsp;&nbsp;</span>';
+			html += "<a href='${ctx}/apply/cp/upload/" + file.deleteUrl + "' onclick='deleteUpdateLoad(this);return false'>删除</a><br/>";
+			html += "</div>";
+			return html;
+		}
+		 
 	</script>
 	
 </head>
@@ -300,12 +338,16 @@
 				
 			    <hr>
 			    
-			    <div class="control-group">
-					<label class="control-label" for="program">拆条节目单上传</label>
+				<div class="control-group">
+					<label class="control-label" for="filename">拆条节目单上传</label>
 					<div class="controls">
-						<input type="file" id="program" name="program">
+						<input id="upload" type="file" name="file" data-url="${ctx}/failure/upload/file" multiple="multiple">
+						<span>(最大尺寸:5 MB)</span>
+						<br><br>
+						<span id='filename'></span> 
 					</div>
 				</div>
+			
 				
 				<div class="form-actions">
 					<input class="btn backStep" type="button" value="上一步">

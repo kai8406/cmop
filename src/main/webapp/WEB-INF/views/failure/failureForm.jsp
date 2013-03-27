@@ -15,8 +15,45 @@
 			$("#loginName").focus();
 			
 			$("#inputForm").validate();
+			
+			$("#upload").click(function() {
+				$(this).fileupload({
+					dataType: 'json',
+					done: function(e, data) {
+						$.each(data.result, function(index, file) {
+							//判断页面是否存在相同的文件名.如果存在,则不显示.
+							var isExist = false;
+							$(".fileuploadDiv").each(function() {
+								if (file.name == $(this).find("#fileInput").val()) {
+									isExist = true;
+								}
+							});
+							if (!isExist) {
+								$('#filename').append(formatFailureFileDisplay(file));
+							}
+						});
+					}
+				});
+			});
+			
 			 
 		});
+		
+		/**
+		 * 插入上传文件的名称,大小,删除链接.
+		 * 
+		 * @param file
+		 * @returns {String}
+		 */
+		function formatFailureFileDisplay(file) {
+			var size = (file.size / 1000).toFixed(2) ;
+			var html = "<div class='fileuploadDiv'>";
+			html += '<input type="hidden" value="' + file.name + '" id="fileInput" name="fileName">';
+			html += '<span class="text-warning">' + file.name + ' (' + size + 'K)&nbsp;&nbsp;</span>';
+			html += "<a href='${ctx}/failure/upload/" + file.deleteUrl + "' onclick='deleteUpdateLoad(this);return false'>删除</a><br/>";
+			html += "</div>";
+			return html;
+		}
 		
 		/**
 		1.每次点击确认时,遍历页面,将存在页面的resourcesId放入一个临时数组.
@@ -388,10 +425,10 @@
 			<div class="control-group">
 				<label class="control-label" for="filename">附件上传</label>
 				<div class="controls">
-					<span id='filename'></span> 
 					<input id="upload" type="file" name="file" data-url="${ctx}/failure/upload/file" multiple="multiple">
 					<span>(最大尺寸:5 MB)</span>
-					<br>
+					<br><br>
+					<span id='filename'></span> 
 				</div>
 			</div>
 			
@@ -404,10 +441,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal">
-
-				</dl></div>
-			 
+			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
@@ -489,6 +523,6 @@
 		</div>
 		
 	</div>
-						
+							
 </body>
 </html>

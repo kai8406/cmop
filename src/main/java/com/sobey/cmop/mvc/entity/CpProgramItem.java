@@ -23,7 +23,8 @@ public class CpProgramItem implements java.io.Serializable {
 
 	private Integer id;
 	private CpItem cpItem;
-	private String filePath;
+	private String name;
+	private Integer size;
 
 	// Constructors
 
@@ -32,9 +33,10 @@ public class CpProgramItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public CpProgramItem(CpItem cpItem, String filePath) {
+	public CpProgramItem(CpItem cpItem, String name, Integer size, String deleteUrl) {
 		this.cpItem = cpItem;
-		this.filePath = filePath;
+		this.name = name;
+		this.size = size;
 	}
 
 	// Property accessors
@@ -59,13 +61,22 @@ public class CpProgramItem implements java.io.Serializable {
 		this.cpItem = cpItem;
 	}
 
-	@Column(name = "file_path", nullable = false, length = 100)
-	public String getFilePath() {
-		return this.filePath;
+	@Column(name = "name", nullable = false, length = 100)
+	public String getName() {
+		return name;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "size", nullable = false)
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
 	}
 
 }

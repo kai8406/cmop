@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="${ctx}/static/common/css/style.css">
 
 <!-- Le javascript -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="${ctx}/static/jquery/jquery.min.js"><\/script>')</script>
 
 <!-- head Tag`s Template -->

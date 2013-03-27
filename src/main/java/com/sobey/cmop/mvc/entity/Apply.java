@@ -49,6 +49,7 @@ public class Apply implements java.io.Serializable {
 	private Set<MonitorMail> monitorMails = new HashSet<MonitorMail>(0);
 	private Set<MonitorPhone> monitorPhones = new HashSet<MonitorPhone>(0);
 	private Set<MdnItem> mdnItems = new HashSet<MdnItem>(0);
+	private Set<CpItem> cpItems = new HashSet<CpItem>(0);
 
 	// Constructors
 	/** default constructor */
@@ -73,7 +74,7 @@ public class Apply implements java.io.Serializable {
 	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status,
 			Integer redmineIssueId, AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems, Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems,
 			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits, Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones,
-			Set<MdnItem> mdnItems) {
+			Set<MdnItem> mdnItems, Set<CpItem> cpItems) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;
@@ -97,6 +98,7 @@ public class Apply implements java.io.Serializable {
 		this.monitorMails = monitorMails;
 		this.monitorPhones = monitorPhones;
 		this.mdnItems = mdnItems;
+		this.cpItems = cpItems;
 	}
 
 	// Property accessors
@@ -319,6 +321,15 @@ public class Apply implements java.io.Serializable {
 
 	public void setMdnItems(Set<MdnItem> mdnItems) {
 		this.mdnItems = mdnItems;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	public Set<CpItem> getCpItems() {
+		return cpItems;
+	}
+
+	public void setCpItems(Set<CpItem> cpItems) {
+		this.cpItems = cpItems;
 	}
 
 }

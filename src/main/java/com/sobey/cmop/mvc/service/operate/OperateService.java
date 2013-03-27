@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.dao.RedmineIssueDao;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.Location;
@@ -273,13 +274,20 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private void resourcesOperate(Issue issue, Integer serviceTagId) {
+
 		logger.info("--->服务变更处理...");
+
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
 		List<Resources> resourcesList = comm.resourcesService.getChangedResourcesListByServiceTagId(serviceTagId);
+
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+
 			logger.info("---> 完成度 = 100%的工单处理...");
+
 			// 更改服务标签和资源的状态
 			serviceTag.setStatus(ResourcesConstant.Status.已创建.toInteger());
+
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
 				comm.resourcesService.saveOrUpdate(resources);
@@ -405,12 +413,14 @@ public class OperateService extends BaseSevcie {
 			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 			List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+			List<CpItem> cpItems = new ArrayList<CpItem>();
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			// 发送邮件通知下个指派人
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(sendToUser, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(sendToUser, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems,
+					assigneeUser);
 		}
 	}
 

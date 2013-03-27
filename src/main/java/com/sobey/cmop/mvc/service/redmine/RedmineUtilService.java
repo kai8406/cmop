@@ -17,6 +17,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
@@ -84,7 +85,7 @@ public class RedmineUtilService extends BaseSevcie {
 			this.generateContentByLists(apply.getUser(), content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
 					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()), new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()), new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()),
 					new ArrayList<MonitorMail>(apply.getMonitorMails()), new ArrayList<MonitorPhone>(apply.getMonitorPhones()), new ArrayList<MonitorCompute>(apply.getMonitorComputes()),
-					new ArrayList<MonitorElb>(apply.getMonitorElbs()), new ArrayList<MdnItem>(apply.getMdnItems()));
+					new ArrayList<MonitorElb>(apply.getMonitorElbs()), new ArrayList<MdnItem>(apply.getMdnItems()), new ArrayList<CpItem>(apply.getCpItems()));
 
 			return content.toString();
 
@@ -101,7 +102,8 @@ public class RedmineUtilService extends BaseSevcie {
 	 * 生成满足redmine显示的资源回收Resources文本.
 	 */
 	public String recycleResourcesRedmineDesc(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
 		try {
 
@@ -109,7 +111,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装资源信息
 
-			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems);
+			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			return content.toString();
 
@@ -126,7 +128,8 @@ public class RedmineUtilService extends BaseSevcie {
 	 * 生成满足redmine显示的故障申报Failure文本.
 	 */
 	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
 		try {
 
@@ -143,7 +146,8 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
 			content.append("</pre>");
 
-			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems);
+			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems,
+					cpItems);
 
 			return content.toString();
 
@@ -170,7 +174,8 @@ public class RedmineUtilService extends BaseSevcie {
 	 * @param dnsItems
 	 */
 	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
@@ -182,6 +187,7 @@ public class RedmineUtilService extends BaseSevcie {
 		RedmineTextUtil.generateMonitorCompute(content, monitorComputes);
 		RedmineTextUtil.generateMonitorElb(content, monitorElbs);
 		RedmineTextUtil.generateMonitorMdn(content, mdnItems);
+		RedmineTextUtil.generateMonitorCP(content, cpItems);
 
 	}
 
@@ -498,6 +504,79 @@ public class RedmineUtilService extends BaseSevcie {
 							}
 							if (FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.RTSP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+
+						} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
+
+							if (FieldNameConstant.CpItem.收录流URL.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.收录流URL + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.收录码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.收录码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.输出编码.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.输出编码 + ":" + NEWLINE);
+								content.append(changeItem.getOldString()).append(NEWLINE + RARR + NEWLINE).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.收录类型.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.收录类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.收录时段.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.收录时段 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.发布接口地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.发布接口地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.是否推送内容交易平台 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频FTP上传IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频端口.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频端口 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频FTP用户名.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频FTP用户名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频FTP密码.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频FTP密码 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频FTP根路径.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频FTP根路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频FTP上传路径.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频FTP上传路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.视频输出组类型.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.视频输出组类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.输出方式配置.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.输出方式配置 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片FTP上传IP.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片FTP上传IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片端口.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片端口 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片FTP用户名.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片FTP用户名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片FTP密码.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片FTP密码 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片FTP根路径.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片FTP根路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片FTP上传路径.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片FTP上传路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.图片输出组类型.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.图片输出组类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.CpItem.输出媒体类型.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.CpItem.输出媒体类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
 
 						}

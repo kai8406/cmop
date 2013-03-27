@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
@@ -12,6 +13,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
@@ -412,6 +414,57 @@ public class RedmineTextUtil {
 					}
 				}
 
+			}
+
+			content.append("</pre>").append(NEWLINE);
+
+		}
+
+	}
+
+	public static void generateMonitorCP(StringBuilder content, List<CpItem> cpItems) {
+
+		if (!cpItems.isEmpty()) {
+
+			content.append("# +*CP云生产*+").append(NEWLINE);
+			content.append("<pre>").append(NEWLINE);
+			for (CpItem cpItem : cpItems) {
+				content.append("标识符:").append(BLANK).append(cpItem.getIdentifier()).append(NEWLINE);
+				content.append("收录流URL:").append(BLANK).append(cpItem.getRecordStreamUrl()).append(NEWLINE);
+				content.append("收录码率:").append(BLANK).append(CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(cpItem.getRecordBitrate())).append(NEWLINE);
+
+				String[] exportEncodes = StringUtils.split(cpItem.getExportEncode(), ",");
+				String exportEncode = "";
+				for (String key : exportEncodes) {
+					exportEncode += CPConstant.EXPORTENCODE_MAP_STRING_KEY.get(key) + ",";
+				}
+				content.append("输出编码:").append(BLANK).append(StringCommonUtils.replaceAndSubstringText(exportEncode, ",", ",")).append(NEWLINE);
+
+				content.append("收录类型:").append(BLANK).append(CPConstant.RecordType.get(cpItem.getRecordType())).append(NEWLINE);
+				content.append("收录时段:").append(BLANK).append(cpItem.getRecordTime()).append(NEWLINE);
+				if (StringUtils.isNotBlank(cpItem.getPublishUrl())) {
+					content.append("发布接口地址:").append(BLANK).append(cpItem.getPublishUrl()).append(NEWLINE);
+				}
+				content.append("是否推送内容交易平台:").append(BLANK).append(CPConstant.isPushCtp.get(cpItem.getIsPushCtp())).append(NEWLINE + NEWLINE);
+				content.append("视频配置").append(NEWLINE);
+				content.append("FTP上传IP:").append(BLANK).append(cpItem.getVideoFtpIp()).append(NEWLINE);
+				content.append("端口:").append(BLANK).append(cpItem.getVideoFtpPort()).append(NEWLINE);
+				content.append("FTP用户名:").append(BLANK).append(cpItem.getVideoFtpUsername()).append(NEWLINE);
+				content.append("FTP密码:").append(BLANK).append(cpItem.getVideoFtpPassword()).append(NEWLINE);
+				content.append("FTP根路径:").append(BLANK).append(cpItem.getVideoFtpRootpath()).append(NEWLINE);
+				content.append("FTP上传路径:").append(BLANK).append(cpItem.getVideoFtpUploadpath()).append(NEWLINE);
+				content.append("输出组类型:").append(BLANK).append(cpItem.getVideoOutputGroup()).append(NEWLINE);
+				content.append("输出方式配置:").append(BLANK).append(CPConstant.VideoOutputWay.get(Integer.valueOf(cpItem.getVideoOutputWay()))).append(NEWLINE + NEWLINE);
+
+				content.append("图片配置:").append(NEWLINE);
+				content.append("FTP上传IP:").append(BLANK).append(cpItem.getPictrueFtpIp()).append(NEWLINE);
+				content.append("端口:").append(BLANK).append(cpItem.getPictrueFtpPort()).append(NEWLINE);
+				content.append("FTP用户名:").append(BLANK).append(cpItem.getPictrueFtpUsername()).append(NEWLINE);
+				content.append("FTP密码:").append(BLANK).append(cpItem.getPictrueFtpPassword()).append(NEWLINE);
+				content.append("FTP根路径:").append(BLANK).append(cpItem.getPictrueFtpRootpath()).append(NEWLINE);
+				content.append("FTP上传路径:").append(BLANK).append(cpItem.getPictrueFtpUploadpath()).append(NEWLINE);
+				content.append("输出组类型:").append(BLANK).append(cpItem.getPictrueOutputGroup()).append(NEWLINE);
+				content.append("输出媒体类型:").append(BLANK).append(cpItem.getPictrueOutputMedia()).append(NEWLINE);
 			}
 
 			content.append("</pre>").append(NEWLINE);

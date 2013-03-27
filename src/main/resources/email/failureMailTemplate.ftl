@@ -263,6 +263,122 @@
 			
 			</#if><!-- 实例监控 End -->
 			
+			<!-- MDN -->
+			<#if (mdns?exists) && (mdns?size > 0) >
+				<strong>MDN</strong>
+			
+				<#list mdns as mdn>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${mdn.identifier}</li>
+						<li><em>重点覆盖地域</em>&nbsp;:${mdn.coverArea}</li>
+						<li><em>重点覆盖ISP</em>&nbsp;:
+							 <#list mdn.coverIsp?split(",") as coverIsp>
+								<#list ispTypeMap?keys as k ><#if coverIsp?string == k>${ispTypeMap[k]}</#if></#list>
+							</#list>
+						</li>
+						
+						<#if (mdn.mdnVodItems?exists) && (mdn.mdnVodItems?size > 0) >
+							<br>
+							<ul>
+								<strong>MDN点播加速</strong>
+								<#list mdn.mdnVodItems as vod>
+									<li><em>服务域名</em>&nbsp;:${vod.vodDomain}</li>
+									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if vod.vodBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
+									<li><em>播放协议选择</em>&nbsp;:${vod.vodProtocol}</li>
+									<li><em>出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
+									<li><em>Streamer地址</em>&nbsp;:${vod.sourceStreamerUrl}</li>
+									<br>
+								</#list>
+							</ul>
+						</#if>
+						
+						<#if (mdn.mdnLiveItems?exists) && (mdn.mdnLiveItems?size > 0) >
+							<br>
+							<ul>
+								<strong>MDN直播加速</strong>
+								<#list mdn.mdnLiveItems as live>
+									<li><em>服务域名</em>&nbsp;:${live.liveDomain}</li>
+									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if live.liveBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
+									<li><em>播放协议选择</em>&nbsp;:${live.liveProtocol}</li>
+									<li><em>出口带宽</em>&nbsp;:${live.bandwidth}</li>
+									<li><em>频道名称</em>&nbsp;:${live.name}</li>
+									<li><em>频道GUID</em>&nbsp;:${live.guid}</li>
+									<li><em>直播流输出模式</em>&nbsp;:<#list outputModeMap?keys as k ><#if live.streamOutMode?string == k>${outputModeMap[k]}</#if></#list></li>
+									
+									<#if live.streamOutMode == 1 >
+										<li><em>编码器模式</em>&nbsp;:<#list encoderModeMap?keys as k ><#if live.encoderMode?string == k>${encoderModeMap[k]}</#if></#list></li>
+										<#if live.encoderMode == 1>
+											<li><em>HTTP流地址</em>&nbsp;:${live.httpUrl}</li>
+											<li><em>HTTP流混合码率</em>&nbsp;:${live.httpBitrate}</li>
+										<#else>
+											<li><em>M3U8流地址</em>&nbsp;:${live.hlsUrl}</li>
+											<li><em>M3U8流混合码率</em>&nbsp;:${live.hlsBitrate}</li>
+										</#if>
+									<#else>
+									
+										<li><em>HTTP流地址</em>&nbsp;:${live.httpUrl}</li>
+										<li><em>HTTP流混合码率</em>&nbsp;:${live.httpBitrate}</li>
+										
+										<li><em>M3U8流地址</em>&nbsp;:${live.hlsUrl}</li>
+										<li><em>M3U8流混合码率</em>&nbsp;:${live.hlsBitrate}</li>
+										
+										<li><em>RTSP流地址</em>&nbsp;:${live.rtspUrl}</li>
+										<li><em>RTSP流混合码率</em>&nbsp;:${live.rtspBitrate}</li>
+									
+									</#if>
+									<br>
+								</#list>
+							</ul>
+						</#if>
+						<br>
+					</ul>
+				</#list>
+			</#if><!-- MDN End -->
+			
+			<!-- CP云生产 -->
+			<#if (cps?exists) && (cps?size > 0) >
+				<strong>CP云生产</strong>
+				
+				<#list cps as cp>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${cp.identifier}</li>
+						<li><em>收录流URL</em>&nbsp;:${cp.recordStreamUrl}</li>
+						<li><em>收录码率</em>&nbsp;:<#list recordBitrateMap?keys as k ><#if cp.recordBitrate?string == k>${recordBitrateMap[k]}</#if></#list></li>
+						<li><em>输出编码</em>&nbsp;:
+							 <#list cp.exportEncode?split(",") as exportEncode>
+								<#list exportEncodeMap?keys as k ><#if exportEncode?string == k><br>${exportEncodeMap[k]}</#if></#list>
+							</#list>
+						</li>
+						<li><em>收录类型</em>&nbsp;:<#list recordTypeMap?keys as k ><#if cp.recordType?string == k>${recordTypeMap[k]}</#if></#list></li>
+						<li><em>收录时段</em>&nbsp;:${cp.recordTime}</li>
+						<#if cp.publishUrl?exists><li><em>发布接口地址</em>&nbsp;:${cp.publishUrl}</li></#if>
+						<li><em>是否推送内容交易平台</em>&nbsp;:<#list isPushCtpMap?keys as k ><#if cp.isPushCtp?string == k>${isPushCtpMap[k]}</#if></#list></li>
+						<br>
+						<li><strong>视频配置</strong></li>
+						<li><em>FTP上传IP</em>&nbsp;:${cp.videoFtpIp}</li>
+						<li><em>端口</em>&nbsp;:${cp.videoFtpPort}</li>
+						<li><em>FTP用户名</em>&nbsp;:${cp.videoFtpUsername}</li>
+						<li><em>FTP密码</em>&nbsp;:${cp.videoFtpPassword}</li>
+						<li><em>FTP根路径</em>&nbsp;:${cp.videoFtpRootpath}</li>
+						<li><em>FTP上传路径</em>&nbsp;:${cp.videoFtpUploadpath}</li>
+						<li><em>输出组类型</em>&nbsp;:${cp.videoOutputGroup}</li>
+						<li><em>输出方式配置</em>&nbsp;:<#list videoOutputWayMap?keys as k ><#if cp.videoOutputWay?string == k>${videoOutputWayMap[k]}</#if></#list></li>
+						<br>
+						<li><strong>图片配置</strong></li>
+						<li><em>FTP上传IP</em>&nbsp;:${cp.pictrueFtpIp}</li>
+						<li><em>端口</em>&nbsp;:${cp.pictrueFtpPort}</li>
+						<li><em>FTP用户名</em>&nbsp;:${cp.pictrueFtpUsername}</li>
+						<li><em>FTP密码</em>&nbsp;:${cp.pictrueFtpPassword}</li>
+						<li><em>FTP根路径</em>&nbsp;:${cp.pictrueFtpRootpath}</li>
+						<li><em>FTP上传路径</em>&nbsp;:${cp.pictrueFtpUploadpath}</li>
+						<li><em>输出组类型</em>&nbsp;:${cp.pictrueOutputGroup}</li>
+						<li><em>输出媒体类型</em>&nbsp;:${cp.pictrueOutputMedia}</li>
+						<br>
+					</ul>
+				</#list>
+				
+			</#if><!--  CP云生产 End -->
+			
 		</li>
 		
 	</ul>

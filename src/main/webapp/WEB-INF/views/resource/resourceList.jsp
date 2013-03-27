@@ -50,7 +50,7 @@
 				<div class="span2">
 					<ul class="site-stats">
 						<a href="${ctx}/resources/?search_EQ_serviceType=8"><li><i class="icon-globe"></i> <strong>${MDNCOUNT}</strong> <small>MDN</small></li></a>
-						<a href="${ctx}/resources/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>11</strong> <small>云生产</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>${CPCOUNT}</strong> <small>云生产</small></li></a>
 						<a href="${ctx}/serviceTag/"><li><strong>服务标签</strong>&nbsp;&raquo;</a>
 					</ul>
 				</div>

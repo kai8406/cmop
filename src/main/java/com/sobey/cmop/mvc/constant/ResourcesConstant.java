@@ -25,6 +25,7 @@ public class ResourcesConstant {
 	 * 8-MDN<br>
 	 * 9-MONITOR_COMPUTE<br>
 	 * 10-MONITOR_ELB<br>
+	 * 11-CP
 	 * <p>
 	 * 
 	 * @author liukai
@@ -32,7 +33,7 @@ public class ResourcesConstant {
 	 */
 	public enum ServiceType implements ICommonEnum {
 
-		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10), ;
+		PCS(1), ECS(2), ES3(3), ELB(4), EIP(5), DNS(6), ESG(7), MDN(8), MONITOR_COMPUTE(9), MONITOR_ELB(10), CP(11);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

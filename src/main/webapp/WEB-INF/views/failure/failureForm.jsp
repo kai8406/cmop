@@ -280,6 +280,50 @@
 					}
 				});
 				
+			}else if(serviceType == 11){
+			
+				//cpItem
+				
+				$.ajax({
+					type: "GET",
+					url: "${ctx}/ajax/getCP?id=" + resourcesId,
+					dataType: "json",
+					success: function(data) {
+						var html = '';
+						html += '<div class="resources alert alert-block alert-info fade in">';
+						html += '<button data-dismiss="alert" class="close" type="button">×</button>';
+						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
+						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
+						html += '<dd><em>收录流URL</em>&nbsp;&nbsp;<strong>' + data.recordStreamUrl + '</strong></dd>';
+						html += '<dd><em>收录码率</em>&nbsp;&nbsp;<strong>' + data.recordBitrate + '</strong></dd>';
+						html += '<dd><em>输出编码</em><br>&nbsp;&nbsp;<strong>' + data.exportEncode + '</strong></dd>';
+						html += '<dd><em>收录类型</em>&nbsp;&nbsp;<strong>' + data.recordType + '</strong></dd>';
+						html += '<dd><em>收录时段</em>&nbsp;&nbsp;<strong>' + data.recordTime + '</strong></dd>';
+						html += '<dd><em>发布接口地址</em>&nbsp;&nbsp;<strong>' + data.publishUrl + '</strong></dd>';
+						html += '<dd><em>是否推送内容交易平台</em>&nbsp;&nbsp;<strong>' + data.isPushCtp + '</strong></dd>';
+						html += '<dd><strong>视频配置</strong></dd>';
+						html += '<dd><em>FTP上传IP</em>&nbsp;&nbsp;<strong>' + data.videoFtpIp + '</strong></dd>';
+						html += '<dd><em>端口</em>&nbsp;&nbsp;<strong>' + data.videoFtpPort + '</strong></dd>';
+						html += '<dd><em>FTP用户名</em>&nbsp;&nbsp;<strong>' + data.videoFtpUsername + '</strong></dd>';
+						html += '<dd><em>FTP密码</em>&nbsp;&nbsp;<strong>' + data.videoFtpPassword + '</strong></dd>';
+						html += '<dd><em>FTP根路径</em>&nbsp;&nbsp;<strong>' + data.videoFtpRootpath + '</strong></dd>';
+						html += '<dd><em>FTP上传路径</em>&nbsp;&nbsp;<strong>' + data.videoFtpUploadpath + '</strong></dd>';
+						html += '<dd><em>输出组类型</em>&nbsp;&nbsp;<strong>' + data.videoOutputGroup + '</strong></dd>';
+						html += '<dd><em>输出方式配置</em>&nbsp;&nbsp;<strong>' + data.videoOutputWay + '</strong></dd>';
+						html += '<dd><strong>图片配置</strong></dd>';
+						html += '<dd><em>FTP上传IP</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpIp + '</strong></dd>';
+						html += '<dd><em>端口</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpPort + '</strong></dd>';
+						html += '<dd><em>FTP用户名</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpUsername + '</strong></dd>';
+						html += '<dd><em>FTP密码</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpPassword + '</strong></dd>';
+						html += '<dd><em>FTP根路径</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpRootpath + '</strong></dd>';
+						html += '<dd><em>FTP上传路径</em>&nbsp;&nbsp;<strong>' + data.pictrueFtpUploadpath + '</strong></dd>';
+						html += '<dd><em>输出组类型</em>&nbsp;&nbsp;<strong>' + data.pictrueOutputGroup + '</strong></dd>';
+						html += '<dd><em>输出媒体类型</em>&nbsp;&nbsp;<strong>' + data.pictrueOutputMedia + '</strong></dd>';
+						html += '</div>';
+						$("#resourcesDIV dl").append(html);
+					}
+				});
+				
 			} 
 			
 		};

@@ -336,6 +336,50 @@
 				</#list>
 			</#if><!-- MDN End -->
 			
+			<!-- CP云生产 -->
+			<#if (cps?exists) && (cps?size > 0) >
+				<strong>CP云生产</strong>
+				
+				<#list cps as cp>
+					<ul>
+						<li><em>标识符</em>&nbsp;:${cp.identifier}</li>
+						<li><em>收录流URL</em>&nbsp;:${cp.recordStreamUrl}</li>
+						<li><em>收录码率</em>&nbsp;:<#list recordBitrateMap?keys as k ><#if cp.recordBitrate?string == k>${recordBitrateMap[k]}</#if></#list></li>
+						<li><em>输出编码</em>&nbsp;:
+							 <#list cp.exportEncode?split(",") as exportEncode>
+								<#list exportEncodeMap?keys as k ><#if exportEncode?string == k><br>${exportEncodeMap[k]}</#if></#list>
+							</#list>
+						</li>
+						<li><em>收录类型</em>&nbsp;:<#list recordTypeMap?keys as k ><#if cp.recordType?string == k>${recordTypeMap[k]}</#if></#list></li>
+						<li><em>收录时段</em>&nbsp;:${cp.recordTime}</li>
+						<#if cp.publishUrl?exists><li><em>发布接口地址</em>&nbsp;:${cp.publishUrl}</li></#if>
+						<li><em>是否推送内容交易平台</em>&nbsp;:<#list isPushCtpMap?keys as k ><#if cp.isPushCtp?string == k>${isPushCtpMap[k]}</#if></#list></li>
+						<br>
+						<li><strong>视频配置</strong></li>
+						<li><em>FTP上传IP</em>&nbsp;:${cp.videoFtpIp}</li>
+						<li><em>端口</em>&nbsp;:${cp.videoFtpPort}</li>
+						<li><em>FTP用户名</em>&nbsp;:${cp.videoFtpUsername}</li>
+						<li><em>FTP密码</em>&nbsp;:${cp.videoFtpPassword}</li>
+						<li><em>FTP根路径</em>&nbsp;:${cp.videoFtpRootpath}</li>
+						<li><em>FTP上传路径</em>&nbsp;:${cp.videoFtpUploadpath}</li>
+						<li><em>输出组类型</em>&nbsp;:${cp.videoOutputGroup}</li>
+						<li><em>输出方式配置</em>&nbsp;:<#list videoOutputWayMap?keys as k ><#if cp.videoOutputWay?string == k>${videoOutputWayMap[k]}</#if></#list></li>
+						<br>
+						<li><strong>图片配置</strong></li>
+						<li><em>FTP上传IP</em>&nbsp;:${cp.pictrueFtpIp}</li>
+						<li><em>端口</em>&nbsp;:${cp.pictrueFtpPort}</li>
+						<li><em>FTP用户名</em>&nbsp;:${cp.pictrueFtpUsername}</li>
+						<li><em>FTP密码</em>&nbsp;:${cp.pictrueFtpPassword}</li>
+						<li><em>FTP根路径</em>&nbsp;:${cp.pictrueFtpRootpath}</li>
+						<li><em>FTP上传路径</em>&nbsp;:${cp.pictrueFtpUploadpath}</li>
+						<li><em>输出组类型</em>&nbsp;:${cp.pictrueOutputGroup}</li>
+						<li><em>输出媒体类型</em>&nbsp;:${cp.pictrueOutputMedia}</li>
+						<br>
+					</ul>
+				</#list>
+				
+			</#if><!--  CP云生产 End -->
+			
 		</li>
 		
 		<#if passUrl?exists>

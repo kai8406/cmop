@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
@@ -29,6 +30,7 @@ import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
@@ -240,39 +242,29 @@ public class ResourcesService extends BaseSevcie {
 		for (ComputeItem compute : apply.getComputeItems()) {
 
 			// 区分 PCS 和 ECS
-
 			serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType()) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
 
 			this.saveAndWrapResources(apply, serviceType, serviceTag, compute.getId(), compute.getIdentifier(), compute.getInnerIp());
-
 		}
 
 		// StorageItem
 		for (StorageItem storageItem : apply.getStorageItems()) {
-
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ES3.toInteger(), serviceTag, storageItem.getId(), storageItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
-
 		}
 
 		// ELB
 		for (NetworkElbItem networkElbItem : apply.getNetworkElbItems()) {
-
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ELB.toInteger(), serviceTag, networkElbItem.getId(), networkElbItem.getIdentifier(), networkElbItem.getVirtualIp());
-
 		}
 
 		// EIP
 		for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
-
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.EIP.toInteger(), serviceTag, networkEipItem.getId(), networkEipItem.getIdentifier(), networkEipItem.getIpAddress());
-
 		}
 
 		// DNS
 		for (NetworkDnsItem networkDnsItem : apply.getNetworkDnsItems()) {
-
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.DNS.toInteger(), serviceTag, networkDnsItem.getId(), networkDnsItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
-
 		}
 
 		// 实例监控
@@ -291,7 +283,10 @@ public class ResourcesService extends BaseSevcie {
 			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MDN.toInteger(), serviceTag, mdnItem.getId(), mdnItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
-		// TODO 还有CP资源
+		// CP
+		for (CpItem cpItem : apply.getCpItems()) {
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.CP.toInteger(), serviceTag, cpItem.getId(), cpItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+		}
 
 	}
 
@@ -313,7 +308,7 @@ public class ResourcesService extends BaseSevcie {
 			this.saveOrUpdate(resources);
 		}
 
-		// TODO 回收的资源ID.可能会有多个,用 "," 连接. 暂时只针对compute,此处去缺少一个验证回收资源的关联资源的方法.
+		// TODO 此处去缺少一个验证回收资源的关联资源的方法.
 
 		// 回收的资源ID
 		String recycleId = Collections3.extractToString(resourcesList, "id", ",");
@@ -328,11 +323,12 @@ public class ResourcesService extends BaseSevcie {
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+		List<CpItem> cpItems = new ArrayList<CpItem>();
 
-		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails,
-				monitorPhones, monitorComputes, monitorElbs, mdnItems);
+				monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		// 写入工单Issue到Redmine
 
@@ -384,7 +380,7 @@ public class ResourcesService extends BaseSevcie {
 			// 发送工单处理邮件
 
 			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes,
-					monitorElbs, assigneeUser);
+					monitorElbs, mdnItems, cpItems, assigneeUser);
 
 		}
 
@@ -495,8 +491,8 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					// TODO
-					// 此处还原有问题!如果第一个ELB在变更流程中,实例被第二个ELB关联了.那么第一个ELB退回的时候就会将第二个ELB关联的实例覆盖掉!!
+					// TODO 此处还原有问题!
+					// 如果第一个ELB在变更流程中,实例被第二个ELB关联了.那么第一个ELB退回的时候就会将第二个ELB关联的实例覆盖掉!!
 
 					List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
 					for (ComputeItem computeItem : computeItems) {
@@ -653,12 +649,96 @@ public class ResourcesService extends BaseSevcie {
 				}
 			}
 			comm.mdnService.saveOrUpdate(mdnItem);
+
+		} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
+
+			CpItem cpItem = comm.cpService.getCpItem(serviceId);
+
+			for (ChangeItem changeItem : changeItems) {
+
+				if (FieldNameConstant.CpItem.收录流URL.toString().equals(changeItem.getFieldName())) {
+					cpItem.setRecordStreamUrl(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.收录码率.toString().equals(changeItem.getFieldName())) {
+					cpItem.setRecordBitrate(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.输出编码.toString().equals(changeItem.getFieldName())) {
+					cpItem.setExportEncode(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.收录类型.toString().equals(changeItem.getFieldName())) {
+					cpItem.setRecordType(Integer.valueOf(changeItem.getOldValue()));
+				}
+
+				if (FieldNameConstant.CpItem.收录时段.toString().equals(changeItem.getFieldName())) {
+					cpItem.setRecordTime(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.发布接口地址.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPublishUrl(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(changeItem.getFieldName())) {
+					cpItem.setIsPushCtp(CPConstant.isPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
+				}
+
+				if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpIp(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频端口.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpPort(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频FTP用户名.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpUsername(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频FTP密码.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpPassword(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频FTP根路径.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpRootpath(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频FTP上传路径.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoFtpUploadpath(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.视频输出组类型.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoOutputGroup(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.输出方式配置.toString().equals(changeItem.getFieldName())) {
+					cpItem.setVideoOutputWay(changeItem.getOldValue());
+				}
+
+				if (FieldNameConstant.CpItem.图片FTP上传IP.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpIp(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片端口.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpPort(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片FTP用户名.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpUsername(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片FTP密码.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpPassword(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片FTP根路径.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpRootpath(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片FTP上传路径.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueFtpUploadpath(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.图片输出组类型.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueOutputGroup(changeItem.getOldValue());
+				}
+				if (FieldNameConstant.CpItem.输出媒体类型.toString().equals(changeItem.getFieldName())) {
+					cpItem.setPictrueOutputMedia(changeItem.getOldValue());
+				}
+
+			}
+			comm.cpService.saveOrUpdate(cpItem);
 		}
 
-		// TODO 还有CP资源的还原
-
 		// 清除服务变更Change的内容
-
 		comm.changeServcie.deleteChange(change.getId());
 
 		return resources;
@@ -709,7 +789,7 @@ public class ResourcesService extends BaseSevcie {
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
 	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,
-			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems) {
+			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
 		for (Resources resources : resourcesList) {
 
@@ -755,9 +835,13 @@ public class ResourcesService extends BaseSevcie {
 
 				// MDN
 				mdnItems.add(comm.mdnService.getMdnItem(serviceId));
+
+			} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
+
+				// CP
+				cpItems.add(comm.cpService.getCpItem(serviceId));
 			}
 
-			// TODO 其它资源处理
 		}
 
 	}

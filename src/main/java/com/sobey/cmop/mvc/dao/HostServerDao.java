@@ -21,4 +21,6 @@ public interface HostServerDao extends PagingAndSortingRepository<HostServer, In
 
 	List<HostServer> findByIpAddress(String ipAddress);
 
+	HostServer findByDisplayName(String displayName);
+
 }

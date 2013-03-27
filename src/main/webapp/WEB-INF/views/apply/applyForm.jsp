@@ -550,6 +550,54 @@
 					</c:forEach>
 				</c:if>
 				
+				<!-- 云生产CP -->
+				<c:if test="${not empty apply.cpItems}">
+					<hr>
+					<dt>CP云生产</dt>
+					<c:forEach var="item" items="${apply.cpItems}">
+						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						<dd><em>收录流URL</em>&nbsp;&nbsp;${item.recordStreamUrl}</dd>
+						<dd><em>收录码率</em>&nbsp;&nbsp;<c:forEach var="map" items="${recordBitrateMap}"><c:if test="${map.key == item.recordBitrate }">${map.value }</c:if></c:forEach></dd>
+						<dd><em>输出编码</em>&nbsp;&nbsp;
+							<c:forEach var="exportEncode" items="${fn:split(item.exportEncode,',')}">
+								<c:forEach var="map" items="${exportEncodeMap }">
+									<c:if test="${map.key == exportEncode }"><br>${map.value }</c:if>
+								</c:forEach>
+						    </c:forEach>
+					 	</dd>
+						<dd><em>收录类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${recordTypeMap}"><c:if test="${map.key == item.recordType }">${map.value }</c:if></c:forEach></dd>
+						<dd><em>收录时段</em>&nbsp;&nbsp;${item.recordTime}</dd>
+						<c:if test="${not empty item.publishUrl }">
+							<dd><em>发布接口地址</em>&nbsp;&nbsp;${item.publishUrl}</dd>
+						</c:if>
+						<dd><em>是否推送内容交易平台</em>&nbsp;&nbsp;<c:forEach var="map" items="${isPushCtpMap}"><c:if test="${map.key == item.isPushCtp }">${map.value }</c:if></c:forEach></dd>
+						<br>
+						<dd><strong>视频配置</strong></dd>
+						<dd><em>FTP上传IP</em>&nbsp;&nbsp;${item.videoFtpIp}</dd>
+						<dd><em>端口</em>&nbsp;&nbsp;${item.videoFtpPort}</dd>
+						<dd><em>FTP用户名</em>&nbsp;&nbsp;${item.videoFtpUsername}</dd>
+						<dd><em>FTP密码</em>&nbsp;&nbsp;${item.videoFtpPassword}</dd>
+						<dd><em>FTP根路径</em>&nbsp;&nbsp;${item.videoFtpRootpath}</dd>
+						<dd><em>FTP上传路径</em>&nbsp;&nbsp;${item.videoFtpUploadpath}</dd>
+						<dd><em>输出组类型</em>&nbsp;&nbsp;${item.videoOutputGroup}</dd>
+						<dd><em>输出方式配置</em>&nbsp;&nbsp;<c:forEach var="map" items="${videoOutputWayMap}"><c:if test="${map.key == item.videoOutputWay }">${map.value }</c:if></c:forEach></dd>
+						<br>
+						<dd><strong>图片配置</strong></dd>
+						<dd><em>FTP上传IP</em>&nbsp;&nbsp;${item.pictrueFtpIp}</dd>
+						<dd><em>端口</em>&nbsp;&nbsp;${item.pictrueFtpPort}</dd>
+						<dd><em>FTP用户名</em>&nbsp;&nbsp;${item.pictrueFtpUsername}</dd>
+						<dd><em>FTP密码</em>&nbsp;&nbsp;${item.pictrueFtpPassword}</dd>
+						<dd><em>FTP根路径</em>&nbsp;&nbsp;${item.pictrueFtpRootpath}</dd>
+						<dd><em>FTP上传路径</em>&nbsp;&nbsp;${item.pictrueFtpUploadpath}</dd>
+						<dd><em>输出组类型</em>&nbsp;&nbsp;${item.pictrueOutputGroup}</dd>
+						<dd><em>输出媒体类型</em>&nbsp;&nbsp;${item.pictrueOutputMedia}</dd>
+						<dd>
+							<span class="pull-right">
+								<a href="${ctx}/apply/cp/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
+							</span>
+						</dd>
+					</c:forEach>
+				</c:if>
 				
 			</dl>
 			

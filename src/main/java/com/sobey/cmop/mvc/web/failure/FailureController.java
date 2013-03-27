@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
@@ -126,6 +127,7 @@ public class FailureController extends BaseController {
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+		List<CpItem> cpItems = new ArrayList<CpItem>();
 
 		String[] resourcesIds = failure.getRelatedId().split(",");
 		for (String resourcesId : resourcesIds) {
@@ -135,7 +137,7 @@ public class FailureController extends BaseController {
 
 		/* 封装各个资源对象 */
 
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		model.addAttribute("issue", issue);
 		model.addAttribute("failure", failure);
@@ -147,6 +149,7 @@ public class FailureController extends BaseController {
 		model.addAttribute("monitorComputes", monitorComputes);
 		model.addAttribute("monitorElbs", monitorElbs);
 		model.addAttribute("mdnItems", mdnItems);
+		model.addAttribute("cpItems", cpItems);
 
 		return "failure/failureDetail";
 	}

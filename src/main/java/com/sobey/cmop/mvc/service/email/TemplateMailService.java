@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
@@ -26,7 +27,9 @@ import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -107,6 +110,12 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("outputModeMap", MdnConstant.OutputMode.mapKeyStr);
 		map.put("bandwidthMap", MdnConstant.BANDWIDTH_MAP_STRING_KEY);
 
+		map.put("videoOutputWayMap", CPConstant.VideoOutputWay.mapKeyStr);
+		map.put("recordTypeMap", CPConstant.RecordType.mapKeyStr);
+		map.put("exportEncodeMap", CPConstant.EXPORTENCODE_MAP_STRING_KEY);
+		map.put("recordBitrateMap", CPConstant.RECORDBITRATE_MAP_STRING_KEY);
+		map.put("isPushCtpMap", CPConstant.isPushCtp.mapKeyStr);
+
 		map.put("allESGs", comm.esgService.getAllEsgList());
 
 		return map;
@@ -146,6 +155,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
 		map.put("mdns", apply.getMdnItems());
+		map.put("cps", apply.getCpItems());
 
 		// 申请 审批Audit
 
@@ -193,6 +203,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
 		map.put("mdns", apply.getMdnItems());
+		map.put("cps", apply.getCpItems());
 
 		// 工单处理URL
 
@@ -235,6 +246,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorMails", apply.getMonitorMails());
 		map.put("monitorPhones", apply.getMonitorPhones());
 		map.put("mdns", apply.getMdnItems());
+		map.put("cps", apply.getCpItems());
 
 		// 工单处理完成提示文字
 
@@ -366,7 +378,7 @@ public class TemplateMailService extends BaseSevcie {
 	 * 发送工单处理邮件(资源回收)
 	 */
 	public void sendRecycleResourcesOperateNotificationMail(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -379,13 +391,13 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("dnses", dnsItems);
 		map.put("monitorComputes", monitorComputes);
 		map.put("monitorElbs", monitorElbs);
+		map.put("mdns", mdnItems);
+		map.put("cps", cpItems);
 
 		// 申请人所创建的所有实例和ELB
 
 		map.put("allComputes", comm.computeService.getComputeListByUserId(user.getId()));
 		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(user.getId()));
-
-		// TODO 其它资源缺少
 
 		// 工单处理URL
 
@@ -433,7 +445,7 @@ public class TemplateMailService extends BaseSevcie {
 	 * 发送MIME格式的工单处理邮件(故障申报Failure).
 	 */
 	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, User assigneeUser) {
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -447,13 +459,13 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("dnses", dnsItems);
 		map.put("monitorComputes", monitorComputes);
 		map.put("monitorElbs", monitorElbs);
+		map.put("mdns", mdnItems);
+		map.put("cps", cpItems);
 
 		// 申请人所创建的所有实例和ELB
 
 		map.put("allComputes", comm.computeService.getComputeListByUserId(failure.getUser().getId()));
 		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(failure.getUser().getId()));
-
-		// TODO 其它资源缺少
 
 		// 工单处理URL
 

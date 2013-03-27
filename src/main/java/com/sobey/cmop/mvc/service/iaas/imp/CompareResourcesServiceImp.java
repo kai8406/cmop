@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
@@ -22,6 +23,7 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
@@ -1270,6 +1272,162 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		return isChange;
 	}
 
+	@Override
+	public boolean compareCP(Resources resources, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, String publishUrl,
+			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
+			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
+			String pictrueOutputGroup, String pictrueOutputMedia) {
+
+		boolean isChange = false;
+
+		if (!cpItem.getRecordStreamUrl().equals(recordStreamUrl)) {
+			String fieldName = FieldNameConstant.CpItem.收录流URL.toString();
+			String oldValue = cpItem.getRecordStreamUrl();
+			String oldString = cpItem.getRecordStreamUrl();
+			String newValue = recordStreamUrl;
+			String newString = recordStreamUrl;
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getRecordBitrate().equals(recordBitrate)) {
+			String fieldName = FieldNameConstant.CpItem.收录码率.toString();
+			String oldValue = cpItem.getRecordBitrate();
+			String oldString = CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(cpItem.getRecordBitrate());
+			String newValue = recordBitrate;
+			String newString = CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(recordBitrate);
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getExportEncode().equals(exportEncode)) {
+
+			String fieldName = FieldNameConstant.CpItem.输出编码.toString();
+
+			String oldValue = cpItem.getExportEncode();
+			String oldString = "";
+			String[] oldExportEncodes = StringUtils.split(cpItem.getExportEncode(), ",");
+			for (String key : oldExportEncodes) {
+				oldString += CPConstant.EXPORTENCODE_MAP_STRING_KEY.get(key) + "<br>";
+			}
+
+			String newValue = exportEncode;
+			String newString = "";
+			String[] newExportEncodes = StringUtils.split(exportEncode, ",");
+			for (String key : newExportEncodes) {
+				newString += CPConstant.EXPORTENCODE_MAP_STRING_KEY.get(key) + "<br>";
+			}
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getRecordType().equals(recordType)) {
+			String fieldName = FieldNameConstant.CpItem.收录类型.toString();
+			String oldValue = cpItem.getRecordType().toString();
+			String oldString = CPConstant.RecordType.get(cpItem.getRecordType());
+			String newValue = recordType.toString();
+			String newString = CPConstant.RecordType.get(recordType);
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getRecordTime().equals(recordTime)) {
+			String fieldName = FieldNameConstant.CpItem.收录时段.toString();
+			String oldValue = cpItem.getRecordTime();
+			String oldString = cpItem.getRecordTime();
+			String newValue = recordTime;
+			String newString = recordTime;
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// 该字段可为null,要考虑到3种情况的比较.
+		if ((cpItem.getPublishUrl() != null & publishUrl != null && !cpItem.getPublishUrl().equals(publishUrl)) || (cpItem.getPublishUrl() == null && publishUrl != null)
+				|| (cpItem.getPublishUrl() != null && publishUrl == null)) {
+			String fieldName = FieldNameConstant.CpItem.发布接口地址.toString();
+			String oldValue = cpItem.getRecordTime();
+			String oldString = cpItem.getRecordTime();
+			String newValue = recordTime;
+			String newString = recordTime;
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getIsPushCtp().toString().equals(isPushCtp)) {
+			String fieldName = FieldNameConstant.CpItem.是否推送内容交易平台.toString();
+			String oldValue = cpItem.getIsPushCtp().toString();
+			String oldString = CPConstant.isPushCtp.get(cpItem.getIsPushCtp());
+			String newValue = isPushCtp;
+			String newString = CPConstant.isPushCtp.get(CPConstant.isPushCtp.推送.toString().equals(isPushCtp) ? true : false);
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getVideoFtpIp().equals(videoFtpIp)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP上传IP.toString(), cpItem.getVideoFtpIp(), cpItem.getVideoFtpIp(), videoFtpIp, videoFtpIp);
+		}
+		if (!cpItem.getVideoFtpPort().equals(videoFtpPort)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频端口.toString(), cpItem.getVideoFtpPort(), cpItem.getVideoFtpPort(), videoFtpPort, videoFtpPort);
+		}
+		if (!cpItem.getVideoFtpUsername().equals(videoFtpUsername)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP用户名.toString(), cpItem.getVideoFtpUsername(), cpItem.getVideoFtpUsername(), videoFtpUsername,
+					videoFtpUsername);
+		}
+		if (!cpItem.getVideoFtpPassword().equals(videoFtpPassword)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP密码.toString(), cpItem.getVideoFtpPassword(), cpItem.getVideoFtpPassword(), videoFtpPassword,
+					videoFtpPassword);
+		}
+		if (!cpItem.getVideoFtpRootpath().equals(videoFtpRootpath)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP根路径.toString(), cpItem.getVideoFtpRootpath(), cpItem.getVideoFtpRootpath(), videoFtpRootpath,
+					videoFtpRootpath);
+		}
+		if (!cpItem.getVideoFtpUploadpath().equals(videoFtpUploadpath)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP上传路径.toString(), cpItem.getVideoFtpUploadpath(), cpItem.getVideoFtpUploadpath(), videoFtpUploadpath,
+					videoFtpUploadpath);
+		}
+		if (!cpItem.getVideoOutputGroup().equals(videoOutputGroup)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频输出组类型.toString(), cpItem.getVideoOutputGroup(), cpItem.getVideoOutputGroup(), videoOutputGroup,
+					videoOutputGroup);
+		}
+
+		if (!cpItem.getVideoOutputWay().equals(videoOutputWay)) {
+			String fieldName = FieldNameConstant.CpItem.输出方式配置.toString();
+			String oldValue = cpItem.getVideoOutputWay();
+			String oldString = CPConstant.VideoOutputWay.get(Integer.valueOf(cpItem.getVideoOutputWay()));
+			String newValue = videoOutputWay;
+			String newString = CPConstant.VideoOutputWay.get(Integer.valueOf(videoOutputWay));
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getPictrueFtpIp().equals(pictrueFtpIp)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP上传IP.toString(), cpItem.getPictrueFtpIp(), cpItem.getPictrueFtpIp(), pictrueFtpIp, pictrueFtpIp);
+		}
+		if (!cpItem.getPictrueFtpPort().equals(pictrueFtpPort)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片端口.toString(), cpItem.getPictrueFtpPort(), cpItem.getPictrueFtpPort(), pictrueFtpPort, pictrueFtpPort);
+		}
+		if (!cpItem.getPictrueFtpUsername().equals(pictrueFtpUsername)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP用户名.toString(), cpItem.getPictrueFtpUsername(), cpItem.getPictrueFtpUsername(), pictrueFtpUsername,
+					pictrueFtpUsername);
+		}
+		if (!cpItem.getPictrueFtpPassword().equals(pictrueFtpPassword)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP密码.toString(), cpItem.getPictrueFtpPassword(), cpItem.getPictrueFtpPassword(), pictrueFtpPassword,
+					pictrueFtpPassword);
+		}
+		if (!cpItem.getPictrueFtpRootpath().equals(pictrueFtpRootpath)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP根路径.toString(), cpItem.getPictrueFtpRootpath(), cpItem.getPictrueFtpRootpath(), pictrueFtpRootpath,
+					pictrueFtpRootpath);
+		}
+		if (!cpItem.getPictrueFtpUploadpath().equals(pictrueFtpUploadpath)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP上传路径.toString(), cpItem.getPictrueFtpUploadpath(), cpItem.getPictrueFtpUploadpath(),
+					pictrueFtpUploadpath, pictrueFtpUploadpath);
+		}
+		if (!cpItem.getPictrueOutputGroup().equals(pictrueOutputGroup)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片输出组类型.toString(), cpItem.getPictrueOutputGroup(), cpItem.getPictrueOutputGroup(), pictrueOutputGroup,
+					pictrueOutputGroup);
+		}
+		if (!cpItem.getPictrueOutputMedia().equals(pictrueOutputMedia)) {
+			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.输出媒体类型.toString(), cpItem.getPictrueOutputMedia(), cpItem.getPictrueOutputMedia(), pictrueOutputMedia,
+					pictrueOutputMedia);
+		}
+
+		return isChange;
+
+	}
+
 	/**
 	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.
 	 * 
@@ -1290,32 +1448,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			}
 
 			value += networkElbItem.getIdentifier() + "(" + virtualIp + ")";
-		}
-
-		return value;
-
-	}
-
-	/**
-	 * 将NetworkElbItem组合成字符串. 避免ip为null时抱错.
-	 * 
-	 * @param eipId
-	 * @return
-	 */
-	private String wrapStringByNetworkEipItem(Integer eipId) {
-
-		NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(eipId);
-
-		String value = "";
-
-		if (networkEipItem != null) {
-
-			String ipAddress = "";
-			if (networkEipItem.getIpAddress() != null) {
-				ipAddress = networkEipItem.getIpAddress();
-			}
-
-			value += networkEipItem.getIdentifier() + "(" + ipAddress + ")";
 		}
 
 		return value;

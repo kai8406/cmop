@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.dao.FailureDao;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
@@ -93,6 +94,7 @@ public class FailureService extends BaseSevcie {
 			List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 			List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 			List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+			List<CpItem> cpItems = new ArrayList<CpItem>();
 
 			String[] resourcesIds = failure.getRelatedId().split(",");
 			for (String resourcesId : resourcesIds) {
@@ -102,14 +104,14 @@ public class FailureService extends BaseSevcie {
 
 			/* 封装各个资源对象 */
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			logger.info("--->拼装邮件内容...");
 
 			// 拼装Redmine内容
 
 			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
-					monitorElbs, mdnItems);
+					monitorElbs, mdnItems, cpItems);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
 
@@ -171,7 +173,8 @@ public class FailureService extends BaseSevcie {
 
 				// 发送工单处理邮件
 
-				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, assigneeUser);
+				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems,
+						assigneeUser);
 
 			}
 

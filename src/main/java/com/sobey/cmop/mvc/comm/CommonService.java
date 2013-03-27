@@ -32,6 +32,7 @@ import com.sobey.cmop.mvc.service.iaas.MonitorPhoneService;
 import com.sobey.cmop.mvc.service.iaas.MonitorServcie;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbUtilService;
 import com.sobey.cmop.mvc.service.operate.OperateService;
+import com.sobey.cmop.mvc.service.paas.CPService;
 import com.sobey.cmop.mvc.service.paas.MdnService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
@@ -65,6 +66,9 @@ public class CommonService {
 
 	@Resource
 	public ComputeService computeService;
+
+	@Resource
+	public CPService cpService;
 
 	@Resource
 	public DepartmentService departmentService;

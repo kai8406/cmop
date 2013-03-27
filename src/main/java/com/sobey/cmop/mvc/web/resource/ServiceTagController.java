@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
@@ -75,10 +76,10 @@ public class ServiceTagController extends BaseController {
 		List<MonitorCompute> monitorComputes = new ArrayList<MonitorCompute>();
 		List<MonitorElb> monitorElbs = new ArrayList<MonitorElb>();
 		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
+		List<CpItem> cpItems = new ArrayList<CpItem>();
 
 		/* 封装各个资源对象 */
-
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(id));
 		model.addAttribute("resourcesList", resourcesList);
@@ -90,6 +91,7 @@ public class ServiceTagController extends BaseController {
 		model.addAttribute("monitorComputes", monitorComputes);
 		model.addAttribute("monitorElbs", monitorElbs);
 		model.addAttribute("mdnItems", mdnItems);
+		model.addAttribute("cpItems", cpItems);
 
 		// 根据审批状态获得指定服务标签的审批记录(只取最新的,当前的审批记录.即audit的状态为0)
 		model.addAttribute("audits", comm.auditService.getAuditListByServiceTagIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));

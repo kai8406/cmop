@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Resources;
 
 /**
@@ -218,7 +219,9 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		// resources.setUsedby(usedby);
+		if (resources.getUsedby() == null) {
+			resources.setUsedby(RedmineConstant.Assignee.余波.toInteger());
+		}
 
 		comm.mdnService.saveResourcesByMdnVod(resources, vodId, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
 
@@ -253,7 +256,9 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		// resources.setUsedby(usedby);
+		if (resources.getUsedby() == null) {
+			resources.setUsedby(RedmineConstant.Assignee.余波.toInteger());
+		}
 
 		comm.mdnService.saveResourcesByMdnLive(resources, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
 				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
@@ -261,6 +266,50 @@ public class ResourcesExtensionController extends BaseController {
 		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
 
 		return "redirect:/resources/update/" + id;
+	}
+
+	/**
+	 * 变更ES3存储空间
+	 */
+	@RequestMapping(value = "/cp", method = RequestMethod.POST)
+	public String updateCP(
+			@RequestParam(value = "id") Integer id,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
+			@RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "changeDescription") String changeDescription,
+			// cp
+			@RequestParam(value = "recordStreamUrl") String recordStreamUrl,
+			@RequestParam(value = "recordBitrate") String recordBitrate,
+			@RequestParam(value = "exportEncode") String exportEncode,
+			@RequestParam(value = "recordType") Integer recordType,
+			@RequestParam(value = "recordTime") String recordTime,
+			@RequestParam(value = "publishUrl", required = false) String publishUrl,
+			@RequestParam(value = "isPushCtp", required = false) String isPushCtp,
+			// video
+			@RequestParam(value = "videoFtpIp") String videoFtpIp, @RequestParam(value = "videoFtpPort") String videoFtpPort, @RequestParam(value = "videoFtpUsername") String videoFtpUsername,
+			@RequestParam(value = "videoFtpPassword") String videoFtpPassword,
+			@RequestParam(value = "videoFtpRootpath") String videoFtpRootpath,
+			@RequestParam(value = "videoFtpUploadpath") String videoFtpUploadpath,
+			@RequestParam(value = "videoOutputGroup") String videoOutputGroup,
+			@RequestParam(value = "videoOutputWay") String videoOutputWay,
+			// pictrue
+			@RequestParam(value = "pictrueFtpIp") String pictrueFtpIp, @RequestParam(value = "pictrueFtpPort") String pictrueFtpPort,
+			@RequestParam(value = "pictrueFtpUsername") String pictrueFtpUsername, @RequestParam(value = "pictrueFtpPassword") String pictrueFtpPassword,
+			@RequestParam(value = "pictrueFtpRootpath") String pictrueFtpRootpath, @RequestParam(value = "pictrueFtpUploadpath") String pictrueFtpUploadpath,
+			@RequestParam(value = "pictrueOutputGroup") String pictrueOutputGroup, @RequestParam(value = "pictrueOutputMedia") String pictrueOutputMedia,
+
+			RedirectAttributes redirectAttributes) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+		resources.setUsedby(usedby);
+
+		comm.cpService.saveResourcesByCP(resources, serviceTagId, changeDescription, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, publishUrl, isPushCtp, videoFtpIp,
+				videoFtpPort, videoFtpUsername, videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername,
+				pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
+
+		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
+
+		return REDIRECT_SUCCESS_URL;
 	}
 
 }

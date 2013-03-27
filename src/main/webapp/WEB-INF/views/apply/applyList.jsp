@@ -40,7 +40,7 @@
 			<a href="${ctx}/apply/esg/save/" class="btn span1">ESG &raquo;</a>
 			<a href="${ctx}/apply/monitor/save/" class="btn span1">Monitor &raquo;</a>
 			<a href="${ctx}/apply/mdn/save/" class="btn span1">MDN &raquo;</a>
-			<a href="#" class="btn span1">CP &raquo;</a>
+			<a href="${ctx}/apply/cp/save/" class="btn span1">CP &raquo;</a>
 		</div>
 
 	</div>

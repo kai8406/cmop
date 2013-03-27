@@ -151,6 +151,12 @@ public class ResourcesController extends BaseController {
 
 			updateUrl = "resource/form/mdn";
 
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
+
+			model.addAttribute("cp", comm.cpService.getCpItem(serviceId));
+
+			updateUrl = "resource/form/cp";
+
 		} else {
 
 			updateUrl = "resource/resourceList";
@@ -249,6 +255,12 @@ public class ResourcesController extends BaseController {
 			model.addAttribute("mdn", comm.mdnService.getMdnItem(serviceId));
 
 			detailUrl = "resource/detail/mdnDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
+
+			model.addAttribute("cp", comm.cpService.getCpItem(serviceId));
+
+			detailUrl = "resource/detail/cpDetail";
 
 		} else {
 

@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.service.iaas;
 import java.util.List;
 
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
@@ -217,5 +218,40 @@ public interface ICompareResourcesService {
 	public boolean compareMdnLiveItem(Resources resources, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
 			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
 			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate);
+
+	/**
+	 * 比较CpItem变更前后的值
+	 * 
+	 * @param resources
+	 * @param cpItem
+	 * @param recordStreamUrl
+	 * @param recordBitrate
+	 * @param exportEncode
+	 * @param recordType
+	 * @param recordTime
+	 * @param publishUrl
+	 * @param isPushCtp
+	 * @param videoFtpIp
+	 * @param videoFtpPort
+	 * @param videoFtpUsername
+	 * @param videoFtpPassword
+	 * @param videoFtpRootpath
+	 * @param videoFtpUploadpath
+	 * @param videoOutputGroup
+	 * @param videoOutputWay
+	 * @param pictrueFtpIp
+	 * @param pictrueFtpPort
+	 * @param pictrueFtpUsername
+	 * @param pictrueFtpPassword
+	 * @param pictrueFtpRootpath
+	 * @param pictrueFtpUploadpath
+	 * @param pictrueOutputGroup
+	 * @param pictrueOutputMedia
+	 * @return
+	 */
+	public boolean compareCP(Resources resources, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, String publishUrl,
+			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
+			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
+			String pictrueOutputGroup, String pictrueOutputMedia);
 
 }

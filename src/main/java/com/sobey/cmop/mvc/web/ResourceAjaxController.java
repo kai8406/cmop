@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.CpJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
@@ -16,8 +17,7 @@ import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 /**
- * 页面AJAX操作Resource相关的 Controller<br>
- * 注意区分申请中的资源和审批通过的资源.
+ * 页面AJAX操作Resource相关的 Controller, 区分申请中的资源和审批通过的资源,并将其进行二次封装以方便页面的取值.
  * 
  * @author liukai
  * 
@@ -123,4 +123,15 @@ public class ResourceAjaxController extends BaseController {
 		return comm.resourcesJsonService.convertMdnJsonToMdn(comm.mdnService.getMdnItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
+	/**
+	 * Ajax请求根据resourcesId获得CpJson的对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getCP")
+	public @ResponseBody
+	CpJson getCP(@RequestParam(value = "id") Integer id) {
+		return comm.resourcesJsonService.convertCpJsonToCpItem(comm.cpService.getCpItem((comm.resourcesService.getResources(id).getServiceId())));
+	}
 }

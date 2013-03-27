@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.HostServerConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
@@ -299,15 +300,6 @@ public class BaseController {
 
 	/**
 	 * 
-	 * @return 是否保持会话Map key为String类型
-	 */
-	@ModelAttribute("keepSessionKeyStrMap")
-	public Map<String, String> keepSessionKeyStrMap() {
-		return NetworkConstant.KeepSession.mapKeyStr;
-	}
-
-	/**
-	 * 
 	 * @return 是否保持会话Map key为boolean类型
 	 */
 	@ModelAttribute("keepSessionMap")
@@ -504,6 +496,49 @@ public class BaseController {
 	@ModelAttribute("userTypeMap")
 	public Map<Integer, String> userTypeMap() {
 		return AccountConstant.UserTypes.map;
+	}
+
+	/**
+	 * @return 收录编码率Map
+	 */
+	@ModelAttribute("recordBitrateMap")
+	public Map<String, String> recordBitrateMap() {
+		return CPConstant.RECORDBITRATE_MAP_STRING_KEY;
+	}
+
+	/**
+	 * 
+	 * @return 收录类型Map
+	 */
+	@ModelAttribute("recordTypeMap")
+	public Map<Integer, String> recordTypeMap() {
+		return CPConstant.RecordType.map;
+	}
+
+	/**
+	 * 
+	 * @return 视频输出方式配置
+	 */
+	@ModelAttribute("videoOutputWayMap")
+	public Map<Integer, String> videoOutputWayMap() {
+		return CPConstant.VideoOutputWay.map;
+	}
+
+	/**
+	 * @return 输出编码
+	 */
+	@ModelAttribute("exportEncodeMap")
+	public Map<Integer, String> exportEncodeMap() {
+		return CPConstant.EXPORTENCODE_MAP;
+	}
+
+	/**
+	 * 
+	 * @return 是否推送内容交易平台Map
+	 */
+	@ModelAttribute("isPushCtpMap")
+	public Map<Boolean, String> isPushCtpMap() {
+		return CPConstant.isPushCtp.map;
 	}
 
 }

@@ -3,16 +3,19 @@ package com.sobey.cmop.mvc.service.iaas.imp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
@@ -23,6 +26,7 @@ import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
+import com.sobey.cmop.mvc.entity.ToJson.CpJson;
 import com.sobey.cmop.mvc.entity.ToJson.DnsJson;
 import com.sobey.cmop.mvc.entity.ToJson.EipJson;
 import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
@@ -33,6 +37,7 @@ import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 import com.sobey.cmop.mvc.service.iaas.IResourcesJsonService;
+import com.sobey.framework.utils.StringCommonUtils;
 
 @Service
 @Transactional(readOnly = true)
@@ -292,6 +297,47 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 			json.setMdnVodJsons(mdnVodJsons);
 		}
+
+		return json;
+	}
+
+	@Override
+	public CpJson convertCpJsonToCpItem(CpItem cpItem) {
+		CpJson json = new CpJson();
+
+		json.setId(cpItem.getId());
+		json.setIdentifier(cpItem.getIdentifier());
+		json.setRecordStreamUrl(cpItem.getRecordStreamUrl());
+		json.setRecordBitrate(CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(cpItem.getRecordBitrate()));
+		String[] exportEncodes = StringUtils.split(cpItem.getExportEncode(), ",");
+		String exportEncode = "";
+		for (String key : exportEncodes) {
+			exportEncode += CPConstant.EXPORTENCODE_MAP_STRING_KEY.get(key) + ",";
+		}
+		json.setExportEncode(StringCommonUtils.replaceAndSubstringText(exportEncode, ",", ","));
+
+		json.setRecordType(CPConstant.RecordType.get(cpItem.getRecordType()));
+		json.setRecordTime(cpItem.getRecordTime());
+		json.setPublishUrl(cpItem.getPublishUrl());
+		json.setIsPushCtp(CPConstant.isPushCtp.get(cpItem.getIsPushCtp()));
+
+		json.setVideoFtpIp(cpItem.getVideoFtpIp());
+		json.setVideoFtpPort(cpItem.getVideoFtpPort());
+		json.setVideoFtpUsername(cpItem.getVideoFtpUsername());
+		json.setVideoFtpPassword(cpItem.getVideoFtpPassword());
+		json.setVideoFtpRootpath(cpItem.getVideoFtpRootpath());
+		json.setVideoFtpUploadpath(cpItem.getVideoFtpUploadpath());
+		json.setVideoOutputGroup(cpItem.getVideoOutputGroup());
+		json.setVideoOutputWay(CPConstant.VideoOutputWay.mapKeyStr.get(cpItem.getVideoOutputWay()));
+
+		json.setPictrueFtpIp(cpItem.getPictrueFtpIp());
+		json.setPictrueFtpPort(cpItem.getPictrueFtpPort());
+		json.setPictrueFtpUsername(cpItem.getPictrueFtpUsername());
+		json.setPictrueFtpPassword(cpItem.getPictrueFtpPassword());
+		json.setPictrueFtpRootpath(cpItem.getPictrueFtpRootpath());
+		json.setPictrueFtpUploadpath(cpItem.getPictrueFtpUploadpath());
+		json.setPictrueOutputGroup(cpItem.getPictrueOutputGroup());
+		json.setPictrueOutputMedia(cpItem.getPictrueOutputMedia());
 
 		return json;
 	}

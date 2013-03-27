@@ -67,8 +67,12 @@
 	 <script src="${ctx}/static/jquery-validation/jquery.validate.js"></script>
 	 <script src="${ctx}/static/jquery-validation/messages_zh.js"></script>
 	 <script src="${ctx}/static/jquery-form/jquery.form.js"></script>
+ 	 <script src="${ctx}/static/jquery-fileupload/jquery.ui.widget.js"></script>
+	 <script src="${ctx}/static/jquery-fileupload/jquery.iframe-transport.js"></script>
+	 <script src="${ctx}/static/jquery-fileupload/jquery.fileupload.js"></script>
 	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/common/js/custom.wizard.js"></script>
+	 <script src="${ctx}/static/common/js/custom.fileUpload.js"></script>
 	
 </body>
 </html>

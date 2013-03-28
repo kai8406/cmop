@@ -223,45 +223,31 @@ public class OperateService extends BaseSevcie {
 	private void applyOperate(Issue issue, Integer applyId) {
 		logger.info("--->服务申请处理...");
 		Apply apply = comm.applyService.getApply(applyId);
+
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) { // 处理完成,状态为已创建
+
 			logger.info("---> 完成度 = 100%的工单处理...");
 
-			// 拼装邮件内容
-			// logger.info("--->拼装邮件内容...");
-			// String content = MailUtil.buildMailDesc(apply, null, null,
-			// computeList, storageList, networkEipList, networkElbList,
-			// networkDnsList, networkEsgList, mdnList, true);
-			// if (content == null) {
-			// return false;
-			// }
-
 			// 更新服务申请状态
-			logger.info("--->更新服务申请状态...");
 			apply.setStatus(ApplyConstant.Status.已创建.toInteger());
 
-			// 向资源表 resources 写入记录
-			logger.info("--->向资源表写入记录...");
-			comm.resourcesService.insertResourcesAfterOperate(apply);
-
-			// TODO 写入基础数据到OneCMDB
-			logger.info("--->向OneCMDB写入服务申请数据...");
-			// auditManager.saveToOnecmdb(apply, null, computeList, storageList,
-			// networkElbList, networkEipList, networkDnsList, networkEsgList,
-			// mdnList);
+			// 向资源表 resources 写入记录,并插入oneCMDB中.
+			comm.resourcesService.insertResourcesAndOneCMDBAfterOperate(apply);
 
 			// 工单处理完成，给申请人发送邮件
 			comm.templateMailService.sendApplyOperateDoneNotificationMail(apply);
+
 			logger.info("--->工单处理完成,发送邮件通知申请人:" + apply.getUser().getName());
+
 		} else {
 			logger.info("---> 完成度 < 100%的工单处理...");
 
-			// 拼装邮件内容
-
 			// 更新服务申请状态
-			logger.info("--->更新服务申请状态...");
 			apply.setStatus(ApplyConstant.Status.处理中.toInteger());
+
 			// 发送邮件通知下个指派人
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
+
 			comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
 		}
 		comm.applyService.saveOrUpateApply(apply);

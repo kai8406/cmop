@@ -186,7 +186,7 @@
 					<div class="controls">
 						<c:forEach var="map" items="${recordTypeMap}">
 							<label class="radio inline">
-								<input type="radio" name="recordType" value="${map.key}" class="required"><span class="radioText ">${map.value}</span>
+								<input type="radio" name="recordType" value="${map.key}" checked="checked" class="required"><span class="radioText ">${map.value}</span>
 							</label>
 						</c:forEach>
 					</div>

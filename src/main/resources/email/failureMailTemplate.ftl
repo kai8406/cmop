@@ -32,7 +32,8 @@
 						</#list>
 					</li>
 					
-					<li><em> 故障现象及描述</em>&nbsp;: ${failure.description}</li>
+					<li><em>故障现象及描述</em>&nbsp;: ${failure.description}</li>
+					
 				</ul>	
 			</li>
 		</#if> <!-- 故障申报 failure End -->

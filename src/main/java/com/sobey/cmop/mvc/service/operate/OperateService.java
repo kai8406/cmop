@@ -169,6 +169,7 @@ public class OperateService extends BaseSevcie {
 				 * Step.2 根据RedmineIssue对象中的applyId, serviceTagId,
 				 * recycleId进行不同的逻辑操作
 				 */
+
 				Integer applyId = redmineIssue.getApplyId();
 				Integer serviceTagId = redmineIssue.getServiceTagId();
 				String recycleId = redmineIssue.getResourceId();
@@ -283,7 +284,7 @@ public class OperateService extends BaseSevcie {
 				comm.changeServcie.deleteChange(change.getId());
 			}
 
-			// TODO 同步数据至OneCMDB
+			// TODO resource变更审批通过时,同步数据到oneCMDB.
 
 			// 工单处理完成，给申请人发送邮件
 			comm.templateMailService.sendResourcesOperateDoneNotificationMail(serviceTag);

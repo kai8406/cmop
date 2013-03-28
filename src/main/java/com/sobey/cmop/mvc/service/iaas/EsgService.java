@@ -78,6 +78,11 @@ public class EsgService extends BaseSevcie {
 
 		esgRuleItemDao.save(esgRuleItems);
 
+		// 保存至oneCMDB
+		List<NetworkEsgItem> networkEsgItems = new ArrayList<NetworkEsgItem>();
+		networkEsgItems.add(networkEsgItem);
+		comm.oneCmdbUtilService.saveESGToOneCMDB(networkEsgItems);
+
 		return networkEsgItem;
 	}
 
@@ -144,7 +149,7 @@ public class EsgService extends BaseSevcie {
 	 *            绑定规则的访问源，如：192.168.0.1/10，默认：0.0.0.0/0
 	 * @return
 	 */
-	public List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources) {
+	private List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources) {
 		List<EsgRuleItem> esgRuleItems = new ArrayList<EsgRuleItem>();
 		for (int i = 0; i < protocols.length; i++) {
 			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i]);
@@ -157,6 +162,17 @@ public class EsgService extends BaseSevcie {
 
 	public EsgRuleItem getEsgRule(Integer id) {
 		return esgRuleItemDao.findOne(id);
+	}
+
+	/**
+	 * 获得指定安全组ESG下的所有EsgRuleItem List
+	 * 
+	 * @param esgId
+	 * @return
+	 */
+	public List<EsgRuleItem> getEsgRuleItemListByEsgId(Integer esgId) {
+		return esgRuleItemDao.findByNetworkEsgItemId(esgId);
+
 	}
 
 }

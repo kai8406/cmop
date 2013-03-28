@@ -10,12 +10,56 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.entity.EsgRuleItem;
 import com.sobey.cmop.mvc.entity.Location;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.Vlan;
+import com.sobey.framework.utils.StringCommonUtils;
 
 @Service
 public class OneCmdbUtilService extends BaseSevcie {
+
+	/**
+	 * 插入ESG至oneCMDB
+	 * 
+	 * @param networkEsgItems
+	 *            ESG集合
+	 * @return
+	 */
+	public boolean saveESGToOneCMDB(List<NetworkEsgItem> networkEsgItems) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		for (NetworkEsgItem networkEsgItem : networkEsgItems) {
+
+			// 规则：协议,端口范围,访问源.如果有多条规则，则按","隔开
+			String protocol = "";
+			String portRange = "";
+			String visitSource = "";
+			List<EsgRuleItem> esgRuleItems = comm.esgService.getEsgRuleItemListByEsgId(networkEsgItem.getId());
+			for (EsgRuleItem esgRuleItem : esgRuleItems) {
+				protocol += esgRuleItem.getProtocol() + ",";
+				portRange += esgRuleItem.getPortRange() + ",";
+				visitSource += esgRuleItem.getVisitSource() + ",";
+			}
+
+			CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
+
+			// BelongsTo：属于某个申请人，先写文本
+			ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
+			ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
+			ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
+			ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
+			ci.addAttributeValue(new ValueBean("SourceIP", StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
+			ci.setDescription(networkEsgItem.getDescription());
+
+			ciList.add(ci);
+		}
+
+		return OneCmdbService.update(ciList);
+
+	}
 
 	public boolean saveLocation(Location location) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();

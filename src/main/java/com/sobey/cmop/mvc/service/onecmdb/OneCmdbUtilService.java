@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.onecmdb;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -10,16 +11,56 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.StorageConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EsgRuleItem;
 import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.framework.utils.StringCommonUtils;
 
 @Service
 public class OneCmdbUtilService extends BaseSevcie {
 
+	// ===========ServiceTag ===========//
+	/**
+	 * 插入服务标签至oneCMDB
+	 * 
+	 * @param serviceTag
+	 * @return
+	 */
+	public boolean saveServiceTagToOneCMDB(ServiceTag serviceTag) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		CiBean ci = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
+		ci.addAttributeValue(new ValueBean("Name", serviceTag.getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		// ci.addAttributeValue(new ValueBean("Description",
+		// serviceTag.getDescription(), false));
+
+		ciList.add(ci);
+
+		return OneCmdbService.update(ciList);
+	}
+
+	/**
+	 * 删除oneCMDB中的服务标签serviceTag
+	 * 
+	 * @param serviceTag
+	 * @return
+	 */
+	public boolean deleteServiceTagToOneCMDB(ServiceTag serviceTag) {
+		List<CiBean> ciList = new ArrayList<CiBean>();
+		CiBean router = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
+		ciList.add(router);
+		return OneCmdbService.delete(ciList);
+	}
+
+	// ===========NetworkEsgItem ===========//
 	/**
 	 * 插入ESG至oneCMDB
 	 * 
@@ -27,7 +68,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 *            ESG集合
 	 * @return
 	 */
-	public boolean saveESGToOneCMDB(List<NetworkEsgItem> networkEsgItems) {
+	public boolean saveESGToOneCMDB(Collection<NetworkEsgItem> networkEsgItems) {
 
 		List<CiBean> ciList = new ArrayList<CiBean>();
 
@@ -47,12 +88,128 @@ public class OneCmdbUtilService extends BaseSevcie {
 			CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
 
 			// BelongsTo：属于某个申请人，先写文本
-			ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
+			ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
 			ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
 			ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
 			ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
 			ci.addAttributeValue(new ValueBean("SourceIP", StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
 			ci.setDescription(networkEsgItem.getDescription());
+
+			ciList.add(ci);
+		}
+
+		return OneCmdbService.update(ciList);
+
+	}
+
+	/**
+	 * 插入实例Compute至oneCMDB
+	 * 
+	 * @param computeItems
+	 *            实例集合
+	 * @return
+	 */
+	public boolean saveComputeToOneCMDB(Collection<ComputeItem> computeItems) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		for (ComputeItem computeItem : computeItems) {
+
+			CiBean ci;
+
+			if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
+
+				ci = new CiBean("PCS", computeItem.getIdentifier(), false);
+
+				ci.addAttributeValue(new ValueBean("Server", computeItem.getServerAlias(), true));
+
+			} else {
+
+				String MemSize = "";
+				String CoreNum = "";
+
+				if (ComputeConstant.ECSServerType.Small.toInteger().equals(computeItem.getServerType())) {
+					MemSize = "1G";
+					CoreNum = "1";
+				} else if (ComputeConstant.ECSServerType.Middle.toInteger().equals(computeItem.getServerType())) {
+					MemSize = "2G";
+					CoreNum = "2";
+				} else {
+					MemSize = "4G";
+					CoreNum = "4";
+				}
+
+				ci = new CiBean("ECS", computeItem.getIdentifier(), false);
+
+				ci.addAttributeValue(new ValueBean("HostServer", computeItem.getHostServerAlias(), true));
+				ci.addAttributeValue(new ValueBean("OsStorage", computeItem.getOsStorageAlias(), true));
+				ci.addAttributeValue(new ValueBean("MemSize", MemSize, false));
+				ci.addAttributeValue(new ValueBean("CoreNum", CoreNum, false));
+
+			}
+
+			ci.addAttributeValue(new ValueBean("OsType", ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()), false));
+			ci.addAttributeValue(new ValueBean("OsBit", ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()), false));
+			ci.addAttributeValue(new ValueBean("ESG", OneCmdbService.findCiAliasByText("ESG", computeItem.getNetworkEsgItem().getIdentifier()), true));
+			ci.addAttributeValue(new ValueBean("HostName", computeItem.getHostName(), false));
+			ci.addAttributeValue(new ValueBean("BelongsTo", computeItem.getApply().getUser().getName(), false));
+			ci.addAttributeValue(new ValueBean("Name", computeItem.getIdentifier(), false));
+			ci.addAttributeValue(new ValueBean("EndTime", computeItem.getApply().getServiceEnd(), false));
+
+			for (StorageItem storageItem : computeItem.getStorageItemList()) {
+				String storageAlias = OneCmdbService.findCiAliasByText(StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol",
+						storageItem.getIdentifier());
+				ci.addAttributeValue(new ValueBean("Storage", storageAlias, true));
+			}
+
+			// TODO ipPool待确定
+			// ci.addAttributeValue(new ValueBean("IPAddress",
+			// OneCmdbService.findCiAliasByText("VIPPool",
+			// computeItem.getInnerIp()), true));
+			// ci.addAttributeValue(new ValueBean("NetWork", "Vlans", true));
+			// ci.addAttributeValue(new ValueBean("Storage", storageAlias,
+			// true));
+			// ci.addAttributeValue(new ValueBean("Application",
+			// computeItem.getApplications().toString(), true));
+
+			ciList.add(ci);
+		}
+
+		return OneCmdbService.update(ciList);
+
+	}
+
+	/**
+	 * 插入ESG至oneCMDB
+	 * 
+	 * @param networkEsgItems
+	 *            ESG集合
+	 * @return
+	 */
+	public boolean saveStorageToOneCMDB(Collection<StorageItem> storageItems) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		for (StorageItem storageItem : storageItems) {
+
+			CiBean ci;
+
+			// Type：NFS-管理卷；DATA-数据卷
+			if (StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType())) {
+				// Fimas
+				ci = new CiBean("FimasVol", storageItem.getIdentifier(), false);
+				ci.addAttributeValue(new ValueBean("Type", "DIFS", false));
+
+			} else {
+				// Netapp
+				ci = new CiBean("NFSVol", storageItem.getIdentifier(), false);
+				ci.addAttributeValue(new ValueBean("Type", "DATA", false));
+			}
+
+			ci.addAttributeValue(new ValueBean("Name", storageItem.getIdentifier(), false));
+			ci.addAttributeValue(new ValueBean("Volume", storageItem.getVolume(), false));
+			ci.addAttributeValue(new ValueBean("HardWare", storageItem.getControllerAlias(), true));
+			ci.addAttributeValue(new ValueBean("BelongsTo", storageItem.getApply().getUser().getName(), false));
 
 			ciList.add(ci);
 		}

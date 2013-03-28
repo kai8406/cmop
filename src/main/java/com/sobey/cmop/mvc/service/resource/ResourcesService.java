@@ -228,12 +228,12 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 在工单100%处理完成后,将申请单里的资源插入Resources表中
+	 * 在工单100%处理完成后,将申请单里的资源插入Resources表中,同时将数据同步至oneCMDB中.
 	 * 
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void insertResourcesAfterOperate(Apply apply) {
+	public void insertResourcesAndOneCMDBAfterOperate(Apply apply) {
 
 		Integer serviceType;
 		ServiceTag serviceTag = comm.serviceTagService.saveServiceTag(apply);

@@ -31,6 +31,7 @@ public class ServiceTag implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
+	private String identifier;
 	private User user;
 	private String name;
 	private Integer priority;
@@ -53,7 +54,8 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ServiceTag(User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+	public ServiceTag(String identifier, User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+		this.identifier = identifier;
 		this.user = user;
 		this.name = name;
 		this.priority = priority;
@@ -65,8 +67,9 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ServiceTag(User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow, String domain,
-			String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
+	public ServiceTag(String identifier, User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow,
+			String domain, String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
+		this.identifier = identifier;
 		this.user = user;
 		this.name = name;
 		this.priority = priority;
@@ -93,6 +96,15 @@ public class ServiceTag implements java.io.Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Column(name = "identifier", nullable = false, length = 45)
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	@Column(name = "name", nullable = false, length = 45)

@@ -25,6 +25,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
+import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
 
@@ -38,6 +39,8 @@ import com.sobey.framework.utils.SearchFilter.Operator;
 public class ServiceTagService extends BaseSevcie {
 
 	private static Logger logger = LoggerFactory.getLogger(ServiceTagService.class);
+
+	private static String TAG_IDENTIFIER = "TAG";
 
 	@Resource
 	private ServiceTagDao serviceTagDao;
@@ -59,6 +62,10 @@ public class ServiceTagService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void delete(Integer id) {
+
+		// TODO 也需要删除CMDB中数据.
+		comm.oneCmdbUtilService.deleteServiceTagToOneCMDB(this.getServiceTag(id));
+
 		serviceTagDao.delete(id);
 	}
 
@@ -110,9 +117,16 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 新增服务标签ServiceTag<br>
-	 * 如果ServiceTag的name在数据库中不存在,返回一个新创建的ServiceTag.<br>
+	 * 新增服务标签ServiceTag
+	 * 
+	 * <pre>
+	 * 1.如果ServiceTag的name在数据库中不存在,返回一个新创建的ServiceTag.
 	 * 如果存在,则返回已存在的ServiceTag
+	 * 
+	 * 2.数据插入库后,也要将数据同步至oneCMDB中,
+	 * 即也要调用API将新建serviceTag插入oneCMDB.
+	 * 
+	 * <pre>
 	 * 
 	 * @param apply
 	 * @return
@@ -128,6 +142,7 @@ public class ServiceTagService extends BaseSevcie {
 
 			serviceTag = new ServiceTag();
 
+			serviceTag.setIdentifier(TAG_IDENTIFIER + "-" + Identities.randomBase62(8));
 			serviceTag.setUser(apply.getUser());
 			serviceTag.setName(apply.getServiceTag());
 			serviceTag.setPriority(apply.getPriority());
@@ -139,6 +154,9 @@ public class ServiceTagService extends BaseSevcie {
 
 			this.saveOrUpdate(serviceTag);
 
+			// 插入oneCMDB
+			comm.oneCmdbUtilService.saveServiceTagToOneCMDB(serviceTag);
+
 		}
 
 		return serviceTag;
@@ -146,7 +164,7 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 新增服务标签(如果这个标签名存在,则略过)
+	 * 新增服务标签(如果这个标签名存在,则略过),并同步至oneCMDB
 	 * 
 	 * @param serviceTag
 	 * @return
@@ -154,10 +172,15 @@ public class ServiceTagService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public ServiceTag saveServiceTag(ServiceTag serviceTag) {
 
+		serviceTag.setIdentifier(TAG_IDENTIFIER + "-" + Identities.randomBase62(8));
 		serviceTag.setUser(comm.accountService.getCurrentUser());
 		serviceTag.setStatus(ResourcesConstant.Status.未变更.toInteger());
 		serviceTag.setCreateTime(new Date());
+
 		this.saveOrUpdate(serviceTag);
+
+		// 插入oneCMDB
+		comm.oneCmdbUtilService.saveServiceTagToOneCMDB(serviceTag);
 
 		return serviceTag;
 

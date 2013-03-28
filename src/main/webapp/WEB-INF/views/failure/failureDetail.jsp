@@ -48,6 +48,14 @@
 				<dt>故障现象及描述</dt>
 				<dd>${failure.description}&nbsp;</dd>
 				
+				<c:if test="${not empty failure.redmineIssue.attachments }">
+					<dt>附件</dt>
+					<dd>
+						<c:forEach var="attachment" items="${failure.redmineIssue.attachments }">
+							<a title="${attachment.description}" class="tip-right">${attachment.fileName}</a> <br> 
+						</c:forEach>
+					</dd>
+				</c:if>
 				
 				<div class="page-header"><em>处理反馈</em></div>
 				

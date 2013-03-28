@@ -49,7 +49,9 @@
 			var size = (file.size / 1000).toFixed(2) ;
 			var html = "<div class='fileuploadDiv'>";
 			html += '<input type="hidden" value="' + file.name + '" id="fileInput" name="fileName">';
+			html += '<input type="hidden" value="' + file.size + '" name="fileSize">';
 			html += '<span class="text-warning">' + file.name + ' (' + size + 'K)&nbsp;&nbsp;</span>';
+			html += '<input type="text" name="fileDesc" value=" " class="input-small required" maxlength="45">'; //值为空格,去掉必填验证.
 			html += "<a href='${ctx}/failure/upload/" + file.deleteUrl + "' onclick='deleteUpdateLoad(this);return false'>删除</a><br/>";
 			html += "</div>";
 			return html;

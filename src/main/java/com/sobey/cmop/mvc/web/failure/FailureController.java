@@ -77,24 +77,27 @@ public class FailureController extends BaseController {
 	 * @param resourcesId
 	 *            故障相关资源的Id
 	 * @param fileNames
+	 *            附件名数组
 	 * @param fileDescs
+	 *            附件说明数组
 	 * @param failure
 	 * @param redirectAttributes
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam("resourcesId") String resourcesId, @RequestParam(value = "fileName", required = false) String fileNames, Failure failure, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam("resourcesId") String resourcesId, @RequestParam(value = "fileName", required = false) String fileNames,
+			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure, RedirectAttributes redirectAttributes) {
 
 		failure.setRelatedId(resourcesId);
 		failure.setCreateTime(new Date());
 		failure.setUser(comm.accountService.getCurrentUser());
 		failure.setTitle(comm.applyService.generateApplyTitle("bug"));
 
-		boolean result = comm.failureService.saveFailure(failure, fileNames);
+		boolean result = comm.failureService.saveFailure(failure, fileNames, fileDescs);
 
 		redirectAttributes.addFlashAttribute("message", result ? "故障申报成功" : "故障申报失败,请稍后重试");
 
-		return "redirect:/failure/";
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	/**

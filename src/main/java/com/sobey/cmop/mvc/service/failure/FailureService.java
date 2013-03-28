@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.dao.AttachmentDao;
 import com.sobey.cmop.mvc.dao.FailureDao;
+import com.sobey.cmop.mvc.entity.Attachment;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
@@ -66,6 +69,9 @@ public class FailureService extends BaseSevcie {
 	@Resource
 	private FailureDao failureDao;
 
+	@Resource
+	private AttachmentDao attachmentDao;
+
 	public Failure getFailure(Integer id) {
 		return failureDao.findOne(id);
 	}
@@ -84,10 +90,12 @@ public class FailureService extends BaseSevcie {
 	 * @param failure
 	 * @param fileNames
 	 *            上传附件名
+	 * @param fileNames
+	 *            上传附件说明
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public boolean saveFailure(Failure failure, String fileNames) {
+	public boolean saveFailure(Failure failure, String fileNames, String fileDescs) {
 
 		logger.info("--->故障申报处理...");
 
@@ -177,7 +185,15 @@ public class FailureService extends BaseSevcie {
 
 				logger.info("--->故障申报表保存成功");
 
-				// TODO 附件添加
+				// 插入附件信息
+				if (fileNames != null) {
+					String[] fileNameArray = fileNames.split(",");
+					String[] fileDescArray = fileDescs.split(",");
+					for (int i = 0; i < fileNameArray.length; i++) {
+						Attachment attachment = new Attachment(fileNameArray[i], fileDescArray[i], new Date(), redmineIssue);
+						attachmentDao.save(attachment);
+					}
+				}
 
 				// 指派人的User
 

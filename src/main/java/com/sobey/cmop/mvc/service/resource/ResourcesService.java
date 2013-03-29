@@ -239,11 +239,14 @@ public class ResourcesService extends BaseSevcie {
 		Integer serviceType;
 		ServiceTag serviceTag = comm.serviceTagService.saveServiceTag(apply);
 
-		// TODO apply审批通过时,同步数据到oneCMDB.
+		// TODO apply审批通过时,同步数据到oneCMDB.监控是否插入?
 
-		// 此处注意插入顺序,否则在oneCMDB中可能无法找到相关的资源.
+		// 此处注意插入顺序,否则在oneCMDB中可能无法找到相关的资源.即ES3在compute之前.
 		comm.oneCmdbUtilService.saveStorageToOneCMDB(apply.getStorageItems(), serviceTag);
 		comm.oneCmdbUtilService.saveComputeToOneCMDB(apply.getComputeItems(), serviceTag);
+		comm.oneCmdbUtilService.saveELBToOneCMDB(apply.getNetworkElbItems(), serviceTag);
+		comm.oneCmdbUtilService.saveEIPToOneCMDB(apply.getNetworkEipItems(), serviceTag);
+		comm.oneCmdbUtilService.saveDNSToOneCMDB(apply.getNetworkDnsItems(), serviceTag);
 
 		// Compute
 		for (ComputeItem compute : apply.getComputeItems()) {

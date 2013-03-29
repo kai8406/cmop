@@ -290,7 +290,7 @@ public class OperateService extends BaseSevcie {
 				Integer serviceType = resources.getServiceType();
 				Integer serviceId = resources.getServiceId();
 
-				// TODO resource变更审批通过时,同步数据到oneCMDB.
+				// resource变更审批通过时,同步数据到oneCMDB.
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
@@ -305,14 +305,17 @@ public class OperateService extends BaseSevcie {
 				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
 
 					// ELB
+					comm.oneCmdbUtilService.saveELBToOneCMDB(comm.elbService.getNetworkElbItem(serviceId), serviceTag);
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
 
 					// EIP
+					comm.oneCmdbUtilService.saveEIPToOneCMDB(comm.eipService.getNetworkEipItem(serviceId), serviceTag);
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
 
 					// DNS
+					comm.oneCmdbUtilService.saveDNSToOneCMDB(comm.dnsService.getNetworkDnsItem(serviceId), serviceTag);
 
 				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
 
@@ -380,7 +383,7 @@ public class OperateService extends BaseSevcie {
 
 			logger.info("---> 完成度 = 100%的工单处理...");
 
-			// TODO 删除资源.同时OneCMDB中的数据也删除.
+			// 删除资源.同时OneCMDB中的数据也删除.
 			for (Resources resources : resourcesList) {
 
 				Integer serviceType = resources.getServiceType();
@@ -388,31 +391,32 @@ public class OperateService extends BaseSevcie {
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
-					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
-
 					// PCS & ECS
+					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
 					comm.computeService.deleteCompute(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
 
-					comm.oneCmdbUtilService.deleteStorageItemToOneCMDB(comm.es3Service.getStorageItem(serviceId));
-
 					// ES3
+					comm.oneCmdbUtilService.deleteStorageItemToOneCMDB(comm.es3Service.getStorageItem(serviceId));
 					comm.es3Service.deleteStorageItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
 
 					// ELB
+					comm.oneCmdbUtilService.deleteELBToOneCMDB(comm.elbService.getNetworkElbItem(serviceId));
 					comm.elbService.deleteNetworkElbItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
 
 					// EIP
+					comm.oneCmdbUtilService.deleteEIPToOneCMDB(comm.eipService.getNetworkEipItem(serviceId));
 					comm.eipService.deleteNetworkEipItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
 
 					// DNS
+					comm.oneCmdbUtilService.deleteDNSToOneCMDB(comm.dnsService.getNetworkDnsItem(serviceId));
 					comm.dnsService.deleteNetworkDnsItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {

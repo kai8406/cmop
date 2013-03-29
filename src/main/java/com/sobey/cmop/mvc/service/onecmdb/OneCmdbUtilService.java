@@ -12,11 +12,17 @@ import org.springframework.stereotype.Service;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
+import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.EsgRuleItem;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.Location;
+import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -271,14 +277,247 @@ public class OneCmdbUtilService extends BaseSevcie {
 	}
 
 	/**
-	 * 删除oneCMDB中的实例ComputeItem
+	 * 删除oneCMDB中的storageItem
 	 * 
-	 * @param computeItem
+	 * @param storageItem
 	 * @return
 	 */
 	public boolean deleteStorageItemToOneCMDB(StorageItem storageItem) {
 		List<CiBean> ciList = new ArrayList<CiBean>();
 		CiBean router = new CiBean(StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
+		ciList.add(router);
+		return OneCmdbService.delete(ciList);
+	}
+
+	// =========== NetworkElbItem ===========//
+
+	/**
+	 * 新增或更新NetworkElbItem至oneCMDB .
+	 * 
+	 * @param networkElbItem
+	 *            ELB
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public boolean saveELBToOneCMDB(NetworkElbItem networkElbItem, ServiceTag serviceTag) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		CiBean ci = new CiBean("ELB", networkElbItem.getIdentifier(), false);
+		ci.addAttributeValue(new ValueBean("Name", networkElbItem.getIdentifier(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("ConStatus", networkElbItem.getKeepSession() ? "是" : "否", false));
+		ci.addAttributeValue(new ValueBean("Server", networkElbItem.getIdentifier(), true));
+		ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" + networkElbItem.getVirtualIp(), true));
+
+		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
+		String protocol = "";
+		String sourcePort = "";
+		String targetPort = "";
+
+		List<ElbPortItem> elbPortItems = comm.elbService.getElbPortItemListByElbId(networkElbItem.getId());
+
+		for (ElbPortItem elbPortItem : elbPortItems) {
+			protocol += elbPortItem.getProtocol() + ",";
+			sourcePort += elbPortItem.getSourcePort() + ",";
+			targetPort += elbPortItem.getTargetPort() + ",";
+		}
+
+		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("InstancePort", StringCommonUtils.replaceAndSubstringText(sourcePort, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("LoadBalancePort", StringCommonUtils.replaceAndSubstringText(targetPort, ",", ","), false));
+
+		if (serviceTag != null) {
+			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
+		}
+
+		ciList.add(ci);
+
+		return OneCmdbService.update(ciList);
+
+	}
+
+	/**
+	 * 新增或更新NetworkElbItem集合至oneCMDB .
+	 * 
+	 * @param networkElbItems
+	 *            ELB集合
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public void saveELBToOneCMDB(Collection<NetworkElbItem> networkElbItems, ServiceTag serviceTag) {
+		for (NetworkElbItem networkElbItem : networkElbItems) {
+			this.saveELBToOneCMDB(networkElbItem, serviceTag);
+		}
+	}
+
+	/**
+	 * 删除oneCMDB中的NetworkElbItem
+	 * 
+	 * @param networkElbItem
+	 * @return
+	 */
+	public boolean deleteELBToOneCMDB(NetworkElbItem networkElbItem) {
+		List<CiBean> ciList = new ArrayList<CiBean>();
+		CiBean router = new CiBean("ELB", networkElbItem.getIdentifier(), false);
+		ciList.add(router);
+		return OneCmdbService.delete(ciList);
+	}
+
+	// =========== NetworkEipItem ===========//
+
+	/**
+	 * 新增或更新NetworkEipItem至oneCMDB .
+	 * 
+	 * @param networkEipItem
+	 *            eip
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public boolean saveEIPToOneCMDB(NetworkEipItem networkEipItem, ServiceTag serviceTag) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		CiBean ci = new CiBean("EIP", networkEipItem.getIdentifier(), false);
+		ci.addAttributeValue(new ValueBean("Name", networkEipItem.getIdentifier(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + networkEipItem.getIpAddress(), true));
+
+		if (networkEipItem.getComputeItem() != null) {
+			// AssociateInstance：关联实例
+			ci.addAttributeValue(new ValueBean("AssociateInstance", networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getRemark() + ":"
+					+ networkEipItem.getComputeItem().getInnerIp() + ")", false));
+		}
+
+		if (networkEipItem.getNetworkElbItem() != null) {
+			// AssociateELB：关联ELB
+			ci.addAttributeValue(new ValueBean("AssociateELB", networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")", false));
+		}
+
+		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
+		String protocol = "";
+		String sourcePort = "";
+		String targetPort = "";
+
+		List<EipPortItem> eipPortItems = comm.eipService.getEipPortItemListByEipId(networkEipItem.getId());
+
+		for (EipPortItem eipPortItem : eipPortItems) {
+			protocol += eipPortItem.getProtocol() + ",";
+			sourcePort += eipPortItem.getSourcePort() + ",";
+			targetPort += eipPortItem.getTargetPort() + ",";
+		}
+
+		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("SourcePort", StringCommonUtils.replaceAndSubstringText(sourcePort, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("TargetPort", StringCommonUtils.replaceAndSubstringText(targetPort, ",", ","), false));
+
+		if (serviceTag != null) {
+			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
+		}
+
+		ciList.add(ci);
+
+		return OneCmdbService.update(ciList);
+
+	}
+
+	/**
+	 * 新增或更新NetworkEipItem集合至oneCMDB .
+	 * 
+	 * @param networkEipItems
+	 *            eips
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public void saveEIPToOneCMDB(Collection<NetworkEipItem> networkEipItems, ServiceTag serviceTag) {
+		for (NetworkEipItem networkEipItem : networkEipItems) {
+			this.saveEIPToOneCMDB(networkEipItem, serviceTag);
+		}
+	}
+
+	/**
+	 * 删除oneCMDB中的NetworkEipItem
+	 * 
+	 * @param networkEipItem
+	 * @return
+	 */
+	public boolean deleteEIPToOneCMDB(NetworkEipItem networkEipItem) {
+		List<CiBean> ciList = new ArrayList<CiBean>();
+		CiBean router = new CiBean("EIP", networkEipItem.getIdentifier(), false);
+		ciList.add(router);
+		return OneCmdbService.delete(ciList);
+	}
+
+	// =========== NetworkDnsItem ===========//
+
+	/**
+	 * 新增或更新NetworkDnsItem至oneCMDB .
+	 * 
+	 * @param networkDnsItem
+	 *            dns
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public boolean saveDNSToOneCMDB(NetworkDnsItem networkDnsItem, ServiceTag serviceTag) {
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		CiBean ci = new CiBean("DNS", networkDnsItem.getIdentifier(), false);
+		ci.addAttributeValue(new ValueBean("Name", networkDnsItem.getIdentifier(), false));
+		ci.addAttributeValue(new ValueBean("Domain", networkDnsItem.getDomainName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("Type", NetworkConstant.DomainType.get(networkDnsItem.getDomainType()), false));
+
+		if (NetworkConstant.DomainType.GSLB.toInteger().equals(networkDnsItem.getDomainType()) || NetworkConstant.DomainType.A.toInteger().equals(networkDnsItem.getDomainType())) {
+
+			for (NetworkEipItem networkEipItem : networkDnsItem.getNetworkEipItemList()) {
+				ci.addAttributeValue(new ValueBean("EIP", networkEipItem.getIdentifier(), true));
+			}
+
+		} else {
+			ci.addAttributeValue(new ValueBean("CnameDomain", networkDnsItem.getCnameDomain(), false));
+		}
+
+		if (serviceTag != null) {
+			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
+		}
+
+		ciList.add(ci);
+
+		return OneCmdbService.update(ciList);
+
+	}
+
+	/**
+	 * 新增或更新NetworkDnsItem集合至oneCMDB .
+	 * 
+	 * @param networkDnsItems
+	 *            dnses
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	public void saveDNSToOneCMDB(Collection<NetworkDnsItem> networkDnsItems, ServiceTag serviceTag) {
+		for (NetworkDnsItem networkDnsItem : networkDnsItems) {
+			this.saveDNSToOneCMDB(networkDnsItem, serviceTag);
+		}
+
+	}
+
+	/**
+	 * 删除oneCMDB中的NetworkDnsItem
+	 * 
+	 * @param networkDnsItem
+	 * @return
+	 */
+	public boolean deleteDNSToOneCMDB(NetworkDnsItem networkDnsItem) {
+		List<CiBean> ciList = new ArrayList<CiBean>();
+		CiBean router = new CiBean("DNS", networkDnsItem.getIdentifier(), false);
 		ciList.add(router);
 		return OneCmdbService.delete(ciList);
 	}
@@ -397,11 +636,11 @@ public class OneCmdbUtilService extends BaseSevcie {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		for (IpPool ipPool : ipPools) {
 			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "IPAddress-" + ipPool.getIpAddress(), false);
-			router.addAttributeValue(new ValueBean("Location", ipPool.getVlan().getLocation().getName(), false));
 			router.addAttributeValue(new ValueBean("IPAddress", ipPool.getIpAddress(), false));
 			router.addAttributeValue(new ValueBean("NetMask", "255.255.254.1", false));
 			router.addAttributeValue(new ValueBean("GateWay", "172.0.0.1", false));
-			router.addAttributeValue(new ValueBean("Vlan", ipPool.getVlan().getName(), false));
+			router.addAttributeValue(new ValueBean("Location", ipPool.getVlan().getLocation().getAlias(), true));
+			router.addAttributeValue(new ValueBean("Vlan", ipPool.getVlan().getAlias(), true));
 			// TODO IP状态待确定.看IP状态是否需要同步.
 			router.addAttributeValue(new ValueBean("Status", "Status1341922499992", true));
 			ciBeanList.add(router);
@@ -421,7 +660,6 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-" + ipPool.getIpAddress(), false);
 		ciBeanList.add(router);
 		return OneCmdbService.delete(ciBeanList);
-
 	}
 
 	/**

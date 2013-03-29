@@ -78,7 +78,7 @@ public class ServiceTagService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void delete(Integer id) {
 
-		// TODO 也需要删除CMDB中数据.
+		// 删除CMDB中数据.
 		comm.oneCmdbUtilService.deleteServiceTagToOneCMDB(this.getServiceTag(id));
 
 		serviceTagDao.delete(id);

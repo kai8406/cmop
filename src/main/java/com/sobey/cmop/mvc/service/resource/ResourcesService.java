@@ -236,14 +236,14 @@ public class ResourcesService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void insertResourcesAndOneCMDBAfterOperate(Apply apply) {
 
+		Integer serviceType;
+		ServiceTag serviceTag = comm.serviceTagService.saveServiceTag(apply);
+
 		// TODO apply审批通过时,同步数据到oneCMDB.
 
 		// 此处注意插入顺序,否则在oneCMDB中可能无法找到相关的资源.
-		comm.oneCmdbUtilService.saveStorageToOneCMDB(apply.getStorageItems());
-		comm.oneCmdbUtilService.saveComputeToOneCMDB(apply.getComputeItems());
-
-		Integer serviceType;
-		ServiceTag serviceTag = comm.serviceTagService.saveServiceTag(apply);
+		comm.oneCmdbUtilService.saveStorageToOneCMDB(apply.getStorageItems(), serviceTag);
+		comm.oneCmdbUtilService.saveComputeToOneCMDB(apply.getComputeItems(), serviceTag);
 
 		// Compute
 		for (ComputeItem compute : apply.getComputeItems()) {

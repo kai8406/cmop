@@ -185,7 +185,7 @@ public class OperateService extends BaseSevcie {
 					// 资源变更
 					this.resourcesOperate(issue, serviceTagId);
 
-				} else if (recycleId != null && StringUtils.isNotBlank(serviceTagId.toString())) {
+				} else if (recycleId != null) {
 
 					// 资源回收
 					this.recycleOperate(issue, recycleId, serviceTagId);
@@ -259,6 +259,10 @@ public class OperateService extends BaseSevcie {
 	 * 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
 	 * 
 	 */
+	/**
+	 * @param issue
+	 * @param serviceTagId
+	 */
 	@Transactional(readOnly = false)
 	private void resourcesOperate(Issue issue, Integer serviceTagId) {
 
@@ -282,9 +286,52 @@ public class OperateService extends BaseSevcie {
 				// 清除服务变更Change的内容
 				Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
 				comm.changeServcie.deleteChange(change.getId());
-			}
 
-			// TODO resource变更审批通过时,同步数据到oneCMDB.
+				Integer serviceType = resources.getServiceType();
+				Integer serviceId = resources.getServiceId();
+
+				// TODO resource变更审批通过时,同步数据到oneCMDB.
+
+				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+
+					// PCS & ECS
+					comm.oneCmdbUtilService.saveComputeToOneCMDB(comm.computeService.getComputeItem(serviceId), serviceTag);
+
+				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
+
+					// ES3
+					comm.oneCmdbUtilService.saveStorageToOneCMDB(comm.es3Service.getStorageItem(serviceId), serviceTag);
+
+				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+
+					// ELB
+
+				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
+
+					// EIP
+
+				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
+
+					// DNS
+
+				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
+
+					// monitorCompute
+
+				} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
+
+					// monitorElb
+
+				} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
+
+					// MDN
+
+				} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
+
+					// CP
+				}
+
+			}
 
 			// 工单处理完成，给申请人发送邮件
 			comm.templateMailService.sendResourcesOperateDoneNotificationMail(serviceTag);
@@ -333,9 +380,7 @@ public class OperateService extends BaseSevcie {
 
 			logger.info("---> 完成度 = 100%的工单处理...");
 
-			// TODO 同步数据至OneCMDB
-
-			// 删除资源.
+			// TODO 删除资源.同时OneCMDB中的数据也删除.
 			for (Resources resources : resourcesList) {
 
 				Integer serviceType = resources.getServiceType();
@@ -343,10 +388,14 @@ public class OperateService extends BaseSevcie {
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
+					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
+
 					// PCS & ECS
 					comm.computeService.deleteCompute(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
+
+					comm.oneCmdbUtilService.deleteStorageItemToOneCMDB(comm.es3Service.getStorageItem(serviceId));
 
 					// ES3
 					comm.es3Service.deleteStorageItem(serviceId);
@@ -381,8 +430,10 @@ public class OperateService extends BaseSevcie {
 				comm.resourcesService.deleteResources(resources.getId());
 			}
 
-			// 删除服务标签
-			comm.serviceTagService.delete(serviceTagId);
+			if (serviceTagId != null) {
+				// 删除服务标签
+				comm.serviceTagService.delete(serviceTagId);
+			}
 
 			// 工单处理完成，给申请人发送邮件
 			comm.templateMailService.sendRecycleResourcesOperateDoneNotificationMail(sendToUser);

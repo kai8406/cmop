@@ -40,6 +40,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean ci = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", serviceTag.getName(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.setDescription(serviceTag.getDescription());
 
 		ciList.add(ci);
 
@@ -151,7 +152,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		ci.addAttributeValue(new ValueBean("OsType", ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()), false));
 		ci.addAttributeValue(new ValueBean("OsBit", ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()), false));
-		ci.addAttributeValue(new ValueBean("ESG", OneCmdbService.findCiAliasByText("ESG", computeItem.getNetworkEsgItem().getIdentifier()), true));
+		ci.addAttributeValue(new ValueBean("ESG", computeItem.getIdentifier(), true));
 		ci.addAttributeValue(new ValueBean("HostName", computeItem.getHostName(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", computeItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("Name", computeItem.getIdentifier(), false));
@@ -170,15 +171,9 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
 		}
 
-		// TODO ipPool待确定
-		// ci.addAttributeValue(new ValueBean("IPAddress",
-		// OneCmdbService.findCiAliasByText("VIPPool",
-		// computeItem.getInnerIp()), true));
-		// ci.addAttributeValue(new ValueBean("NetWork", "Vlans", true));
-		// ci.addAttributeValue(new ValueBean("Storage", storageAlias,
-		// true));
-		// ci.addAttributeValue(new ValueBean("Application",
-		// computeItem.getApplications().toString(), true));
+		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + computeItem.getInnerIp(), true));
+		ci.addAttributeValue(new ValueBean("NetWork", "Vlans", true));
+		ci.setDescription(computeItem.getRemark());
 
 		ciList.add(ci);
 
@@ -401,15 +396,14 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		for (IpPool ipPool : ipPools) {
-			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "ipAddress-" + ipPool.getIpAddress(), false);
+			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "IPAddress-" + ipPool.getIpAddress(), false);
 			router.addAttributeValue(new ValueBean("Location", ipPool.getVlan().getLocation().getName(), false));
 			router.addAttributeValue(new ValueBean("IPAddress", ipPool.getIpAddress(), false));
 			router.addAttributeValue(new ValueBean("NetMask", "255.255.254.1", false));
 			router.addAttributeValue(new ValueBean("GateWay", "172.0.0.1", false));
 			router.addAttributeValue(new ValueBean("Vlan", ipPool.getVlan().getName(), false));
-			// TODO IP状态待确定.
+			// TODO IP状态待确定.看IP状态是否需要同步.
 			router.addAttributeValue(new ValueBean("Status", "Status1341922499992", true));
-			// router.setDescription(vlan.getDescription());
 			ciBeanList.add(router);
 		}
 
@@ -424,7 +418,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 */
 	public boolean deleteIpPoolToOneCMDB(IpPool ipPool) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
-		CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "ipAddress-" + ipPool.getIpAddress(), false);
+		CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-" + ipPool.getIpAddress(), false);
 		ciBeanList.add(router);
 		return OneCmdbService.delete(ciBeanList);
 

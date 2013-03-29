@@ -66,9 +66,13 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveIpPool(String ipAddress, Integer poolType, Location location, Vlan vlan) {
+
 		List<String> ipAddressList = this.getInsertIpAddressList(ipAddress);
+
+		// 排除重复IP
 		ipAddressList.removeAll(customDao.findAllIpAddressList(location, vlan));
-		return saveIpPool(ipAddressList, poolType, IpPoolConstant.IP_STATUS_1, vlan);
+
+		return this.saveIpPool(ipAddressList, poolType, IpPoolConstant.IP_STATUS_1, vlan);
 	}
 
 	/**
@@ -83,12 +87,18 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Vlan vlan) {
+
 		List<IpPool> ipPoolList = new ArrayList<IpPool>();
+
 		for (String ipAddress : ipAddressList) {
 			IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
 			ipPoolList.add(ipPool);
+
+			// 同步至oneCMDB
 		}
 		ipPoolDao.save(ipPoolList);
+		comm.oneCmdbUtilService.saveIpPoolToOneCMDB(ipPoolList, poolType);
+
 		return true;
 	}
 
@@ -117,6 +127,12 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void saveIpPool(IpPool ipPool) {
+
+		// 同步至oneCMDB
+		List<IpPool> ipPools = new ArrayList<IpPool>();
+		ipPools.add(ipPool);
+		comm.oneCmdbUtilService.saveIpPoolToOneCMDB(ipPools, ipPool.getPoolType());
+
 		ipPoolDao.save(ipPool);
 	}
 
@@ -264,32 +280,12 @@ public class IpPoolService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public boolean deleteIpPool(Integer id) {
-		IpPool ipPool = this.getIpPoolByIpId(id);
-		if (this.isDefaultIpPool(ipPool.getPoolType())) {
-			logger.warn("默认IpPool不能删除!");
-			return false;
-		} else {
-			String poolName = this.getOneCMDBPoolName(ipPool.getPoolType());
 
-			// 删除oneCMDB下的ip
-			List<CiBean> ciBeanList = new ArrayList<CiBean>();
-			CiBean router = new CiBean(poolName, IpPoolConstant.PoolType.get(ipPool.getPoolType()) + "-" + ipPool.getIpAddress(), false);
-			ciBeanList.add(router);
-			OneCmdbService.delete(ciBeanList);
+		// 删除oneCMDB下的ip
+		comm.oneCmdbUtilService.deleteIpPoolToOneCMDB(this.getIpPoolByIpId(id));
 
-			ipPoolDao.delete(id);
-			return true;
-		}
-	}
-
-	/**
-	 * 判断是否是默认的IpPool
-	 * 
-	 * @param id
-	 * @return
-	 */
-	private boolean isDefaultIpPool(Integer poolType) {
-		return poolType == 0;
+		ipPoolDao.delete(id);
+		return true;
 	}
 
 	/**

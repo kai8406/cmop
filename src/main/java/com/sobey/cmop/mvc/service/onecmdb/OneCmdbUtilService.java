@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EsgRuleItem;
+import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -354,6 +356,78 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean router = new CiBean("Vlans", vlan.getAlias(), false);
 		ciBeanList.add(router);
 		return OneCmdbService.delete(ciBeanList);
+	}
+
+	// =========== IpPool ===========//
+
+	/**
+	 * 根据IP池类型(poolType)获得oneCMDB中的IPPool下的节点名.
+	 * 
+	 * <pre>
+	 * 互联网IP池:InternetPool
+	 * 公网IP池:PublicPool
+	 * 私网IP池:PrivatePool
+	 * </pre>
+	 * 
+	 * @param poolType
+	 * @return
+	 */
+	private String getPoolNameFromOneCMDBByPoolType(Integer poolType) {
+
+		String nodeName = "";
+
+		if (IpPoolConstant.PoolType.互联网IP池.toInteger().equals(poolType)) {
+			nodeName = "InternetPool";
+
+		} else if (IpPoolConstant.PoolType.公网IP池.toInteger().equals(poolType)) {
+			nodeName = "PublicPool";
+		} else {
+			nodeName = "PrivatePool";
+		}
+
+		return nodeName;
+
+	}
+
+	/**
+	 * 新增,更新IpPool集合至oneCMDB
+	 * 
+	 * @param ipPools
+	 *            ip集合
+	 * @param poolType
+	 *            ip池类型
+	 */
+	public boolean saveIpPoolToOneCMDB(List<IpPool> ipPools, Integer poolType) {
+
+		List<CiBean> ciBeanList = new ArrayList<CiBean>();
+		for (IpPool ipPool : ipPools) {
+			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "ipAddress-" + ipPool.getIpAddress(), false);
+			router.addAttributeValue(new ValueBean("Location", ipPool.getVlan().getLocation().getName(), false));
+			router.addAttributeValue(new ValueBean("IPAddress", ipPool.getIpAddress(), false));
+			router.addAttributeValue(new ValueBean("NetMask", "255.255.254.1", false));
+			router.addAttributeValue(new ValueBean("GateWay", "172.0.0.1", false));
+			router.addAttributeValue(new ValueBean("Vlan", ipPool.getVlan().getName(), false));
+			// TODO IP状态待确定.
+			router.addAttributeValue(new ValueBean("Status", "Status1341922499992", true));
+			// router.setDescription(vlan.getDescription());
+			ciBeanList.add(router);
+		}
+
+		return OneCmdbService.update(ciBeanList);
+	}
+
+	/**
+	 * 删除oneCMDB中的IpPool
+	 * 
+	 * @param ipPool
+	 * @return
+	 */
+	public boolean deleteIpPoolToOneCMDB(IpPool ipPool) {
+		List<CiBean> ciBeanList = new ArrayList<CiBean>();
+		CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "ipAddress-" + ipPool.getIpAddress(), false);
+		ciBeanList.add(router);
+		return OneCmdbService.delete(ciBeanList);
+
 	}
 
 	/**

@@ -28,19 +28,27 @@ public class LocationService extends BaseSevcie {
 	@Resource
 	private LocationDao locationDao;
 
+	/**
+	 * 删除Location,同时删除oneCMDB中的数据.
+	 * 
+	 * @param id
+	 */
 	@Transactional(readOnly = false)
 	public void deleteLocation(Integer id) {
-		Location location = locationDao.findOne(id);
-		// comm.oneCmdbUtilService.deleteLocation(location);
-		locationDao.delete(location);
+		comm.oneCmdbUtilService.deleteLocationToOneCMDB(this.getLocation(id));
+		locationDao.delete(id);
 	}
 
-	public Location findLocationById(Integer id) {
+	public Location getLocation(Integer id) {
 		return locationDao.findOne(id);
 	}
 
 	public Location findLocationByName(String name) {
 		return locationDao.findByName(name);
+	}
+
+	public Location findLocationByAlias(String alias) {
+		return locationDao.findByAlias(alias);
 	}
 
 	/**
@@ -59,14 +67,16 @@ public class LocationService extends BaseSevcie {
 		return locationDao.findAll(spec, pageRequest);
 	}
 
+	/**
+	 * 新增,更新Location,并同步至oneCMDB
+	 * 
+	 * @param location
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	public Location saveLocation(Location location) {
-		// comm.oneCmdbUtilService.saveLocation(location);
+		comm.oneCmdbUtilService.saveLocationToOneCMDB(location);
 		return locationDao.save(location);
-	}
-
-	public Location findLocationByAlias(String alias) {
-		return locationDao.findByAlias(alias);
 	}
 
 }

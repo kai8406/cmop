@@ -122,7 +122,7 @@ public class ImportService extends BaseSevcie {
 			hostServer = new HostServer(serverType, IpPoolConstant.POOL_TYPE_1, serverInfo.getDisplayName(), new Date()); // IP池默认为私网IP池
 			hostServer.setAlias(Identities.uuid2());
 			hostServer.setIpAddress(serverInfo.getHostIp());
-			hostServer.setLocationAlias(comm.locationService.findLocationById(2).getAlias()); // IDC别名默认西安IDC
+			hostServer.setLocationAlias(comm.locationService.getLocation(2).getAlias()); // IDC别名默认西安IDC
 			hostServer = comm.hostServerService.save(hostServer);
 			hostServerList.add(hostServer);
 		} else {

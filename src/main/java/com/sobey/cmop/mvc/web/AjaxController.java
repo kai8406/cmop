@@ -158,7 +158,7 @@ public class AjaxController extends BaseController {
 	@RequestMapping(value = "getVlanByLocation")
 	@ResponseBody
 	public Map<Integer, String> getVlanByLocation(@RequestParam("location") Integer location) {
-		Set<Vlan> vlans = comm.locationService.findLocationById(location).getVlans();
+		Set<Vlan> vlans = comm.locationService.getLocation(location).getVlans();
 		Map<Integer, String> map = Maps.newHashMap();
 		for (Vlan vlan : vlans) {
 			map.put(vlan.getId(), vlan.getName());

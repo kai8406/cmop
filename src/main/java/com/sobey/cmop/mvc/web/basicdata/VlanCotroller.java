@@ -41,7 +41,7 @@ public class VlanCotroller extends BaseController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Vlan vlan, @RequestParam("locationId") Integer locationId, RedirectAttributes redirectAttributes) {
-		Location location = comm.locationService.findLocationById(locationId);
+		Location location = comm.locationService.getLocation(locationId);
 		String alias = "Vlan" + Identities.uuid2();
 		vlan.setAlias(alias);
 		vlan.setLocation(location);
@@ -59,7 +59,7 @@ public class VlanCotroller extends BaseController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Vlan vlan, @RequestParam("locationId") Integer locationId, RedirectAttributes redirectAttributes) {
-		Location location = comm.locationService.findLocationById(locationId);
+		Location location = comm.locationService.getLocation(locationId);
 		vlan.setLocation(location);
 		vlan.setCreateTime(new Date());
 		comm.vlanService.saveOrUpdateVlan(vlan);

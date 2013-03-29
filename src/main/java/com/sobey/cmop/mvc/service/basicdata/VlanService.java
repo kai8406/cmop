@@ -28,11 +28,15 @@ public class VlanService extends BaseSevcie {
 	@Resource
 	private VlanDao vlanDao;
 
+	/**
+	 * 删除Vlan,同时也删除oneCMDB中的vlan
+	 * 
+	 * @param id
+	 */
 	@Transactional(readOnly = false)
 	public void deleteVlan(Integer id) {
-		Vlan vlan = vlanDao.findOne(id);
-		// comm.oneCmdbUtilService.deleteVlan(vlan);
-		vlanDao.delete(vlan);
+		comm.oneCmdbUtilService.deleteVlanToOneCMDB(this.getVlan(id));
+		vlanDao.delete(id);
 	}
 
 	public Vlan findVlanByName(String name) {
@@ -58,9 +62,15 @@ public class VlanService extends BaseSevcie {
 		return vlanDao.findAll(spec, pageRequest);
 	}
 
+	/**
+	 * 新增,更新Vlan至oneCMDB,并同步至oneCMDB中.
+	 * 
+	 * @param vlan
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	public Vlan saveOrUpdateVlan(Vlan vlan) {
-		// comm.oneCmdbUtilService.saveVlan(vlan);
+		comm.oneCmdbUtilService.saveVlanToOneCMDB(vlan);
 		return vlanDao.save(vlan);
 	}
 

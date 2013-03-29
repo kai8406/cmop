@@ -183,7 +183,7 @@ public class HostServerService extends BaseSevcie {
 						hostServer = new HostServer(1, IpPoolConstant.POOL_TYPE_1, hostList.get(i), new Date()); // 名称默认为IP；IP池默认为私网IP池
 						hostServer.setAlias(Identities.uuid2());
 						hostServer.setIpAddress(ipAddress);
-						hostServer.setLocationAlias(comm.locationService.findLocationById(2).getAlias()); // IDC别名默认西安IDC
+						hostServer.setLocationAlias(comm.locationService.getLocation(2).getAlias()); // IDC别名默认西安IDC
 						hostServerDao.save(hostServer);
 					}
 

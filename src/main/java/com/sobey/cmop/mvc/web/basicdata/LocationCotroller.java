@@ -50,7 +50,7 @@ public class LocationCotroller extends BaseController {
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("location", comm.locationService.findLocationById(id));
+		model.addAttribute("location", comm.locationService.getLocation(id));
 		return "basicdata/location/locationForm";
 	}
 

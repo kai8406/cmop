@@ -57,7 +57,7 @@ public class IpPoolController extends BaseController {
 	public String save(@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "poolType") Integer poolType, @RequestParam(value = "locationId") Integer locationId,
 			@RequestParam(value = "vlanId") Integer vlanId, RedirectAttributes redirectAttributes) {
 
-		Location location = comm.locationService.findLocationById(locationId);
+		Location location = comm.locationService.getLocation(locationId);
 
 		Vlan vlan = comm.vlanService.getVlan(vlanId);
 

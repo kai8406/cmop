@@ -286,9 +286,15 @@ public class OneCmdbUtilService extends BaseSevcie {
 		return OneCmdbService.delete(ciList);
 	}
 
-	// =========== ?? ===========//
+	// =========== Location ===========//
 
-	public boolean saveLocation(Location location) {
+	/**
+	 * 新增,更新Location至oneCMDB
+	 * 
+	 * @param location
+	 * @return
+	 */
+	public boolean saveLocationToOneCMDB(Location location) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		CiBean router = new CiBean("Location", location.getAlias(), false);
 		router.addAttributeValue(new ValueBean("Name", location.getName(), false));
@@ -299,12 +305,18 @@ public class OneCmdbUtilService extends BaseSevcie {
 		return OneCmdbService.update(ciBeanList);
 	}
 
-	public boolean deleteLocation(Location location) {
+	/**
+	 * 删除oneCMDB中的Location
+	 * 
+	 * @param location
+	 * @return
+	 */
+	public boolean deleteLocationToOneCMDB(Location location) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		CiBean router = new CiBean("Location", location.getAlias(), false);
 		ciBeanList.add(router);
 
-		// 删除地区时,也会将关联的vlan也删除.
+		// 删除Location时,也会将关联的vlan也删除.
 		for (Vlan vlan : location.getVlans()) {
 			CiBean vlanRouter = new CiBean("Vlans", vlan.getAlias(), false);
 			ciBeanList.add(vlanRouter);
@@ -313,7 +325,15 @@ public class OneCmdbUtilService extends BaseSevcie {
 		return OneCmdbService.delete(ciBeanList);
 	}
 
-	public boolean saveVlan(Vlan vlan) {
+	// =========== Vlan ===========//
+
+	/**
+	 * 新增,更新Vlan至oneCMDB
+	 * 
+	 * @param vlan
+	 * @return
+	 */
+	public boolean saveVlanToOneCMDB(Vlan vlan) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		CiBean router = new CiBean("Vlans", vlan.getAlias(), false);
 		router.addAttributeValue(new ValueBean("Name", vlan.getName(), false));
@@ -323,7 +343,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 		return OneCmdbService.update(ciBeanList);
 	}
 
-	public boolean deleteVlan(Vlan vlan) {
+	/**
+	 * 删除oneCMDB中的Vlan
+	 * 
+	 * @param vlan
+	 * @return
+	 */
+	public boolean deleteVlanToOneCMDB(Vlan vlan) {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		CiBean router = new CiBean("Vlans", vlan.getAlias(), false);
 		ciBeanList.add(router);

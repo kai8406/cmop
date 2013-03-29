@@ -60,6 +60,21 @@ public class ServiceTagService extends BaseSevcie {
 		return serviceTagDao.save(serviceTag);
 	}
 
+	/**
+	 * 更新serviceTag,并将更新的数据同步至oneCMDB中.
+	 * 
+	 * @param serviceTag
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public ServiceTag updateServiceTagAndOneCMDB(ServiceTag serviceTag) {
+
+		comm.oneCmdbUtilService.saveServiceTagToOneCMDB(serviceTag);
+
+		return serviceTagDao.save(serviceTag);
+
+	}
+
 	@Transactional(readOnly = false)
 	public void delete(Integer id) {
 

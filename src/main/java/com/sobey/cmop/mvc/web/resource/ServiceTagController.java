@@ -146,7 +146,7 @@ public class ServiceTagController extends BaseController {
 		serviceTag.setPriority(priority);
 		serviceTag.setDescription(description);
 
-		comm.serviceTagService.saveOrUpdate(serviceTag);
+		comm.serviceTagService.updateServiceTagAndOneCMDB(serviceTag);
 
 		redirectAttributes.addFlashAttribute("message", "修改服务标签 " + serviceTag.getName() + " 成功");
 

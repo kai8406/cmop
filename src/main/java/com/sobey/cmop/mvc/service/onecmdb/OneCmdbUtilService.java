@@ -27,7 +27,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 	// ===========ServiceTag ===========//
 	/**
-	 * 插入服务标签至oneCMDB
+	 * 新增或更新服务标签至oneCMDB,oneCMDB中的信息更新都是通过标识符identifier来进行更新.
 	 * 
 	 * @param serviceTag
 	 * @return
@@ -39,8 +39,6 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean ci = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", serviceTag.getName(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
-		// ci.addAttributeValue(new ValueBean("Description",
-		// serviceTag.getDescription(), false));
 
 		ciList.add(ci);
 

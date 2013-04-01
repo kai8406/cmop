@@ -351,7 +351,7 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	public List<ComputeItem> getComputeByElbIsNullList() {
-		return computeItemDao.findByNetworkElbItemIsNull();
+		return computeItemDao.findByNetworkElbItemIsNullAndApplyUserId(getCurrentUserId());
 	}
 
 	/**

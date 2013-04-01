@@ -595,9 +595,11 @@ public class OperateService extends BaseSevcie {
 				IpPool ipPool;
 				ComputeItem computeItem;
 				for (int i = 0; i < compute.length; i++) {
+
 					if (innerIp[i].equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
 						continue;
 					}
+
 					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
 
 					// 释放原来的IP

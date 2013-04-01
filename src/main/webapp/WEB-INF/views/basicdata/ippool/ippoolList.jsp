@@ -61,7 +61,7 @@
 			<div class="span2 pull-right">
 				<button class="btn tip-bottom" title="搜索" type="submit"><i class="icon-search"></i></button>
 				<button class="btn tip-bottom reset" title="刷新" type="reset"><i class="icon-refresh"></i></button>
-				<button class="btn tip-bottom options"  title="更多搜索条件" type="button"><i class="icon-resize-small"></i></button>
+				<!-- <button class="btn tip-bottom options"  title="更多搜索条件" type="button"><i class="icon-resize-small"></i></button> -->
 			</div>
 			
 		</div>

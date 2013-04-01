@@ -83,7 +83,7 @@ html,body {
 
 /*搜索框默认隐藏 */
 div.options {
-	display: none;
+	/* display: none; */
 }
 
 /* 搜索框中文字的长度*/

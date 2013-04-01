@@ -595,14 +595,14 @@ public class OperateService extends BaseSevcie {
 				IpPool ipPool;
 				ComputeItem computeItem;
 				for (int i = 0; i < compute.length; i++) {
-					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
-					if (computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
+					if (innerIp[i].equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
 						continue;
 					}
+					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
 
 					// 释放原来的IP
 					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
-					if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
+					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
 						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
 						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
 						ipPool.setHostServer(null);
@@ -631,39 +631,36 @@ public class OperateService extends BaseSevcie {
 				}
 
 				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				if (compute.length > 0) {
-					int i = compute.length - 1;
-					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[i]));
+				int last = compute.length - 1;
+				if (compute.length > 0 && !innerIp[last].equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
+					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[last]));
+					// 释放原来的IP
 					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
-						// 释放原来的IP
-						// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
-						if (!StringUtils.isEmpty(computeItem.getInnerIp())) {
-							ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-							ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
-							ipPool.setHostServer(null);
-							comm.ipPoolService.saveIpPool(ipPool);
-						}
-
-						// 更新新的IP
-						ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
-						ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
-						ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
+						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
+						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setHostServer(null);
 						comm.ipPoolService.saveIpPool(ipPool);
-
-						computeItem.setHostName(hostName[i]);
-						if (computeItem.getComputeType() == 1) {
-							// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
-							String alias = computeItem.getServerAlias();
-							if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
-								computeItem.setServerAlias(server[i]);
-							}
-						} else {
-							computeItem.setHostServerAlias(server[i]);
-							computeItem.setOsStorageAlias(osStorage[i]);
-						}
-						computeItem.setInnerIp(innerIp[i]);
-						comm.computeService.saveOrUpdate(computeItem);
 					}
+
+					// 更新新的IP
+					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[last]);
+					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+					ipPool.setHostServer(comm.hostServerService.findByAlias(server[last]));
+					comm.ipPoolService.saveIpPool(ipPool);
+
+					computeItem.setHostName(hostName[last]);
+					if (computeItem.getComputeType() == 1) {
+						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
+						String alias = computeItem.getServerAlias();
+						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+							computeItem.setServerAlias(server[last]);
+						}
+					} else {
+						computeItem.setHostServerAlias(server[last]);
+						computeItem.setOsStorageAlias(osStorage[last]);
+					}
+					computeItem.setInnerIp(innerIp[last]);
+					comm.computeService.saveOrUpdate(computeItem);
 				}
 			}
 

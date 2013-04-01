@@ -333,7 +333,7 @@ public class AuditService extends BaseSevcie {
 
 				issue.setTracker(tracker);
 				issue.setSubject(apply.getTitle());
-				issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
+				issue.setPriorityId(apply.getPriority());
 				issue.setDescription(description);
 
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();

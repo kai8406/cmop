@@ -21,5 +21,5 @@ public interface ComputeItemDao extends PagingAndSortingRepository<ComputeItem, 
 
 	List<ComputeItem> findByNetworkElbItemId(Integer networkElbItemId);
 
-	List<ComputeItem> findByNetworkElbItemIsNull();
+	List<ComputeItem> findByNetworkElbItemIsNullAndApplyUserId(Integer userId);
 }

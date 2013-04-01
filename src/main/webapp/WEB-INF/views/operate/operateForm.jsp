@@ -101,7 +101,6 @@ function checkValid() {
 		hostNames = hostNames+$(this).find("#hostName").val()+sep;
 		serverAlias = serverAlias+$(this).find("#server").val()+sep;
     });
-    /*
     var flag = true;
 	$("#updateDiv #osStorageDiv").each(function () {
 		osStorageAlias = osStorageAlias+$(this).find("#osStorage").val()+sep;
@@ -110,6 +109,7 @@ function checkValid() {
 			flag = false;
 		}
     });
+	/*
     if (!flag) {
     	alert("计算资源的内网IP不能为空！");
     	return false;
@@ -262,6 +262,7 @@ function changeServer(obj){
 			    			<input type="hidden" id="operator" name="operator" value="${journal.user.id}"/>
 				    		<p class="help-inline plain-text span8" style="margin-left: 0px;">
 								<strong>#${status.index+1} Updated by:</strong>&nbsp;${journal.user}&nbsp;&nbsp;<fmt:formatDate value="${journal.createdOn}" pattern="yyyy-MM-dd HH:mm:ss" />
+				    			<label class="span7" style="margin-bottom: 0px; margin-left: 25px;">描述：${journal.notes}</label><br>
 				    			<ul>
 									<c:forEach var="detail" items="${journal.details}">
 		   								<li>

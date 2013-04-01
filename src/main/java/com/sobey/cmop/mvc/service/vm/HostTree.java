@@ -377,11 +377,11 @@ public class HostTree {
 		ctxt.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, true);
 		serviceContent = vimPort.retrieveServiceContent(SVC_INST_REF);
 		vimPort.login(serviceContent.getSessionManager(), "administrator", "Newmed!ad3v@s0bey", null);
-		List list1 = collectHostProperties(vimPort, serviceContent);
+		// List list1 = collectHostProperties(vimPort, serviceContent);
 		List list2 = collectClusterProperties(vimPort, serviceContent, "domain-c1543"); // 云生产集群
 		List list3 = collectClusterProperties(vimPort, serviceContent, "domain-c1508"); // SMG集群
 		List list = new ArrayList();
-		list.add(list1);
+		// list.add(list1);
 		list.add(list2);
 		list.add(list3);
 		vimPort.logout(serviceContent.getSessionManager());

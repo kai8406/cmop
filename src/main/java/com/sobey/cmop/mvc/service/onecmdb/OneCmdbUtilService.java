@@ -129,7 +129,10 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			ci = new CiBean("PCS", computeItem.getIdentifier(), false);
 
-			ci.addAttributeValue(new ValueBean("Server", computeItem.getServerAlias(), true));
+			// TODO 暂时注释,带服务器管理完善再解除
+			ci.addAttributeValue(new ValueBean("Server", "Server1344301433639", true));
+			// ci.addAttributeValue(new ValueBean("Server",
+			// computeItem.getServerAlias(), true));
 
 		} else {
 
@@ -149,7 +152,9 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			ci = new CiBean("ECS", computeItem.getIdentifier(), false);
 
-			ci.addAttributeValue(new ValueBean("HostServer", computeItem.getHostServerAlias(), true));
+			// TODO 暂时注释,带服务器管理完善再解除
+			// ci.addAttributeValue(new ValueBean("HostServer",
+			// computeItem.getHostServerAlias(), true));
 			ci.addAttributeValue(new ValueBean("OsStorage", computeItem.getOsStorageAlias(), true));
 			ci.addAttributeValue(new ValueBean("MemSize", MemSize, false));
 			ci.addAttributeValue(new ValueBean("CoreNum", CoreNum, false));
@@ -308,8 +313,10 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("Name", networkElbItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("ConStatus", networkElbItem.getKeepSession() ? "是" : "否", false));
-		ci.addAttributeValue(new ValueBean("Server", networkElbItem.getIdentifier(), true));
-		ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" + networkElbItem.getVirtualIp(), true));
+		// ci.addAttributeValue(new ValueBean("Server",
+		// networkElbItem.getIdentifier(), true));
+		// ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" +
+		// networkElbItem.getVirtualIp(), true));
 
 		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
 		String protocol = "";
@@ -612,7 +619,6 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		if (IpPoolConstant.PoolType.互联网IP池.toInteger().equals(poolType)) {
 			nodeName = "InternetPool";
-
 		} else if (IpPoolConstant.PoolType.公网IP池.toInteger().equals(poolType)) {
 			nodeName = "PublicPool";
 		} else {

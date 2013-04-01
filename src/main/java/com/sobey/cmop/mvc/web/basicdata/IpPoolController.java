@@ -33,7 +33,10 @@ public class IpPoolController extends BaseController {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
-		model.addAttribute("page", comm.ipPoolService.getIpPoolPageable(searchParams, pageNumber, pageSize));
+		if (searchParams.size() != 0) {
+			// 默认不显示数据.除非有搜索条件
+			model.addAttribute("page", comm.ipPoolService.getIpPoolPageable(searchParams, pageNumber, pageSize));
+		}
 
 		// 将搜索条件编码成字符串,分页的URL
 

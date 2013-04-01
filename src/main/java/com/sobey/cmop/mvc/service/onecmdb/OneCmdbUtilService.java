@@ -158,7 +158,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		ci.addAttributeValue(new ValueBean("OsType", ComputeConstant.OS_TYPE_MAP.get(computeItem.getOsType()), false));
 		ci.addAttributeValue(new ValueBean("OsBit", ComputeConstant.OS_BIT_MAP.get(computeItem.getOsBit()), false));
-		ci.addAttributeValue(new ValueBean("ESG", computeItem.getIdentifier(), true));
+		ci.addAttributeValue(new ValueBean("ESG", computeItem.getNetworkEsgItem().getIdentifier(), true));
 		ci.addAttributeValue(new ValueBean("HostName", computeItem.getHostName(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", computeItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("Name", computeItem.getIdentifier(), false));

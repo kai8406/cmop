@@ -44,11 +44,14 @@ public class ApplyService extends BaseSevcie {
 	private ApplyDao applyDao;
 
 	/**
-	 * 根据资源类型 serviceType 创建标识符 Identifier<br>
-	 * elb-hRfhDDvM<br>
-	 * pcs-9V07luc3<br>
+	 * 根据资源类型 serviceType 创建标识符 Identifier
+	 * 
+	 * <pre>
+	 * elb-hRfhDDvM,pcs-9V07luc3
+	 * </pre>
 	 * 
 	 * @param serviceType
+	 *            资源类型
 	 * 
 	 * @return
 	 */
@@ -56,21 +59,19 @@ public class ApplyService extends BaseSevcie {
 		return ResourcesConstant.ServiceType.get(serviceType) + "-" + Identities.randomBase62(8);
 	}
 
-	// -- Apply Manager --//
-
 	/**
-	 * 生成服务申请Apply的 Title.拼装格式为: 登录名+申请服务类型+申请时间<br>
-	 * eg:
-	 * <p>
-	 * liukai-基础设施-20130122102155<br>
+	 * 生成Title.拼装格式为: 登录名+申请服务类型+申请时间.
+	 * 
+	 * <pre>
+	 * liukai-基础设施-20130122102155
 	 * admin-MDN-20130212102311
-	 * </p>
+	 * </pre>
 	 * 
 	 * @param serviceType
 	 *            服务申请的服务类型字符串
 	 * @return
 	 */
-	public String generateApplyTitle(String serviceType) {
+	public String generateTitle(String serviceType) {
 
 		DateTime dateTime = new DateTime();
 
@@ -78,12 +79,35 @@ public class ApplyService extends BaseSevcie {
 
 	}
 
+	// -- Apply Manager --//
+
 	public Apply getApply(Integer id) {
 		return applyDao.findOne(id);
 	}
 
 	/**
-	 * 新增服务申请Apply(根据不同的serviceType)<br>
+	 * 新增,更新服务申请Apply
+	 * 
+	 * @param apply
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public Apply saveOrUpateApply(Apply apply) {
+		return applyDao.save(apply);
+	}
+
+	/**
+	 * 删除服务申请Apply
+	 * 
+	 * @param id
+	 */
+	@Transactional(readOnly = false)
+	public void deleteApply(Integer id) {
+		applyDao.delete(id);
+	}
+
+	/**
+	 * 新增服务申请Apply(根据不同的serviceType)
 	 * 
 	 * @param apply
 	 * @param serviceType
@@ -93,7 +117,7 @@ public class ApplyService extends BaseSevcie {
 	public Apply saveApplyByServiceType(Apply apply, Integer serviceType) {
 
 		Integer status = ApplyConstant.Status.已申请.toInteger();
-		String title = comm.applyService.generateApplyTitle(ApplyConstant.ServiceType.get(serviceType));
+		String title = comm.applyService.generateTitle(ApplyConstant.ServiceType.get(serviceType));
 
 		apply.setStatus(status);
 		apply.setServiceType(serviceType);
@@ -125,27 +149,6 @@ public class ApplyService extends BaseSevcie {
 		Specification<Apply> spec = DynamicSpecifications.bySearchFilter(filters.values(), Apply.class);
 
 		return applyDao.findAll(spec, pageRequest);
-	}
-
-	/**
-	 * 新增,更新服务申请Apply
-	 * 
-	 * @param apply
-	 * @return
-	 */
-	@Transactional(readOnly = false)
-	public Apply saveOrUpateApply(Apply apply) {
-		return applyDao.save(apply);
-	}
-
-	/**
-	 * 删除服务申请Apply
-	 * 
-	 * @param id
-	 */
-	@Transactional(readOnly = false)
-	public void deleteApply(Integer id) {
-		applyDao.delete(id);
 	}
 
 	/**
@@ -223,36 +226,17 @@ public class ApplyService extends BaseSevcie {
 
 				/* Step.5 插入一条下级审批人所用到的audit. */
 
-				comm.auditService.saveSubAudit(user.getId(), apply, null);
+				comm.auditService.saveSubAudit(user.getId(), apply);
 
 			} catch (Exception e) {
 
 				message = "服务申请单提交审批失败";
-
 				e.printStackTrace();
 			}
 
 		} else {
 
-			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-			AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-
-			/* Step.5申请人即最终审批人.直接发送工单 */
-
-			if (auditFlow != null && auditFlow.getIsFinal()) {
-
-				// TODO 申请人即最终审批人.直接发送工单.
-
-				logger.info("--->申请人即最终审批人.直接发送工单....");
-
-				apply.setStatus(ApplyConstant.Status.处理中.toInteger());
-				this.saveOrUpateApply(apply);
-
-			} else {
-
-				message = "你没有直属领导,请联系管理员添加";
-
-			}
+			message = "你没有直属领导,请联系管理员添加";
 
 		}
 

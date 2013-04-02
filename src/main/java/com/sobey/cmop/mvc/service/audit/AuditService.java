@@ -569,9 +569,12 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 插入一条下级审批人所用到的audit.<br>
-	 * 服务申请时,Apply不能为null, ServiceTag 必须为null<br>
-	 * 资源变更时,ServiceTag不能为null, Apply 必须为null<br>
+	 * 插入一条下级审批人所用到的audit.
+	 * 
+	 * <pre>
+	 * 服务申请时,Apply不能为null, ServiceTag为null
+	 * 资源变更时,ServiceTag不能为null, Apply为null
+	 * </pre>
 	 * 
 	 * 
 	 * @param userId
@@ -583,7 +586,7 @@ public class AuditService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public Audit saveSubAudit(Integer userId, Apply apply, ServiceTag serviceTag) {
+	private Audit saveSubAudit(Integer userId, Apply apply, ServiceTag serviceTag) {
 
 		User user = comm.accountService.getUser(userId);
 
@@ -604,6 +607,35 @@ public class AuditService extends BaseSevcie {
 
 		return this.saveOrUpdateAudit(audit);
 
+	}
+
+	/**
+	 * 插入一条下级审批人所用到的audit(服务申请Apply)
+	 * 
+	 * @param userId
+	 *            当前审批人ID
+	 * @param apply
+	 *            服务申请单
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public Audit saveSubAudit(Integer userId, Apply apply) {
+		return this.saveSubAudit(userId, apply, null);
+
+	}
+
+	/**
+	 * 插入一条下级审批人所用到的audit(资源变更Resources)
+	 * 
+	 * @param userId
+	 *            当前审批人ID
+	 * @param serviceTag
+	 *            服务标签
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public Audit saveSubAudit(Integer userId, ServiceTag serviceTag) {
+		return this.saveSubAudit(userId, null, serviceTag);
 	}
 
 }

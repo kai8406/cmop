@@ -348,7 +348,7 @@ public class ResourcesService extends BaseSevcie {
 		Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 
 		issue.setTracker(tracker);
-		issue.setSubject(comm.applyService.generateApplyTitle("recycle"));
+		issue.setSubject(comm.applyService.generateTitle("recycle"));
 		issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
 		issue.setDescription(description);
 

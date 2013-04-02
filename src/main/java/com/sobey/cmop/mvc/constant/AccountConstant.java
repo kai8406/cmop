@@ -42,11 +42,12 @@ public class AccountConstant {
 
 	/**
 	 * 默认的Group类型
-	 * <p>
-	 * 1.admin 超级管理员<br>
-	 * 2.apply 申请人 <br>
-	 * 3.audit 审批人 <br>
-	 * </P>
+	 * 
+	 * <pre>
+	 * 1.admin 超级管理员
+	 * 2.apply 申请人 
+	 * 3.audit 审批人
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -88,9 +89,12 @@ public class AccountConstant {
 	}
 
 	/**
-	 * 用户状态 <br>
-	 * 1:enabled 有效 <br>
+	 * 用户状态
+	 * 
+	 * <pre>
+	 * 1:enabled 有效
 	 * 0:disabled 无效
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -142,7 +146,7 @@ public class AccountConstant {
 	}
 
 	/**
-	 * 用户类型<br>
+	 * 用户类型
 	 * 
 	 * <pre>
 	 * 1-管理员 admin

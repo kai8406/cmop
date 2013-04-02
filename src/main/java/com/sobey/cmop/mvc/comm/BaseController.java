@@ -266,6 +266,14 @@ public class BaseController {
 	}
 
 	/**
+	 * @return 输出编码
+	 */
+	@ModelAttribute("exportEncodeMap")
+	public Map<Integer, String> exportEncodeMap() {
+		return CPConstant.EXPORTENCODE_MAP;
+	}
+
+	/**
 	 * @return 所有的VLAN List
 	 */
 	@ModelAttribute("vlanList")
@@ -296,6 +304,15 @@ public class BaseController {
 	@ModelAttribute("ispTypeMap")
 	public Map<Integer, String> ispTypeMap() {
 		return NetworkConstant.ISPType.map;
+	}
+
+	/**
+	 * 
+	 * @return 是否推送内容交易平台Map
+	 */
+	@ModelAttribute("isPushCtpMap")
+	public Map<Boolean, String> isPushCtpMap() {
+		return CPConstant.isPushCtp.map;
 	}
 
 	/**
@@ -421,6 +438,23 @@ public class BaseController {
 	}
 
 	/**
+	 * @return 收录编码率Map
+	 */
+	@ModelAttribute("recordBitrateMap")
+	public Map<String, String> recordBitrateMap() {
+		return CPConstant.RECORDBITRATE_MAP_STRING_KEY;
+	}
+
+	/**
+	 * 
+	 * @return 收录类型Map
+	 */
+	@ModelAttribute("recordTypeMap")
+	public Map<Integer, String> recordTypeMap() {
+		return CPConstant.RecordType.map;
+	}
+
+	/**
 	 * 
 	 * @return 资源Resources的服务类型Map
 	 */
@@ -499,46 +533,12 @@ public class BaseController {
 	}
 
 	/**
-	 * @return 收录编码率Map
-	 */
-	@ModelAttribute("recordBitrateMap")
-	public Map<String, String> recordBitrateMap() {
-		return CPConstant.RECORDBITRATE_MAP_STRING_KEY;
-	}
-
-	/**
-	 * 
-	 * @return 收录类型Map
-	 */
-	@ModelAttribute("recordTypeMap")
-	public Map<Integer, String> recordTypeMap() {
-		return CPConstant.RecordType.map;
-	}
-
-	/**
 	 * 
 	 * @return 视频输出方式配置
 	 */
 	@ModelAttribute("videoOutputWayMap")
 	public Map<Integer, String> videoOutputWayMap() {
 		return CPConstant.VideoOutputWay.map;
-	}
-
-	/**
-	 * @return 输出编码
-	 */
-	@ModelAttribute("exportEncodeMap")
-	public Map<Integer, String> exportEncodeMap() {
-		return CPConstant.EXPORTENCODE_MAP;
-	}
-
-	/**
-	 * 
-	 * @return 是否推送内容交易平台Map
-	 */
-	@ModelAttribute("isPushCtpMap")
-	public Map<Boolean, String> isPushCtpMap() {
-		return CPConstant.isPushCtp.map;
 	}
 
 }

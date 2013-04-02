@@ -110,6 +110,11 @@ public class AccountService extends BaseSevcie {
 		shiroRealm.clearCachedAuthorizationInfo(user.getLoginName());
 	}
 
+	/**
+	 * 更新User
+	 * 
+	 * @param user
+	 */
 	@Transactional(readOnly = false)
 	public void updateUser(User user) {
 
@@ -200,8 +205,7 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * 初始化所有User的密码和LoginName<br>
-	 * 将老系统的邮箱@前的字符串设置为新的loginName.
+	 * 初始化所有User的密码和LoginName, 将老系统的邮箱@前的字符串设置为新的loginName.
 	 */
 	@Transactional(readOnly = false)
 	public void initializeUser() {
@@ -314,10 +318,13 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * 判断是否是默认的Group<br>
-	 * 1.admin <br>
-	 * 2.apply <br>
-	 * 3.audit <br>
+	 * 判断是否是默认的Group
+	 * 
+	 * <pre>
+	 * 1.admin 
+	 * 2.apply
+	 * 3.audit
+	 * </pre>
 	 * 
 	 * @param id
 	 *            groupId

@@ -306,7 +306,7 @@ public class ServiceTagService extends BaseSevcie {
 				comm.auditService.initAuditStatus(serviceTag.getId());
 
 				/* Step.5 插入一条下级审批人所用到的audit. */
-				comm.auditService.saveSubAudit(user.getId(), null, serviceTag);
+				comm.auditService.saveSubAudit(user.getId(), serviceTag);
 
 			} catch (Exception e) {
 
@@ -317,23 +317,7 @@ public class ServiceTagService extends BaseSevcie {
 
 		} else {
 
-			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-			AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-
-			if (auditFlow != null && auditFlow.getIsFinal()) {
-
-				// TODO 申请人即最终审批人.直接发送工单.
-
-				logger.info("--->申请人即最终审批人.直接发送工单....");
-
-				serviceTag.setStatus(ResourcesConstant.Status.创建中.toInteger());
-				this.saveOrUpdate(serviceTag);
-
-			} else {
-
-				message = "你没有直属领导,请联系管理员添加";
-
-			}
+			message = "你没有直属领导,请联系管理员添加";
 
 		}
 

@@ -91,7 +91,7 @@ public class FailureController extends BaseController {
 		failure.setRelatedId(resourcesId);
 		failure.setCreateTime(new Date());
 		failure.setUser(comm.accountService.getCurrentUser());
-		failure.setTitle(comm.applyService.generateApplyTitle("bug"));
+		failure.setTitle(comm.applyService.generateTitle("bug"));
 
 		boolean result = comm.failureService.saveFailure(failure, fileNames, fileDescs);
 

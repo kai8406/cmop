@@ -24,8 +24,6 @@
 </head>
 
 <body>
-
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
 	<p><a id="createBtn" class="btn btn-large btn-primary" href="save/">创建申请单 &raquo;</a></p>
 	

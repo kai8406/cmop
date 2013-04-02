@@ -43,10 +43,15 @@
 	<div id="wrap">
 		<%@ include file="/WEB-INF/layouts/navbar.jsp"%>
 		<div class="container">
+			
 			<!--[if lt IE 7]>
         		<p class="chromeframe">您的浏览器不被支持！试试其他的：<a href="http://www.google.com/chrome">Google 浏览器</a>、<a href="http://firefox.com.cn/">火狐浏览器</a>、<a href="http://www.apple.com.cn/safari/">Safari</a>、<a href="http://www.google.com/chromeframe?hl=zh-CN">Google 浏览器框架</a></p>
 	     	<![endif]-->
+	     	
+			<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
+			
 			<sitemesh:body/>
+			
 		</div>
 		<div id="push"></div>
 	</div>
@@ -70,6 +75,7 @@
  	 <script src="${ctx}/static/jquery-fileupload/jquery.ui.widget.js"></script>
 	 <script src="${ctx}/static/jquery-fileupload/jquery.iframe-transport.js"></script>
 	 <script src="${ctx}/static/jquery-fileupload/jquery.fileupload.js"></script>
+	 <script src="${ctx}/static/jquery-blockUI/jquery.blockUI.js"></script>
 	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/common/js/custom.wizard.js"></script>
 	 <script src="${ctx}/static/common/js/custom.fileUpload.js"></script>

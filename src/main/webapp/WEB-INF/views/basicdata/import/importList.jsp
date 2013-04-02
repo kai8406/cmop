@@ -22,8 +22,6 @@
 
 	<%@ include file="/WEB-INF/layouts/basicdataTab.jsp"%>
 	
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-	
 	<form id="inputForm" action="${ctx}/basicdata/import/save" method="post" enctype="multipart/form-data" class="form-horizontal input-form">
 	
 		<div class="control-group">

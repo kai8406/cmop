@@ -13,8 +13,6 @@
 <body>
 	<%@ include file="/WEB-INF/layouts/basicdataTab.jsp"%>
 
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-
 	<strong>${hostServer.displayName}下的虚拟机：</strong>
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>

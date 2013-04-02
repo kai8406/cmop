@@ -13,8 +13,6 @@
 
 <body>
 
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-
 	<div class="row">
 		<div class="span4"><a class="btn" href="save/">创建部门</a></div>
 		<div class="pull-right"><tags:singlePage page="${page}" /></div>

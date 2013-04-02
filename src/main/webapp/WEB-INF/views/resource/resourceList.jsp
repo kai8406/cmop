@@ -16,8 +16,6 @@
 
 <body>
 
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message}</span></div></c:if>
-
 	<!-- 资源汇总 -->
 	<div class="widget-box">
 		<div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Resources Statistics</h5></div>

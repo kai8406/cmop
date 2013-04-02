@@ -63,8 +63,6 @@
 				</c:choose>
 			</small></legend>
 			
-			<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-			
 			<div class="control-group">
 				<label class="control-label" for="name">服务标签名称</label>
 				<div class="controls">

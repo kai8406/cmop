@@ -29,7 +29,7 @@ import com.sobey.framework.utils.SearchFilter;
 @Service
 @Transactional(readOnly = true)
 public class IpPoolService extends BaseSevcie {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(IpPoolService.class);
 
 	@Resource

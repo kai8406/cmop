@@ -54,8 +54,6 @@
 				</c:choose>
 			</small></legend>
 			
-			<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-			
 			<c:if test="${not empty apply}">
 			
 				<div class="control-group">

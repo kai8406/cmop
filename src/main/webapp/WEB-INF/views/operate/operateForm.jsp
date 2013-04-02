@@ -211,7 +211,6 @@ function changeServer(obj){
 </head>
 
 <body>
-	<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
 	
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form" style="max-width: 800px">
 		<input type="hidden" id="issueId" name="issueId" value="${issue.id}"/>

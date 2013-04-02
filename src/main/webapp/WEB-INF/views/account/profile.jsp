@@ -38,8 +38,6 @@
 		<input type="hidden" name="id" value="${user.id}">
 		<input type="hidden" name="groupId" value="${group.id}">
 		
-		<c:if test="${not empty message}"><div id="message" class="alert alert-success fade in"><button data-dismiss="alert" class="close" type="button">×</button><span>${message }</span></div></c:if>
-		
 		<fieldset>
 		
 			<legend><small>个人信息修改</small></legend>

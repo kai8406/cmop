@@ -287,8 +287,7 @@ public class TemplateMailService extends BaseSevcie {
 		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
 		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
 				+ AuditConstant.Result.不同意但继续;
-		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-				+ AuditConstant.Result.不同意且退回;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
 
 		map.put("passUrl", passUrl);
 		map.put("disagreeContinueUrl", disagreeContinueUrl);

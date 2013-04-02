@@ -14,16 +14,6 @@ $(document).ready(function() {
 	$('.tip-top').tooltip({ placement: 'top' });	
 	$('.tip-bottom').tooltip({ placement: 'bottom' });	
 	
-	
-	// === Modal === //
-	
-	$('.modal').modal({
-		  keyboard: false,
-		  backdrop: false,
-		  show: false
-	});	
-	
-	
  	// === Reset 点击reset按钮,form里的输入框清空,并提交form执行一次查询. ===//
  	
  	$("button.reset").on('click', function(){
@@ -63,17 +53,8 @@ $(document).ready(function() {
 		}
 		
 		var $this = $(this);
-		if($this.closest("form").valid()){
-			$this.button('loading').addClass("disabled");
-			$.blockUI({onOverlayClick: $.unblockUI}); 
-		}
-	});
-	
-	//=== 点击modal弹出遮罩层 ===//
-	
-	$(".modal-footer a").on('click', function(){
-		$('.modal').modal('hide');
-		$.blockUI({onOverlayClick: $.unblockUI}); 
+		$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
+		
 	});
 	
 	

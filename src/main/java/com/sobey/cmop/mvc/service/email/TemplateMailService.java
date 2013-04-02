@@ -58,26 +58,23 @@ public class TemplateMailService extends BaseSevcie {
 
 	private JavaMailSender mailSender;
 
-	private Template applyTemplate;
+	private Template detailTemplate;
 
-	private Template resourcesTemplate;
-
-	private Template recycleTemplate;
-
-	private Template failureTemplate;
+	private Template changeTemplate;
 
 	/**
-	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板.<br>
-	 * 实现一个Template类,然后加载指定路劲(查看applicationContext-email.xml)的后缀为.ftl模板.<br>
+	 * 根据freemarkerConfiguration的templateLoaderPath载入文件.
+	 * 
+	 * <pre>
+	 * 注入Freemarker引擎配置,构造Freemarker 邮件内容模板. 
+	 * 实现一个Template类,然后加载指定路劲(查看applicationContext-email.xml)的后缀为.ftl模板. 
 	 * 可实现多个不同的模板.
+	 * </pre>
 	 * 
 	 */
 	public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) throws IOException {
-		// 根据freemarkerConfiguration的templateLoaderPath载入文件.
-		applyTemplate = freemarkerConfiguration.getTemplate("applyMailTemplate.ftl", DEFAULT_ENCODING);
-		resourcesTemplate = freemarkerConfiguration.getTemplate("resourcesMailTemplate.ftl", DEFAULT_ENCODING);
-		recycleTemplate = freemarkerConfiguration.getTemplate("recycleMailTemplate.ftl", DEFAULT_ENCODING);
-		failureTemplate = freemarkerConfiguration.getTemplate("failureMailTemplate.ftl", DEFAULT_ENCODING);
+		detailTemplate = freemarkerConfiguration.getTemplate("detailMailTemplate.ftl", DEFAULT_ENCODING);
+		changeTemplate = freemarkerConfiguration.getTemplate("changeMailTemplate.ftl", DEFAULT_ENCODING);
 	}
 
 	/**
@@ -170,7 +167,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "资源申请审批邮件";
 
-		this.sendMailConfig(applyTemplate, map, auditFlow.getUser(), sendSubject);
+		this.sendMailConfig(detailTemplate, map, auditFlow.getUser(), sendSubject);
 
 	}
 
@@ -214,7 +211,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "工单处理邮件";
 
-		this.sendMailConfig(applyTemplate, map, assigneeUser, sendSubject);
+		this.sendMailConfig(detailTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -257,7 +254,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "服务申请工单处理邮件";
 
-		this.sendMailConfig(applyTemplate, map, apply.getUser(), sendSubject);
+		this.sendMailConfig(detailTemplate, map, apply.getUser(), sendSubject);
 
 	}
 
@@ -300,7 +297,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "资源变更审批邮件";
 
-		this.sendMailConfig(resourcesTemplate, map, auditFlow.getUser(), sendSubject);
+		this.sendMailConfig(changeTemplate, map, auditFlow.getUser(), sendSubject);
 
 	}
 
@@ -333,7 +330,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "工单处理邮件";
 
-		this.sendMailConfig(resourcesTemplate, map, assigneeUser, sendSubject);
+		this.sendMailConfig(changeTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -366,7 +363,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "资源变更处理邮件";
 
-		this.sendMailConfig(resourcesTemplate, map, serviceTag.getUser(), sendSubject);
+		this.sendMailConfig(changeTemplate, map, serviceTag.getUser(), sendSubject);
 
 	}
 
@@ -408,7 +405,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "资源回收工单处理邮件";
 
-		this.sendMailConfig(recycleTemplate, map, assigneeUser, sendSubject);
+		this.sendMailConfig(detailTemplate, map, assigneeUser, sendSubject);
 
 	}
 
@@ -433,7 +430,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "资源回收处理邮件";
 
-		this.sendMailConfig(recycleTemplate, map, sendToUser, sendSubject);
+		this.sendMailConfig(detailTemplate, map, sendToUser, sendSubject);
 
 	}
 
@@ -476,7 +473,7 @@ public class TemplateMailService extends BaseSevcie {
 		// 邮件标题
 		String sendSubject = "故障申报工单处理邮件";
 
-		this.sendMailConfig(failureTemplate, map, assigneeUser, sendSubject);
+		this.sendMailConfig(detailTemplate, map, assigneeUser, sendSubject);
 
 	}
 

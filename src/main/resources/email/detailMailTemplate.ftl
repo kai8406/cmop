@@ -1,6 +1,5 @@
 <html>
 <head>
-
 </head>
 <body>
 
@@ -9,23 +8,81 @@
 	<ul>
 		
 		<!--服务申请Apply -->
-		<li>
-			<strong>服务申请单基本信息</strong>
-			<ul> 
-				<li><em>申请人</em>&nbsp;: ${apply.user.name} </li>
-				<li><em>申请标题</em>&nbsp;: ${apply.title}</li>
-				<li><em>申请时间</em>&nbsp;: ${apply.createTime}</li>
-				
-				<li><em>优先级</em>&nbsp;: 
-					<#list priorityMap?keys as k >
-						<#if apply.priority?string == k>${priorityMap[k]}</#if>
-					</#list>
-				</li>
-				
-				<li><em>服务起止日期</em>&nbsp;: ${apply.serviceStart} <em>至</em>&nbsp; ${apply.serviceEnd}</li>
-				<li><em>用途描述</em>&nbsp;: ${apply.description}</li>
-			</ul>	
-		</li> <!--服务申请Apply End -->
+		<#if apply?exists >
+			<li>
+				<strong>服务申请单基本信息</strong>
+				<ul> 
+					<li><em>申请人</em>&nbsp;: ${apply.user.name} </li>
+					<li><em>申请标题</em>&nbsp;: ${apply.title}</li>
+					<li><em>申请时间</em>&nbsp;: ${apply.createTime}</li>
+					
+					<li><em>优先级</em>&nbsp;: 
+						<#list priorityMap?keys as k >
+							<#if apply.priority?string == k>${priorityMap[k]}</#if>
+						</#list>
+					</li>
+					
+					<li><em>服务起止日期</em>&nbsp;: ${apply.serviceStart} <em>至</em>&nbsp; ${apply.serviceEnd}</li>
+					<li><em>用途描述</em>&nbsp;: ${apply.description}</li>
+				</ul>	
+			</li> 
+		</#if> <!--服务申请Apply End -->
+		
+		<!-- 故障申报 Failure -->
+		<#if failure?exists >
+			<li>
+				<strong>故障申报基本信息</strong>
+				<ul> 
+					<li><em>申报人</em>&nbsp;: ${failure.user.name} </li>
+					<li><em>申报标题</em>&nbsp;: ${failure.title}</li>
+					<li><em>申报时间</em>&nbsp;: ${failure.createTime?string('yyyy-MM-dd HH:mm:ss')}</li>
+					
+					<li><em>故障类型</em>&nbsp;: 
+						<#list applyServiceTypeMap?keys as k >
+							<#if failure.faultType?string == k>
+								${applyServiceTypeMap[k]}
+							</#if>
+						</#list>
+					</li>
+					
+					<li><em>优先级</em>&nbsp;: 
+						<#list priorityMap?keys as k >
+							<#if failure.level?string == k>
+								${priorityMap[k]}
+							</#if>
+						</#list>
+					</li>
+					
+					<li><em>故障现象及描述</em>&nbsp;: ${failure.description}</li>
+					
+				</ul>	
+			</li>
+		</#if> <!-- 故障申报 failure End -->
+		
+		
+		<!-- 服务标签 ServiceTag -->
+		<#if serviceTag?exists >
+			<li>
+				<strong>服务标签基本信息</strong>
+				<ul> 
+					<li><em>申请人</em>&nbsp;: ${serviceTag.user.name} </li>
+					<li><em>标签名</em>&nbsp;: ${serviceTag.name}</li>
+					<li><em>申请时间</em>&nbsp;: ${serviceTag.createTime}</li>
+					
+					<li><em>优先级</em>&nbsp;: 
+						<#list priorityMap?keys as k >
+							<#if serviceTag.priority?string == k>
+								${priorityMap[k]}
+							</#if>
+						</#list>
+					</li>
+					
+					<li><em>服务起止日期</em>&nbsp;: ${serviceTag.serviceStart} <em>至</em>&nbsp; ${serviceTag.serviceEnd}</li>
+					<li><em>用途描述</em>&nbsp;: ${serviceTag.description}</li>
+				</ul>	
+			</li>
+		</#if> <!-- 服务标签 ServiceTag End -->
+		
 		<li>
 			<!-- 实例Compute -->
 			<#if (computes?exists) && (computes?size > 0) >

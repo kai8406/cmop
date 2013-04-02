@@ -107,7 +107,7 @@ public class RedmineTextUtil {
 
 			for (StorageItem storageItem : storageItems) {
 				content.append("标识符:").append(BLANK).append(storageItem.getIdentifier()).append(NEWLINE);
-				content.append("存储类型:").append(BLANK).append(StorageConstant.storageType.get(storageItem.getStorageType())).append(NEWLINE);
+				content.append("存储类型:").append(BLANK).append(StorageConstant.StorageType.get(storageItem.getStorageType())).append(NEWLINE);
 				content.append("容量空间:").append(BLANK).append(storageItem.getSpace()).append("GB").append(NEWLINE);
 				content.append("挂载实例:").append(BLANK).append(storageItem.getMountComputes()).append(NEWLINE + NEWLINE);
 			}
@@ -445,7 +445,7 @@ public class RedmineTextUtil {
 				if (StringUtils.isNotBlank(cpItem.getPublishUrl())) {
 					content.append("发布接口地址:").append(BLANK).append(cpItem.getPublishUrl()).append(NEWLINE);
 				}
-				content.append("是否推送内容交易平台:").append(BLANK).append(CPConstant.isPushCtp.get(cpItem.getIsPushCtp())).append(NEWLINE + NEWLINE);
+				content.append("是否推送内容交易平台:").append(BLANK).append(CPConstant.IsPushCtp.get(cpItem.getIsPushCtp())).append(NEWLINE + NEWLINE);
 				content.append("视频配置").append(NEWLINE);
 				content.append("FTP上传IP:").append(BLANK).append(cpItem.getVideoFtpIp()).append(NEWLINE);
 				content.append("端口:").append(BLANK).append(cpItem.getVideoFtpPort()).append(NEWLINE);

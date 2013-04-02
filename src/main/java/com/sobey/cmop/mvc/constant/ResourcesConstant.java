@@ -14,19 +14,20 @@ public class ResourcesConstant {
 
 	/**
 	 * 资源的服务类型
-	 * <p>
-	 * 1-PCS<br>
-	 * 2-ECS <br>
-	 * 3-ES3<br>
-	 * 4-ELB<br>
-	 * 5-EIP<br>
-	 * 6-DNS<br>
-	 * 7-ESG<br>
-	 * 8-MDN<br>
-	 * 9-MONITOR_COMPUTE<br>
-	 * 10-MONITOR_ELB<br>
+	 * 
+	 * <pre>
+	 * 1-PCS
+	 * 2-ECS 
+	 * 3-ES3
+	 * 4-ELB
+	 * 5-EIP
+	 * 6-DNS
+	 * 7-ESG
+	 * 8-MDN
+	 * 9-MONITOR_COMPUTE
+	 * 10-MONITOR_ELB
 	 * 11-CP
-	 * <p>
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -69,17 +70,18 @@ public class ResourcesConstant {
 
 	/**
 	 * 资源Resources的状态,服务标签serviceTag也共用此状态
-	 * <p>
-	 * -1-未变更<br>
-	 * 0-已变更(未提交)<br>
-	 * 1-待审批(已提交)<br>
-	 * 2-审批中<br>
-	 * 3-已退回<br>
-	 * 4-已审批<br>
-	 * 5-创建中<br>
-	 * 6-已创建<br>
-	 * 7-回收中<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * -1-未变更
+	 * 0-已变更(未提交)
+	 * 1-待审批(已提交)
+	 * 2-审批中
+	 * 3-已退回
+	 * 4-已审批
+	 * 5-创建中
+	 * 6-已创建
+	 * 7-回收中
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 

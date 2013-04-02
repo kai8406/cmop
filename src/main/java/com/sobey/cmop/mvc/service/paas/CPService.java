@@ -107,7 +107,7 @@ public class CPService extends BaseSevcie {
 		cpItem.setRecordType(recordType);
 		cpItem.setRecordTime(recordTime);
 		cpItem.setPublishUrl(publishUrl);
-		cpItem.setIsPushCtp(CPConstant.isPushCtp.推送.toString().equals(isPushCtp) ? true : false);
+		cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(isPushCtp) ? true : false);
 
 		// video
 		cpItem.setVideoFtpIp(videoFtpIp);
@@ -156,7 +156,7 @@ public class CPService extends BaseSevcie {
 		cpItem.setRecordType(recordType);
 		cpItem.setRecordTime(recordTime);
 		cpItem.setPublishUrl(publishUrl);
-		cpItem.setIsPushCtp(CPConstant.isPushCtp.推送.toString().equals(isPushCtp) ? true : false);
+		cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(isPushCtp) ? true : false);
 
 		// video
 		cpItem.setVideoFtpIp(videoFtpIp);

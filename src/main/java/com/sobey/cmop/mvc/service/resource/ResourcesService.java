@@ -399,9 +399,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 还原资源Resources变更项.<br>
-	 * 将ChangeItem中的旧值覆盖至各个资源的属性中,保存.<br>
-	 * 各个资源还原后,将服务变更Change删除.
+	 * 还原资源Resources变更项. 将ChangeItem中的旧值覆盖至各个资源的属性中,保存. 各个资源还原后,将服务变更Change删除.
 	 * 
 	 * @param resources
 	 */
@@ -691,7 +689,7 @@ public class ResourcesService extends BaseSevcie {
 				}
 
 				if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(changeItem.getFieldName())) {
-					cpItem.setIsPushCtp(CPConstant.isPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
+					cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
 				}
 
 				if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(changeItem.getFieldName())) {
@@ -752,7 +750,6 @@ public class ResourcesService extends BaseSevcie {
 		comm.changeServcie.deleteChange(change.getId());
 
 		return resources;
-
 	}
 
 	/**

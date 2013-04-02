@@ -188,7 +188,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("auditResultMap")
 	public Map<Integer, String> auditResultMap() {
-		return AuditConstant.AuditResult.map;
+		return AuditConstant.Result.map;
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("isPushCtpMap")
 	public Map<Boolean, String> isPushCtpMap() {
-		return CPConstant.isPushCtp.map;
+		return CPConstant.IsPushCtp.map;
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class BaseController {
 	 */
 	@ModelAttribute("storageTypeMap")
 	public Map<Integer, String> storageTypeMap() {
-		return StorageConstant.storageType.map;
+		return StorageConstant.StorageType.map;
 	}
 
 	/**

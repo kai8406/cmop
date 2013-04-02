@@ -314,10 +314,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String fieldName = FieldNameConstant.Storage.存储类型.toString();
 			String oldValue = storageItem.getStorageType().toString();
-			String oldString = StorageConstant.storageType.get(storageItem.getStorageType());
+			String oldString = StorageConstant.StorageType.get(storageItem.getStorageType());
 
 			String newValue = storageType.toString();
-			String newString = StorageConstant.storageType.get(storageType);
+			String newString = StorageConstant.StorageType.get(storageType);
 
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 
@@ -1351,9 +1351,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		if (!cpItem.getIsPushCtp().toString().equals(isPushCtp)) {
 			String fieldName = FieldNameConstant.CpItem.是否推送内容交易平台.toString();
 			String oldValue = cpItem.getIsPushCtp().toString();
-			String oldString = CPConstant.isPushCtp.get(cpItem.getIsPushCtp());
+			String oldString = CPConstant.IsPushCtp.get(cpItem.getIsPushCtp());
 			String newValue = isPushCtp;
-			String newString = CPConstant.isPushCtp.get(CPConstant.isPushCtp.推送.toString().equals(isPushCtp) ? true : false);
+			String newString = CPConstant.IsPushCtp.get(CPConstant.IsPushCtp.推送.toString().equals(isPushCtp) ? true : false);
 			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 		}
 

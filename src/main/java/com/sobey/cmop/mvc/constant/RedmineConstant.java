@@ -49,15 +49,16 @@ public class RedmineConstant {
 	}
 
 	/**
-	 * Redmine中的指派人<br>
-	 * <p>
-	 * 4-余波<br>
-	 * 5-艾磊<br>
-	 * 6-杨飞<br>
-	 * 7-胡光俊<br>
-	 * 8-李乾星<br>
-	 * 9-刘力铭<br>
-	 * <p>
+	 * Redmine中的指派人
+	 * 
+	 * <pre>
+	 * 4-余波
+	 * 5-艾磊
+	 * 6-杨飞
+	 * 7-胡光俊
+	 * 8-李乾星
+	 * 9-刘力铭
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -108,12 +109,13 @@ public class RedmineConstant {
 	}
 
 	/**
-	 * /** redmine中的优先级(也用于服务申请单Apply中)
-	 * <p>
-	 * 4-普通<br>
-	 * 5-高<br>
-	 * 6-紧急<br>
-	 * <p>
+	 * redmine中的优先级(也用于服务申请单Apply中)
+	 * 
+	 * <pre>
+	 * 4-普通
+	 * 5-高
+	 * 6-紧急
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -165,14 +167,15 @@ public class RedmineConstant {
 	}
 
 	/**
-	 * redmine_project<br>
-	 * <p>
-	 * 1-SobeyCloud运营<br>
-	 * 2-Iaas<br>
-	 * 3-SobeyCloud问题库<br>
-	 * 4-Paas_Saas<br>
-	 * 5-Sobey Cloud设计<br>
-	 * <p>
+	 * redmine_project
+	 * 
+	 * <pre>
+	 * 1-SobeyCloud运营
+	 * 2-Iaas
+	 * 3-SobeyCloud问题库
+	 * 4-Paas_Saas
+	 * 5-Sobey Cloud设计
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -224,11 +227,12 @@ public class RedmineConstant {
 
 	/**
 	 * Redmine中的状态
-	 * <p>
-	 * 1-新建<br>
-	 * 2-处理中<br>
-	 * 5-关闭<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-新建
+	 * 2-处理中
+	 * 5-关闭
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -280,12 +284,13 @@ public class RedmineConstant {
 	}
 
 	/**
-	 * redmine_tracker<br>
-	 * <p>
-	 * 1-错误<br>
-	 * 2-功能<br>
-	 * 3-支持<br>
-	 * <p>
+	 * redmine_tracker
+	 * 
+	 * <pre>
+	 * 1-错误
+	 * 2-功能
+	 * 3-支持
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 

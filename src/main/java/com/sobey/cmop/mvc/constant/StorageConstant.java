@@ -14,15 +14,16 @@ public class StorageConstant {
 
 	/**
 	 * 存储类型
-	 * <p>
-	 * 1-Fimas_高吞吐量<br>
-	 * 2-Netapp_高IOPS<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-Fimas_高吞吐量
+	 * 2-Netapp_高IOPS
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum storageType implements ICommonEnum {
+	public enum StorageType implements ICommonEnum {
 
 		Fimas_高吞吐量(1), Netapp_高IOPS(2);
 
@@ -31,14 +32,14 @@ public class StorageConstant {
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 
 		static {
-			for (storageType e : storageType.values()) {
+			for (StorageType e : StorageType.values()) {
 
 				map.put(e.code, e.name());
 
 			}
 		}
 		static {
-			for (storageType e : storageType.values()) {
+			for (StorageType e : StorageType.values()) {
 
 				mapKeyStr.put(String.valueOf(e.code), e.name());
 
@@ -51,7 +52,7 @@ public class StorageConstant {
 
 		private int code;
 
-		private storageType(int code) {
+		private StorageType(int code) {
 			this.code = code;
 		}
 

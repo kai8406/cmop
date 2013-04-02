@@ -72,13 +72,17 @@ public class ServiceTagService extends BaseSevcie {
 		comm.oneCmdbUtilService.saveServiceTagToOneCMDB(serviceTag);
 
 		return serviceTagDao.save(serviceTag);
-
 	}
 
+	/**
+	 * 删除服务标签,并删除oneCMDB中的数据.
+	 * 
+	 * @param id
+	 */
 	@Transactional(readOnly = false)
 	public void delete(Integer id) {
 
-		// 删除CMDB中数据.
+		// 删除oneCMDB中数据.
 		comm.oneCmdbUtilService.deleteServiceTagToOneCMDB(this.getServiceTag(id));
 
 		serviceTagDao.delete(id);
@@ -107,14 +111,14 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源变更页面可选择的服务标签列表.<br>
-	 * 该服务标签是 可用的,没有在审批流程中的服务标签.<br>
-	 * <p>
-	 * -1-未变更<br>
-	 * 0-已变更(未提交)<br>
-	 * 3-已退回<br>
-	 * 6-已创建<br>
-	 * <p>
+	 * 资源变更页面可选择的服务标签列表. 该服务标签是可用的,没有在审批流程中的服务标签.
+	 * 
+	 * <pre>
+	 * -1-未变更
+	 * 0-已变更(未提交)
+	 * 3-已退回
+	 * 6-已创建
+	 * </pre>
 	 * 
 	 * @return
 	 */

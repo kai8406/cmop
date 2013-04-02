@@ -99,7 +99,6 @@ public class DnsService extends BaseSevcie {
 			networkDnsItem.setDomainType(domainType);
 
 			this.saveOrUpdate(networkDnsItem);
-
 		}
 
 	}
@@ -138,11 +137,9 @@ public class DnsService extends BaseSevcie {
 
 			networkDnsItem.setNetworkEipItemList(networkEipItemList);
 			networkDnsItem.setCnameDomain(cnameDomain);
-
 		}
 
 		this.saveOrUpdate(networkDnsItem);
-
 	}
 
 	/**

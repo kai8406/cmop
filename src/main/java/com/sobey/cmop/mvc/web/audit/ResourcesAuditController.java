@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -62,7 +63,7 @@ public class ResourcesAuditController extends BaseController {
 	public String auditOk(@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
 		String message;
-		if (comm.auditService.isResourcesAudited(serviceTagId, userId)) { // 该服务申请已审批过.
+		if (comm.auditService.isAudited(comm.serviceTagService.getServiceTag(serviceTagId), userId)) { // 该服务申请已审批过.
 			message = "你已审批";
 		} else {
 			// 获得指定serviceTag当前审批记录
@@ -86,15 +87,18 @@ public class ResourcesAuditController extends BaseController {
 	@RequestMapping(value = "/resources/{id}", method = RequestMethod.GET)
 	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
 			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
+
 		String returnUrl = "";
-		if (StringUtils.isEmpty(view) && comm.auditService.isResourcesAudited(serviceTagId, userId)) { // 判断该服务申请已审批过.
+		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
+
+		if (StringUtils.isEmpty(view) && comm.auditService.isAudited(serviceTag, userId)) { // 判断该服务申请已审批过.
 			model.addAttribute("message", "你已审批");
 			returnUrl = "audit/auditOk";
 		} else {
 			model.addAttribute("result", result);
 			model.addAttribute("view", view);
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
-			model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(serviceTagId));
+			model.addAttribute("serviceTag", serviceTag);
 			model.addAttribute("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
 			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
 

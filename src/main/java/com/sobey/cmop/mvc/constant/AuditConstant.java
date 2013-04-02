@@ -13,17 +13,18 @@ import com.google.common.collect.Maps;
 public class AuditConstant {
 
 	/**
-	 * 审批结果<br>
-	 * <p>
-	 * 1-同意<br>
-	 * 2-不同意但继续<br>
-	 * 3-不同意且退回<br>
-	 * <p>
+	 * 审批结果
+	 * 
+	 * <pre>
+	 * 1-同意
+	 * 2-不同意但继续
+	 * 3-不同意且退回
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
-	public enum AuditResult implements ICommonEnum {
+	public enum Result implements ICommonEnum {
 
 		同意(1), 不同意但继续(2), 不同意且退回(3);
 
@@ -32,14 +33,14 @@ public class AuditConstant {
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 
 		static {
-			for (AuditResult e : AuditResult.values()) {
+			for (Result e : Result.values()) {
 
 				map.put(e.code, e.name());
 
 			}
 		}
 		static {
-			for (AuditResult e : AuditResult.values()) {
+			for (Result e : Result.values()) {
 
 				mapKeyStr.put(String.valueOf(e.code), e.name());
 
@@ -52,7 +53,7 @@ public class AuditConstant {
 
 		private int code;
 
-		private AuditResult(int code) {
+		private Result(int code) {
 			this.code = code;
 		}
 
@@ -69,12 +70,13 @@ public class AuditConstant {
 	}
 
 	/**
-	 * 审批状态<br>
-	 * <p>
-	 * -1 - 已过期<br>
-	 * 0-待审批<br>
-	 * 1-有效<br>
-	 * <p>
+	 * 审批状态
+	 * 
+	 * <pre>
+	 * -1 - 已过期
+	 * 0-待审批
+	 * 1-有效
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -125,10 +127,11 @@ public class AuditConstant {
 	}
 
 	/**
-	 * 审批流程类型<br>
-	 * <p>
-	 * 1-资源申请/变更的审批流程<br>
-	 * <p>
+	 * 审批流程类型
+	 * 
+	 * <pre>
+	 * 1 - 资源申请 / 变更的审批流程
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 

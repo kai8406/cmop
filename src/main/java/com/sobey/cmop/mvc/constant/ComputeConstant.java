@@ -14,10 +14,11 @@ public class ComputeConstant {
 
 	/**
 	 * 计算资源类型.
-	 * <p>
-	 * 1-PCS<br>
-	 * 2-ECS<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-PCS
+	 * 2-ECS
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -69,11 +70,12 @@ public class ComputeConstant {
 
 	/**
 	 * ECS的服务器类型
-	 * <p>
-	 * 1-Small<br>
-	 * 2-Middle<br>
-	 * 3-Large<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-Small
+	 * 2-Middle
+	 * 3-Large
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -125,15 +127,16 @@ public class ComputeConstant {
 
 	/**
 	 * PCS的服务器类型
-	 * <p>
-	 * 4-DELL_R410<br>
-	 * 5-DELL_R510<br>
-	 * 6-DELL_R710<br>
-	 * 7-DELL_C6100<br>
-	 * 8-HP_DL2000<br>
-	 * 9-Aisino_6510<br>
-	 * 10-SO_5201NR<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 4-DELL_R4r>
+	 * 5-DELL_R510
+	 * 6-DELL_R710
+	 * 7-DELL_C6100
+	 * 8-HP_DL2000
+	 * 9-Aisino_6510
+	 * 10-SO_5201NR
+	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
@@ -193,7 +196,7 @@ public class ComputeConstant {
 	}
 
 	/**
-	 * 操作系统位数(key为String)<br>
+	 * 操作系统位数(key为String)
 	 */
 	public static final Map<String, String> OS_BIT_STRING_MAP = Maps.newLinkedHashMap();
 	static {
@@ -202,12 +205,15 @@ public class ComputeConstant {
 	}
 
 	/**
-	 * 操作系统类型<br>
-	 * 1.Windows2003R2<br>
-	 * 2.Windows2008R2<br>
-	 * 3.CentOS5.6<br>
-	 * 4.CentOS6.3<br>
-	 * 5.Windows7<br>
+	 * 操作系统类型
+	 * 
+	 * <pre>
+	 * 1.Windows2003R2
+	 * 2.Windows2008R2
+	 * 3.CentOS5.6
+	 * 4.CentOS6.3
+	 * 5.Windows7
+	 * </pre>
 	 */
 	public static final Map<Integer, String> OS_TYPE_MAP = Maps.newLinkedHashMap();
 	static {
@@ -219,12 +225,15 @@ public class ComputeConstant {
 	}
 
 	/**
-	 * 操作系统类型(key为String)<br>
-	 * 1.Windows2003R2<br>
-	 * 2.Windows2008R2<br>
-	 * 3.CentOS5.6<br>
-	 * 4.CentOS6.3<br>
-	 * 5.Windows7<br>
+	 * 操作系统类型(key为String)
+	 * 
+	 * <pre>
+	 * 1.Windows2003R2
+	 * 2.Windows2008R2
+	 * 3.CentOS5.6
+	 * 4.CentOS6.3
+	 * 5.Windows7
+	 * </pre>
 	 */
 	public static final Map<String, String> OS_TYPE_STRING_MAP = Maps.newLinkedHashMap();
 	static {

@@ -73,12 +73,11 @@ public class EsgService extends BaseSevcie {
 		networkEsgItemDao.save(networkEsgItem);
 
 		// ESG的规则保存
-
 		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItemToList(networkEsgItem, protocols, portRanges, visitSources);
-
 		esgRuleItemDao.save(esgRuleItems);
 
-		// 保存至oneCMDB
+		/* 保存至oneCMDB */
+
 		List<NetworkEsgItem> networkEsgItems = new ArrayList<NetworkEsgItem>();
 		networkEsgItems.add(networkEsgItem);
 		comm.oneCmdbUtilService.saveESGToOneCMDB(networkEsgItems);

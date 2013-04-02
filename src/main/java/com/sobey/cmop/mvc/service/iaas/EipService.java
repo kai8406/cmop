@@ -204,10 +204,8 @@ public class EipService extends BaseSevcie {
 		// ELB的端口映射
 
 		for (int i = 0; i < protocols.length; i++) {
-
 			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateEipPortItem(eipPortItem);
-
 		}
 
 	}
@@ -272,10 +270,8 @@ public class EipService extends BaseSevcie {
 		// EIP的端口映射
 
 		for (int i = 0; i < protocols.length; i++) {
-
 			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateEipPortItem(eipPortItem);
-
 		}
 
 		// 更新resources
@@ -293,7 +289,6 @@ public class EipService extends BaseSevcie {
 		if (NetworkConstant.LinkType.关联实例.toString().equals(linkType)) {
 
 			// 关联实例
-
 			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
 			networkEipItem.setNetworkElbItem(null);
 

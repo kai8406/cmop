@@ -95,7 +95,6 @@ public class Es3Service extends BaseSevcie {
 			storageItem.setComputeItemList(computeItemList);
 
 			this.saveOrUpdate(storageItem);
-
 		}
 
 	}
@@ -184,7 +183,6 @@ public class Es3Service extends BaseSevcie {
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
-
 	}
 
 	public List<StorageItem> getStorageListByApplyId(Integer applyId) {

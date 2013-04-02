@@ -88,7 +88,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setIdentifier(storageItem.getIdentifier());
 		json.setMountPoint(storageItem.getMountPoint());
 		json.setSpace(storageItem.getSpace());
-		json.setStorageType(StorageConstant.storageType.get(storageItem.getStorageType()));
+		json.setStorageType(StorageConstant.StorageType.get(storageItem.getStorageType()));
 		json.setVolume(storageItem.getVolume());
 		json.setMountComputes(storageItem.getMountComputes());
 
@@ -319,7 +319,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setRecordType(CPConstant.RecordType.get(cpItem.getRecordType()));
 		json.setRecordTime(cpItem.getRecordTime());
 		json.setPublishUrl(cpItem.getPublishUrl());
-		json.setIsPushCtp(CPConstant.isPushCtp.get(cpItem.getIsPushCtp()));
+		json.setIsPushCtp(CPConstant.IsPushCtp.get(cpItem.getIsPushCtp()));
 
 		json.setVideoFtpIp(cpItem.getVideoFtpIp());
 		json.setVideoFtpPort(cpItem.getVideoFtpPort());

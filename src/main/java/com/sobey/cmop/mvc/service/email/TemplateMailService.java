@@ -94,7 +94,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("pcsServerTypeMap", ComputeConstant.PCSServerType.mapKeyStr);
 		map.put("ecsServerTypeMap", ComputeConstant.ECSServerType.mapKeyStr);
 		map.put("applyServiceTypeMap", ApplyConstant.ServiceType.mapKeyStr);
-		map.put("storageTypeMap", StorageConstant.storageType.mapKeyStr);
+		map.put("storageTypeMap", StorageConstant.StorageType.mapKeyStr);
 		map.put("KeepSessionMap", NetworkConstant.KeepSession.mapKeyStr);
 		map.put("ispTypeMap", NetworkConstant.ISPType.mapKeyStr);
 		map.put("domainTypeMap", NetworkConstant.DomainType.mapKeyStr);
@@ -111,7 +111,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("recordTypeMap", CPConstant.RecordType.mapKeyStr);
 		map.put("exportEncodeMap", CPConstant.EXPORTENCODE_MAP_STRING_KEY);
 		map.put("recordBitrateMap", CPConstant.RECORDBITRATE_MAP_STRING_KEY);
-		map.put("isPushCtpMap", CPConstant.isPushCtp.mapKeyStr);
+		map.put("isPushCtpMap", CPConstant.IsPushCtp.mapKeyStr);
 
 		map.put("allESGs", comm.esgService.getAllEsgList());
 
@@ -156,9 +156,9 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 申请 审批Audit
 
-		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
-		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意但继续;
-		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.不同意且退回;
+		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
 
 		map.put("passUrl", passUrl);
 		map.put("disagreeContinueUrl", disagreeContinueUrl);
@@ -284,11 +284,11 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 变更 审批Audit
 
-		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.AuditResult.同意;
+		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
 		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-				+ AuditConstant.AuditResult.不同意但继续;
+				+ AuditConstant.Result.不同意但继续;
 		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-				+ AuditConstant.AuditResult.不同意且退回;
+				+ AuditConstant.Result.不同意且退回;
 
 		map.put("passUrl", passUrl);
 		map.put("disagreeContinueUrl", disagreeContinueUrl);

@@ -44,10 +44,11 @@ public class IpPoolConstant {
 
 	/**
 	 * IP状态
-	 * <p>
-	 * 1-未使用<br>
-	 * 2-已使用<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-未使用
+	 * 2-已使用
+	 * </pre>
 	 */
 	public enum IpStatus implements ICommonEnum {
 
@@ -91,11 +92,12 @@ public class IpPoolConstant {
 
 	/**
 	 * IP池类型
-	 * <p>
-	 * 1-私网IP池<br>
-	 * 2-公网IP池<br>
-	 * 3-互联网IP池<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-私网IP池
+	 * 2-公网IP池
+	 * 3-互联网IP池
+	 * </pre>
 	 */
 	public enum PoolType implements ICommonEnum {
 

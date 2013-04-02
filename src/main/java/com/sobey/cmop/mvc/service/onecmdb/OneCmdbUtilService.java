@@ -170,7 +170,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("EndTime", computeItem.getApply().getServiceEnd(), false));
 
 		for (StorageItem storageItem : computeItem.getStorageItemList()) {
-			String storageAlias = OneCmdbService.findCiAliasByText(StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol",
+			String storageAlias = OneCmdbService.findCiAliasByText(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol",
 					storageItem.getIdentifier());
 			ci.addAttributeValue(new ValueBean("Storage", storageAlias, true));
 		}
@@ -239,7 +239,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean ci;
 
 		// Type：NFS-管理卷；DATA-数据卷
-		if (StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType())) {
+		if (StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType())) {
 			// Fimas
 			ci = new CiBean("FimasVol", storageItem.getIdentifier(), false);
 			ci.addAttributeValue(new ValueBean("Type", "DIFS", false));
@@ -289,7 +289,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 */
 	public boolean deleteStorageItemToOneCMDB(StorageItem storageItem) {
 		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean(StorageConstant.storageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
+		CiBean router = new CiBean(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
 		ciList.add(router);
 		return OneCmdbService.delete(ciList);
 	}

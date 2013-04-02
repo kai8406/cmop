@@ -14,10 +14,11 @@ public class HostServerConstant {
 
 	/**
 	 * IP状态
-	 * <p>
-	 * 1-宿主机<br>
-	 * 2-物理机<br>
-	 * <p>
+	 * 
+	 * <pre>
+	 * 1-宿主机
+	 * 2-物理机
+	 * </pre>
 	 */
 	public enum HostServerType implements ICommonEnum {
 

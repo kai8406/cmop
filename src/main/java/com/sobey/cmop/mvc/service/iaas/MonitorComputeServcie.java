@@ -259,7 +259,6 @@ public class MonitorComputeServcie extends BaseSevcie {
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
-
 	}
 
 	/**

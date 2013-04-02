@@ -70,8 +70,7 @@ public class NetworkConstant {
 	}
 
 	/**
-	 * ESG的协议.<br>
-	 * 注意:返回的map key和value均为String类型
+	 * ESG的协议. 注意:返回的map key和value均为String类型
 	 * 
 	 * <pre>
 	 * DNS, HTTP, HTTPS, ICMP, MYSQL, SSH, TCP, UDP;
@@ -214,8 +213,7 @@ public class NetworkConstant {
 	}
 
 	/**
-	 * EIP中的关联类型<br>
-	 * 注意和JSP()同步.
+	 * EIP中的关联类型, 注意和JSP()同步.
 	 * 
 	 * <pre>
 	 * 1-关联实例

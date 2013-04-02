@@ -47,7 +47,7 @@ public class ComputeService extends BaseSevcie {
 	// === Application ===//
 
 	/**
-	 * 将接收的参数封装成Application List集合,然后保存
+	 * 将接收的参数封装成Application List集合,然后保存.
 	 * 
 	 * @param computeItem
 	 *            实例
@@ -60,22 +60,17 @@ public class ComputeService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void saveApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
-
 		if (applicationNames != null) {
-
 			for (int i = 0; i < applicationNames.length; i++) {
 				Application application = new Application(computeItem, applicationNames[i], applicationVersions[i], applicationDeployPaths[i]);
 				applicationDao.save(application);
 			}
-
 		}
-
 	}
 
 	/**
 	 * 
-	 * 更新Application<br>
-	 * 先将表里的老数据删除.再插入新数据.
+	 * 更新Application(先将表里的老数据删除.再插入新数据.)
 	 * 
 	 * @param computeItem
 	 *            实例
@@ -89,8 +84,6 @@ public class ComputeService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void updateApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
 
-		// 删除表里的老数据.
-
 		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
 
 		if (!applications.isEmpty()) {
@@ -98,7 +91,6 @@ public class ComputeService extends BaseSevcie {
 		}
 
 		this.saveApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
-
 	}
 
 	/**
@@ -160,12 +152,9 @@ public class ComputeService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveComputeToApply(Integer computeType, Integer applyId, String[] osTypes, String[] osBits, String[] serverTypes, String[] remarks, String[] esgIds) {
 
-		Apply apply = comm.applyService.getApply(applyId);
-
-		List<ComputeItem> computes = this.wrapComputeItemToList(apply, computeType, osTypes, osBits, serverTypes, remarks, esgIds);
+		List<ComputeItem> computes = this.wrapComputeItemToList(comm.applyService.getApply(applyId), computeType, osTypes, osBits, serverTypes, remarks, esgIds);
 
 		computeItemDao.save(computes);
-
 	}
 
 	/**
@@ -191,7 +180,6 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
 
 		return comm.computeService.saveOrUpdate(computeItem);
-
 	}
 
 	/**
@@ -354,49 +342,4 @@ public class ComputeService extends BaseSevcie {
 		return computeItemDao.findByNetworkElbItemIsNullAndApplyUserId(getCurrentUserId());
 	}
 
-	/**
-	 * 获得指定用户创建的审批通过的实例Compute List,并且该实例没有被其它ELB关联过,即elb_id = null<br>
-	 * 主要用于ELB的变更中.<br>
-	 * dao查询出来的是无泛型的List,将其封装成 ComputeItem List
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<ComputeItem> getComputeItemListByResourcesId(Integer userId) {
-
-		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
-
-		List list = basicUnitDao.getComputeItemListByResourcesAndElbIsNull(userId);
-
-		for (int i = 0; i < list.size(); i++) {
-
-			Object[] object = (Object[]) list.get(i);
-
-			/* 封装成ComputeItem */
-
-			ComputeItem computeItem = new ComputeItem();
-
-			computeItem.setId(Integer.valueOf(object[0].toString()));
-			computeItem.setApply(comm.applyService.getApply(Integer.valueOf(object[1].toString())));
-			computeItem.setIdentifier(object[2].toString());
-			computeItem.setComputeType(Integer.valueOf(object[3].toString()));
-			computeItem.setOsType(Integer.valueOf(object[4].toString()));
-			computeItem.setOsBit(Integer.valueOf(object[5].toString()));
-			computeItem.setServerType(Integer.valueOf(object[6].toString()));
-			computeItem.setRemark(object[7].toString());
-			computeItem.setInnerIp(object[8] != null ? object[8].toString() : null);
-			computeItem.setOldIp(object[9] != null ? object[9].toString() : null);
-			computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getNetworkEsgItem(Integer.valueOf(object[10].toString())) : null);
-			computeItem.setNetworkElbItem(object[11] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[11].toString())) : null);
-			computeItem.setHostName(object[12] != null ? object[12].toString() : null);
-			computeItem.setServerAlias(object[13] != null ? object[13].toString() : null);
-			computeItem.setHostServerAlias(object[14] != null ? object[14].toString() : null);
-			computeItem.setOsStorageAlias(object[15] != null ? object[15].toString() : null);
-
-			computeItems.add(computeItem);
-
-		}
-
-		return computeItems;
-	}
 }

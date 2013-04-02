@@ -72,7 +72,7 @@ public class CPConstant {
 	 * @author liukai
 	 * 
 	 */
-	public enum isPushCtp implements ICommonEnum {
+	public enum IsPushCtp implements ICommonEnum {
 
 		推送(true), 不推送(false);
 
@@ -81,14 +81,14 @@ public class CPConstant {
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 
 		static {
-			for (isPushCtp e : isPushCtp.values()) {
+			for (IsPushCtp e : IsPushCtp.values()) {
 
 				map.put(e.code, e.name());
 
 			}
 		}
 		static {
-			for (isPushCtp e : isPushCtp.values()) {
+			for (IsPushCtp e : IsPushCtp.values()) {
 
 				mapKeyStr.put(String.valueOf(e.code), e.name());
 
@@ -101,7 +101,7 @@ public class CPConstant {
 
 		private boolean code;
 
-		private isPushCtp(boolean code) {
+		private IsPushCtp(boolean code) {
 			this.code = code;
 		}
 

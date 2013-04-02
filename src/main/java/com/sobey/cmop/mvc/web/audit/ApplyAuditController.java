@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.framework.utils.Servlets;
@@ -61,7 +62,7 @@ public class ApplyAuditController extends BaseController {
 	public String auditOk(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
 		String message;
-		if (comm.auditService.isApplyAudited(applyId, userId)) { // 该服务申请已审批过.
+		if (comm.auditService.isAudited(comm.applyService.getApply(applyId), userId)) { // 该服务申请已审批过.
 			message = "你已审批";
 		} else {
 			// 获得指定apply当前审批记录
@@ -89,8 +90,9 @@ public class ApplyAuditController extends BaseController {
 	@RequestMapping(value = "/apply/{id}", method = RequestMethod.GET)
 	public String apply(@PathVariable("id") Integer applyId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
 			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
+		Apply apply = comm.applyService.getApply(applyId);
 		String returnUrl = "";
-		if (StringUtils.isEmpty(view) && comm.auditService.isApplyAudited(applyId, userId)) { // 判断该服务申请已审批过.
+		if (StringUtils.isEmpty(view) && comm.auditService.isAudited(apply, userId)) { // 判断该服务申请已审批过.
 			model.addAttribute("message", "你已审批");
 			returnUrl = "audit/auditOk";
 		} else {
@@ -98,7 +100,7 @@ public class ApplyAuditController extends BaseController {
 			model.addAttribute("view", view);
 			// 页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
-			model.addAttribute("apply", comm.applyService.getApply(applyId));
+			model.addAttribute("apply", apply);
 			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(applyId));
 
 			returnUrl = "audit/apply/auditApplyForm";

@@ -153,7 +153,6 @@ public class ElbService extends BaseSevcie {
 			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
 
 			for (int j = 0; j < protocolArray.length; j++) {
-
 				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j], targetPortArray[j]);
 				this.saveOrUpdateElbPortItem(elbPortItem);
 			}
@@ -204,10 +203,8 @@ public class ElbService extends BaseSevcie {
 		// ELB的端口映射
 
 		for (int i = 0; i < protocols.length; i++) {
-
 			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateElbPortItem(elbPortItem);
-
 		}
 
 		// 关联实例
@@ -298,7 +295,6 @@ public class ElbService extends BaseSevcie {
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
-
 	}
 
 	/**

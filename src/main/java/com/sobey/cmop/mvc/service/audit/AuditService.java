@@ -201,7 +201,13 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 校验服务申请Apply是否已审批
+	 * 校验是否已审批.
+	 * 
+	 * <pre>
+	 * 由于审批记录都先于审批操作写入，所以直接查询审批记录表，
+	 * 看是否有该申请及当前用户所在审批流程且创建时间为空的记录.
+	 * 如果有则说明可以审批，否则表示已审批。
+	 * </pre>
 	 * 
 	 * @param applyId
 	 *            服务申请ID
@@ -210,7 +216,7 @@ public class AuditService extends BaseSevcie {
 	 * @return true :已审批<br>
 	 *         false:未审批
 	 */
-	public boolean isApplyAudited(Integer applyId, Integer userId) {
+	private boolean isAudited(Integer applyId, Integer serviceTagId, Integer userId) {
 
 		boolean isAudited = false;
 
@@ -222,12 +228,13 @@ public class AuditService extends BaseSevcie {
 
 		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
 
-		/*
-		 * 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录.
-		 * 如果有则说明可以审批，否则表示已审批。
-		 */
+		Audit audit = null;
 
-		Audit audit = auditDao.findByApplyIdAndAuditFlowAndCreateTimeIsNull(applyId, auditFlow);
+		if (applyId != null) {
+			audit = auditDao.findByApplyIdAndAuditFlowAndCreateTimeIsNull(applyId, auditFlow);
+		} else {
+			audit = auditDao.findByServiceTagIdAndAuditFlowAndCreateTimeIsNull(serviceTagId, auditFlow);
+		}
 
 		if (audit == null) {
 			logger.info("--->isAudited...");
@@ -238,38 +245,29 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 校验服务变更Resources是否已审批
+	 * 校验服务申请Apply是否已审批
 	 * 
-	 * @param serviceTagId
-	 *            服务标签ID
+	 * @param apply
+	 *            服务申请
 	 * @param userId
 	 *            审批人ID
-	 * @return true :已审批<br>
-	 *         false:未审批
+	 * @return
 	 */
-	public boolean isResourcesAudited(Integer serviceTagId, Integer userId) {
+	public boolean isAudited(Apply apply, Integer userId) {
+		return this.isAudited(apply.getId(), null, userId);
+	}
 
-		boolean isAudited = false;
-
-		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
-
-		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
-
-		logger.info("--->user=" + user.getName() + "，auditFlow.auditOrder=" + auditFlow.getAuditOrder());
-
-		/*
-		 * 由于审批记录都先于审批操作写入，所以直接查询审批记录表，看是否有该申请及当前用户所在审批流程且创建时间为空的记录.
-		 * 如果有则说明可以审批，否则表示已审批。
-		 */
-
-		Audit audit = auditDao.findByServiceTagIdAndAuditFlowAndCreateTimeIsNull(serviceTagId, auditFlow);
-		if (audit == null) {
-			logger.info("--->isAudited...");
-			isAudited = true;
-		}
-
-		return isAudited;
+	/**
+	 * 校验服务变更Resources是否已审批
+	 * 
+	 * @param serviceTag
+	 *            服务标签
+	 * @param userId
+	 *            审批人ID
+	 * @return
+	 */
+	public boolean isAudited(ServiceTag serviceTag, Integer userId) {
+		return this.isAudited(null, serviceTag.getId(), userId);
 	}
 
 	/**
@@ -304,7 +302,7 @@ public class AuditService extends BaseSevcie {
 		audit.setCreateTime(new Date());
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
-		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
+		if (audit.getResult().equals(AuditConstant.Result.不同意且退回.toString())) {
 
 			logger.info("--->申请Apply审批退回...");
 
@@ -397,17 +395,6 @@ public class AuditService extends BaseSevcie {
 		return true;
 	}
 
-	@Transactional(readOnly = false)
-	public void initAuditStatus(Integer serviceTagId) {
-
-		List<Audit> audits = auditDao.findByServiceTagId(serviceTagId);
-		for (Audit audit : audits) {
-			audit.setStatus(AuditConstant.AuditStatus.已过期.toInteger());
-			this.saveOrUpdateAudit(audit);
-		}
-
-	}
-
 	/**
 	 * 资源变更Resources的审批.
 	 * 
@@ -444,7 +431,7 @@ public class AuditService extends BaseSevcie {
 		audit.setCreateTime(new Date());
 		audit.setStatus(AuditConstant.AuditStatus.有效.toInteger());
 
-		if (audit.getResult().equals(AuditConstant.AuditResult.不同意且退回.toString())) {
+		if (audit.getResult().equals(AuditConstant.Result.不同意且退回.toString())) {
 
 			logger.info("--->资源变更Resource审批退回...");
 
@@ -566,6 +553,20 @@ public class AuditService extends BaseSevcie {
 
 		return true;
 
+	}
+
+	/**
+	 * 初始化所有老审批记录.将指定服务标签下的审批记录全部设置为已过期状态.
+	 * 
+	 * @param serviceTagId
+	 */
+	@Transactional(readOnly = false)
+	public void initAuditStatus(Integer serviceTagId) {
+		List<Audit> audits = auditDao.findByServiceTagId(serviceTagId);
+		for (Audit audit : audits) {
+			audit.setStatus(AuditConstant.AuditStatus.已过期.toInteger());
+			this.saveOrUpdateAudit(audit);
+		}
 	}
 
 	/**

@@ -13,7 +13,31 @@
 			
 			$("#inputForm").validate();
 			
-			/*
+			$("#submitBtn").click(function() {
+				
+				if(!$("#inputForm").valid()){
+					return false;
+				}
+				
+				var $length = $("div.resources").length;
+				var domainType = $("#domainType").val();
+				if (domainType == 1 && $length < 2) {
+					//GSLB
+					alert("类型为GSLB时至少需要两个目标IP.");
+					return false;
+				} else if (domainType == 2 && $length != 1) {
+					//A
+					alert("类型为A时只能选一个目标IP.");
+					return false;
+				} 
+				
+				$("#inputForm").submit();
+				$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
+			});
+			
+		});
+		
+		/*
 			选择域名类型时,根据不同的类型切换不同的目标IP/CNAME域名
 			GSLB,A : 选择EIP
 			CNAME : 输入文本框 cnameDomainDiv targetEIPDiv
@@ -35,7 +59,6 @@
 				$("#resourcesDIV dl").empty();
 			}
 			$("#cnameDomain").val('');
-				
 		});
 		
 		/*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
@@ -72,10 +95,8 @@
 			
 			//插入HTML文本
 			$("#resourcesDIV dl").append(html);
-			
 		}); 
-			
-	});
+	
 	</script>
 	
 </head>
@@ -210,7 +231,7 @@
 				 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input id="submitBtn" class="btn btn-primary" type="button" value="提交">
 			</div>
 			
 		</fieldset>

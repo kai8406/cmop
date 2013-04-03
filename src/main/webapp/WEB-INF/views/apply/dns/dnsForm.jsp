@@ -18,8 +18,6 @@
 				if (e.which == 13) {return false;}
 			});
 			
-			
-			
 			$("#submitBtn").click(function() {
 				
 				if(!$("#inputForm").valid()){

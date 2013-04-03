@@ -13,6 +13,27 @@
 			
 			$("#inputForm").validate();
 			
+			$("#submitBtn").click(function() {
+				if(!$("#inputForm").valid()){
+					return false;
+				}
+				
+				var $length = $("div.resources").length;
+				var domainType = $("#domainType").val();
+				if (domainType == 1 && $length < 2) {
+					//GSLB
+					alert("类型为GSLB时至少需要两个目标IP.");
+					return false;
+				} else if (domainType == 2 && $length != 1) {
+					//A
+					alert("类型为A时只能选一个目标IP.");
+					return false;
+				} 
+				
+				$("#inputForm").submit();
+				$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
+			});
+			
 		});
 		
 		/*
@@ -34,6 +55,7 @@
 			}
 			$("#resourcesDIV dl").empty();
 			$("#cnameDomain").val('');
+			
 				
 		});
 		
@@ -166,7 +188,7 @@
 			
 			<div class="form-actions">
 				<a href="${ctx}/apply/update/${dns.apply.id}/" class="btn">返回</a>
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input id="submitBtn" class="btn btn-primary" type="button" value="提交">
 			</div>
 			
 		</fieldset>

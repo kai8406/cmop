@@ -56,7 +56,6 @@
 				<dt>创建日期</dt>
 				<dd><fmt:formatDate value="${serviceTag.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />&nbsp;</dd>
 				
-				
 				<c:if test="${not empty audits }">
 					<div class="page-header"><em>审批记录</em></div>
 					<c:forEach var="item" items="${audits }">

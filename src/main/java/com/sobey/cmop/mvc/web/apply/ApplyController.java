@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.framework.utils.Servlets;
 
@@ -119,6 +120,9 @@ public class ApplyController extends BaseController {
 	public String detail(@PathVariable("id") Integer id, Model model) {
 
 		model.addAttribute("apply", comm.applyService.getApply(id));
+
+		// 根据审批状态获得服务申请的审批记录(只取最新的,当前的审批记录.即audit的状态为1)
+		model.addAttribute("audits", comm.auditService.getAuditListByApplyIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
 
 		return "apply/applyDetail";
 	}

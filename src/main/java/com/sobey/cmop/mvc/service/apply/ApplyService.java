@@ -224,7 +224,10 @@ public class ApplyService extends BaseSevcie {
 
 				logger.info("--->服务申请邮件发送成功...");
 
-				/* Step.5 插入一条下级审批人所用到的audit. */
+				/* Step.5 初始化所有老审批记录. */
+				comm.auditService.initAuditStatus(apply);
+
+				/* Step.6 插入一条下级审批人所用到的audit. */
 
 				comm.auditService.saveSubAudit(user.getId(), apply);
 

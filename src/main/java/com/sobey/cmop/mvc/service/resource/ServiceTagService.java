@@ -307,7 +307,7 @@ public class ServiceTagService extends BaseSevcie {
 				logger.info("--->资源变更邮件发送成功...");
 
 				/* Step.4 初始化所有老审批记录. */
-				comm.auditService.initAuditStatus(serviceTag.getId());
+				comm.auditService.initAuditStatus(serviceTag);
 
 				/* Step.5 插入一条下级审批人所用到的audit. */
 				comm.auditService.saveSubAudit(user.getId(), serviceTag);

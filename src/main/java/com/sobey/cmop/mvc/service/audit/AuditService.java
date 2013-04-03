@@ -134,6 +134,17 @@ public class AuditService extends BaseSevcie {
 		return auditDao.findByServiceTagIdAndStatus(serviceTagId, status);
 	}
 
+	/**
+	 * 根据审批状态获得指定服务申请的审批记录.
+	 * 
+	 * @param serviceTagId
+	 * @param status
+	 * @return
+	 */
+	public List<Audit> getAuditListByApplyIdAndStatus(Integer applyId, Integer status) {
+		return auditDao.findByapplyIdAndStatus(applyId, status);
+	}
+
 	// ============ 审批流程 AuditFlow============ //
 
 	/**
@@ -561,8 +572,22 @@ public class AuditService extends BaseSevcie {
 	 * @param serviceTagId
 	 */
 	@Transactional(readOnly = false)
-	public void initAuditStatus(Integer serviceTagId) {
-		List<Audit> audits = auditDao.findByServiceTagId(serviceTagId);
+	public void initAuditStatus(ServiceTag serviceTag) {
+		List<Audit> audits = auditDao.findByServiceTagId(serviceTag.getId());
+		for (Audit audit : audits) {
+			audit.setStatus(AuditConstant.AuditStatus.已过期.toInteger());
+			this.saveOrUpdateAudit(audit);
+		}
+	}
+
+	/**
+	 * 初始化所有老审批记录.将指定服务申请下的审批记录全部设置为已过期状态.
+	 * 
+	 * @param serviceTagId
+	 */
+	@Transactional(readOnly = false)
+	public void initAuditStatus(Apply apply) {
+		List<Audit> audits = auditDao.findByApplyId(apply.getId());
 		for (Audit audit : audits) {
 			audit.setStatus(AuditConstant.AuditStatus.已过期.toInteger());
 			this.saveOrUpdateAudit(audit);

@@ -60,6 +60,20 @@
 				
 				<dt>用途描述</dt>
 				<dd>${apply.description}&nbsp;</dd>
+				
+				
+				<c:if test="${not empty audits }">
+					<hr>
+					<dt>审批记录</dt>
+					<c:forEach var="item" items="${audits }">
+						<dd><em>审批人</em>&nbsp;&nbsp;${item.auditFlow.user.name}</dd>
+						<dd><em>审批结果</em>&nbsp;&nbsp;
+							<c:forEach var="map" items="${auditResultMap}"><c:if test="${map.key == item.result}">${map.value}</c:if></c:forEach>
+						</dd>
+						<dd><em>审批意见</em>&nbsp;&nbsp;${item.opinion}</dd>
+						<br>
+					</c:forEach>
+				</c:if>
 		
 				<!-- 实例Compute -->
 				<c:if test="${not empty apply.computeItems}">

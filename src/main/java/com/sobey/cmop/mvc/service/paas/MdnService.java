@@ -24,7 +24,6 @@ import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
-import com.sobey.framework.utils.StringCommonUtils;
 
 /**
  * MDN相关的管理类.
@@ -212,13 +211,16 @@ public class MdnService extends BaseSevcie {
 
 		if (vodDomains != null) {
 			for (int i = 0; i < vodDomains.length; i++) {
+
 				MdnVodItem mdnVodItem = new MdnVodItem();
+
 				mdnVodItem.setMdnItem(mdnItem);
 				mdnVodItem.setSourceOutBandwidth(sourceOutBandwidths[i]);
 				mdnVodItem.setSourceStreamerUrl(sourceStreamerUrls[i]);
 				mdnVodItem.setVodBandwidth(vodBandwidths[i]);
 				mdnVodItem.setVodDomain(vodDomains[i]);
-				mdnVodItem.setVodProtocol(StringCommonUtils.replaceAndSubstringText((vodProtocols[i]), "-", ","));
+				mdnVodItem.setVodProtocol(StringUtils.replace(vodProtocols[i], "-", ","));
+
 				this.saveOrUpdate(mdnVodItem);
 			}
 		}
@@ -337,7 +339,7 @@ public class MdnService extends BaseSevcie {
 				mdnLiveItem.setMdnItem(mdnItem);
 				mdnLiveItem.setLiveDomain(liveDomains[i]);
 				mdnLiveItem.setLiveBandwidth(liveBandwidths[i]);
-				mdnLiveItem.setLiveProtocol(StringCommonUtils.replaceAndSubstringText((liveProtocols[i]), "-", ","));
+				mdnLiveItem.setLiveProtocol(StringUtils.replace(liveProtocols[i], "-", ","));
 				mdnLiveItem.setStreamOutMode(streamOutMode);
 				mdnLiveItem.setName(channelNames[i]);
 				mdnLiveItem.setGuid(channelGUIDs[i]);

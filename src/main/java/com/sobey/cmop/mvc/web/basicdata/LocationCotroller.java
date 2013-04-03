@@ -64,8 +64,8 @@ public class LocationCotroller extends BaseController {
 
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		comm.locationService.deleteLocation(id);
-		redirectAttributes.addFlashAttribute("message", "删除IDC成功");
+		boolean flag = comm.locationService.deleteLocation(id);
+		redirectAttributes.addFlashAttribute("message", flag ? "删除IDC成功" : "IDC下有关联IP,无法删除.");
 		return REDIRECT_SUCCESS_URL;
 	}
 

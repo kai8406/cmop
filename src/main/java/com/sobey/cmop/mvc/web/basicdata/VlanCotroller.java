@@ -69,8 +69,9 @@ public class VlanCotroller extends BaseController {
 
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		comm.vlanService.deleteVlan(id);
-		redirectAttributes.addFlashAttribute("message", "删除Vlan成功");
+
+		boolean flag = comm.vlanService.deleteVlan(id);
+		redirectAttributes.addFlashAttribute("message", flag ? "删除Vlan成功" : "Vlan下有关联IP,无法删除.");
 		return REDIRECT_SUCCESS_URL;
 	}
 

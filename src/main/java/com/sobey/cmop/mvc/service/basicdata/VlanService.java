@@ -29,14 +29,25 @@ public class VlanService extends BaseSevcie {
 	private VlanDao vlanDao;
 
 	/**
-	 * 删除Vlan,同时也删除oneCMDB中的vlan
+	 * 删除Vlan,同时也删除oneCMDB中的vlan. 如果该Vlan下有ip,则该Vlan不能删除.返回false.
 	 * 
 	 * @param id
 	 */
 	@Transactional(readOnly = false)
-	public void deleteVlan(Integer id) {
-		comm.oneCmdbUtilService.deleteVlanToOneCMDB(this.getVlan(id));
+	public boolean deleteVlan(Integer id) {
+
+		Vlan vlan = this.getVlan(id);
+
+		if (!vlan.getIpPools().isEmpty()) {
+			return false;
+		}
+
+		comm.oneCmdbUtilService.deleteVlanToOneCMDB(vlan);
+
 		vlanDao.delete(id);
+
+		return true;
+
 	}
 
 	public Vlan findVlanByName(String name) {

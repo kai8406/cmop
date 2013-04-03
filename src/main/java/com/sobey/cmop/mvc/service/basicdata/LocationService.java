@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.dao.LocationDao;
 import com.sobey.cmop.mvc.entity.Location;
+import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
 
@@ -29,14 +30,30 @@ public class LocationService extends BaseSevcie {
 	private LocationDao locationDao;
 
 	/**
-	 * 删除Location,同时删除oneCMDB中的数据.
+	 * 删除Location,同时删除oneCMDB中的数据.如果关联的Vlan有关联ip,则返回false.
 	 * 
 	 * @param id
 	 */
 	@Transactional(readOnly = false)
-	public void deleteLocation(Integer id) {
-		comm.oneCmdbUtilService.deleteLocationToOneCMDB(this.getLocation(id));
+	public boolean deleteLocation(Integer id) {
+
+		Location location = this.getLocation(id);
+
+		for (Vlan vlan : location.getVlans()) {
+			if (!vlan.getIpPools().isEmpty()) {
+				return false;
+			}
+		}
+
+		for (Vlan vlan : location.getVlans()) {
+			comm.vlanService.deleteVlan(vlan.getId());
+		}
+
+		comm.oneCmdbUtilService.deleteLocationToOneCMDB(location);
+
 		locationDao.delete(id);
+
+		return true;
 	}
 
 	public Location getLocation(Integer id) {

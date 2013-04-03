@@ -154,10 +154,13 @@ public class ServiceTagController extends BaseController {
 	}
 
 	/**
-	 * 服务标签的回收<br>
-	 * 有两个步骤:<br>
-	 * 1.将服务标签下所有的资源回收.<br>
+	 * 服务标签的回收
+	 * 
+	 * <pre>
+	 * 有两个步骤:
+	 * 1.将服务标签下所有的资源回收.
 	 * 2.将服务标签本身回收
+	 * </pre>
 	 * 
 	 * @param id
 	 * @param redirectAttributes

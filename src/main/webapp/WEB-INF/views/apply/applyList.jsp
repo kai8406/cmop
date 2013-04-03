@@ -29,16 +29,18 @@
 	
 	<div class="row">
 		<div class="span12 quick-actions">
-			<a href="${ctx}/apply/compute/save/1/" class="btn span1">PCS &raquo;</a>
-			<a href="${ctx}/apply/compute/save/2/" class="btn span1">ECS &raquo;</a>
-			<a href="${ctx}/apply/es3/save/" class="btn span1">ES3 &raquo;</a>
-			<a href="${ctx}/apply/elb/save/" class="btn span1">ELB &raquo;</a>
-			<a href="${ctx}/apply/eip/save/" class="btn span1">EIP &raquo;</a>
-			<a href="${ctx}/apply/dns/save/" class="btn span1">DNS &raquo;</a>
-			<a href="${ctx}/apply/esg/save/" class="btn span1">ESG &raquo;</a>
-			<a href="${ctx}/apply/monitor/save/" class="btn span1">Monitor &raquo;</a>
-			<a href="${ctx}/apply/mdn/save/" class="btn span1">MDN &raquo;</a>
-			<a href="${ctx}/apply/cp/save/" class="btn span1">CP &raquo;</a>
+			<a href="${ctx}/apply/compute/save/1/" class="btn tip-bottom" title="PCS 物理机">PCS &raquo;</a>
+			<a href="${ctx}/apply/compute/save/2/" class="btn tip-bottom" title="ECS 虚拟机">ECS &raquo;</a>
+			<a href="${ctx}/apply/es3/save/" class="btn tip-bottom" title="ES3 存储卷">ES3 &raquo;</a>
+			<a href="${ctx}/apply/elb/save/" class="btn tip-bottom" title="ELB 负载均衡器">ELB &raquo;</a>
+			<a href="${ctx}/apply/eip/save/" class="btn tip-bottom" title="EIP 公网IP及端口映射">EIP &raquo;</a>
+			<a href="${ctx}/apply/dns/save/" class="btn tip-bottom" title="DNS 域名映射">DNS &raquo;</a>
+			<a href="${ctx}/apply/esg/save/" class="btn tip-bottom" title="ESG 安全组">ESG &raquo;</a>
+			<a href="${ctx}/apply/monitor/save/" class="btn tip-bottom" title="Monitor 实例监控 & ELB监控">Monitor &raquo;</a>
+		</div>
+		<div class="span12 quick-actions">
+			<a href="${ctx}/apply/mdn/save/" class="btn tip-bottom" title="MDN">MDN &raquo;</a>
+			<a href="${ctx}/apply/cp/save/" class="btn tip-bottom" title="CP 云生产">CP &raquo;</a>
 		</div>
 
 	</div>
@@ -165,12 +167,12 @@
 								<a href="update/${item.id}">修改</a>
 							
 								<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>
-								<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">
+								<div id="deleteModal${item.id}" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+										<a href="delete/${item.id}/" class="btn btn-primary">确定</a>
 									</div>
 								</div>
 							

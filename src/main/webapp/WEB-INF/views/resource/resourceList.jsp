@@ -9,6 +9,13 @@
 	<script>
 		$(document).ready(function() {
 			$("ul#navbar li#resource").addClass("active");
+			
+			 $('#serviceTagBtn').popover({	
+			    	trigger: "hover",
+			    	placement: "bottom",
+			    	title: "Note",
+			    	content: "服务标签的管理:创建,修改,回收."
+			    });
 		});
 	</script>
 	
@@ -49,7 +56,7 @@
 					<ul class="site-stats">
 						<a href="${ctx}/resources/?search_EQ_serviceType=8"><li><i class="icon-globe"></i> <strong>${MDNCOUNT}</strong> <small>MDN</small></li></a>
 						<a href="${ctx}/resources/?search_EQ_serviceType=11"><li><i class="icon-inbox"></i> <strong>${CPCOUNT}</strong> <small>CP 云生产</small></li></a>
-						<a href="${ctx}/serviceTag/"><li><strong>服务标签</strong>&nbsp;&raquo;</a>
+						<a id="serviceTagBtn" href="${ctx}/serviceTag/"><li><strong>服务标签</strong>&nbsp;&raquo;</li></a>
 					</ul>
 				</div>
 				

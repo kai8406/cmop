@@ -92,8 +92,6 @@ public class CPService extends BaseSevcie {
 			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
 			String pictrueOutputGroup, String pictrueOutputMedia, String[] fileNames, String[] fileSizes) {
 
-		// TODO 附件暂时未做.
-
 		// Step1. 创建一个服务申请Apply
 
 		comm.applyService.saveApplyByServiceType(apply, ApplyConstant.ServiceType.云生产.toInteger());
@@ -131,12 +129,15 @@ public class CPService extends BaseSevcie {
 
 		this.saveOrUpdate(cpItem);
 
-		for (int i = 0; i < fileNames.length; i++) {
-			CpProgramItem cpProgramItem = new CpProgramItem();
-			cpProgramItem.setCpItem(cpItem);
-			cpProgramItem.setName(fileNames[i]);
-			cpProgramItem.setSize(Integer.valueOf(fileSizes[i]));
-			this.saveOrUpdate(cpProgramItem);
+		// TODO 附件.暂时未完成,还要考虑到邮件发送.
+		if (fileNames != null) {
+			for (int i = 0; i < fileNames.length; i++) {
+				CpProgramItem cpProgramItem = new CpProgramItem();
+				cpProgramItem.setCpItem(cpItem);
+				cpProgramItem.setName(fileNames[i]);
+				cpProgramItem.setSize(Integer.valueOf(fileSizes[i]));
+				this.saveOrUpdate(cpProgramItem);
+			}
 		}
 
 	}

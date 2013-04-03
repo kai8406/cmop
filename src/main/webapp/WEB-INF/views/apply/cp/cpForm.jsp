@@ -97,7 +97,7 @@
 				<div class="control-group">
 					<label class="control-label" for="serviceTag">服务标签</label>
 					<div class="controls">
-						<input type="text"  id="serviceTag" name="serviceTag"  value="TEST" class="required" maxlength="45" placeholder="...服务标签">
+						<input type="text"  id="serviceTag" name="serviceTag"  class="required" maxlength="45" placeholder="...服务标签">
 					</div>
 				</div>
 			
@@ -134,7 +134,7 @@
 					<label class="control-label" for="description">用途描述</label>
 					<div class="controls">
 						<textarea rows="3" id="description" name="description" placeholder="...用途描述"
-							maxlength="500" class="required">TEST</textarea>
+							maxlength="500" class="required"></textarea>
 					</div>
 				</div>
 				
@@ -151,7 +151,7 @@
 			    <div class="control-group">
 					<label class="control-label" for="recordStreamUrl">收录流URL</label>
 					<div class="controls">
-						<input type="text" id="recordStreamUrl" name="recordStreamUrl" value="TEST" class="required" maxlength="100" placeholder="...收录流URL">
+						<input type="text" id="recordStreamUrl" name="recordStreamUrl" class="required" maxlength="100" placeholder="...收录流URL">
 					</div>
 				</div>
 				

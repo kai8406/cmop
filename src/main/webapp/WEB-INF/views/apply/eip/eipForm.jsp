@@ -225,7 +225,7 @@
 					<div id="computeSelectDiv" class="show">
 						<select id="computeSelect" class="required">
 							<c:forEach var="item" items="${allComputes }">
-								<option value="${item.id }">${item.identifier}(${item.innerIp })</option>
+								<option value="${item.id }">${item.identifier}(${item.remark } - ${item.innerIp })</option>
 							</c:forEach>
 						</select>					
 					</div>

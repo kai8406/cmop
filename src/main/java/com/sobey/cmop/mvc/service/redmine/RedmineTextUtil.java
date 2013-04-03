@@ -143,7 +143,7 @@ public class RedmineTextUtil {
 
 					if (computeItem.getNetworkElbItem() != null && elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
 
-						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getInnerIp() == null ? "" : computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
+						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
 
 					}
 				}
@@ -190,7 +190,7 @@ public class RedmineTextUtil {
 
 					// 关联实例
 					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(")
-							.append(eipItem.getComputeItem().getInnerIp() == null ? "" : eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
+							.append(eipItem.getComputeItem().getRemark() + " - " + eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
 
 				} else {
 

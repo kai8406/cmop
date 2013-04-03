@@ -75,9 +75,9 @@
 			
 			<c:if test="${not empty eip.computeItem }">
 		 	<div class="control-group">
-				<label class="control-label" for="networkElbItem">关联ELB</label>
+				<label class="control-label" for="computeItem">关联实例</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${eip.computeItem.identifier }(${eip.computeItem.innerIp})</p>
+					<p class="help-inline plain-text">${eip.computeItem.identifier }(${eip.computeItem.remark} - ${eip.computeItem.innerIp})</p>
 				</div>
 			</div>
 			</c:if>

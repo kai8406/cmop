@@ -44,7 +44,7 @@
 				var $this = $(this);
 				var $td = $this.closest("tr").find("td");
 				computeIds += $this.val() + "-";
-				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(4).text() + ")";
+				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(3).text() + "&nbsp;-&nbsp;" + $td.eq(4).text() + ")";
 			});
 			
 			//判断是否选中实例,拼装HTML文本

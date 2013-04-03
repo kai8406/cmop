@@ -145,7 +145,7 @@
 							<#list allComputes as compute>
 							
 							<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == elb.id ) >
-								${compute.identifier}<#if compute.innerIp?exists >(${compute.innerIp})</#if> &nbsp;&nbsp;
+								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
 							</#if>
 							
 							</#list>
@@ -178,7 +178,7 @@
 						</li>
 						<li>
 							<#if eip.computeItem?exists>
-								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}<#if eip.computeItem.innerIp?exists>(${eip.computeItem.innerIp})</#if>
+								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}(${eip.computeItem.remark} - ${eip.computeItem.innerIp})
 							</#if>
 							<#if eip.networkElbItem?exists>
 								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}<#if eip.networkElbItem.virtualIp?exists>(${eip.networkElbItem.virtualIp})</#if>

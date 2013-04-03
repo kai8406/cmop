@@ -241,7 +241,7 @@
 								<td>${item.ipAddress }</td>
 								<td>
 									<c:choose>
-										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.innerIp })</c:when>
+										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
 										<c:otherwise>${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
 									</c:choose>
 								</td>

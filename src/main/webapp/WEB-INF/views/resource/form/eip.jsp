@@ -141,7 +141,7 @@
 					>
 						<select id="computeSelect" class="required">
 							<c:forEach var="item" items="${computeResources }">
-								<option value="${item.id }" <c:if test="${not empty eip.computeItem && item.id == eip.computeItem.id }">selected="selected"</c:if>>${item.identifier}(${item.innerIp })</option>
+								<option value="${item.id }" <c:if test="${not empty eip.computeItem && item.id == eip.computeItem.id }">selected="selected"</c:if>>${item.identifier}(${item.remark} - ${item.innerIp})</option>
 							</c:forEach>
 						</select>					
 					</div>

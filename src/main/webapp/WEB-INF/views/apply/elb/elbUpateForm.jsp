@@ -40,7 +40,7 @@
 				var $this = $(this);
 				if ($.inArray($this.val(), selectedArray) == -1) {
 					var $td = $this.closest("tr").find("td");
-					var computeInfo = $td.eq(1).text() + "(" + $td.eq(4).text() + ")";
+					var computeInfo = $td.eq(1).text() + "(" + $td.eq(3).text() + "&nbsp;-&nbsp;" + $td.eq(4).text() + ")";
 					html += '<div class="resources alert alert-block alert-info fade in">';
 					html += '<button type="button" class="close" data-dismiss="alert">×</button>';
 					html += '<input type="hidden" value="' + $this.val() + '" id="computeIds" name="computeIds">';
@@ -131,7 +131,7 @@
 						<button data-dismiss="alert" class="close" type="button">×</button>
 						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
 						<dd>
-							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier}(${compute.innerIp})</strong>
+							<em>挂载实例</em>&nbsp;&nbsp;<strong>${compute.identifier}(${compute.remark} - ${compute.innerIp})</strong>
 						</dd>
 					</div>
 				</c:forEach>

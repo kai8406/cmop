@@ -70,7 +70,7 @@
 				var $this = $(this);
 				var $td = $this.closest("tr").find("td");
 				computeIds += $this.val() + "-";
-				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(4).text() + ")";
+				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(3).text() + "&nbsp;-&nbsp;" + $td.eq(4).text() + ")";
 				//Step.3 对选择的实例ID和临时数组selectedArray进行比较.如果存在,设置isUnique为false.
 				if ($.inArray($this.val(), selectedArray) > -1) {
 					isUnique = false;

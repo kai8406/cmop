@@ -69,9 +69,7 @@
 				<div class="controls">
 					<p class="help-inline plain-text">
 						<c:forEach var="compute" items="${allComputes}">
-							<c:if test="${compute.networkElbItem.id == elb.id }">${compute.identifier}
-								<c:if test="${not empty compute.innerIp }">(${compute.innerIp})</c:if>&nbsp;&nbsp;
-							</c:if>
+							<c:if test="${compute.networkElbItem.id == elb.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;<br></c:if>
 						</c:forEach>
 					</p>
 				</div>

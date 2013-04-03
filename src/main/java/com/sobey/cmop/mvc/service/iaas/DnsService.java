@@ -121,6 +121,8 @@ public class DnsService extends BaseSevcie {
 	public void updateDNSToApply(NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
 
 		networkDnsItem.setDomainType(domainType);
+		networkDnsItem.setDomainName(domainName);
+
 		List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
 
 		if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {

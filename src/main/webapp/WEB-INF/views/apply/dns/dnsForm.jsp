@@ -18,18 +18,27 @@
 				if (e.which == 13) {return false;}
 			});
 			
-			$("input[type=submit]").click(function() {
-				/*
-				提交时,验证DNS绑定的EIP数量.
-					类型为GSLB时至少需要两个目标IP
-					类型为A时只能选一个目标IP
-				页面默认是有一个p.eipInfoText,用于标注插入点,所以统计都是+1.
-				*/
+			
+			
+			$("#submitBtn").click(function() {
+				
+				if(!$("#inputForm").valid()){
+					return false;
+				}
+				
 				var flag = true;
+				
 				$("tr.clone").each(function() {
 					var $this = $(this);
 					var domainType = $this.find("#domainType").val();
 					var count = $this.find(".eipInfoText").length;
+					
+					/*
+					提交时,验证DNS绑定的EIP数量.
+						类型为GSLB时至少需要两个目标IP
+						类型为A时只能选一个目标IP
+					页面默认是有一个p.eipInfoText,用于标注插入点,所以统计都是+1.
+					*/
 					if (domainType == 1 && count < 3) {
 						//GSLB
 						alert("类型为GSLB时至少需要两个目标IP.");
@@ -38,15 +47,16 @@
 						//A
 						alert("类型为A时只能选一个目标IP.");
 						flag = false;
-					} else {
-						//CNAME
-					}
+					} 
+					
 				});
 				
-				return flag;
-				
+				//只有flag为true时才提交.
+				if(flag){
+					$("#inputForm").submit();
+					$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
+				}
 			});
-			
 			
 		});
 		
@@ -152,12 +162,10 @@
 					</tr>
 				</tbody>
 			</table>	
-				
-			<hr>
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input id="submitBtn" class="btn btn-primary" type="button" value="提交">
 			</div>
 			
 		</fieldset>

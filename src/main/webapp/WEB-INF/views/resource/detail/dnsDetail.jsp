@@ -56,7 +56,7 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="domainType">存储类型</label>
+				<label class="control-label" for="domainType">域名类型</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
 						<c:forEach var="map" items="${domainTypeMap}"><c:if test="${map.key == dns.domainType }">${map.value}</c:if></c:forEach>

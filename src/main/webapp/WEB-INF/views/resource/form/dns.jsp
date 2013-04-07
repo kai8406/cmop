@@ -174,7 +174,7 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="domainType">存储类型</label>
+				<label class="control-label" for="domainType">域名类型</label>
 				<div class="controls">
 					<select id="domainType" name="domainType" class="required">
 						<c:forEach var="map" items="${domainTypeMap }">

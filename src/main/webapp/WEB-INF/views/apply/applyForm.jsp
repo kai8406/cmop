@@ -122,7 +122,7 @@
 				<label class="control-label" for="description">用途描述</label>
 				<div class="controls">
 					<textarea rows="3" id="description" name="description" placeholder="...用途描述"
-						maxlength="500" class="required ">${apply.description }</textarea>
+						maxlength="2000" class="required ">${apply.description }</textarea>
 				</div>
 			</div>
 			

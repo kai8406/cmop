@@ -159,7 +159,7 @@ public class Apply implements java.io.Serializable {
 		return priority;
 	}
 
-	@Column(name = "description", nullable = false, length = 500)
+	@Column(name = "description", nullable = false, length = 2000)
 	public String getDescription() {
 		return this.description;
 	}

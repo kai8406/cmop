@@ -98,7 +98,7 @@ function checkValid() {
 	var innerIps="",eipIds="",eipAddresss="";
 	$("#updateDiv #computeDiv").each(function () {
 		computes = computes+$(this).find("#computeId").val()+sep;
-		hostNames = hostNames+$(this).find("#hostName").val()+sep;
+		hostNames = hostNames+$(this).find("#hostName").val()+" "+sep;
 		serverAlias = serverAlias+$(this).find("#server").val()+sep;
     });
     var flag = true;

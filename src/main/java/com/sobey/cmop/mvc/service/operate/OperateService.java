@@ -617,11 +617,12 @@ public class OperateService extends BaseSevcie {
 					ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
 					comm.ipPoolService.saveIpPool(ipPool);
 
-					computeItem.setHostName(hostName[i]);
+					computeItem.setHostName(hostName[i].trim());
 					if (computeItem.getComputeType() == 1) {
 						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
 						String alias = computeItem.getServerAlias();
-						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+						HostServer host = comm.hostServerService.findByAlias(alias);
+						if (StringUtils.isEmpty(alias) || (host!=null && host.getIpPools().size() <= 0)) {
 							computeItem.setServerAlias(server[i]);
 						}
 					} else {
@@ -650,11 +651,12 @@ public class OperateService extends BaseSevcie {
 					ipPool.setHostServer(comm.hostServerService.findByAlias(server[last]));
 					comm.ipPoolService.saveIpPool(ipPool);
 
-					computeItem.setHostName(hostName[last]);
+					computeItem.setHostName(hostName[last].trim());
 					if (computeItem.getComputeType() == 1) {
 						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
 						String alias = computeItem.getServerAlias();
-						if (StringUtils.isEmpty(alias) || comm.hostServerService.findByAlias(alias).getIpPools().size() <= 0) {
+						HostServer host = comm.hostServerService.findByAlias(alias);
+						if (StringUtils.isEmpty(alias) || (host!=null && host.getIpPools().size() <= 0)) {
 							computeItem.setServerAlias(server[last]);
 						}
 					} else {

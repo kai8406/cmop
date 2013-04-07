@@ -741,78 +741,36 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		}
 
-		// 变更前后域名类型相同
-		if (networkDnsItem.getDomainType().equals(domainType)) {
+		if (networkDnsItem.getDomainType().equals(domainType) && NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
 
-			if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+			// 变更前后域名类型都为CNAME,只需比较CNAME域名即可.
 
-				// CNAME
+			if (!networkDnsItem.getCnameDomain().equals(cnameDomain)) {
 
-				if (!networkDnsItem.getCnameDomain().equals(cnameDomain)) {
+				String fieldName = FieldNameConstant.Dns.CNAME域名.toString();
 
-					String fieldName = FieldNameConstant.Dns.CNAME域名.toString();
+				String oldValue = networkDnsItem.getCnameDomain();
+				String oldString = networkDnsItem.getCnameDomain();
 
-					String oldValue = networkDnsItem.getCnameDomain();
-					String oldString = networkDnsItem.getCnameDomain();
+				String newValue = cnameDomain;
+				String newString = cnameDomain;
 
-					String newValue = cnameDomain;
-					String newString = cnameDomain;
-
-					isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-				}
-
-			} else {
-
-				// GSLB,A
-
-				String oldId = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
-				String newId = eipIds != null ? StringUtils.join(eipIds, ",") : "";
-				// 先将新旧值关联的eipIds拼装成","的字符串,再比较两个字符串是否相等.
-				if (!oldId.equals(newId)) {
-
-					String fieldName = FieldNameConstant.Dns.目标IP.toString();
-
-					String oldValue = oldId;
-					String oldString = networkDnsItem.getMountElbs();
-
-					// 根据computeIds查询compute的List,再得出字符串.
-					List<NetworkEipItem> list = new ArrayList<NetworkEipItem>();
-					for (int i = 0; i < eipIds.length; i++) {
-						NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipIds[i]));
-						list.add(networkEipItem);
-					}
-					String newValue = newId;
-					String newString = NetworkDnsItem.extractToString(list);
-
-					isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-				}
-
+				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
 			}
 
-		} else {
-			// 变更前后域名类型不同
+		} else if (!NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && !NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
 
-			// 需要区分不同域名类型的切换,如A->CNAME.需要插入两条change.
+			// 变更前后域名类型都为 GSLB或A,比较目标IP.
 
-			if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType())) {
+			// 先将新旧值关联的eipIds拼装成","的字符串,再比较两个字符串是否相等.
+			String oldId = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
+			String newId = eipIds != null ? StringUtils.join(eipIds, ",") : "";
 
-				// 变更前是CNAME类型
+			if (!oldId.equals(newId)) {
 
-				// Old
-				String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
-
-				String oldValueCNAME = networkDnsItem.getCnameDomain();
-				String oldStringCNAME = networkDnsItem.getCnameDomain();
-
-				String newValueCNAME = "";
-				String newStringCNAME = "";
-
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
-
-				// New
 				String fieldName = FieldNameConstant.Dns.目标IP.toString();
 
-				String oldValue = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
+				String oldValue = oldId;
 				String oldString = networkDnsItem.getMountElbs();
 
 				// 根据computeIds查询compute的List,再得出字符串.
@@ -821,38 +779,69 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipIds[i]));
 					list.add(networkEipItem);
 				}
-				String newValue = eipIds != null ? StringUtils.join(eipIds, ",") : "";
+				String newValue = newId;
 				String newString = NetworkDnsItem.extractToString(list);
 
 				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
-			} else {
-
-				// 变更前是A & GBSL类型
-
-				// Old
-				String fieldName = FieldNameConstant.Dns.目标IP.toString();
-
-				String oldValue = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
-				String oldString = networkDnsItem.getMountElbs();
-
-				String newValue = "";
-				String newString = "";
-
-				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
-				// New
-				String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
-
-				String oldValueCNAME = "";
-				String oldStringCNAME = "";
-
-				String newValueCNAME = cnameDomain;
-				String newStringCNAME = cnameDomain;
-
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
-
 			}
+
+		} else if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && !NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+
+			// 变更前为CNAME,变更后为GSLB或A.将CNAME变更后的值设为"",目标IP变更前为"".
+
+			// Old
+			String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
+
+			String oldValueCNAME = networkDnsItem.getCnameDomain();
+			String oldStringCNAME = networkDnsItem.getCnameDomain();
+
+			String newValueCNAME = "";
+			String newStringCNAME = "";
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
+
+			// New
+			String fieldName = FieldNameConstant.Dns.目标IP.toString();
+
+			String oldValue = "";
+			String oldString = "";
+
+			// 根据computeIds查询compute的List,再得出字符串.
+			List<NetworkEipItem> list = new ArrayList<NetworkEipItem>();
+			for (int i = 0; i < eipIds.length; i++) {
+				NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipIds[i]));
+				list.add(networkEipItem);
+			}
+			String newValue = eipIds != null ? StringUtils.join(eipIds, ",") : "";
+			String newString = NetworkDnsItem.extractToString(list);
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+		} else if (!NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+
+			// 变更前为GSLB或A,变更后为CNAME.
+
+			// Old
+			String fieldName = FieldNameConstant.Dns.目标IP.toString();
+
+			String oldValue = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
+			String oldString = networkDnsItem.getMountElbs();
+
+			String newValue = "";
+			String newString = "";
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+
+			// New
+			String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
+
+			String oldValueCNAME = "";
+			String oldStringCNAME = "";
+
+			String newValueCNAME = cnameDomain;
+			String newStringCNAME = cnameDomain;
+
+			isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
 
 		}
 

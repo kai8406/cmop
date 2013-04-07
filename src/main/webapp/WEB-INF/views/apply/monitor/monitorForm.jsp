@@ -38,6 +38,12 @@
 				}
 			});
 			
+			$("#addComputeBtn").click(function(){
+				if(!$("#inputForm").valid()){
+					return false;
+				}
+			});
+			
 			
 		});
 		

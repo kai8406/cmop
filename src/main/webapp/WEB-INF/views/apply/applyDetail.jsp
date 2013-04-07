@@ -61,7 +61,7 @@
 				<dt>用途描述</dt>
 				<dd>${apply.description}&nbsp;</dd>
 				
-				
+				<!-- 审批记录 -->
 				<c:if test="${not empty audits }">
 					<hr>
 					<dt>审批记录</dt>
@@ -82,6 +82,8 @@
 					<c:forEach var="item" items="${apply.computeItems}">
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
+						
+						<dd><em>IP地址</em>&nbsp;&nbsp;${item.innerIp}</dd>
 						
 						<dd><em>用途信息</em>&nbsp;&nbsp;${item.remark}</dd>
 						
@@ -130,6 +132,8 @@
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
+						<dd><em>负载均衡虚拟IP</em>&nbsp;&nbsp;${item.virtualIp}</dd>
+						
 						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
 						<dd><em>关联实例</em>&nbsp; 
@@ -158,12 +162,21 @@
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
 						
+						<dd><em>IP地址</em>&nbsp;&nbsp;${item.ipAddress}</dd>
+						
 						<dd><em>ISP运营商</em>&nbsp;&nbsp;<c:forEach var="map" items="${ispTypeMap}"><c:if test="${item.ispType == map.key }">${map.value}</c:if></c:forEach></dd>
 						
 						<dd>
 							<c:choose>
 								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;
+								${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;
+								【
+								<c:forEach var="compute" items="${allComputes}">
+								<c:if test="${compute.networkElbItem.id == item.networkElbItem.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:if>
+								</c:forEach>
+								】
+								</c:otherwise>
 							</c:choose>
 						</dd>
 						
@@ -416,18 +429,8 @@
 			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<!-- 
-				<a class="btn btn-primary" href="#auditModal" data-toggle="modal">提交审批</a>
-				<div id="auditModal" class="modal hide fade" tabindex="-1" data-width="250">
-					<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
-					<div class="modal-body">是否提交审批?</div>
-					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal">关闭</button>
-						<a href="${ctx}/apply/audit/${apply.id}/" class="btn btn-primary">确定</a>
-					</div>
-				</div>
 			</div>
-			 -->
+			
 		</fieldset>
 		
 	</form>

@@ -177,10 +177,12 @@ public class RedmineUtilService extends BaseSevcie {
 			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
 			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
+		List<ComputeItem> computeList = comm.computeService.getComputeListByUserId(user.getId());
+
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
-		RedmineTextUtil.generateElb(content, elbItems, comm.computeService.getComputeListByUserId(user.getId()));
-		RedmineTextUtil.generateEip(content, eipItems);
+		RedmineTextUtil.generateElb(content, elbItems, computeList);
+		RedmineTextUtil.generateEip(content, eipItems, computeList);
 		RedmineTextUtil.generateDNS(content, dnsItems);
 		RedmineTextUtil.generateMonitorMail(content, monitorMails);
 		RedmineTextUtil.generateMonitorPhone(content, monitorPhones);

@@ -91,6 +91,7 @@
 				<#list computes as compute>
 					<ul>
 						<li><em>标识符</em>&nbsp;:${compute.identifier}</li>
+						<li><em>IP地址</em>&nbsp;:${compute.innerIp}</li>
 						<li><em>用途信息</em>&nbsp;:${compute.remark}</li>
 						<li><em>基本信息</em>&nbsp;:
 						
@@ -138,16 +139,15 @@
 				<#list elbs as elb>
 					<ul>
 						<li><em>标识符</em>&nbsp;:${elb.identifier}</li>
+						<li><em>负载均衡虚拟IP</em>&nbsp;:${elb.virtualIp}</li>
 						<li><em>是否保持会话</em>&nbsp;:
 							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
 						</li>
 						<li><em>关联实例</em>&nbsp;: 
 							<#list allComputes as compute>
-							
 							<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == elb.id ) >
 								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
 							</#if>
-							
 							</#list>
 						</li>
 						
@@ -173,6 +173,8 @@
 					<ul>
 						<li><em>标识符</em>&nbsp;:${eip.identifier}</li>
 						
+						<li><em>IP地址</em>&nbsp;:${eip.ipAddress}</li>
+						
 						<li><em>ISP运营商</em>&nbsp;:
 							<#list ispTypeMap?keys as k ><#if eip.ispType?string == k>${ispTypeMap[k]}</#if></#list>
 						</li>
@@ -181,7 +183,14 @@
 								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}(${eip.computeItem.remark} - ${eip.computeItem.innerIp})
 							</#if>
 							<#if eip.networkElbItem?exists>
-								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}<#if eip.networkElbItem.virtualIp?exists>(${eip.networkElbItem.virtualIp})</#if>
+								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}(${eip.networkElbItem.virtualIp})
+								【
+									<#list allComputes as compute>
+									<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == eip.networkElbItem.id ) >
+										${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
+									</#if>
+									</#list>
+								】
 							</#if>
 						</li>
 						

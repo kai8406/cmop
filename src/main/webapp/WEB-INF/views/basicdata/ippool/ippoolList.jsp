@@ -71,11 +71,7 @@
 				<select name="search_EQ_vlan.id" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="item" items="${vlanList }">
-						<option value="${item.id }" 
-							<c:if test="${map.id == param.search_EQ_vlan.id }">
-								selected="selected"
-							</c:if>
-						>${item.name }</option>
+						<option value="${item.id}">${item.name }</option>
 					</c:forEach>
 				</select>
 			</div>

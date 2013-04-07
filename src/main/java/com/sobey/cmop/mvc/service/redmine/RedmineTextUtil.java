@@ -56,6 +56,7 @@ public class RedmineTextUtil {
 			content.append("<pre>").append(NEWLINE);
 			for (ComputeItem compute : computeItems) {
 				content.append("标识符:").append(BLANK).append(compute.getIdentifier()).append(NEWLINE);
+				content.append("IP地址:").append(BLANK).append(compute.getInnerIp()).append(NEWLINE);
 				content.append("用途信息:").append(BLANK).append(compute.getRemark()).append(NEWLINE);
 				content.append("基本信息:").append(BLANK).append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(BLANK).append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit()))
 						.append(BLANK);
@@ -67,11 +68,6 @@ public class RedmineTextUtil {
 				}
 
 				content.append("关联ESG:").append(BLANK).append(compute.getNetworkEsgItem().getIdentifier()).append("(").append(compute.getNetworkEsgItem().getDescription()).append(")").append(NEWLINE);
-
-				if (StringUtils.isNotBlank(compute.getInnerIp())) {
-
-					content.append("内网IP:").append(BLANK).append(compute.getInnerIp()).append(NEWLINE);
-				}
 
 				if (!compute.getApplications().isEmpty()) {
 
@@ -135,6 +131,7 @@ public class RedmineTextUtil {
 
 			for (NetworkElbItem elbItem : elbItems) {
 				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
+				content.append("负载均衡虚拟IP:").append(BLANK).append(elbItem.getVirtualIp()).append(NEWLINE);
 				content.append(FieldNameConstant.Elb.是否保持会话 + ":").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
 
 				content.append(FieldNameConstant.Elb.关联实例 + ":").append(BLANK);
@@ -175,7 +172,7 @@ public class RedmineTextUtil {
 	 * @param content
 	 * @param elbItems
 	 */
-	public static void generateEip(StringBuilder content, List<NetworkEipItem> eipItems) {
+	public static void generateEip(StringBuilder content, List<NetworkEipItem> eipItems, List<ComputeItem> computeItems) {
 
 		if (!eipItems.isEmpty()) {
 
@@ -196,8 +193,18 @@ public class RedmineTextUtil {
 				} else {
 
 					// 关联ELB
-					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier()).append("(")
-							.append(eipItem.getNetworkElbItem().getVirtualIp() == null ? "" : eipItem.getNetworkElbItem().getVirtualIp()).append(")").append(NEWLINE);
+					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier()).append("(").append(eipItem.getNetworkElbItem().getVirtualIp())
+							.append(")").append("【");
+
+					for (ComputeItem computeItem : computeItems) {
+
+						if (computeItem.getNetworkElbItem() != null && eipItem.getNetworkElbItem().getId().equals(computeItem.getNetworkElbItem().getId())) {
+
+							content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
+
+						}
+					}
+					content.append("】").append(NEWLINE);
 
 				}
 

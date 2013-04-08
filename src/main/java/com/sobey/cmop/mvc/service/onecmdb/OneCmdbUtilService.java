@@ -544,6 +544,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		router.addAttributeValue(new ValueBean("City", location.getCity(), false));
 		router.addAttributeValue(new ValueBean("Postal_Code", location.getPostcode(), false));
 		router.addAttributeValue(new ValueBean("Street_Address", location.getAddress(), false));
+		router.addAttributeValue(new ValueBean("TelePhone", location.getTelephone(), false));
 		ciBeanList.add(router);
 		return OneCmdbService.update(ciBeanList);
 	}

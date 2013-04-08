@@ -45,7 +45,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		CiBean ci = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", serviceTag.getName(), false));
-		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", serviceTag.getUser().getName(), false));
 		ci.setDescription(serviceTag.getDescription());
 
 		ciList.add(ci);
@@ -94,7 +94,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 			CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
 
 			// BelongsTo：属于某个申请人，先写文本
-			ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+			ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
 			ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
 			ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
 			ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
@@ -248,6 +248,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 			// Netapp
 			ci = new CiBean("NFSVol", storageItem.getIdentifier(), false);
 			ci.addAttributeValue(new ValueBean("Type", "DATA", false));
+			ci.addAttributeValue(new ValueBean("size", storageItem.getSpace().toString(), false));
 		}
 
 		ci.addAttributeValue(new ValueBean("Name", storageItem.getIdentifier(), false));
@@ -311,7 +312,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		CiBean ci = new CiBean("ELB", networkElbItem.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", networkElbItem.getIdentifier(), false));
-		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", networkElbItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("ConStatus", networkElbItem.getKeepSession() ? "是" : "否", false));
 		// ci.addAttributeValue(new ValueBean("Server",
 		// networkElbItem.getIdentifier(), true));
@@ -390,7 +391,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		CiBean ci = new CiBean("EIP", networkEipItem.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", networkEipItem.getIdentifier(), false));
-		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", networkEipItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + networkEipItem.getIpAddress(), true));
 
 		if (networkEipItem.getComputeItem() != null) {
@@ -477,7 +478,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean ci = new CiBean("DNS", networkDnsItem.getIdentifier(), false);
 		ci.addAttributeValue(new ValueBean("Name", networkDnsItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("Domain", networkDnsItem.getDomainName(), false));
-		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", networkDnsItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("Type", NetworkConstant.DomainType.get(networkDnsItem.getDomainType()), false));
 
 		if (NetworkConstant.DomainType.GSLB.toInteger().equals(networkDnsItem.getDomainType()) || NetworkConstant.DomainType.A.toInteger().equals(networkDnsItem.getDomainType())) {

@@ -89,7 +89,7 @@
 			<tr>
 				<th>IP地址</th>
 				<th>IP池类型</th>
-				<th>状态</th>
+				<th>IP状态</th>
 				<th>Vlan</th>
 				<th>IDC</th>
 				<th>操作</th>

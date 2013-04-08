@@ -115,7 +115,7 @@
 			
 			<c:if test="${not empty ipPool.id}">		
 				<div class="control-group">
-					<label class="control-label" for="status" >状态</label>
+					<label class="control-label" for="status" >IP状态</label>
 					<div class="controls">
 						<select id="status" name="status" class="required">
 							<c:forEach var="map" items="${ipStausMap }">

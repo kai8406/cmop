@@ -70,7 +70,7 @@ public class IpPoolController extends BaseController {
 			redirectAttributes.addFlashAttribute("message", "创建IP成功");
 			return REDIRECT_SUCCESS_URL;
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "创建IP失败,请检查IP是否已存在");
+			redirectAttributes.addFlashAttribute("message", "创建IP失败,请检查IP是否已存在");
 			return "redirect:/basicdata/ippool/save/";
 		}
 	}
@@ -108,7 +108,7 @@ public class IpPoolController extends BaseController {
 		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "删除IP成功");
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "不能删除默认IP");
+			redirectAttributes.addFlashAttribute("message", "不能删除默认IP");
 		}
 
 		return REDIRECT_SUCCESS_URL;

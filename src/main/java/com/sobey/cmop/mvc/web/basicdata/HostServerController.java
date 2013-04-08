@@ -58,13 +58,13 @@ public class HostServerController extends BaseController {
 		hostServer.setCreateTime(new Date());
 		boolean flag = comm.hostServerService.saveHostServer(hostServer);
 		// 更改IP状态为 已使用
-		comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IP_STATUS_2, null);
+		comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IpStatus.已使用.toInteger(), null);
 
 		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "创建服务器成功！");
 			return REDIRECT_SUCCESS_URL;
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "创建服务器失败！");
+			redirectAttributes.addFlashAttribute("message", "创建服务器失败！");
 			return "redirect:/basicdata/host/save/";
 		}
 	}
@@ -107,7 +107,7 @@ public class HostServerController extends BaseController {
 		if (flag) {
 			redirectAttributes.addFlashAttribute("message", "删除服务器成功！");
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "删除服务器失败！");
+			redirectAttributes.addFlashAttribute("message", "删除服务器失败！");
 		}
 
 		return REDIRECT_SUCCESS_URL;

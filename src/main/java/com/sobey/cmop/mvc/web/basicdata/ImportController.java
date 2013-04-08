@@ -33,7 +33,7 @@ public class ImportController extends BaseController {
 		if (result) {
 			redirectAttributes.addFlashAttribute("saveMessage", "基础数据导入成功！");
 		} else {
-			redirectAttributes.addFlashAttribute("errorMessage", "基础数据导入失败，请检查Excel文件中数据项格式是否正确！ ");
+			redirectAttributes.addFlashAttribute("message", "基础数据导入失败，请检查Excel文件中数据项格式是否正确！ ");
 		}
 		return "redirect:/basicdata/import";
 	}

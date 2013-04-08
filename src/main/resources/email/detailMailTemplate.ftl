@@ -14,6 +14,7 @@
 				<ul> 
 					<li><em>申请人</em>&nbsp;: ${apply.user.name} </li>
 					<li><em>申请标题</em>&nbsp;: ${apply.title}</li>
+					<li><em>服务标签</em>&nbsp;: ${apply.serviceTag}</li>
 					<li><em>申请时间</em>&nbsp;: ${apply.createTime}</li>
 					
 					<li><em>优先级</em>&nbsp;: 

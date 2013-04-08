@@ -66,9 +66,28 @@ public class IpPoolService extends BaseSevcie {
 		List<String> ipAddressList = this.getInsertIpAddressList(ipAddress);
 
 		// 排除重复IP
-		ipAddressList.removeAll(customDao.findAllIpAddressList(location, vlan));
+		ipAddressList.removeAll(this.getAllIpAddress());
 
-		return this.saveIpPool(ipAddressList, poolType, IpPoolConstant.IP_STATUS_1, vlan);
+		return this.saveIpPool(ipAddressList, poolType, IpPoolConstant.IpStatus.未使用.toInteger(), vlan);
+	}
+
+	/**
+	 * 返回类型为String的所有IpAddress List
+	 * 
+	 * @return
+	 */
+	private List<String> getAllIpAddress() {
+
+		List<IpPool> ipPools = (List<IpPool>) ipPoolDao.findAll();
+
+		List<String> list = new ArrayList<String>();
+
+		for (IpPool ipPool : ipPools) {
+			list.add(ipPool.getIpAddress());
+		}
+
+		return list;
+
 	}
 
 	/**

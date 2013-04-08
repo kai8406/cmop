@@ -210,10 +210,21 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String fieldName = FieldNameConstant.Compate.应用信息.toString();
 
-			// 将Application的id用","组成字符串.
 			List<Application> applications = comm.computeService.getApplicationByComputeItemId(computeItem.getId());
-			String oldValue = Collections3.extractToString(applications, "id", ",");
-			String oldString = this.wrapApplicationFromComputeItemToString(computeItem);
+
+			StringBuilder applicationSb = new StringBuilder();
+
+			if (applicationNames != null) {
+
+				for (Application application : applications) {
+
+					applicationSb.append(application.getName()).append(",").append(application.getVersion()).append(",").append(application.getDeployPath()).append("<br>");
+				}
+
+			}
+
+			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
+			String oldString = applicationSb.toString();
 
 			String newValue = "";
 			String newString = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
@@ -271,7 +282,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	/**
-	 * 将compute下的application List 转换成字符串(newString)
+	 * 将compute下的application List 转换成id字符串(newString) . eg:1,2
 	 * 
 	 * @param computeItem
 	 * @return
@@ -295,8 +306,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < applicationNames.length; i++) {
-			sb.append(applicationNames[i]).append(",").append(applicationVersions[i]).append(",").append(applicationDeployPaths[i]).append("<br>");
+		if (applicationNames != null) {
+
+			for (int i = 0; i < applicationNames.length; i++) {
+				sb.append(applicationNames[i]).append(",").append(applicationVersions[i]).append(",").append(applicationDeployPaths[i]).append("<br>");
+			}
 		}
 
 		return sb.toString();

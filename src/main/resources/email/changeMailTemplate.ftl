@@ -103,7 +103,7 @@ table {
 			
 				<#list resource.changes as change>
 				
-					<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述${change.description }</p>
+					<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<#if resource.ipAddress != DEFAULT_IPADDRESS >(${resource.ipAddress})</#if></strong> &nbsp;&nbsp; 变更描述${change.description }</p>
 					
 					<table class="table table-bordered">
 						<thead>

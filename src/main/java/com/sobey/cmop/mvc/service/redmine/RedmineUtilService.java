@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Apply;
@@ -223,9 +224,15 @@ public class RedmineUtilService extends BaseSevcie {
 
 				for (Change change : resources.getChanges()) {
 
-					// 资源标识符 + 变更说明
+					// 资源标识符(标识符) + 变更说明
 
-					content.append("变更资源标识符:" + BLANK).append(resources.getServiceIdentifier()).append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
+					content.append("变更资源标识符:" + BLANK).append(resources.getServiceIdentifier());
+
+					// 只有当ip不为0.0.0.0时才插入IP(即资源本身有IP时,像DNS,ES3这些没有IP的资源将不显示ip)
+					if (!IpPoolConstant.DEFAULT_IPADDRESS.equals(resources.getIpAddress())) {
+						content.append("(" + resources.getIpAddress() + ")");
+					}
+					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
 					content.append("变更项:" + BLANK).append("旧值").append(RARR).append("新值").append(NEWLINE);
 
 					for (ChangeItem changeItem : change.getChangeItems()) {

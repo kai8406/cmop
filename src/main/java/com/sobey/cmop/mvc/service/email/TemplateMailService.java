@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
@@ -114,6 +115,7 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("isPushCtpMap", CPConstant.IsPushCtp.mapKeyStr);
 
 		map.put("allESGs", comm.esgService.getAllEsgList());
+		map.put("DEFAULT_IPADDRESS", IpPoolConstant.DEFAULT_IPADDRESS);
 
 		return map;
 

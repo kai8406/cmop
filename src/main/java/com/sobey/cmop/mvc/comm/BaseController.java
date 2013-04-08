@@ -217,6 +217,15 @@ public class BaseController {
 
 	/**
 	 * 
+	 * @return 默认IP 0.0.0.0
+	 */
+	@ModelAttribute("DEFAULT_IPADDRESS")
+	public String defaultIpaddress() {
+		return IpPoolConstant.DEFAULT_IPADDRESS;
+	}
+
+	/**
+	 * 
 	 * @return 域名类型Map
 	 */
 	@ModelAttribute("domainTypeMap")

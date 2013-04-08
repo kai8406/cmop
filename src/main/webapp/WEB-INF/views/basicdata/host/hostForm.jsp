@@ -67,10 +67,10 @@ $(document).ready(function() {
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label">IP</label>
+				<label class="control-label">IP地址</label>
 				<div class="controls">
 					<input type="text" id="ipAddress" name="ipAddress" size="50" class="required ipAddressValidate" value="${hostServer.ipAddress}"/>
-					<span class="help-inline">请输入可用IP</span>
+					<span class="help-inline">请输入可用IP地址</span>
 				</div>
 			</div>
 			

@@ -148,12 +148,6 @@ public class OperateService extends BaseSevcie {
 
 		logger.info("--->工单处理...");
 
-		// 更新写入OneCMDB时需要人工选择填入的关联项
-		boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location);
-		if (!saveOk) {
-			return false;
-		}
-
 		try {
 			/* Step.1 更新redmine的数据 */
 			User user = comm.accountService.getCurrentUser();
@@ -161,6 +155,13 @@ public class OperateService extends BaseSevcie {
 			boolean isChanged = RedmineService.changeIssue(issue, mgr);
 			logger.info("---> Redmine isChanged?" + isChanged);
 			if (isChanged) {
+
+				// 更新写入OneCMDB时需要人工选择填入的关联项
+				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location);
+				if (!saveOk) {
+					return false;
+				}
+
 				// 设置工单的下一个接收人.
 				RedmineIssue redmineIssue = this.findByIssueId(issue.getId());
 				redmineIssue.setAssignee(issue.getAssignee().getId());
@@ -622,7 +623,7 @@ public class OperateService extends BaseSevcie {
 						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
 						String alias = computeItem.getServerAlias();
 						HostServer host = comm.hostServerService.findByAlias(alias);
-						if (StringUtils.isEmpty(alias) || (host!=null && host.getIpPools().size() <= 0)) {
+						if (StringUtils.isEmpty(alias) || (host != null && host.getIpPools().size() <= 0)) {
 							computeItem.setServerAlias(server[i]);
 						}
 					} else {
@@ -656,7 +657,7 @@ public class OperateService extends BaseSevcie {
 						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
 						String alias = computeItem.getServerAlias();
 						HostServer host = comm.hostServerService.findByAlias(alias);
-						if (StringUtils.isEmpty(alias) || (host!=null && host.getIpPools().size() <= 0)) {
+						if (StringUtils.isEmpty(alias) || (host != null && host.getIpPools().size() <= 0)) {
 							computeItem.setServerAlias(server[last]);
 						}
 					} else {

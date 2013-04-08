@@ -18,31 +18,6 @@ public class IpPoolConstant {
 	public static final String DEFAULT_IPADDRESS = "0.0.0.0";
 
 	/**
-	 * IP状态 1.未使用
-	 */
-	public static final Integer IP_STATUS_1 = 1;
-
-	/**
-	 * IP状态 2.已使用
-	 */
-	public static final Integer IP_STATUS_2 = 2;
-
-	/**
-	 * 1-私网IP池
-	 */
-	public static final Integer POOL_TYPE_1 = 1;
-
-	/**
-	 * 2-公网IP池
-	 */
-	public static final Integer POOL_TYPE_2 = 2;
-
-	/**
-	 * 3-互联网IP池
-	 */
-	public static final Integer POOL_TYPE_3 = 3;
-
-	/**
 	 * IP状态
 	 * 
 	 * <pre>

@@ -66,17 +66,17 @@ public class HostServerService extends BaseSevcie {
 			HostServer oldHostServer = findById(hostServer.getId());
 			if (!oldHostServer.getIpAddress().equals(hostServer.getIpAddress())) {
 				// 更新旧IP状态：未使用
-				comm.ipPoolService.updateIpPoolByIpAddress(oldHostServer.getIpAddress(), IpPoolConstant.IP_STATUS_1, null);
+				comm.ipPoolService.updateIpPoolByIpAddress(oldHostServer.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger(), null);
 
 				// 判断新IP是否存在
 				if (comm.ipPoolService.findIpPoolByIpAddress(hostServer.getIpAddress()) != null) { // 存在则更新IP状态：已使用
-					comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IP_STATUS_2, null);
+					comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IpStatus.已使用.toInteger(), null);
 				} else { // 创建新的IP
-					comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.POOL_TYPE_1, IpPoolConstant.IP_STATUS_2, comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
+					comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
 				}
 			}
 		} else { // 创建新的IP
-			comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.POOL_TYPE_1, IpPoolConstant.IP_STATUS_2, comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
+			comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
 		}
 
 		// 保存服务器
@@ -152,7 +152,7 @@ public class HostServerService extends BaseSevcie {
 			List list = HostTree.call();
 
 			// 2. 更新宿主机对应IP状态及其关联虚拟机IP状态为：未使用
-			int updateCount = ipPoolDaoCustom.updateIpPoolByStatus(IpPoolConstant.IP_STATUS_1);
+			int updateCount = ipPoolDaoCustom.updateIpPoolByStatus(IpPoolConstant.IpStatus.未使用.toInteger());
 			System.out.println(updateCount);
 
 			// 3. 删除所有宿主机
@@ -180,7 +180,7 @@ public class HostServerService extends BaseSevcie {
 						System.out.println("已存在的宿主机：" + ipAddress + "，hostServerList.size=" + hostServerList.size());
 						hostServer = (HostServer) hostServerList.get(0);
 					} else {
-						hostServer = new HostServer(1, IpPoolConstant.POOL_TYPE_1, hostList.get(i), new Date()); // 名称默认为IP；IP池默认为私网IP池
+						hostServer = new HostServer(1, IpPoolConstant.PoolType.私网IP池.toInteger(), hostList.get(i), new Date()); // 名称默认为IP；IP池默认为私网IP池
 						hostServer.setAlias(Identities.uuid2());
 						hostServer.setIpAddress(ipAddress);
 						hostServer.setLocationAlias(comm.locationService.getLocation(2).getAlias()); // IDC别名默认西安IDC
@@ -190,9 +190,9 @@ public class HostServerService extends BaseSevcie {
 					// 5. 更新宿主机对应IP状态为：已使用
 					if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
 						System.out.println("已存在的宿主机IP：" + ipAddress);
-						comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IP_STATUS_2, null);
+						comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IpStatus.已使用.toInteger(), null);
 					} else {
-						comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.POOL_TYPE_1, IpPoolConstant.IP_STATUS_2, comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
+						comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
 					}
 
 					// 6. 更新其关联虚拟机及其IP状态为：已使用
@@ -204,9 +204,9 @@ public class HostServerService extends BaseSevcie {
 
 						if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
 							System.out.println("已存在的虚拟机IP：" + ipAddress);
-							comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IP_STATUS_2, hostServer);
+							comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IpStatus.已使用.toInteger(), hostServer);
 						} else {
-							comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.POOL_TYPE_1, IpPoolConstant.IP_STATUS_2, comm.vlanService.getVlan(1), hostServer); // 默认西安虚拟机内网VLAN
+							comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), hostServer); // 默认西安虚拟机内网VLAN
 						}
 					}
 				}

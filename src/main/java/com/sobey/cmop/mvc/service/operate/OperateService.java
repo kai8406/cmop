@@ -607,14 +607,14 @@ public class OperateService extends BaseSevcie {
 					// TODO 此处要根据选择的IDC来更新具体的IP，临时这样处理，目前只有192.168.0重复。。
 					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
 						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
 						ipPool.setHostServer(null);
 						comm.ipPoolService.saveIpPool(ipPool);
 					}
 
 					// 更新新的IP
 					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[i]);
-					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+					ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
 					ipPool.setHostServer(comm.hostServerService.findByAlias(server[i]));
 					comm.ipPoolService.saveIpPool(ipPool);
 
@@ -641,14 +641,14 @@ public class OperateService extends BaseSevcie {
 					// 释放原来的IP
 					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
 						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-						ipPool.setStatus(IpPoolConstant.IP_STATUS_1);
+						ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
 						ipPool.setHostServer(null);
 						comm.ipPoolService.saveIpPool(ipPool);
 					}
 
 					// 更新新的IP
 					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[last]);
-					ipPool.setStatus(IpPoolConstant.IP_STATUS_2);
+					ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
 					ipPool.setHostServer(comm.hostServerService.findByAlias(server[last]));
 					comm.ipPoolService.saveIpPool(ipPool);
 
@@ -691,9 +691,9 @@ public class OperateService extends BaseSevcie {
 				for (int i = 0; i < eipId.length; i++) {
 					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
 					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IP_STATUS_1);
+					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IP_STATUS_2);
+					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
 					eipItem.setIpAddress(eipAddress[i]);
 					comm.eipService.saveOrUpdate(eipItem);
 				}
@@ -703,9 +703,9 @@ public class OperateService extends BaseSevcie {
 					int i = eipId.length - 1;
 					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
 					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IP_STATUS_1);
+					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IP_STATUS_2);
+					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
 					eipItem.setIpAddress(eipAddress[i]);
 					comm.eipService.saveOrUpdate(eipItem);
 				}

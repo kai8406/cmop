@@ -33,6 +33,7 @@ public class NetworkElbItem implements java.io.Serializable {
 	private Boolean keepSession;
 	private String virtualIp;
 	private Set<ElbPortItem> elbPortItems = new HashSet<ElbPortItem>(0);
+	private Set<ComputeItem> computeItems = new HashSet<ComputeItem>(0);
 	private MonitorElb monitorElb;
 
 	// Constructors
@@ -50,13 +51,14 @@ public class NetworkElbItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, MonitorElb monitorElb, Set<ElbPortItem> elbPortItems) {
+	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, MonitorElb monitorElb, Set<ElbPortItem> elbPortItems, Set<ComputeItem> computeItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.keepSession = keepSession;
 		this.virtualIp = virtualIp;
 		this.elbPortItems = elbPortItems;
 		this.monitorElb = monitorElb;
+		this.computeItems = computeItems;
 	}
 
 	// Property accessors
@@ -116,6 +118,16 @@ public class NetworkElbItem implements java.io.Serializable {
 
 	public void setElbPortItems(Set<ElbPortItem> elbPortItems) {
 		this.elbPortItems = elbPortItems;
+	}
+
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkElbItem")
+	public Set<ComputeItem> getComputeItems() {
+		return computeItems;
+	}
+
+	public void setComputeItems(Set<ComputeItem> computeItems) {
+		this.computeItems = computeItems;
 	}
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkElbItem")

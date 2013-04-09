@@ -59,11 +59,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param serviceTag
 	 * @return
 	 */
-	public boolean deleteServiceTagToOneCMDB(ServiceTag serviceTag) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteServiceTagToOneCMDB(ServiceTag serviceTag) {
+		if (serviceTag != null) {
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("ApplicationService", serviceTag.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
 	}
 
 	// ===========NetworkEsgItem ===========//
@@ -211,11 +213,14 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param computeItem
 	 * @return
 	 */
-	public boolean deleteComputeItemToOneCMDB(ComputeItem computeItem) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean(ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType()) ? "PCS" : "ECS", computeItem.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteComputeItemToOneCMDB(ComputeItem computeItem) {
+		if (computeItem != null) {
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean(ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType()) ? "PCS" : "ECS", computeItem.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
+
 	}
 
 	// ===========StorageItem ===========//
@@ -288,11 +293,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param storageItem
 	 * @return
 	 */
-	public boolean deleteStorageItemToOneCMDB(StorageItem storageItem) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteStorageItemToOneCMDB(StorageItem storageItem) {
+		if (storageItem != null) {
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
 	}
 
 	// =========== NetworkElbItem ===========//
@@ -367,11 +374,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param networkElbItem
 	 * @return
 	 */
-	public boolean deleteELBToOneCMDB(NetworkElbItem networkElbItem) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean("ELB", networkElbItem.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteELBToOneCMDB(NetworkElbItem networkElbItem) {
+		if (networkElbItem != null) {
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("ELB", networkElbItem.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
 	}
 
 	// =========== NetworkEipItem ===========//
@@ -453,11 +462,14 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param networkEipItem
 	 * @return
 	 */
-	public boolean deleteEIPToOneCMDB(NetworkEipItem networkEipItem) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean("EIP", networkEipItem.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteEIPToOneCMDB(NetworkEipItem networkEipItem) {
+		if (networkEipItem != null) {
+
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("EIP", networkEipItem.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
 	}
 
 	// =========== NetworkDnsItem ===========//
@@ -523,11 +535,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param networkDnsItem
 	 * @return
 	 */
-	public boolean deleteDNSToOneCMDB(NetworkDnsItem networkDnsItem) {
-		List<CiBean> ciList = new ArrayList<CiBean>();
-		CiBean router = new CiBean("DNS", networkDnsItem.getIdentifier(), false);
-		ciList.add(router);
-		return OneCmdbService.delete(ciList);
+	public void deleteDNSToOneCMDB(NetworkDnsItem networkDnsItem) {
+		if (networkDnsItem != null) {
+			List<CiBean> ciList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("DNS", networkDnsItem.getIdentifier(), false);
+			ciList.add(router);
+			OneCmdbService.delete(ciList);
+		}
 	}
 
 	// =========== Location ===========//
@@ -663,11 +677,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 	 * @param ipPool
 	 * @return
 	 */
-	public boolean deleteIpPoolToOneCMDB(IpPool ipPool) {
-		List<CiBean> ciBeanList = new ArrayList<CiBean>();
-		CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-" + ipPool.getIpAddress(), false);
-		ciBeanList.add(router);
-		return OneCmdbService.delete(ciBeanList);
+	public void deleteIpPoolToOneCMDB(IpPool ipPool) {
+		if (ipPool != null) {
+			List<CiBean> ciBeanList = new ArrayList<CiBean>();
+			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-" + ipPool.getIpAddress(), false);
+			ciBeanList.add(router);
+			OneCmdbService.delete(ciBeanList);
+		}
 	}
 
 	/**

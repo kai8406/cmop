@@ -166,24 +166,28 @@ public class RedmineUtilService extends BaseSevcie {
 	 * 将各个资源相关的参数生成符合redmine格式的文本.
 	 * 
 	 * @param user
-	 *            资源的创建人
+	 *            资源创建人
 	 * @param content
 	 * @param computeItems
 	 * @param storageItems
 	 * @param elbItems
 	 * @param eipItems
 	 * @param dnsItems
+	 * @param monitorMails
+	 * @param monitorPhones
+	 * @param monitorComputes
+	 * @param monitorElbs
+	 * @param mdnItems
+	 * @param cpItems
 	 */
 	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
 			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
 			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
-		List<ComputeItem> computeList = comm.computeService.getComputeListByUserId(user.getId());
-
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
-		RedmineTextUtil.generateElb(content, elbItems, computeList);
-		RedmineTextUtil.generateEip(content, eipItems, computeList);
+		RedmineTextUtil.generateElb(content, elbItems);
+		RedmineTextUtil.generateEip(content, eipItems);
 		RedmineTextUtil.generateDNS(content, dnsItems);
 		RedmineTextUtil.generateMonitorMail(content, monitorMails);
 		RedmineTextUtil.generateMonitorPhone(content, monitorPhones);

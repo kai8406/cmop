@@ -174,7 +174,7 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
-				<c:forEach var="compute" items="${relationComputes }">
+				<c:forEach var="compute" items="${elb.computeItems  }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
 						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">

@@ -103,7 +103,6 @@ public class ResourcesController extends BaseController {
 			NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
 
 			model.addAttribute("elb", networkElbItem);
-			model.addAttribute("relationComputes", comm.computeService.getComputeItemByElbId(networkElbItem.getId()));
 
 			// 未关联Elb的compute资源
 			model.addAttribute("computeResources", comm.basicUnitService.getComputeItemListByResourcesAndElbIsNull(getCurrentUserId()));

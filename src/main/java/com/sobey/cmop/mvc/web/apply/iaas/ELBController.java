@@ -37,10 +37,12 @@ public class ELBController extends BaseController {
 	}
 
 	/**
-	 * 新增<br>
-	 * 新增N个ELB( N >= 1)<br>
-	 * 同一个ELB下的多个参数用"-"区分.<br>
+	 * 新增N个ELB( N >= 1)
+	 * 
+	 * <pre>
+	 * 同一个ELB下的多个参数用"-"区分.
 	 * 逗号","用于区分不同的ELB的参数.
+	 * </pre>
 	 * 
 	 * @param applyId
 	 * @param keepSessions
@@ -73,15 +75,16 @@ public class ELBController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
 		model.addAttribute("elb", comm.elbService.getNetworkElbItem(id));
-		model.addAttribute("relationComputes", comm.computeService.getComputeItemByElbId(id));
-
 		return "apply/elb/elbUpateForm";
 	}
 
 	/**
-	 * 修改单个ELB信息.<br>
-	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"-" <br>
+	 * 修改单个ELB信息.
+	 * 
+	 * <pre>
+	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"-".
 	 * 修改ELB信息后,跳转到applyId的服务申请修改页面
+	 * </pre>
 	 * 
 	 * @param id
 	 * @param applyId

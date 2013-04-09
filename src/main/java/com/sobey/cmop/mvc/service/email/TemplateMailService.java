@@ -114,7 +114,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("recordBitrateMap", CPConstant.RECORDBITRATE_MAP_STRING_KEY);
 		map.put("isPushCtpMap", CPConstant.IsPushCtp.mapKeyStr);
 
-		map.put("allESGs", comm.esgService.getAllEsgList());
 		map.put("DEFAULT_IPADDRESS", IpPoolConstant.DEFAULT_IPADDRESS);
 
 		return map;
@@ -141,12 +140,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
-
-		// 申请人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(apply.getUser().getId()));
-
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
@@ -189,12 +182,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
-
-		// 申请人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(apply.getUser().getId()));
-
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
@@ -232,12 +219,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("computes", apply.getComputeItems());
 		map.put("storages", apply.getStorageItems());
 		map.put("elbs", apply.getNetworkElbItems());
-
-		// 申请人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(apply.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(apply.getUser().getId()));
-
 		map.put("eips", apply.getNetworkEipItems());
 		map.put("dnses", apply.getNetworkDnsItems());
 		map.put("monitorComputes", apply.getMonitorComputes());
@@ -279,11 +260,6 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
 
-		// 变更人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(serviceTag.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(serviceTag.getUser().getId()));
-
 		// 变更 审批Audit
 
 		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
@@ -315,11 +291,6 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("serviceTag", serviceTag);
 
-		// 变更人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(serviceTag.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(serviceTag.getUser().getId()));
-
 		map.put("resourcesList", comm.resourcesService.getOperateResourcesListByServiceTagId(serviceTag.getId()));
 
 		// 工单处理URL
@@ -347,11 +318,6 @@ public class TemplateMailService extends BaseSevcie {
 		// 服务标签ServiceTag
 
 		map.put("serviceTag", serviceTag);
-
-		// 变更人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(serviceTag.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(serviceTag.getUser().getId()));
 
 		map.put("resourcesList", comm.resourcesService.getOperateResourcesListByServiceTagId(serviceTag.getId()));
 
@@ -391,11 +357,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorElbs", monitorElbs);
 		map.put("mdns", mdnItems);
 		map.put("cps", cpItems);
-
-		// 申请人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(user.getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(user.getId()));
 
 		// 工单处理URL
 
@@ -459,11 +420,6 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("monitorElbs", monitorElbs);
 		map.put("mdns", mdnItems);
 		map.put("cps", cpItems);
-
-		// 申请人所创建的所有实例和ELB
-
-		map.put("allComputes", comm.computeService.getComputeListByUserId(failure.getUser().getId()));
-		map.put("allElbs", comm.elbService.getNetworkElbItemListByUserId(failure.getUser().getId()));
 
 		// 工单处理URL
 

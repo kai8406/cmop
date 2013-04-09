@@ -68,8 +68,8 @@
 				<label class="control-label" for="relationCompute">关联实例</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="compute" items="${allComputes}">
-							<c:if test="${compute.networkElbItem.id == elb.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;<br></c:if>
+						<c:forEach var="compute" items="${elb.computeItems }">
+							${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
 						</c:forEach>
 					</p>
 				</div>

@@ -190,8 +190,8 @@
 						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
 						<dd><em>关联实例</em>&nbsp; 
-							<c:forEach var="compute" items="${allComputes}">
-								<c:if test="${compute.networkElbItem.id == item.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp}) &nbsp;&nbsp;</c:if>
+							<c:forEach var="compute" items="${item.computeItems}">
+								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
 							</c:forEach>
 						</dd>
 						
@@ -226,9 +226,7 @@
 								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
 								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })
 								【
-								<c:forEach var="compute" items="${allComputes}">
-								<c:if test="${compute.networkElbItem.id == item.networkElbItem.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:if>
-								</c:forEach>
+								<c:forEach var="compute" items="${item.networkElbItem.computeItems}">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:forEach>
 								】
 								</c:otherwise>
 							</c:choose>

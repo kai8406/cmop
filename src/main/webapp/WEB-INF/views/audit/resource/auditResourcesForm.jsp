@@ -66,7 +66,7 @@ function setResult(result) {
 		
 				<c:forEach var="resource" items="${resourcesList }">
 					<c:forEach var="change" items="${resource.changes }">
-						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}</strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
+						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
 						<table class="table table-bordered">
 				            <thead><tr><th class="span2">变更项</th><th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
 				            <tbody>

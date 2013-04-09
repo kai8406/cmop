@@ -70,9 +70,7 @@
 				<div class="controls">
 					<p class="help-inline plain-text">${eip.networkElbItem.identifier }(${eip.networkElbItem.virtualIp})
 					【
-					<c:forEach var="compute" items="${allComputes}">
-					<c:if test="${compute.networkElbItem.id == eip.networkElbItem.id }">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:if>
-					</c:forEach>
+					<c:forEach var="compute" items="${eip.networkElbItem.computeItems}">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:forEach>
 					】
 					</p>
 				</div>

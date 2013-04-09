@@ -101,7 +101,7 @@ public class IpPoolService extends BaseSevcie {
 	 *            IP状态
 	 */
 	@Transactional(readOnly = false)
-	public boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Vlan vlan) {
+	private boolean saveIpPool(List<String> ipAddressList, Integer poolType, Integer ipStatus, Vlan vlan) {
 
 		List<IpPool> ipPoolList = new ArrayList<IpPool>();
 

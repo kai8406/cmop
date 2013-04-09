@@ -145,10 +145,8 @@
 							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
 						</li>
 						<li><em>关联实例</em>&nbsp;: 
-							<#list allComputes as compute>
-							<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == elb.id ) >
+							<#list elb.computeItems as compute>
 								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
-							</#if>
 							</#list>
 						</li>
 						
@@ -186,10 +184,8 @@
 							<#if eip.networkElbItem?exists>
 								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}(${eip.networkElbItem.virtualIp})
 								【
-									<#list allComputes as compute>
-									<#if compute.networkElbItem?exists  && (compute.networkElbItem.id == eip.networkElbItem.id ) >
+									<#list eip.networkElbItem.computeItems as compute>
 										${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
-									</#if>
 									</#list>
 								】
 							</#if>

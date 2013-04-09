@@ -122,7 +122,7 @@ public class RedmineTextUtil {
 	 * @param computeItems
 	 *            当前用户的所有实例Compute
 	 */
-	public static void generateElb(StringBuilder content, List<NetworkElbItem> elbItems, List<ComputeItem> computeItems) {
+	public static void generateElb(StringBuilder content, List<NetworkElbItem> elbItems) {
 
 		if (!elbItems.isEmpty()) {
 
@@ -136,13 +136,8 @@ public class RedmineTextUtil {
 
 				content.append(FieldNameConstant.Elb.关联实例 + ":").append(BLANK);
 
-				for (ComputeItem computeItem : computeItems) {
-
-					if (computeItem.getNetworkElbItem() != null && elbItem.getId().equals(computeItem.getNetworkElbItem().getId())) {
-
-						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
-
-					}
+				for (ComputeItem computeItem : elbItem.getComputeItems()) {
+					content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
 				}
 
 				content.append(NEWLINE);
@@ -172,7 +167,7 @@ public class RedmineTextUtil {
 	 * @param content
 	 * @param elbItems
 	 */
-	public static void generateEip(StringBuilder content, List<NetworkEipItem> eipItems, List<ComputeItem> computeItems) {
+	public static void generateEip(StringBuilder content, List<NetworkEipItem> eipItems) {
 
 		if (!eipItems.isEmpty()) {
 
@@ -196,16 +191,11 @@ public class RedmineTextUtil {
 					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier()).append("(").append(eipItem.getNetworkElbItem().getVirtualIp())
 							.append(")").append("【");
 
-					for (ComputeItem computeItem : computeItems) {
-
-						if (computeItem.getNetworkElbItem() != null && eipItem.getNetworkElbItem().getId().equals(computeItem.getNetworkElbItem().getId())) {
-
-							content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
-
-						}
+					for (ComputeItem computeItem : eipItem.getNetworkElbItem().getComputeItems()) {
+						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
 					}
-					content.append("】").append(NEWLINE);
 
+					content.append("】").append(NEWLINE);
 				}
 
 				if (!eipItem.getEipPortItems().isEmpty()) {

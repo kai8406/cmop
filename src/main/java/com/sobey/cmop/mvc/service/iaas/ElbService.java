@@ -268,6 +268,7 @@ public class ElbService extends BaseSevcie {
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
+		// TODO
 		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
 		for (ComputeItem computeItem : computeItems) {
 			computeItem.setNetworkElbItem(null);

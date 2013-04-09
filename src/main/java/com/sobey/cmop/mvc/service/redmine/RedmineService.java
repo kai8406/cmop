@@ -45,9 +45,39 @@ public class RedmineService extends BaseSevcie {
 	public static Integer FIRST_REDMINE_ASSIGNEE = RedmineConstant.Assignee.艾磊.toInteger();
 
 	/**
-	 * redmine第一接收人的RedmineManager 余波
+	 * redmine第一接收人的RedmineManager
 	 */
 	public static RedmineManager FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(FIRST_REDMINE_ASSIGNEE));
+
+	/**
+	 * MDN接收人
+	 */
+	public static Integer MDN_REDMINE_ASSIGNEE = RedmineConstant.Assignee.李乾星.toInteger();
+
+	/**
+	 * MDN接收人的RedmineManager
+	 */
+	public static RedmineManager MDN_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(MDN_REDMINE_ASSIGNEE));
+
+	/**
+	 * 云生产接收人
+	 */
+	public static Integer CP_REDMINE_ASSIGNEE = RedmineConstant.Assignee.苏颖.toInteger();
+
+	/**
+	 * 云生产接收人的RedmineManager
+	 */
+	public static RedmineManager CP_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(CP_REDMINE_ASSIGNEE));
+
+	/**
+	 * 监控接收人
+	 */
+	public static Integer MONITOR_REDMINE_ASSIGNEE = RedmineConstant.Assignee.陆俊.toInteger();
+
+	/**
+	 * 监控接收人的RedmineManager
+	 */
+	public static RedmineManager MONITOR_REDMINE_ASSIGNEE_REDMINEMANAGER = new RedmineManager(HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(MONITOR_REDMINE_ASSIGNEE));
 
 	/**
 	 * 根据issueId 获得redmine中的Issue对象.

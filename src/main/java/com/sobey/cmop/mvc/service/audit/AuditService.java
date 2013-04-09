@@ -346,7 +346,15 @@ public class AuditService extends BaseSevcie {
 				issue.setDescription(description);
 
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
+				// 初始化第一接收人
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+				if (apply.getTitle().indexOf(ApplyConstant.ServiceType.MDN.toString()) > 0) {
+					mgr = RedmineService.MDN_REDMINE_ASSIGNEE_REDMINEMANAGER;
+				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.云生产.toString()) > 0) {
+					mgr = RedmineService.CP_REDMINE_ASSIGNEE_REDMINEMANAGER;
+				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.监控.toString()) > 0) {
+					mgr = RedmineService.MONITOR_REDMINE_ASSIGNEE_REDMINEMANAGER;
+				}
 
 				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
 
@@ -483,7 +491,7 @@ public class AuditService extends BaseSevcie {
 				issue.setDescription(description);
 
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
-
+				// 初始化第一接收人
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
 
 				boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);

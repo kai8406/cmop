@@ -133,14 +133,7 @@ public class RedmineTextUtil {
 				content.append("标识符:").append(BLANK).append(elbItem.getIdentifier()).append(NEWLINE);
 				content.append("负载均衡虚拟IP:").append(BLANK).append(elbItem.getVirtualIp()).append(NEWLINE);
 				content.append(FieldNameConstant.Elb.是否保持会话 + ":").append(BLANK).append(NetworkConstant.KeepSession.get(elbItem.getKeepSession())).append(NEWLINE);
-
-				content.append(FieldNameConstant.Elb.关联实例 + ":").append(BLANK);
-
-				for (ComputeItem computeItem : elbItem.getComputeItems()) {
-					content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
-				}
-
-				content.append(NEWLINE);
+				content.append(FieldNameConstant.Elb.关联实例 + ":").append(BLANK).append(elbItem.getMountComputes()).append(NEWLINE);
 
 				if (!elbItem.getElbPortItems().isEmpty()) {
 
@@ -189,13 +182,8 @@ public class RedmineTextUtil {
 
 					// 关联ELB
 					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK).append(eipItem.getNetworkElbItem().getIdentifier()).append("(").append(eipItem.getNetworkElbItem().getVirtualIp())
-							.append(")").append("【");
+							.append(")").append("【").append(eipItem.getNetworkElbItem().getMountComputes()).append("】").append(NEWLINE);
 
-					for (ComputeItem computeItem : eipItem.getNetworkElbItem().getComputeItems()) {
-						content.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(BLANK + BLANK);
-					}
-
-					content.append("】").append(NEWLINE);
 				}
 
 				if (!eipItem.getEipPortItems().isEmpty()) {

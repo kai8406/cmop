@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
@@ -94,8 +96,6 @@ public class ResourcesController extends BaseController {
 
 			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
 
-			model.addAttribute("computeResources", comm.basicUnitService.getComputeItemListByResources(getCurrentUserId()));
-
 			updateUrl = "resource/form/storage";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
@@ -104,15 +104,11 @@ public class ResourcesController extends BaseController {
 
 			model.addAttribute("elb", networkElbItem);
 
-			// 未关联Elb的compute资源
-			model.addAttribute("computeResources", comm.basicUnitService.getComputeItemListByResourcesAndElbIsNull(getCurrentUserId()));
-
 			updateUrl = "resource/form/elb";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
 			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
-			model.addAttribute("computeResources", comm.basicUnitService.getComputeItemListByResources(getCurrentUserId()));
 			model.addAttribute("elbResources", comm.basicUnitService.getNetworkElbItemListByResources(getCurrentUserId()));
 
 			updateUrl = "resource/form/eip";
@@ -133,8 +129,6 @@ public class ResourcesController extends BaseController {
 			model.addAttribute("ports", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
 			model.addAttribute("processes", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
 			model.addAttribute("mountPoints", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
-
-			model.addAttribute("computeResources", comm.basicUnitService.getComputeItemListByResources(getCurrentUserId()));
 
 			updateUrl = "resource/form/monitorCompute";
 
@@ -267,6 +261,11 @@ public class ResourcesController extends BaseController {
 		}
 
 		return detailUrl;
+	}
+
+	@ModelAttribute("computeResources")
+	public List<ComputeItem> computeResources() {
+		return comm.basicUnitService.getComputeItemListByResources(getCurrentUserId());
 	}
 
 }

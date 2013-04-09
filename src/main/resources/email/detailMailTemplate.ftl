@@ -144,11 +144,7 @@
 						<li><em>是否保持会话</em>&nbsp;:
 							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
 						</li>
-						<li><em>关联实例</em>&nbsp;: 
-							<#list elb.computeItems as compute>
-								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
-							</#list>
-						</li>
+						<li><em>关联实例</em>&nbsp;:${elb.mountComputes}</li>
 						
 						<li><em>端口映射(协议、源端口、目标端口)</em></li>
 						
@@ -182,12 +178,7 @@
 								<em>关联实例</em>&nbsp;:${eip.computeItem.identifier}(${eip.computeItem.remark} - ${eip.computeItem.innerIp})
 							</#if>
 							<#if eip.networkElbItem?exists>
-								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}(${eip.networkElbItem.virtualIp})
-								【
-									<#list eip.networkElbItem.computeItems as compute>
-										${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
-									</#list>
-								】
+								<em>关联ELB</em>&nbsp;:${eip.networkElbItem.identifier}(${eip.networkElbItem.virtualIp})【${eip.networkElbItem.mountComputes}】
 							</#if>
 						</li>
 						

@@ -13,11 +13,7 @@ public class ElbJson implements java.io.Serializable {
 	private String keepSession;
 	private String virtualIp;
 	private String elbPortItems;
-
-	/**
-	 * 关联Compute组合信息 :实例标识符(内网IP)
-	 */
-	private String relationCompute;
+	private String mountComputes;
 
 	public Integer getId() {
 		return id;
@@ -59,12 +55,12 @@ public class ElbJson implements java.io.Serializable {
 		this.elbPortItems = elbPortItems;
 	}
 
-	public String getRelationCompute() {
-		return relationCompute;
+	public String getMountComputes() {
+		return mountComputes;
 	}
 
-	public void setRelationCompute(String relationCompute) {
-		this.relationCompute = relationCompute;
+	public void setMountComputes(String mountComputes) {
+		this.mountComputes = mountComputes;
 	}
 
 }

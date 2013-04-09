@@ -97,21 +97,13 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 	@Override
 	public ElbJson convertElbJsonToNetworkElbItem(NetworkElbItem elbItem) {
 
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(elbItem.getId());
-		String relationCompute = "";
-
-		for (ComputeItem computeItem : computeItems) {
-			relationCompute += computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getInnerIp() + ")&nbsp;&nbsp;";
-		}
-
 		ElbJson json = new ElbJson();
 
 		json.setId(elbItem.getId());
 		json.setIdentifier(elbItem.getIdentifier());
 		json.setKeepSession(NetworkConstant.KeepSession.get(elbItem.getKeepSession()));
 		json.setVirtualIp(elbItem.getVirtualIp());
-
-		json.setRelationCompute(relationCompute);
+		json.setMountComputes(elbItem.getMountComputes());
 
 		return json;
 	}
@@ -133,7 +125,8 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 			linkType = NetworkConstant.LinkType.关联ELB.toInteger();
 
-			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")&nbsp;&nbsp;";
+			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")【" + networkEipItem.getNetworkElbItem().getMountComputes()
+					+ "】&nbsp;&nbsp;";
 
 		}
 

@@ -20,15 +20,6 @@ import com.sobey.cmop.mvc.entity.StorageItem;
  */
 public interface IBasicUnitService {
 
-	/**
-	 * 获得指定用户创建的审批通过并且没有被其它ELB关联过(即elb_id = null)的实例ComputeList.<br>
-	 * 主要用于ELB变更中
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<ComputeItem> getComputeItemListByResourcesAndElbIsNull(Integer userId);
-
 	// ======== Iaas ========
 
 	/**

@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.iaas;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -105,8 +106,6 @@ public class ElbService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteNetworkElbItem(Integer id) {
 
-		this.initElbRelation(id);
-
 		networkElbItemDao.delete(id);
 	}
 
@@ -134,17 +133,16 @@ public class ElbService extends BaseSevcie {
 			networkElbItem.setVirtualIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSessions[i]) ? true : false);
 
-			this.saveOrUpdate(networkElbItem);
-
 			// 关联实例
-
+			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 			String[] computeIdArray = StringUtils.split(computeIds[i], "-");
-
 			for (String computeId : computeIdArray) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
-				computeItem.setNetworkElbItem(networkElbItem);
-				comm.computeService.saveOrUpdate(computeItem);
+				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
 			}
+
+			networkElbItem.setComputeItemList(computeItemList);
+
+			this.saveOrUpdate(networkElbItem);
 
 			// ELB的端口映射
 
@@ -166,7 +164,7 @@ public class ElbService extends BaseSevcie {
 	 * 
 	 * <pre>
 	 * 1.先将ELB下的所有映射信息删除.
-	 * 2.将ELB下所有的实例compute查询出来并设置实例管理的ELB为null.
+	 * 2.关联实例的更新.
 	 * 3.保存ELB和端口映射.
 	 * </pre>
 	 * 
@@ -184,34 +182,24 @@ public class ElbService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void updateELBToApply(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
 
-		// Step.1
+		// Step.1 将ELB下的所有映射信息删除.
 
 		this.deleteElbPortItem(this.getElbPortItemListByElbId(networkElbItem.getId()));
 
-		// Step.2
-
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
-		for (ComputeItem computeItem : computeItems) {
-			computeItem.setNetworkElbItem(null);
-			comm.computeService.saveOrUpdate(computeItem);
+		// Step.2 关联实例
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		for (String computeId : computeIds) {
+			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
 		}
+		networkElbItem.setComputeItemList(computeItemList);
 
 		this.saveOrUpdate(networkElbItem);
 
-		// Step.3
-
-		// ELB的端口映射
+		// Step.3 ELB的端口映射
 
 		for (int i = 0; i < protocols.length; i++) {
 			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateElbPortItem(elbPortItem);
-		}
-
-		// 关联实例
-		for (String computeId : computeIds) {
-			ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
-			computeItem.setNetworkElbItem(networkElbItem);
-			comm.computeService.saveOrUpdate(computeItem);
 		}
 
 	}
@@ -268,11 +256,14 @@ public class ElbService extends BaseSevcie {
 
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
-		// TODO
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
-		for (ComputeItem computeItem : computeItems) {
-			computeItem.setNetworkElbItem(null);
-			comm.computeService.saveOrUpdate(computeItem);
+		// 关联实例
+		if (computeIds != null) {
+			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+			for (int i = 0; i < computeIds.length; i++) {
+				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+				computeItemList.add(computeItem);
+			}
+			networkElbItem.setComputeItemList(computeItemList);
 		}
 
 		this.saveOrUpdate(networkElbItem);
@@ -280,33 +271,13 @@ public class ElbService extends BaseSevcie {
 		// ELB的端口映射
 
 		for (int i = 0; i < protocols.length; i++) {
-
 			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
 			this.saveOrUpdateElbPortItem(elbPortItem);
-		}
-
-		// 关联实例
-
-		for (String computeId : computeIds) {
-			ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
-			computeItem.setNetworkElbItem(networkElbItem);
-			comm.computeService.saveOrUpdate(computeItem);
 		}
 
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
-	}
-
-	/**
-	 * 初始化实例compute & Eip 中的elb关联.(elb_id = null)
-	 * 
-	 * @param elbId
-	 */
-	@Transactional(readOnly = false)
-	private void initElbRelation(Integer elbId) {
-		basicUnitDao.updateComputeItemToElbIdIsNull(elbId);
-		basicUnitDao.updateNetworkEipItemToElbIdIsNull(elbId);
 	}
 
 	/**

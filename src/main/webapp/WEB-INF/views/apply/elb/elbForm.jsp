@@ -226,7 +226,7 @@
 						<th>IP地址</th>
 					</tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="item" items="${computeByElbIsNullList }">
+						<c:forEach var="item" items="${allComputes }">
 							<tr>
 								<td><input type="checkbox" value="${item.id }"></td>
 								<td>${item.identifier}</td>

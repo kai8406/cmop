@@ -17,7 +17,6 @@ import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplicationDao;
 import com.sobey.cmop.mvc.dao.ComputeItemDao;
-import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
@@ -40,9 +39,6 @@ public class ComputeService extends BaseSevcie {
 
 	@Resource
 	private ApplicationDao applicationDao;
-
-	@Resource
-	private BasicUnitDaoCustom basicUnitDao;
 
 	// === Application ===//
 
@@ -114,17 +110,6 @@ public class ComputeService extends BaseSevcie {
 	}
 
 	// === ComputeItem ===//
-
-	/**
-	 * 获得指定ELB下关联的所有实例compute
-	 * 
-	 * @param elbId
-	 * @return
-	 */
-	public List<ComputeItem> getComputeItemByElbId(Integer elbId) {
-		return computeItemDao.findByNetworkElbItemId(elbId);
-
-	}
 
 	public ComputeItem getComputeItem(Integer id) {
 		return computeItemDao.findOne(id);
@@ -299,19 +284,7 @@ public class ComputeService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteCompute(Integer id) {
 
-		this.initComputeRelation(id);
-
 		computeItemDao.delete(id);
-	}
-
-	/**
-	 * 初始化实例 Eip 中的compute关联.(compute_Id = null)
-	 * 
-	 * @param elbId
-	 */
-	@Transactional(readOnly = false)
-	private void initComputeRelation(Integer computeId) {
-		basicUnitDao.updateNetworkEipItemToComputeIdIsNull(computeId);
 	}
 
 	/**
@@ -331,15 +304,6 @@ public class ComputeService extends BaseSevcie {
 	 */
 	public List<ComputeItem> getComputeListByUserId(Integer userId) {
 		return computeItemDao.findByApplyUserId(userId);
-	}
-
-	/**
-	 * 获得当前用户创建的未和ELB关联的实例Compute
-	 * 
-	 * @return
-	 */
-	public List<ComputeItem> getComputeByElbIsNullList() {
-		return computeItemDao.findByNetworkElbItemIsNullAndApplyUserId(getCurrentUserId());
 	}
 
 }

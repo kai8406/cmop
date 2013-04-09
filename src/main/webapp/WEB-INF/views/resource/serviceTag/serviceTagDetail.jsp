@@ -137,11 +137,7 @@
 						
 						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
-						<dd><em>关联实例</em>&nbsp; 
-							<c:forEach var="compute" items="${item.computeItems}">
-								${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
-							</c:forEach>
-						</dd>
+						<dd><em>关联实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
 						
 						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
 						
@@ -172,11 +168,9 @@
 						<dd>
 							<c:choose>
 								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-								<c:otherwise><em>关联ELB</em>&nbsp;&nbsp;
-								${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;
-								【
-								<c:forEach var="compute" items="${item.networkElbItem.computeItems}">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:forEach>
-								】
+								<c:otherwise>
+									<em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;
+									【${item.networkElbItem.mountComputes}】
 								</c:otherwise>
 							</c:choose>
 						</dd>

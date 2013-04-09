@@ -71,11 +71,10 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 		computeItem.setInnerIp(object[8] != null ? object[8].toString() : null);
 		computeItem.setOldIp(object[9] != null ? object[9].toString() : null);
 		computeItem.setNetworkEsgItem(object[10] != null ? comm.esgService.getNetworkEsgItem(Integer.valueOf(object[10].toString())) : null);
-		computeItem.setNetworkElbItem(object[11] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[11].toString())) : null);
-		computeItem.setHostName(object[12] != null ? object[12].toString() : null);
-		computeItem.setServerAlias(object[13] != null ? object[13].toString() : null);
-		computeItem.setHostServerAlias(object[14] != null ? object[14].toString() : null);
-		computeItem.setOsStorageAlias(object[15] != null ? object[15].toString() : null);
+		computeItem.setHostName(object[11] != null ? object[11].toString() : null);
+		computeItem.setServerAlias(object[12] != null ? object[12].toString() : null);
+		computeItem.setHostServerAlias(object[13] != null ? object[13].toString() : null);
+		computeItem.setOsStorageAlias(object[14] != null ? object[14].toString() : null);
 
 		return computeItem;
 
@@ -335,25 +334,6 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 
 		return monitorElb;
 
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public List<ComputeItem> getComputeItemListByResourcesAndElbIsNull(Integer userId) {
-
-		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
-
-		List list = basicUnitDao.getComputeItemListByResourcesAndElbIsNull(userId);
-
-		for (int i = 0; i < list.size(); i++) {
-
-			Object[] object = (Object[]) list.get(i);
-
-			computeItems.add(this.wrapComputeItem(object));
-
-		}
-
-		return computeItems;
 	}
 
 }

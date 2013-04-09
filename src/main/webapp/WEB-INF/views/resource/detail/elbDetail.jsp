@@ -68,7 +68,7 @@
 				<label class="control-label" for="relationCompute">关联实例</label>
 				<div class="controls">
 					<p class="help-inline plain-text">
-						<c:forEach var="compute" items="${elb.computeItems }">
+						<c:forEach var="compute" items="${elb.computeItemList }">
 							${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;
 						</c:forEach>
 					</p>

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +19,6 @@ public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 
 	@PersistenceContext
 	private EntityManager em;
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public List getComputeItemListByResourcesAndElbIsNull(Integer userId) {
-		String sqlString = "select t2.* from resources t1 inner join compute_item t2 on t1.service_id = t2.id" + " where t1.service_type = " + ResourcesConstant.ServiceType.PCS
-				+ " or t1.service_type = " + ResourcesConstant.ServiceType.ECS + "  and elb_id is null  and t1.user_id = ?";
-		logger.info(sqlString);
-		return em.createNativeQuery(sqlString).setParameter(1, userId).getResultList();
-	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -91,31 +81,6 @@ public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 				+ " and t1.user_id = ?";
 		logger.info(sqlString);
 		return em.createNativeQuery(sqlString).setParameter(1, userId).getResultList();
-	}
-
-	@Override
-	public void updateComputeItemToElbIdIsNull(Integer elbId) {
-		String sqlString = "update compute_item set elb_id = null where  elb_id = ?";
-		Query query = em.createNativeQuery(sqlString).setParameter(1, elbId);
-		logger.info(sqlString);
-		query.executeUpdate();
-	}
-
-	@Override
-	public void updateNetworkEipItemToElbIdIsNull(Integer elbId) {
-		String sqlString = "update network_eip_item set elb_id = null where  elb_id = ?";
-		Query query = em.createNativeQuery(sqlString).setParameter(1, elbId);
-		logger.info(sqlString);
-		query.executeUpdate();
-
-	}
-
-	@Override
-	public void updateNetworkEipItemToComputeIdIsNull(Integer computeId) {
-		String sqlString = "update network_eip_item set elb_id = null where  compute_id = ?";
-		Query query = em.createNativeQuery(sqlString).setParameter(1, computeId);
-		logger.info(sqlString);
-		query.executeUpdate();
 	}
 
 }

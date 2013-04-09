@@ -190,7 +190,7 @@
 						html += '<input type="hidden" id="resourcesId" name="resourcesId" value="' + resourcesId + '">';
 						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
 						html += '<dd><em>是否保持会话</em>&nbsp;&nbsp;<strong>' + data.keepSession + '</strong></dd>';
-						html += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + data.relationCompute + '</strong></dd>';
+						html += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + data.mountComputes + '</strong></dd>';
 						html += '</div>';
 						$("#resourcesDIV dl").append(html);
 					}

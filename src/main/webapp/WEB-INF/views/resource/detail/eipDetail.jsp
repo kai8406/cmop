@@ -68,11 +68,7 @@
 		 	<div class="control-group">
 				<label class="control-label" for="networkElbItem">关联ELB</label>
 				<div class="controls">
-					<p class="help-inline plain-text">${eip.networkElbItem.identifier }(${eip.networkElbItem.virtualIp})
-					【
-					<c:forEach var="compute" items="${eip.networkElbItem.computeItems}">${compute.identifier}(${compute.remark} - ${compute.innerIp})&nbsp;&nbsp;</c:forEach>
-					】
-					</p>
+					<p class="help-inline plain-text">${eip.networkElbItem.identifier }(${eip.networkElbItem.virtualIp})【${eip.networkElbItem.mountComputes}】</p>
 				</div>
 			</div>
 			</c:if>

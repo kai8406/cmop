@@ -499,15 +499,12 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					// TODO 此处还原有问题!
-					// 如果第一个ELB在变更流程中,实例被第二个ELB关联了.那么第一个ELB退回的时候就会将第二个ELB关联的实例覆盖掉!!
-
-					List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
-					for (ComputeItem computeItem : computeItems) {
-						computeItem.setNetworkElbItem(networkElbItem);
-						comm.elbService.saveOrUpdate(networkElbItem);
+					List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+					String[] computeIdArray = StringUtils.split(changeItem.getOldValue(), ",");
+					for (String computeId : computeIdArray) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
 					}
-
+					networkElbItem.setComputeItemList(computeItemList);
 				}
 
 			}

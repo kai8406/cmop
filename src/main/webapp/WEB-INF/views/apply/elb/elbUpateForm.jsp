@@ -126,7 +126,7 @@
 			
 			<!-- 生成的资源 -->
 			<div id="resourcesDIV"><dl class="dl-horizontal">
-				<c:forEach var="compute" items="${elb.computeItems }">
+				<c:forEach var="compute" items="${elb.computeItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
 						<input type="hidden" name="computeIds" id="computeIds" value="${compute.id }">
@@ -163,7 +163,7 @@
 						<th>IP地址</th>
 					</tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="item" items="${computeByElbIsNullList }">
+						<c:forEach var="item" items="${allComputes }">
 							<tr>
 								<td><input type="checkbox" value="${item.id }"></td>
 								<td>${item.identifier}</td>

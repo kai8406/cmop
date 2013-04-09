@@ -415,9 +415,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		}
 
 		// 先将新旧值关联的computeId拼装成","的字符串,再比较两个字符串是否相等.
-		List<ComputeItem> computeItems = comm.computeService.getComputeItemByElbId(networkElbItem.getId());
-
-		String oldId = Collections3.extractToString(computeItems, "id", ",");
+		String oldId = Collections3.extractToString(networkElbItem.getComputeItemList(), "id", ",");
 		String newId = computeIds != null ? StringUtils.join(computeIds, ",") : "";
 
 		if (!oldId.equals(newId)) {
@@ -425,7 +423,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String fieldName = FieldNameConstant.Storage.挂载实例.toString();
 
 			String oldValue = oldId;
-			String oldString = StorageItem.extractToString(computeItems);
+			String oldString = networkElbItem.getMountComputes();
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();

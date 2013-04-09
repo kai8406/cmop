@@ -54,9 +54,10 @@ public class ComputeItem implements java.io.Serializable {
 	private String hostServerAlias;
 	private String osStorageAlias;
 	private NetworkEsgItem networkEsgItem;
-	private NetworkElbItem networkElbItem;
 	private Set<Application> applications = new HashSet<Application>(0);
+	private Set<NetworkEipItem> networkEipItems = new HashSet<NetworkEipItem>(0);
 	private List<StorageItem> storageItemList = Lists.newArrayList();// 有序的关联对象集合
+	private List<NetworkElbItem> networkElbItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -79,7 +80,8 @@ public class ComputeItem implements java.io.Serializable {
 
 	/** full constructor */
 	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit, Integer serverType, String remark, String innerIp, String oldIp, String hostName,
-			String serverAlias, String hostServerAlias, String osStorageAlias, NetworkEsgItem networkEsgItem, NetworkElbItem networkElbItem, Set<Application> applications) {
+			String serverAlias, String hostServerAlias, String osStorageAlias, NetworkEsgItem networkEsgItem, NetworkElbItem networkElbItem, Set<Application> applications,
+			Set<NetworkEipItem> networkEipItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.computeType = computeType;
@@ -94,8 +96,8 @@ public class ComputeItem implements java.io.Serializable {
 		this.hostServerAlias = hostServerAlias;
 		this.osStorageAlias = osStorageAlias;
 		this.networkEsgItem = networkEsgItem;
-		this.networkElbItem = networkElbItem;
 		this.applications = applications;
+		this.networkEipItems = networkEipItems;
 	}
 
 	// Property accessors
@@ -240,16 +242,6 @@ public class ComputeItem implements java.io.Serializable {
 		this.networkEsgItem = networkEsgItem;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "elb_id")
-	public NetworkElbItem getNetworkElbItem() {
-		return this.networkElbItem;
-	}
-
-	public void setNetworkElbItem(NetworkElbItem networkElbItem) {
-		this.networkElbItem = networkElbItem;
-	}
-
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "computeItem")
 	public Set<Application> getApplications() {
@@ -258,6 +250,16 @@ public class ComputeItem implements java.io.Serializable {
 
 	public void setApplications(Set<Application> applications) {
 		this.applications = applications;
+	}
+
+	@JsonBackReference
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "computeItem")
+	public Set<NetworkEipItem> getNetworkEipItems() {
+		return networkEipItems;
+	}
+
+	public void setNetworkEipItems(Set<NetworkEipItem> networkEipItems) {
+		this.networkEipItems = networkEipItems;
 	}
 
 	// 多对多定义
@@ -276,6 +278,24 @@ public class ComputeItem implements java.io.Serializable {
 
 	public void setStorageItemList(List<StorageItem> storageItemList) {
 		this.storageItemList = storageItemList;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "compute_elb_item", joinColumns = { @JoinColumn(name = "compute_item_id") }, inverseJoinColumns = { @JoinColumn(name = "elb_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.SUBSELECT)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@NotFound(action = NotFoundAction.IGNORE)
+	public List<NetworkElbItem> getNetworkElbItemList() {
+		return networkElbItemList;
+	}
+
+	public void setNetworkElbItemList(List<NetworkElbItem> networkElbItemList) {
+		this.networkElbItemList = networkElbItemList;
 	}
 
 	@Override

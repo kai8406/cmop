@@ -287,6 +287,10 @@ public class RedmineUtilService extends BaseSevcie {
 								content.append(FieldNameConstant.Storage.容量空间 + ":" + BLANK).append(changeItem.getOldString()).append("GB").append(RARR).append(changeItem.getNewString()).append("GB")
 										.append(NEWLINE);
 
+							} else if (FieldNameConstant.Storage.挂载实例.toString().equals(fieldName)) {
+
+								content.append(FieldNameConstant.Storage.挂载实例 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+
 							}
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
 

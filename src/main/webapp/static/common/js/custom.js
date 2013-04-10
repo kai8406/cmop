@@ -1,11 +1,10 @@
-
 $(document).ready(function() {
 	
 	// === uniform === //
+		
+	$("input:file").uniform();
+
 	
-	 $("input:radio,input:checkbox,input:file").uniform();
-	
-	 
 	// === Tooltips === //
 	 
 	$('.tip').tooltip();	
@@ -196,4 +195,19 @@ function fillLinkType() {
 	}
 	$("#linkType").val(linkType);
 	$("#linkId").val(linkId);
+};
+
+/**
+ * windows2008R2 没有32位,只有64位.
+ * 所以当操作系统选择windows2008R2(静态常量ComputeConstant中OS_TYPE_MAP)时,32位不能选择.
+ */
+function setOsBitCheckedByOsType() {
+	var $this = $("#osType");
+	//选择windows2008R2(静态常量ComputeConstant中OS_TYPE_MAP的值为2)
+	if ($this.val() == 2) {
+		$("input[name=osBit][value=2]").attr("checked", true);
+		$("input[name=osBit][value=1]").attr('disabled', '').removeAttr('checked');
+	} else {
+		$("input[name=osBit]").removeAttr("disabled");
+	}
 };

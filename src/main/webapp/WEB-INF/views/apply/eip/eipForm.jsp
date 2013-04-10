@@ -167,7 +167,6 @@
 			//初始化
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
 			$("input[type=checkbox]").removeAttr('checked');
-			$(".checker > span").removeClass('checked'); //uniform checkbox的处理
 			selectedArray = [];
 			
 		}); 

@@ -85,7 +85,6 @@
 			//初始化
 			selectedArray = [];
 			$("input[type=checkbox]").removeAttr('checked');
-			$ModalDiv.find(".checker > span").removeClass("checked"); //uniform checkbox的处理
 		});
 		
 		
@@ -231,7 +230,6 @@
 			//初始化
 			selectedArray = [];
 			$("input[type=checkbox]").removeAttr('checked');
-			$(".checker > span").removeClass("checked"); //针对页面所有的uniform checkbox的处理
 		});
 		
 	</script>

@@ -13,6 +13,12 @@
 			
 			$("#inputForm").validate();
 			
+			//windows2008R2 没有32位,只有64位.
+			setOsBitCheckedByOsType();
+			$("#osType").on("change click",function(){
+				setOsBitCheckedByOsType();
+			});
+			
 		});
 	</script>
 	

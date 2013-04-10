@@ -37,11 +37,11 @@
 			
 			<div class="span3">
 				<label class="control-label search-text">优先级</label> 
-				<select name="search_EQ_apply.priority" class="span2">
+				<select name="search_EQ_serviceTag.priority" class="span2">
 					<option value="" selected="selected">Choose...</option>
 					<c:forEach var="map" items="${priorityMap }">
 						<option value="${map.key }" 
-							<c:if test="${map.key == param.search_EQ_apply.priority }">
+							<c:if test="${map.key == param.search_EQ_serviceTag.priority }">
 								selected="selected"
 							</c:if>
 						>${map.value }</option>

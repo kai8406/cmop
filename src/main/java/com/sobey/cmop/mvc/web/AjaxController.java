@@ -106,6 +106,19 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
+	 * Ajax请求校验HostServer DisplayName是否唯一.
+	 * 
+	 * @param oldDisplayName
+	 * @param displayName
+	 * @return
+	 */
+	@RequestMapping(value = "checkDisplayName")
+	@ResponseBody
+	public String checkDisplayName(@RequestParam("oldDisplayName") String oldDisplayName, @RequestParam("displayName") String displayName) {
+		return displayName.equals(oldDisplayName) || comm.hostServerService.findByDisplayName(displayName) == null ? "true" : "false";
+	}
+
+	/**
 	 * 根据条件返回Json格式的资源Resources List .
 	 * 
 	 * @param serviceType

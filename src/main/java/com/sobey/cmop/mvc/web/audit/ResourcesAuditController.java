@@ -78,11 +78,17 @@ public class ResourcesAuditController extends BaseController {
 	}
 
 	/**
-	 * 跳转到Resources审批页面.<br>
+	 * 跳转到Resources审批页面.
+	 * 
+	 * <pre>
+	 *  通过userId来区分页面或邮件进入.
+	 *  页面进来userId为0,这个时候取当前UserId.
+	 *  邮件进来的UserId就不为0.
+	 * </pre>
 	 * 
 	 * @param userId
-	 *            通过userId来区分页面或邮件进入.<br>
-	 *            页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
+	 * 
+	 * 
 	 */
 	@RequestMapping(value = "/resources/{id}", method = RequestMethod.GET)
 	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,

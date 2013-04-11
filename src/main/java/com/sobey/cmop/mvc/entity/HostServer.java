@@ -122,7 +122,7 @@ public class HostServer implements java.io.Serializable {
 		this.ipAddress = ipAddress;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "hostServer")
+	@OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "hostServer")
 	public Set<IpPool> getIpPools() {
 		return this.ipPools;
 	}

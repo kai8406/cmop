@@ -120,7 +120,7 @@
 			</table>
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/update/${elb.apply.id}/" class="btn">返回</a>
+				<a href="${ctx}/apply/update/${eip.apply.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" onclick="fillLinkType()" value="提交">
 			</div>
 			

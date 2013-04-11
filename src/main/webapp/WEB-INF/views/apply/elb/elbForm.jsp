@@ -51,7 +51,7 @@
 		    var $ModalDiv = $(this).parent().parent();
 		    var $CheckedIds = $ModalDiv.find("tbody input:checked");
 		    var keepSession = $("input[name='keepSessionRadio']:checked").val();
-		    var keepSessionText = $("input[name='keepSessionRadio']:checked").parent().parent().parent().find("span.radioText").text();
+		    var keepSessionText = $("input[name='keepSessionRadio']:checked").next("span.radioText").text();
 			
 			//Step.2 遍历页面,将存在于页面的computeId放入临时数组selectedArray中
 			

@@ -92,7 +92,7 @@
 					linkType = "",
 					linkId = "",
 					str = "";
-				var ispTypText = $this.parent().parent().parent().find("span.checkboxText").text();	//ISP的文本
+				var ispTypText = $this.next("span.checkboxText").text();	//ISP的文本
 				
 				//step.4 判断页面选中的是哪种关联类型( 0:ELB ; 1: 实例),并按不同的关联类型生成不同的HTML代码.
 				if ($elbSelect.val() != undefined) {

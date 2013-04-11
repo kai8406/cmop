@@ -7,10 +7,13 @@ import java.util.Map;
 
 import org.onecmdb.core.utils.bean.CiBean;
 import org.onecmdb.core.utils.bean.ValueBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
+import com.sobey.cmop.mvc.constant.HostServerConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
@@ -18,6 +21,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.EsgRuleItem;
+import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
@@ -29,8 +33,16 @@ import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.framework.utils.StringCommonUtils;
 
+/**
+ * 资源的oneCMDB操作类.用于对资源oneCMDB的写入,删除,更新.
+ * 
+ * @author liukai
+ * 
+ */
 @Service
 public class OneCmdbUtilService extends BaseSevcie {
+
+	private static Logger logger = LoggerFactory.getLogger(OneCmdbUtilService.class);
 
 	// ===========ServiceTag ===========//
 	/**
@@ -131,10 +143,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			ci = new CiBean("PCS", computeItem.getIdentifier(), false);
 
-			// TODO 暂时注释,带服务器管理完善再解除
-			ci.addAttributeValue(new ValueBean("Server", "Server1344301433639", true));
-			// ci.addAttributeValue(new ValueBean("Server",
-			// computeItem.getServerAlias(), true));
+			ci.addAttributeValue(new ValueBean("Server", "Server" + computeItem.getServerAlias(), true));
 
 		} else {
 
@@ -154,9 +163,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			ci = new CiBean("ECS", computeItem.getIdentifier(), false);
 
-			// TODO 暂时注释,带服务器管理完善再解除
-			// ci.addAttributeValue(new ValueBean("HostServer",
-			// computeItem.getHostServerAlias(), true));
+			ci.addAttributeValue(new ValueBean("HostServer", "Server" + computeItem.getHostServerAlias(), true));
 			ci.addAttributeValue(new ValueBean("OsStorage", computeItem.getOsStorageAlias(), true));
 			ci.addAttributeValue(new ValueBean("MemSize", MemSize, false));
 			ci.addAttributeValue(new ValueBean("CoreNum", CoreNum, false));
@@ -684,6 +691,184 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ciBeanList.add(router);
 			OneCmdbService.delete(ciBeanList);
 		}
+	}
+
+	// =========== HostServer ===========//
+
+	/**
+	 * 新增或更新HostServer至oneCMDB(oneCMDB中同时要插入ServerPort相关的数据)
+	 * 
+	 * @param HostServer
+	 * @return
+	 */
+	public boolean saveHostServerToOneCMDB(HostServer hostServer) {
+
+		// 分拆displayName,获得 company, model , rack , site 的信息.
+		String displayName = hostServer.getDisplayName();
+		String company = displayName.split(" ")[0];
+		String model = displayName.split(" ")[1];
+		String rack = displayName.split(" ")[2].split("-")[0];
+		String site = displayName.substring(displayName.split("-")[0].length() + 1, displayName.length());
+
+		List<CiBean> ciList = new ArrayList<CiBean>();
+
+		try {
+
+			CiBean router = new CiBean("Server", "Server" + hostServer.getAlias(), false);
+			router.addAttributeValue(new ValueBean("Location", hostServer.getLocationAlias(), true));
+			router.addAttributeValue(new ValueBean("Company", getOneCMDBCompany(company), true));
+			router.addAttributeValue(new ValueBean("Model", model, false));
+			router.addAttributeValue(new ValueBean("Type", HostServerConstant.HostServerType.map.get(hostServer.getServerType()), false));
+			router.addAttributeValue(new ValueBean("Rack", getOneCMDBRack(rack), true));// 架
+			router.addAttributeValue(new ValueBean("Site", site, false));
+			router.addAttributeValue(new ValueBean("HostName", hostServer.getDisplayName(), false));
+			ciList.add(router);
+
+			OneCmdbService.update(ciList);
+
+			// ServerPort
+			this.saveServerPortToOneCMDB(hostServer);
+
+		} catch (Exception e) {
+			logger.error("HostServer 插入oneCMDB失败!");
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * 删除oneCMDB中的HostServer(包括oneCMDB中关联的ServerPort)
+	 * 
+	 * @param HostServer
+	 * @return
+	 */
+	public void deleteHostServerToOneCMDB(HostServer hostServer) {
+
+		if (hostServer != null) {
+
+			List<CiBean> ciBeanList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("Server", "Server" + hostServer.getAlias(), false);
+			ciBeanList.add(router);
+			OneCmdbService.delete(ciBeanList);
+
+			// ServerPort
+			this.deleteServerPortToOneCMDB(hostServer);
+		}
+	}
+
+	// =========== ServerPort ===========//
+
+	/**
+	 * 新增或更新ServerPort至oneCMDB
+	 * 
+	 * @param hostServer
+	 * @return
+	 */
+	public boolean saveServerPortToOneCMDB(HostServer hostServer) {
+
+		List<CiBean> ciBeanList = new ArrayList<CiBean>();
+
+		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getIpAddress(), false);
+		ci.addAttributeValue(new ValueBean("Location", hostServer.getLocationAlias(), true));
+		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
+		ci.addAttributeValue(new ValueBean("Hardware", "Server" + hostServer.getAlias(), true));
+		ciBeanList.add(ci);
+
+		return OneCmdbService.update(ciBeanList);
+	}
+
+	/**
+	 * 删除oneCMDB中的ServerPort
+	 * 
+	 * @param hostServer
+	 */
+	public void deleteServerPortToOneCMDB(HostServer hostServer) {
+		if (hostServer != null) {
+			List<CiBean> ciBeanList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("ServerPort", "ServerPort" + hostServer.getIpAddress(), false);
+			ciBeanList.add(router);
+			OneCmdbService.delete(ciBeanList);
+		}
+	}
+
+	/**
+	 * 根据Company名字获得oneCMDB中的alias,维护此配置需要同步oneCMDB中的数据.
+	 * 
+	 * @param company
+	 *            厂商名字
+	 * @return
+	 * @throws Exception
+	 */
+	private static String getOneCMDBCompany(String company) throws Exception {
+		String alias = "";
+		if (company.equals("HP")) {
+			alias = "Company1341527487997";
+		} else if (company.equals("Dell")) {
+			alias = "Dell";
+		} else if (company.equals("H3c")) {
+			alias = "Company1341912600253";
+		} else if (company.equals("Cisco")) {
+			alias = "Company1341912570920";
+		} else if (company.equals("WD")) {
+			alias = "Company1343809399841";
+		}
+		if (!alias.equals("")) {
+			return alias;
+		}
+		throw new Exception("--->Company在OneCMDB中不是有效值：" + company);
+	}
+
+	/**
+	 * 根据Rack名字获得oneCMDB中的alias,维护此配置需要同步oneCMDB中的数据.
+	 * 
+	 * @param rack
+	 *            机架
+	 * @return
+	 * @throws Exception
+	 */
+	private static String getOneCMDBRack(String rack) throws Exception {
+		String alias = "";
+		if (rack.equals("1-4")) {
+			alias = "Rack1345187953658";
+		} else if (rack.equals("0411")) {
+			alias = "Rack1343096465953";
+		} else if (rack.equals("0412")) {
+			alias = "Rack1343617751763";
+		} else if (rack.equals("0408")) {
+			alias = "Rack1343096385883";
+		} else if (rack.equals("0415")) {
+			alias = "Rack1344302318393";
+		} else if (rack.equals("A1-3")) {
+			alias = "Rack1345186214083";
+		} else if (rack.equals("0410")) {
+			alias = "Rack1343096438816";
+		} else if (rack.equals("1-3")) {
+			alias = "Rack1345441851190";
+		} else if (rack.equals("0417")) {
+			alias = "Rack1343171457944";
+		} else if (rack.equals("0413")) {
+			alias = "Rack1344238184126";
+		} else if (rack.equals("0407")) {
+			alias = "Rack1343091982919";
+		} else if (rack.equals("0414")) {
+			alias = "Rack1344301453367";
+		} else if (rack.equals("0409")) {
+			alias = "Rack1343096413165";
+		} else if (rack.equals("0419")) {
+			alias = "Rack1344210485736";
+		} else if (rack.equals("0418")) {
+			alias = "Rack1343172542466";
+		} else if (rack.equals("0416")) {
+			alias = "Rack1344305668703";
+		} else if (rack.equals("0406")) {
+			alias = "Rack1344305565649";
+		}
+		if (!alias.equals("")) {
+			return alias;
+		}
+		throw new Exception("--->Rack在OneCMDB中不是有效值：" + rack);
 	}
 
 	/**

@@ -348,11 +348,11 @@ public class AuditService extends BaseSevcie {
 				Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
 				// 初始化第一接收人
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
-				if (apply.getTitle().indexOf(ApplyConstant.ServiceType.MDN.toString()) > 0) {
+				if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
 					mgr = RedmineService.MDN_REDMINE_ASSIGNEE_REDMINEMANAGER;
-				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.云生产.toString()) > 0) {
+				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
 					mgr = RedmineService.CP_REDMINE_ASSIGNEE_REDMINEMANAGER;
-				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.监控.toString()) > 0) {
+				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
 					mgr = RedmineService.MONITOR_REDMINE_ASSIGNEE_REDMINEMANAGER;
 				}
 
@@ -363,6 +363,13 @@ public class AuditService extends BaseSevcie {
 				if (isCreated) { // 写入Redmine成功
 
 					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
+					if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
+						assignee = RedmineService.MDN_REDMINE_ASSIGNEE;
+					} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
+						assignee = RedmineService.CP_REDMINE_ASSIGNEE;
+					} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
+						assignee = RedmineService.MONITOR_REDMINE_ASSIGNEE;
+					}
 					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
 
 					RedmineIssue redmineIssue = new RedmineIssue();

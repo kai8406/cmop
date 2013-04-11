@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.dao.HostServerDao;
 import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.HostServer;
+import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.service.vm.HostTree;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
@@ -41,29 +42,135 @@ public class HostServerService extends BaseSevcie {
 	@Resource
 	private IpPoolDaoCustom ipPoolDaoCustom;
 
+	/**
+	 * 新增,保存HostServer
+	 * 
+	 * @param hostServer
+	 * @return
+	 */
 	@Transactional(readOnly = false)
-	public HostServer save(HostServer hostServer) {
+	public HostServer saveOrUpdate(HostServer hostServer) {
 		return hostServerDao.save(hostServer);
 	}
 
-	public List<HostServer> findAll() {
-		return (List<HostServer>) hostServerDao.findAll();
-	}
-
-	public HostServer findById(Integer id) {
+	public HostServer getHostServer(Integer id) {
 		return hostServerDao.findOne(id);
 	}
 
+	/**
+	 * 删除HostServer和oneCMDB的相关数据,同时初始化HostServer关联的IP.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	public boolean delete(Integer id) {
+
+		HostServer hostServer = this.getHostServer(id);
+
+		// 初始化IP.
+		comm.ipPoolService.initIpPool(hostServer.getIpAddress());
+
+		// 删除oneCMDB中的数据
+		comm.oneCmdbUtilService.deleteHostServerToOneCMDB(hostServer);
+
 		hostServerDao.delete(id);
 		return true;
+	}
+
+	/**
+	 * 新增HostServer
+	 * 
+	 * <pre>
+	 * 1.保存服务器.
+	 * 2.将分配的IP状态设置为已使用状态.
+	 * 3.同步数据至oneCMDB.
+	 * </pre>
+	 * 
+	 * @param hostServer
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public HostServer addHostServer(String displayName, String ipAddress, String locationAlias, Integer serverType) {
+
+		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
+
+		// step.1
+		String alias = "Host" + Identities.uuid2();
+
+		HostServer hostServer = new HostServer();
+
+		hostServer.setAlias(alias);
+		hostServer.setCreateTime(new Date());
+		hostServer.setDisplayName(displayName);
+		hostServer.setIpAddress(ipAddress);
+		hostServer.setLocationAlias(locationAlias);
+		hostServer.setPoolType(ipPool.getPoolType());
+		hostServer.setServerType(serverType);
+
+		// step.2 更改IP状态为 已使用
+		ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+		ipPool.setHostServer(hostServer);
+		comm.ipPoolService.saveOrUpdate(ipPool);
+
+		this.saveOrUpdate(hostServer);
+
+		// step.3 同步oneCMDB
+		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+
+		return hostServer;
+	}
+
+	/**
+	 * 更新HostServer
+	 * 
+	 * <pre>
+	 * 1.对IP进行处理(如果IP改变,则将改变前的IP状态改为未使用,改变后的IP设置为已使用)
+	 * 2.保存服务器信息.
+	 * 3.同步数据至oneCMDB.
+	 * </pre>
+	 * 
+	 * @param hostServer
+	 * @param ipAddress
+	 *            修改后的IP
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public HostServer updateHostServer(Integer id, String displayName, String ipAddress, String locationAlias, Integer serverType) {
+
+		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
+
+		HostServer hostServer = this.getHostServer(id);
+
+		// step.1 如果IP进行了修改,则初始化以前老的ip
+		if (!hostServer.getIpAddress().equals(ipAddress)) {
+
+			comm.ipPoolService.initIpPool(hostServer.getIpAddress());
+
+			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+			ipPool.setHostServer(hostServer);
+			comm.ipPoolService.saveOrUpdate(ipPool);
+		}
+
+		// step.2 保存服务器信息.
+		hostServer.setDisplayName(displayName);
+		hostServer.setIpAddress(ipAddress);
+		hostServer.setLocationAlias(locationAlias);
+		hostServer.setPoolType(ipPool.getPoolType());
+		hostServer.setServerType(serverType);
+
+		this.saveOrUpdate(hostServer);
+
+		// step.3 同步oneCMDB
+		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+
+		return hostServer;
 	}
 
 	@Transactional(readOnly = false)
 	public boolean saveHostServer(HostServer hostServer) {
 		if (hostServer.getId() != null) { // 更新新旧IP状态
-			HostServer oldHostServer = findById(hostServer.getId());
+			HostServer oldHostServer = getHostServer(hostServer.getId());
 			if (!oldHostServer.getIpAddress().equals(hostServer.getIpAddress())) {
 				// 更新旧IP状态：未使用
 				comm.ipPoolService.updateIpPoolByIpAddress(oldHostServer.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger(), null);
@@ -81,50 +188,6 @@ public class HostServerService extends BaseSevcie {
 
 		// 保存服务器
 		hostServerDao.save(hostServer);
-
-		// 将IP插入oneCMDB
-		// String ipPool =
-		// ipPoolManager.getOneCMDBPoolName(hostServer.getPoolType());
-		// String vlan =
-		// ipPoolManager.getOneCMDBVlanName(hostServer.getPoolType());
-		// auditManager.saveIpToOnecmdb(ipPool, hostServer.getIpAddress(),
-		// vlan);
-
-		// List<CiBean> ciList = new ArrayList<CiBean>();
-		// CiBean ci = new CiBean("ServerPort", "ServerPort" +
-		// hostServer.getIpAddress(), false);
-		// ci.addAttributeValue(new ValueBean("Location",
-		// hostServer.getLocationAlias(), true));
-		// ci.addAttributeValue(new ValueBean("IPAddress", ipPool + "-" +
-		// hostServer.getIpAddress(), true));
-		// ci.addAttributeValue(new ValueBean("Hardware", "Server" +
-		// hostServer.getAlias(), true));
-		// ciList.add(ci);
-		// OneCmdbUitl.update(ciList);
-
-		// 更新OneCMDB中的Server
-		// List<CiBean> ciBeanList = new ArrayList<CiBean>();
-		// try {
-		// String displayName = hostServer.getDisplayName();
-		// String company = displayName.split(" ")[0];
-		// String model = displayName.split(" ")[1];
-		// String rack = displayName.split(" ")[2].split("-")[0];
-		// String site =
-		// displayName.substring(displayName.split("-")[0].length() + 1,
-		// displayName.length());
-		// CiBean router = new CiBean("Server", "Server" + alias, false);
-		// router.addAttributeValue(new ValueBean("Company",
-		// PoiUtil.getOneCMDBCompany(company), true));
-		// router.addAttributeValue(new ValueBean("Model", model, false)); // 规格
-		// router.addAttributeValue(new ValueBean("Rack",
-		// PoiUtil.getOneCMDBRack(rack), true)); // 架
-		// router.addAttributeValue(new ValueBean("Site", site, false));
-		// ciBeanList.add(router);
-		// OneCmdbUitl.update(ciBeanList);
-		// } catch (Exception e) {
-		// System.out.println("插入oneCMDB失败!");
-		// e.printStackTrace();
-		// }
 
 		return true;
 	}

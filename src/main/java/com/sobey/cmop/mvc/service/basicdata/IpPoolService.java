@@ -38,6 +38,21 @@ public class IpPoolService extends BaseSevcie {
 	@Resource
 	private IpPoolDaoCustom customDao;
 
+	public IpPool getIpPool(Integer id) {
+		return ipPoolDao.findOne(id);
+	}
+
+	/**
+	 * 新增,更新IpPool
+	 * 
+	 * @param ipPool
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public IpPool saveOrUpdate(IpPool ipPool) {
+		return ipPoolDao.save(ipPool);
+	}
+
 	/**
 	 * IP分页查询,值显示当前用户创建的EIP.
 	 * 
@@ -91,7 +106,7 @@ public class IpPoolService extends BaseSevcie {
 	}
 
 	/**
-	 * 保存IP
+	 * 保存IP(可以单个,也可以多条),并将IP同步至oneCMDB
 	 * 
 	 * @param ipAddressList
 	 *            ip列表
@@ -109,6 +124,7 @@ public class IpPoolService extends BaseSevcie {
 			IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
 			ipPoolList.add(ipPool);
 		}
+
 		ipPoolDao.save(ipPoolList);
 
 		// 同步至oneCMDB
@@ -129,10 +145,20 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveIpPool(String ipAddress, Integer poolType, Integer ipStatus, Vlan vlan, HostServer hostServer) {
+
+		// TODO 待优化,最终目标是删除此方法.
+
 		IpPool ipPool = new IpPool(poolType, vlan, ipAddress, ipStatus, new Date());
 		ipPool.setHostServer(hostServer);
-		ipPoolDao.save(ipPool);
+		this.saveOrUpdate(ipPool);
 		return true;
+	}
+
+	@Transactional(readOnly = false)
+	public boolean saveIpPool(String ipAddress, Integer poolType, Integer ipStatus, Vlan vlan) {
+		// TODO 待优化,最终目标是删除此方法.
+		return this.saveIpPool(ipAddress, poolType, ipStatus, vlan, null);
+
 	}
 
 	/**
@@ -151,14 +177,19 @@ public class IpPoolService extends BaseSevcie {
 		ipPoolDao.save(ipPool);
 	}
 
+	/**
+	 * 删除IP(同时删除oneCMDB下的ip)
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Transactional(readOnly = false)
-	public boolean deleteIpPool(Integer id) {
+	public void deleteIpPool(Integer id) {
 
 		// 删除oneCMDB下的ip
-		comm.oneCmdbUtilService.deleteIpPoolToOneCMDB(this.getIpPoolByIpId(id));
+		comm.oneCmdbUtilService.deleteIpPoolToOneCMDB(this.getIpPool(id));
 
 		ipPoolDao.delete(id);
-		return true;
 	}
 
 	/**
@@ -207,48 +238,48 @@ public class IpPoolService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void updateIpPoolByIpAddress(String ipAddress, Integer status) {
-		List<IpPool> updateItem = ipPoolDao.findByIpAddress(ipAddress);
-		if (updateItem != null && updateItem.size() > 0) {
-			updateItem.get(0).setStatus(status);
-			ipPoolDao.save(updateItem.get(0));
+		// TODO 待优化,最终目标是删除此方法.
+		IpPool ipPool = ipPoolDao.findByIpAddress(ipAddress);
+		if (ipPool != null) {
+
+			ipPool.setStatus(status);
+			ipPoolDao.save(ipPool);
 		}
 	}
 
 	@Transactional(readOnly = false)
 	public void updateIpPoolByIpAddress(String ipAddress, Integer status, HostServer hostServer) {
-		List<IpPool> ipPool = ipPoolDao.findByIpAddress(ipAddress);
-		if (ipPool != null && ipPool.size() > 0) {
-			ipPool.get(0).setStatus(status);
-			ipPool.get(0).setHostServer(hostServer);
-			ipPoolDao.save(ipPool.get(0));
+		// TODO 待优化,最终目标是删除此方法.
+		IpPool ipPool = ipPoolDao.findByIpAddress(ipAddress);
+		if (ipPool != null) {
+			ipPool.setStatus(status);
+			ipPool.setHostServer(hostServer);
+			ipPoolDao.save(ipPool);
+
 		}
 	}
 
 	/**
-	 * 根据ipAddress获得指定的IpPool 存在各个IDC相同网段IP的情况，暂未处理。只要不涉及到东莞和沈阳的生产资源申请就不会有问题。
+	 * 初始化IP,将IP的状态设置为未使用状态,关联的HostServer设置为null.
+	 * 
+	 * @param ipAddress
+	 * @return
+	 */
+	public IpPool initIpPool(String ipAddress) {
+		IpPool ipPool = ipPoolDao.findByIpAddress(ipAddress);
+		ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
+		ipPool.setHostServer(null);
+		return this.saveOrUpdate(ipPool);
+	}
+
+	/**
+	 * 根据ipAddress获得指定的IpPool .
 	 * 
 	 * @param ipAddress
 	 * @return
 	 */
 	public IpPool findIpPoolByIpAddress(String ipAddress) {
-		List<IpPool> ipPoolList = ipPoolDao.findByIpAddress(ipAddress);
-		if (ipPoolList != null && ipPoolList.size() > 0) {
-			// 以下判断只针对导入时使用！！由于导入时先导入的东莞，所以取0
-			// String dongGuanIp =
-			// "192.168.0.6,192.168.0.9,192.168.0.10,192.168.0.240,192.168.0.239";
-			// String shenYangIp =
-			// "192.168.0.109,192.168.0.101,192.168.0.105,192.168.0.119,192.168.0.20";
-			// if (shenYangIp.indexOf(ipAddress)>=0) {
-			// return ipPoolList.get(1); // 取沈阳IP
-			// }
-			// 如果是其他操作，默认都先从东莞取
-			return ipPoolList.get(0); // 取东莞IP
-		}
-		return null;
-	}
-
-	public IpPool getIpPoolByIpId(Integer id) {
-		return ipPoolDao.findOne(id);
+		return ipPoolDao.findByIpAddress(ipAddress);
 	}
 
 	/**

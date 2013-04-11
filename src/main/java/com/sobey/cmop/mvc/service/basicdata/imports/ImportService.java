@@ -125,7 +125,7 @@ public class ImportService extends BaseSevcie {
 			hostServer.setAlias(Identities.uuid2());
 			hostServer.setIpAddress(serverInfo.getHostIp());
 			hostServer.setLocationAlias(comm.locationService.getLocation(2).getAlias()); // IDC别名默认西安IDC
-			hostServer = comm.hostServerService.save(hostServer);
+			hostServer = comm.hostServerService.saveOrUpdate(hostServer);
 			hostServerList.add(hostServer);
 		} else {
 			System.out.println("已存在的宿主机：" + serverInfo.getDisplayName());
@@ -142,7 +142,7 @@ public class ImportService extends BaseSevcie {
 	private void updateHostServer(List<HostServer> hostServerList, Map map) {
 		for (HostServer hostServer : hostServerList) {
 			hostServer.setAlias((String) map.get(hostServer.getDisplayName()));
-			comm.hostServerService.save(hostServer);
+			comm.hostServerService.saveOrUpdate(hostServer);
 		}
 	}
 

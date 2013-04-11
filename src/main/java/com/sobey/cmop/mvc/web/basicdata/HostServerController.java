@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.web.basicdata;
 
-import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -14,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.entity.HostServer;
-import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.Servlets;
 
+/**
+ * HostServerController负责服务器主机的管理
+ * 
+ * @author liukai
+ * 
+ */
 @Controller
 @RequestMapping(value = "/basicdata/host")
 public class HostServerController extends BaseController {
@@ -47,20 +50,17 @@ public class HostServerController extends BaseController {
 	}
 
 	/**
-	 * 新增
+	 * 新增HostServer
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(HostServer hostServer, RedirectAttributes redirectAttributes) {
-		String alias = "Host" + Identities.uuid2();
-		hostServer.setAlias(alias);
-		hostServer.setCreateTime(new Date());
-		boolean flag = comm.hostServerService.saveHostServer(hostServer);
-		// 更改IP状态为 已使用
-		comm.ipPoolService.updateIpPoolByIpAddress(hostServer.getIpAddress(), IpPoolConstant.IpStatus.已使用.toInteger(), null);
+	public String save(@RequestParam(value = "displayName") String displayName, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "locationAlias") String locationAlias,
+			@RequestParam(value = "serverType") Integer serverType, RedirectAttributes redirectAttributes) {
 
-		if (flag) {
+		HostServer flag = comm.hostServerService.addHostServer(displayName, ipAddress, locationAlias, serverType);
+
+		if (flag != null) {
 			redirectAttributes.addFlashAttribute("message", "创建服务器成功！");
 			return REDIRECT_SUCCESS_URL;
 		} else {
@@ -69,53 +69,50 @@ public class HostServerController extends BaseController {
 		}
 	}
 
+	/**
+	 * 跳转至修改页面
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("hostServer", comm.hostServerService.findById(id));
+		model.addAttribute("hostServer", comm.hostServerService.getHostServer(id));
 		return "basicdata/host/hostForm";
 	}
 
+	/**
+	 * 修改HostServer
+	 * 
+	 * @param hostServer
+	 * @param redirectAttributes
+	 * @return
+	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(HostServer hostServer, RedirectAttributes redirectAttributes) {
-		hostServer.setCreateTime(new Date());
-		comm.hostServerService.saveHostServer(hostServer);
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "displayName") String displayName, @RequestParam(value = "ipAddress") String ipAddress,
+			@RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "serverType") Integer serverType, RedirectAttributes redirectAttributes) {
+
+		comm.hostServerService.updateHostServer(id, displayName, ipAddress, locationAlias, serverType);
+
 		redirectAttributes.addFlashAttribute("message", "修改成功");
+
 		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		// HostServer hostServer = comm.hostServerService.findById(id);
-		// String ipPoolName =
-		// ipPoolManager.getOneCMDBPoolName(hostServer.getPoolType());
-		// // 删除oneCMDB下的ip
-		// List<CiBean> ciBeanList = new ArrayList<CiBean>();
-		// CiBean serverRouter = new CiBean("Server", "Server" +
-		// hostServer.getAlias(), false); // Server
-		// ciBeanList.add(serverRouter);
-		// CiBean serverPortRouter = new CiBean("ServerPort", "ServerPort" +
-		// hostServer.getIpAddress(), false); // ServerPort
-		// CiBean ipPoolRouter = new CiBean(ipPoolName, ipPoolName + "-" +
-		// hostServer.getIpAddress(), false); // IpPool
-		// ciBeanList.add(serverPortRouter);
-		// ciBeanList.add(ipPoolRouter);
-		// OneCmdbUitl.delete(ciBeanList);
-		//
-		// ipPoolManager.initIpPoolStatus(hostServer.getIpAddress());
 
 		boolean flag = comm.hostServerService.delete(id);
-		if (flag) {
-			redirectAttributes.addFlashAttribute("message", "删除服务器成功！");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "删除服务器失败！");
-		}
+
+		redirectAttributes.addFlashAttribute("message", flag ? "删除服务器成功！" : "删除服务器失败！");
 
 		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequestMapping(value = { "ecs/{id}" })
 	public String ecs(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("hostServer", comm.hostServerService.findById(id));
+		model.addAttribute("hostServer", comm.hostServerService.getHostServer(id));
 		model.addAttribute("ecsList", comm.hostServerService.getEcsByHost(id));
 		return "basicdata/host/ecsList";
 	}

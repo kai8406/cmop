@@ -80,7 +80,7 @@ public class IpPoolController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("ipPool", comm.ipPoolService.getIpPoolByIpId(id));
+		model.addAttribute("ipPool", comm.ipPoolService.getIpPool(id));
 		return createForm(model);
 	}
 
@@ -89,7 +89,7 @@ public class IpPoolController extends BaseController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@ModelAttribute("id") Integer id, @RequestParam(value = "status") Integer status, RedirectAttributes redirectAttributes) {
-		IpPool ipPool = comm.ipPoolService.getIpPoolByIpId(id);
+		IpPool ipPool = comm.ipPoolService.getIpPool(id);
 		ipPool.setStatus(status);
 		comm.ipPoolService.saveIpPool(ipPool);
 
@@ -99,19 +99,15 @@ public class IpPoolController extends BaseController {
 	}
 
 	/**
-	 * 删除
+	 * 删除IP
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		boolean flag = comm.ipPoolService.deleteIpPool(id);
 
-		if (flag) {
-			redirectAttributes.addFlashAttribute("message", "删除IP成功");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "不能删除默认IP");
-		}
+		comm.ipPoolService.deleteIpPool(id);
+
+		redirectAttributes.addFlashAttribute("message", "删除IP成功");
 
 		return REDIRECT_SUCCESS_URL;
 	}
-
 }

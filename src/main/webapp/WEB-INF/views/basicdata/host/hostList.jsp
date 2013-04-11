@@ -46,7 +46,7 @@
 	</form>
 	
 	<div class="row">
-		<div class="span4">	<a class="btn" href="${ctx}/basicdata/host/save/">创建服务器</a></div>
+		<div class="span4"><a class="btn" href="${ctx}/basicdata/host/save/">创建服务器</a></div>
 		<div class="pull-right"><tags:singlePage page="${page}" /></div>
 	</div>
 

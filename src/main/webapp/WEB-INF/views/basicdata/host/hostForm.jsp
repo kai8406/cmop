@@ -2,90 +2,133 @@
 <%@ include file="/WEB-INF/layouts/taglib.jsp"%>
 <html>
 <head>
-<title>服务器管理</title>
-<script>
-$(document).ready(function() {
-	$("ul#navbar li#basicdata").addClass("active");
 
-	$("#inputForm").validate({
-		rules:{
-			name:{
-				remote: "${ctx}/ajax/checkDisplayName?oldDisplayName=${hostServer.displayName}"
-			},
-			permissionArray:"required"
-		},
-		messages:{
-			name:{remote:"服务器名称已存在"}
+	<title>服务器管理</title>
+
+	<script>
+		$(document).ready(function() {
+			
+			$("ul#navbar li#basicdata").addClass("active");
+			
+			changeLocation();
+		
+			$("#inputForm").validate({
+				rules:{
+					displayName:{
+						remote: "${ctx}/ajax/checkDisplayName?oldDisplayName=${hostServer.displayName}"
+					}
+				},
+				messages:{
+					displayName:{remote:"服务器名称已存在"}
+				}
+			});
+			
+		});
+		
+		function changeLocation() {
+			$.ajax({
+				type: "GET",
+				url: "${ctx}/ajax/getVlanByLocationAlias?locationAlias=" + $('#locationAlias').val(),
+				dataType: "json",
+				success: function(data) {
+					$("#vlan").empty();
+					var html = "";
+					for (var key in data) {
+						html += ("<option value='" + key + "'>" + data[key] + "</option>");
+					}
+					$("#vlan").append(html);
+					changeVlan();
+				}
+			});
 		}
-	});
-});
-</script>
+		
+		function changeVlan() {
+			$.ajax({
+				type: "GET",
+				url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + $("#vlan").val(),
+				dataType: "json",
+				success: function(data) {
+					$("#ipAddress").empty();
+					var html = "<option value=''></option>";
+					var ip = $("#hostIpAddress").val();
+					for (var i = 0; i < data.length; i++) {
+						html += "<option value='" + data[i].ipAddress + "'>" + data[i].ipAddress + "</option>";
+					}
+					
+					//如果ip不为"",插入hostServer本身的ip.
+					if (ip != "") {
+						html += "<option selected='selected' value='" + ip + "'>" + ip + "</option>";
+					}
+					$("#ipAddress").append(html);
+				}
+			});
+		}
+	</script>
+	
 </head>
 
 <body>
 
+	<style>body{background-color: #f5f5f5;}</style>
+
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
-		<input type="hidden" name="id" value="${hostServer.id}"/>
-		<input type="hidden" name="alias" value="${hostServer.alias}">
+	
+		<input type="hidden" name="id" value="${hostServer.id}">
+		<input type="hidden" id="hostIpAddress" value="${hostServer.ipAddress}">
 		
 		<fieldset>
-			<legend><small>服务器<c:if test="${not empty hostServer.id}">修改</c:if><c:if test="${ empty hostServer.id}">新增</c:if></small></legend>
+		
+			<legend><small>
+				<c:choose><c:when test="${not empty hostServer.id }">修改</c:when><c:otherwise>创建</c:otherwise></c:choose>服务器
+			</small></legend>
 			
 			<div class="control-group">
-				<label class="control-label">服务器名称</label>
+				<label class="control-label" for="displayName">服务器名称</label>
 				<div class="controls">
-					<input type="text" id="displayName" name="displayName" size="50" class="required" value="${hostServer.displayName}"/>
-					<span class="help-inline">组成格式：Company Model Rack-Site.例如:HP DL2000 0416-1-1
-					</span>
+					<input type="text" id="displayName" name="displayName" value="${hostServer.displayName}" 
+					class="required hostNameValidate" maxlength="45" placeholder="..格式如:HP DL2000 0416-1-1">
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label">IDC</label>
+				<label class="control-label" for="serverType">服务器类型</label>
 				<div class="controls">
-					<select name="locationAlias" class="required">
-						<c:forEach var="item" items="${locationList}">
-							<option <c:if test="${item.alias == hostServer.locationAlias }">selected="selected"</c:if>
-							value="${item.alias }">${item.name }</option>
+					<select id="serverType" name="serverType" class="required">
+						<c:forEach var="map" items="${hostServerTypeMap}">
+						<option <c:if test="${map.key == hostServer.serverType}">selected="selected"</c:if>
+						 	value="${map.key}">${map.value}</option>
 						</c:forEach>
 					</select>
-					<span class="help-inline">请选择IDC</span>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="locationAlias">IDC</label>
+				<div class="controls">
+					<select id="locationAlias" name="locationAlias" class="required" onchange="changeLocation()">
+						<c:forEach var="item" items="${locationList}">
+							<option <c:if test="${item.alias == hostServer.locationAlias }">selected="selected"</c:if>
+								value="${item.alias }">${item.name }</option>
+						</c:forEach>
+					</select>
 				</div>
 			</div>	
 			
 			<div class="control-group">
-				<label class="control-label">服务器类型</label>
+				<label class="control-label" for="vlan">Vlan</label>
 				<div class="controls">
-					<select name="serverType" class="required">
-						<c:forEach var="map" items="${hostServerTypeMap}">
-						<option <c:if test="${map.key == hostServer.serverType}">selected="selected"</c:if>
-						 	value="<c:out value='${map.key}'/>"><c:out value='${map.value}'/></option>
-						</c:forEach>
-					</select>
-					<span class="help-inline">请选择服务器类型</span>
+					<select id="vlan" class="required" onchange="changeVlan()"></select>
 				</div>
-			</div>
+			</div>	
 			
 			<div class="control-group">
-				<label class="control-label">IP地址</label>
+				<label class="control-label" for="ipAddress">IP地址</label>
 				<div class="controls">
-					<input type="text" id="ipAddress" name="ipAddress" size="50" class="required ipAddressValidate" value="${hostServer.ipAddress}"/>
-					<span class="help-inline">请输入可用IP地址</span>
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label">IP池类型</label>
-				<div class="controls">
-					<select name="poolType" class="required">
-						<c:forEach var="map" items="${poolTypeMap}">
-						<option <c:if test="${map.key == hostServer.poolType}">selected="selected"</c:if>
-						 	value="<c:out value='${map.key}'/>"><c:out value='${map.value}'/></option>
-						</c:forEach>
+					<select id="ipAddress" name="ipAddress" class="required">
+						<option value="${hostServer.ipAddress }">${hostServer.ipAddress }</option>
 					</select>
-					<span class="help-inline">请选择IP池类型</span>
 				</div>
-			</div>
+			</div>	
 					
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
@@ -93,6 +136,7 @@ $(document).ready(function() {
 			</div>
 			
 		</fieldset>
+		
 	</form>
 	
 </body>

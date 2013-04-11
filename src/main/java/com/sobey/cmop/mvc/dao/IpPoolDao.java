@@ -28,7 +28,7 @@ public interface IpPoolDao extends PagingAndSortingRepository<IpPool, Integer>, 
 
 	List<IpPool> findByHostServer(HostServer hostServer);
 
-	List<IpPool> findByIpAddress(String ipAddress);
+	IpPool findByIpAddress(String ipAddress);
 
 	IpPool findByIpAddressAndStatus(String ipAddress, Integer ipStatus);
 

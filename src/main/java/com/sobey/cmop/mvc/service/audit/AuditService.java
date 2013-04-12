@@ -410,12 +410,13 @@ public class AuditService extends BaseSevcie {
 				comm.templateMailService.sendApplyNotificationMail(apply, nextAuditFlow);
 
 				// 插入一条下级审批人所用到的audit.
-				this.saveSubAudit(userId, apply, null);
+				this.saveSubAudit(userId, apply);
 
 			}
 		}
 
 		comm.applyService.saveOrUpateApply(apply);
+
 		this.saveOrUpdateAudit(audit);
 
 		return true;
@@ -567,8 +568,10 @@ public class AuditService extends BaseSevcie {
 				}
 
 				// 插入一条下级审批人所用到的audit.
-				this.saveSubAudit(userId, null, serviceTag);
+				Audit nextAudit = this.saveSubAudit(userId, serviceTag);
 
+				/* 将变更详情拷贝一份,用于审批记录页面查看和历史记录. */
+				comm.changeHistoryService.copyHistory(resourcesList, nextAudit);
 			}
 
 		}

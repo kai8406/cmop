@@ -150,10 +150,10 @@ public class OneCmdbUtilService extends BaseSevcie {
 			String MemSize = "";
 			String CoreNum = "";
 
-			if (ComputeConstant.ECSServerType.Small.toInteger().equals(computeItem.getServerType())) {
+			if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
 				MemSize = "1G";
 				CoreNum = "1";
-			} else if (ComputeConstant.ECSServerType.Middle.toInteger().equals(computeItem.getServerType())) {
+			} else if (ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
 				MemSize = "2G";
 				CoreNum = "2";
 			} else {

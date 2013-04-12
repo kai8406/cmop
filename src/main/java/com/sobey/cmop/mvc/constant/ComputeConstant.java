@@ -82,7 +82,11 @@ public class ComputeConstant {
 	 */
 	public enum ECSServerType implements ICommonEnum {
 
-		Small(1), Middle(2), Large(3);
+		Small_CPUx1_Memoryx1GB_DISKx20GB(1),
+
+		Middle_CPUx2_Memoryx2GB_DISKx20GB(2),
+
+		Large_CPUx4_Memoryx4GB_DISKx20GB(3);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

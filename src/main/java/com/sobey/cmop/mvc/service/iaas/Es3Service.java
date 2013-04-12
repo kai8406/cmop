@@ -15,6 +15,7 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.StorageItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -148,13 +149,13 @@ public class Es3Service extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		StorageItem storageItem = this.getStorageItem(resources.getServiceId());
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareStorage(resources, storageItem, storageType, space, computeIds);
+		boolean isChange = comm.compareResourcesService.compareStorage(resources, change, storageItem, storageType, space, computeIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

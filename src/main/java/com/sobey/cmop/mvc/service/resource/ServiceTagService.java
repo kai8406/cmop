@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ServiceTagDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -310,7 +311,10 @@ public class ServiceTagService extends BaseSevcie {
 				comm.auditService.initAuditStatus(serviceTag);
 
 				/* Step.5 插入一条下级审批人所用到的audit. */
-				comm.auditService.saveSubAudit(user.getId(), serviceTag);
+				Audit audit = comm.auditService.saveSubAudit(user.getId(), serviceTag);
+
+				/* Step.6 将变更详情拷贝一份,用于审批记录页面查看和历史记录. */
+				comm.changeHistoryService.copyHistory(resourcesList, audit);
 
 			} catch (Exception e) {
 

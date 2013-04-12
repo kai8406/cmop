@@ -285,8 +285,8 @@ public class OperateService extends BaseSevcie {
 				comm.resourcesService.saveOrUpdate(resources);
 
 				// 清除服务变更Change的内容
-				Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
-				comm.changeServcie.deleteChange(change.getId());
+				List<Change> changes = comm.changeServcie.getChangeListByResourcesId(resources.getId());
+				comm.changeServcie.deleteChange(changes);
 
 				Integer serviceType = resources.getServiceType();
 				Integer serviceId = resources.getServiceId();
@@ -320,6 +320,7 @@ public class OperateService extends BaseSevcie {
 
 				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
 
+					// TODO 待完成.
 					// monitorCompute
 
 				} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {

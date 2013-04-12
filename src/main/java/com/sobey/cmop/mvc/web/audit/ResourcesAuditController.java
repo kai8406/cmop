@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,18 +85,28 @@ public class ResourcesAuditController extends BaseController {
 	 *  邮件进来的UserId就不为0.
 	 * </pre>
 	 * 
+	 * @param serviceTagId
+	 *            服务标签ID
 	 * @param userId
-	 * 
-	 * 
+	 *            审批人ID
+	 * @param result
+	 *            审批结果
+	 * @param view
+	 *            审批列表进入的是1.为null表示从邮件进入的.
+	 * @param auditId
+	 *            auditId.
+	 * @param model
+	 * @return
 	 */
 	@RequestMapping(value = "/resources/{id}", method = RequestMethod.GET)
 	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
-			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
+			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "auditId", required = false, defaultValue = "0") Integer auditId,
+			@RequestParam(value = "view", required = false) Integer view, Model model) {
 
 		String returnUrl = "";
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
-		if (StringUtils.isEmpty(view) && comm.auditService.isAudited(serviceTag, userId)) { // 判断该服务申请已审批过.
+		if (view == null && comm.auditService.isAudited(serviceTag, userId)) { // 判断该服务申请已审批过.
 			model.addAttribute("message", "你已审批");
 			returnUrl = "audit/auditOk";
 		} else {
@@ -107,7 +116,7 @@ public class ResourcesAuditController extends BaseController {
 			model.addAttribute("serviceTag", serviceTag);
 			model.addAttribute("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
 			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
-
+			model.addAttribute("changes", comm.changeHistoryService.getChangeHistoryListByAudit(comm.auditService.getAudit(auditId)));
 			returnUrl = "audit/resource/auditResourcesForm";
 		}
 		return returnUrl;
@@ -130,6 +139,7 @@ public class ResourcesAuditController extends BaseController {
 	@RequestMapping(value = "/resources/{serviceTagId}", method = RequestMethod.POST)
 	public String saveApply(@PathVariable(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
+
 		// 获得指定apply当前审批记录
 		Audit audit = this.getCurrentResourcesAudit(userId, serviceTagId);
 		audit.setOpinion(opinion);
@@ -143,9 +153,12 @@ public class ResourcesAuditController extends BaseController {
 	}
 
 	/**
-	 * 获得指定serviceTag当前审批记录<br>
-	 * 根据serviceTagId,auditFlow获得状态为"待审批"的audit.<br>
-	 * 此audit为申请人或上级审批人进行操作时,插入下级审批人的audit中的临时数据.<br>
+	 * 获得指定serviceTag当前审批记录
+	 * 
+	 * <pre>
+	 * 根据serviceTagId,auditFlow获得状态为"待审批"的audit.
+	 * 此audit为申请人或上级审批人进行操作时,插入下级审批人的audit中的临时数据.
+	 * </pre>
 	 * 
 	 * @param userId
 	 *            审批人Id
@@ -154,8 +167,10 @@ public class ResourcesAuditController extends BaseController {
 	 * @return
 	 */
 	private Audit getCurrentResourcesAudit(Integer userId, Integer serviceTagId) {
+
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(userId, flowType);
+
 		Integer status = AuditConstant.AuditStatus.待审批.toInteger();
 
 		return comm.auditService.findAuditByServiceTagIdAndStatusAndAuditFlow(serviceTagId, status, auditFlow);

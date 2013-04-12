@@ -108,7 +108,7 @@ table {
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th style="width: 20%">变更项</th>
+								<th style="width: 20%">变更项<#if change.subResourcesId?exists>(服务子项ID:${change.subResourcesId })</#if></th>
 								<th style="width: 40%">旧值</th>
 								<th style="width: 40%">新值</th>
 							</tr>

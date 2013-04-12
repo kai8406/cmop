@@ -16,6 +16,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.NetworkDnsItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.Resources;
@@ -167,13 +168,13 @@ public class DnsService extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		NetworkDnsItem networkDnsItem = this.getNetworkDnsItem(resources.getServiceId());
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareDns(resources, networkDnsItem, domainName, domainType, cnameDomain, eipIds);
+		boolean isChange = comm.compareResourcesService.compareDns(resources, change, networkDnsItem, domainName, domainType, cnameDomain, eipIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

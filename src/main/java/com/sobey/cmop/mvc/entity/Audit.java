@@ -1,7 +1,10 @@
 package com.sobey.cmop.mvc.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Audit entity. @author MyEclipse Persistence Tools
@@ -28,6 +34,7 @@ public class Audit implements java.io.Serializable {
 	private String result;
 	private String opinion;
 	private Integer status;
+	private Set<ChangeHistory> changeHistories = new HashSet<ChangeHistory>(0);
 
 	// Constructors
 	/** default constructor */
@@ -129,6 +136,16 @@ public class Audit implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "audit")
+	public Set<ChangeHistory> getChangeHistories() {
+		return changeHistories;
+	}
+
+	public void setChangeHistories(Set<ChangeHistory> changeHistories) {
+		this.changeHistories = changeHistories;
 	}
 
 }

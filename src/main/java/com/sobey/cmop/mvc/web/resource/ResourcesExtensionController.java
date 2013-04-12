@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
-import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 
 /**
- * ResourcesExtensionController负责扩展 ResourcesController<br>
- * 主要用于变更资源Resources<br>
+ * ResourcesExtensionController负责扩展 ResourcesController, 主要用于变更资源Resources.
  * 
  * <pre>
  * 1.获得资源对象.  
@@ -210,20 +209,22 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateMdnVodForm(@PathVariable("id") Integer id, @PathVariable("vodId") Integer vodId, Model model) {
 		model.addAttribute("mdnVod", comm.mdnService.getMdnVodItem(vodId));
 		model.addAttribute("resources", comm.resourcesService.getResources(id));
+		model.addAttribute("change", comm.changeServcie.findChangeBySubResourcesId(id, vodId));
 		return "resource/form/mdnVod";
 	}
 
 	@RequestMapping(value = "/{id}/vod/{vodId}", method = RequestMethod.POST)
 	public String updateVod(@PathVariable("id") Integer id, @PathVariable("vodId") Integer vodId, @RequestParam(value = "vodDomain") String vodDomain,
 			@RequestParam(value = "vodBandwidth") String vodBandwidth, @RequestParam(value = "vodProtocol") String vodProtocol, @RequestParam(value = "sourceOutBandwidth") String sourceOutBandwidth,
-			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		if (resources.getUsedby() == null) {
-			resources.setUsedby(RedmineConstant.Assignee.余波.toInteger());
+			// 指派给默认的MDN处理人
+			resources.setUsedby(RedmineService.MDN_REDMINE_ASSIGNEE);
 		}
 
-		comm.mdnService.saveResourcesByMdnVod(resources, vodId, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
+		comm.mdnService.saveResourcesByMdnVod(resources, changeDescription, vodId, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN点播成功");
 
@@ -241,11 +242,12 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateMdnLiveForm(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId, Model model) {
 		model.addAttribute("mdnLive", comm.mdnService.getMdnLiveItem(liveId));
 		model.addAttribute("resources", comm.resourcesService.getResources(id));
+		model.addAttribute("change", comm.changeServcie.findChangeBySubResourcesId(id, liveId));
 		return "resource/form/mdnLive";
 	}
 
 	@RequestMapping(value = "/{id}/live/{liveId}", method = RequestMethod.POST)
-	public String updateVod(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId, @RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
+	public String updateLive(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId, @RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
 			@RequestParam(value = "guid") String guid, @RequestParam(value = "liveDomain") String liveDomain, @RequestParam(value = "liveBandwidth") String liveBandwidth,
 			@RequestParam(value = "liveProtocol") String liveProtocol, @RequestParam(value = "streamOutMode") Integer streamOutMode,
 			@RequestParam(value = "encoderMode", required = false) Integer encoderMode, @RequestParam(value = "httpUrlEncoder", required = false) String httpUrlEncoder,
@@ -253,15 +255,16 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
 			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
 			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
-			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		if (resources.getUsedby() == null) {
-			resources.setUsedby(RedmineConstant.Assignee.余波.toInteger());
+			// 指派给默认的MDN处理人
+			resources.setUsedby(RedmineService.MDN_REDMINE_ASSIGNEE);
 		}
 
-		comm.mdnService.saveResourcesByMdnLive(resources, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
-				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+		comm.mdnService.saveResourcesByMdnLive(resources, changeDescription, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder,
+				httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
 

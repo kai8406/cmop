@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.dao.ElbPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkElbItemDao;
 import com.sobey.cmop.mvc.dao.custom.BasicUnitDaoCustom;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -230,7 +231,7 @@ public class ElbService extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		NetworkElbItem networkElbItem = this.getNetworkElbItem(resources.getServiceId());
 
@@ -238,7 +239,7 @@ public class ElbService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareElb(resources, networkElbItem, elbPortItems, keepSession, protocols, sourcePorts, targetPorts, computeIds);
+		boolean isChange = comm.compareResourcesService.compareElb(resources, change, networkElbItem, elbPortItems, keepSession, protocols, sourcePorts, targetPorts, computeIds);
 
 		// 删除变更前的端口映射
 

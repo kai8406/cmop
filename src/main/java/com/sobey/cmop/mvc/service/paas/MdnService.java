@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.dao.MdnItemDao;
 import com.sobey.cmop.mvc.dao.MdnLiveItemDao;
 import com.sobey.cmop.mvc.dao.MdnVodItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
@@ -160,13 +161,13 @@ public class MdnService extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		MdnItem mdnItem = this.getMdnItem(resources.getServiceId());
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareMdnItem(resources, mdnItem, coverArea, coverIsp);
+		boolean isChange = comm.compareResourcesService.compareMdnItem(resources, change, mdnItem, coverArea, coverIsp);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
@@ -254,11 +255,12 @@ public class MdnService extends BaseSevcie {
 	 * 变更MDNVod
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByMdnVod(Resources resources, Integer vodId, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+	public void saveResourcesByMdnVod(Resources resources, String changeDescription, Integer vodId, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth,
+			String sourceStreamerUrl) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, "");
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, vodId, changeDescription);
 
 		MdnVodItem mdnVodItem = this.getMdnVodItem(vodId);
 
@@ -266,7 +268,7 @@ public class MdnService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareMdnVodItem(resources, mdnVodItem, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
+		boolean isChange = comm.compareResourcesService.compareMdnVodItem(resources, change, mdnVodItem, vodDomain, vodBandwidth, vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
 
 		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 		if (isChange) {
@@ -509,13 +511,13 @@ public class MdnService extends BaseSevcie {
 	 * 变更MDNVod
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByMdnLive(Resources resources, Integer liveId, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
-			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+	public void saveResourcesByMdnLive(Resources resources, String changeDescription, Integer liveId, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
+			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
+			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, "");
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, liveId, changeDescription);
 
 		MdnLiveItem mdnLiveItem = this.getMdnLiveItem(liveId);
 
@@ -523,7 +525,7 @@ public class MdnService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareMdnLiveItem(resources, mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode,
+		boolean isChange = comm.compareResourcesService.compareMdnLiveItem(resources, change, mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode,
 				httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
 
 		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.

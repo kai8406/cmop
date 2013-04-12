@@ -17,46 +17,44 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 /**
  * ServiceTag entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "change", catalog = "cmop")
-public class Change implements java.io.Serializable {
+@Table(name = "change_history", catalog = "cmop")
+public class ChangeHistory implements java.io.Serializable {
 
 	// Fields
 
 	private Integer id;
-	private Resources resources;
+	private Audit audit;
+	private String resourcesInfo;
 	private Integer subResourcesId;
-	private User user;
 	private Date changeTime;
 	private String description;
-	private Set<ChangeItem> changeItems = new HashSet<ChangeItem>(0);
+	private Set<ChangeItemHistory> changeItemHistories = new HashSet<ChangeItemHistory>(0);
 
 	// Constructors
 
 	/** default constructor */
-	public Change() {
+	public ChangeHistory() {
 	}
 
 	/** minimal constructor */
-	public Change(Resources resources, User user, Date changeTime) {
-		this.resources = resources;
-		this.user = user;
+	public ChangeHistory(Audit audit, String resourcesInfo, Date changeTime) {
+		this.audit = audit;
+		this.resourcesInfo = resourcesInfo;
 		this.changeTime = changeTime;
 	}
 
 	/** full constructor */
-	public Change(Resources resources, Integer subResourcesId, User user, Date changeTime, String description, Set<ChangeItem> changeItems) {
-		this.resources = resources;
+	public ChangeHistory(Audit audit, String resourcesInfo, Integer subResourcesId, Date changeTime, String description, Set<ChangeItemHistory> changeItemHistories) {
+		this.audit = audit;
+		this.resourcesInfo = resourcesInfo;
 		this.subResourcesId = subResourcesId;
-		this.user = user;
 		this.changeTime = changeTime;
 		this.description = description;
-		this.changeItems = changeItems;
+		this.changeItemHistories = changeItemHistories;
 	}
 
 	// Property accessors
@@ -72,33 +70,31 @@ public class Change implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "resources_id", nullable = false)
-	public Resources getResources() {
-		return this.resources;
+	@JoinColumn(name = "audit_id", nullable = false)
+	public Audit getAudit() {
+		return this.audit;
 	}
 
-	public void setResources(Resources resources) {
-		this.resources = resources;
+	public void setAudit(Audit audit) {
+		this.audit = audit;
+	}
+
+	@Column(name = "resources_info", nullable = false, length = 100)
+	public String getResourcesInfo() {
+		return resourcesInfo;
+	}
+
+	public void setResourcesInfo(String resourcesInfo) {
+		this.resourcesInfo = resourcesInfo;
 	}
 
 	@Column(name = "sub_resources_id")
 	public Integer getSubResourcesId() {
-		return subResourcesId;
+		return this.subResourcesId;
 	}
 
 	public void setSubResourcesId(Integer subResourcesId) {
 		this.subResourcesId = subResourcesId;
-	}
-
-	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	public User getUser() {
-		return this.user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	@Column(name = "change_time", nullable = false, length = 19)
@@ -119,13 +115,13 @@ public class Change implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "change")
-	public Set<ChangeItem> getChangeItems() {
-		return changeItems;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "changeHistory")
+	public Set<ChangeItemHistory> getChangeItemHistories() {
+		return changeItemHistories;
 	}
 
-	public void setChangeItems(Set<ChangeItem> changeItems) {
-		this.changeItems = changeItems;
+	public void setChangeItemHistories(Set<ChangeItemHistory> changeItemHistories) {
+		this.changeItemHistories = changeItemHistories;
 	}
 
 }

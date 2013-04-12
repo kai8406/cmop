@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.resource;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +48,30 @@ public class ChangeServcie extends BaseSevcie {
 	 * @return
 	 */
 	public Change findChangeByResourcesId(Integer resourcesId) {
-		return changeDao.findByResourcesId(resourcesId);
+		return changeDao.findByResourcesIdAndSubResourcesIdIsNull(resourcesId);
+	}
+
+	/**
+	 * 获得资源下的服务变更列表
+	 * 
+	 * @param resourcesId
+	 * @return
+	 */
+	public List<Change> getChangeListByResourcesId(Integer resourcesId) {
+		return changeDao.findByResources_Id(resourcesId);
+	}
+
+	/**
+	 * 获得资源下某个服务子项的服务变更.(主要解决MDN下具体是哪个子项变更的问题.)
+	 * 
+	 * @param resourcesId
+	 *            资源ID
+	 * @param subResourcesId
+	 *            资源下某个服务子项的ID
+	 * @return
+	 */
+	public Change findChangeBySubResourcesId(Integer resourcesId, Integer subResourcesId) {
+		return changeDao.findByResourcesIdAndSubResourcesId(resourcesId, subResourcesId);
 	}
 
 	/**
@@ -64,6 +88,11 @@ public class ChangeServcie extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void deleteChange(Integer id) {
 		changeDao.delete(id);
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteChange(Collection<Change> changes) {
+		changeDao.delete(changes);
 	}
 
 	// === 变更明细 ChangeItem ===//
@@ -84,8 +113,7 @@ public class ChangeServcie extends BaseSevcie {
 	}
 
 	/**
-	 * 根据changeId和fieldName获得变更详情ChangeItem list<br>
-	 * Order by id DESC 倒序排列
+	 * 根据changeId和fieldName获得变更详情ChangeItem list, Order by id DESC 倒序排列
 	 * 
 	 * @param changeId
 	 * @param fieldName
@@ -108,10 +136,28 @@ public class ChangeServcie extends BaseSevcie {
 	/**
 	 * 新增或更新资源Resources的服务变更Change.
 	 * 
+	 * @param resources
+	 *            资源对象
+	 * @param description
+	 *            变更说明
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public Change saveOrUpdateChangeByResources(Resources resources, String description) {
+		return this.saveOrUpdateChangeByResources(resources, null, description);
+	}
+
+	/**
+	 * 新增或更新资源Resources的服务变更Change.
+	 * 
 	 * <pre>
 	 * 1.查找指定资源Resources的change
 	 * 2.不存在创建一个新的Change (表示该资源之前没有变更记录,即该资源未变更过.)
 	 * 3.如果存在则更新老的Change(主要就是更新变更信息).
+	 * 
+	 * 步骤1有两种情景.
+	 * 普通资源和有服务子项的资源(MDN).
+	 * 
 	 * </pre>
 	 * 
 	 * @param resources
@@ -121,18 +167,35 @@ public class ChangeServcie extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public Change saveOrUpdateChangeByResources(Resources resources, String description) {
+	public Change saveOrUpdateChangeByResources(Resources resources, Integer subResourcesId, String description) {
 
-		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+		Change change = null;
+
+		// step.1 查找指定资源Resources的change
+
+		if (subResourcesId == null) {
+			change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+		} else {
+			change = comm.changeServcie.findChangeBySubResourcesId(resources.getId(), subResourcesId);
+		}
 
 		if (change == null) {
+
+			// step.2 不存在创建一个新的Change (表示该资源之前没有变更记录,即该资源未变更过.)
+
 			change = new Change(resources, comm.accountService.getCurrentUser(), new Date());
 			change.setDescription(description);
 		} else {
+
+			// step.3 如果存在则更新老的Change(主要就是更新变更信息).
+
 			change.setChangeTime(new Date());
 			change.setDescription(description);
 		}
-		return comm.changeServcie.saveOrUpdateChange(change);
+
+		change.setSubResourcesId(subResourcesId);
+
+		return this.saveOrUpdateChange(change);
 	}
 
 }

@@ -358,42 +358,44 @@ public class RedmineTextUtil {
 
 				if (!mdnItem.getMdnVodItems().isEmpty()) {
 					for (MdnVodItem mdnVodItem : mdnItem.getMdnVodItems()) {
+
 						content.append("MDN点播加速").append(NEWLINE);
-						content.append("服务域名:").append(BLANK).append(mdnVodItem.getVodDomain()).append(NEWLINE);
-						content.append("加速服务带宽:").append(BLANK).append(MdnConstant.BANDWIDTH_MAP.get(mdnVodItem.getVodBandwidth())).append(NEWLINE);
-						content.append("播放协议选择:").append(BLANK).append(mdnVodItem.getVodProtocol()).append(NEWLINE);
-						content.append("出口带宽:").append(BLANK).append(mdnVodItem.getSourceOutBandwidth()).append(NEWLINE);
-						content.append("Streamer地址:").append(BLANK).append(mdnVodItem.getSourceStreamerUrl()).append(NEWLINE + NEWLINE);
+						content.append(FieldNameConstant.MdnVodItem.点播服务域名 + ":").append(BLANK).append(mdnVodItem.getVodDomain()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnVodItem.点播加速服务带宽 + ":").append(BLANK).append(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth())).append(NEWLINE);
+						content.append(FieldNameConstant.MdnVodItem.点播播放协议选择 + ":").append(BLANK).append(mdnVodItem.getVodProtocol()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnVodItem.点播出口带宽 + ":").append(BLANK).append(mdnVodItem.getSourceOutBandwidth()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnVodItem.Streamer地址 + ":").append(BLANK).append(mdnVodItem.getSourceStreamerUrl()).append(NEWLINE + NEWLINE);
 					}
 				}
 
 				if (!mdnItem.getMdnLiveItems().isEmpty()) {
 					for (MdnLiveItem mdnLiveItem : mdnItem.getMdnLiveItems()) {
-						content.append("MDN点播加速").append(NEWLINE);
-						content.append("服务域名:").append(BLANK).append(mdnLiveItem.getLiveDomain()).append(NEWLINE);
-						content.append("加速服务带宽:").append(BLANK).append(MdnConstant.BANDWIDTH_MAP.get(mdnLiveItem.getLiveBandwidth())).append(NEWLINE);
-						content.append("播放协议选择:").append(BLANK).append(mdnLiveItem.getLiveProtocol()).append(NEWLINE);
-						content.append("出口带宽:").append(BLANK).append(mdnLiveItem.getBandwidth()).append(NEWLINE);
-						content.append("频道名称:").append(BLANK).append(mdnLiveItem.getName()).append(NEWLINE);
-						content.append("频道GUID:").append(BLANK).append(mdnLiveItem.getGuid()).append(NEWLINE);
-						content.append("直播流输出模式:").append(BLANK).append(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode())).append(NEWLINE);
+
+						content.append("MDN直播加速").append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.直播服务域名 + ":").append(BLANK).append(mdnLiveItem.getLiveDomain()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.直播加速服务带宽 + ":").append(BLANK).append(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth())).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.直播播放协议选择 + ":").append(BLANK).append(mdnLiveItem.getLiveProtocol()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.直播出口带宽 + ":").append(BLANK).append(mdnLiveItem.getBandwidth()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":").append(BLANK).append(mdnLiveItem.getName()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.频道GUID + ":").append(BLANK).append(mdnLiveItem.getGuid()).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.直播流输出模式 + ":").append(BLANK).append(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode())).append(NEWLINE);
 						if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {
 
 							if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(mdnLiveItem.getEncoderMode())) {
-								content.append("HTTP流地址:").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
-								content.append("HTTP流混合码率:").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
+								content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
+								content.append(FieldNameConstant.MdnLiveItem.HTTP流混合码率 + ":").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
 							} else {
-								content.append("M3U8流地址:").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
-								content.append("M3U8流混合码率:").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
+								content.append(FieldNameConstant.MdnLiveItem.M3U8流地址 + ":").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
+								content.append(FieldNameConstant.MdnLiveItem.M3U8流混合码率 + ":").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
 							}
 
 						} else {
-							content.append("HTTP流地址:").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
-							content.append("HTTP流混合码率:").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
-							content.append("M3U8流地址:").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
-							content.append("M3U8流混合码率:").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
-							content.append("RTSP流地址:").append(BLANK).append(mdnLiveItem.getRtspUrl()).append(NEWLINE);
-							content.append("RTSP流混合码率 :").append(BLANK).append(mdnLiveItem.getRtspBitrate()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.HTTP流混合码率 + ":").append(BLANK).append(mdnLiveItem.getHttpBitrate()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.M3U8流地址 + ":").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.M3U8流混合码率 + ":").append(BLANK).append(mdnLiveItem.getHlsBitrate()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.RTSP流地址 + ":").append(BLANK).append(mdnLiveItem.getRtspUrl()).append(NEWLINE);
+							content.append(FieldNameConstant.MdnLiveItem.RTSP流混合码率 + ":").append(BLANK).append(mdnLiveItem.getRtspBitrate()).append(NEWLINE);
 						}
 
 						content.append(NEWLINE);

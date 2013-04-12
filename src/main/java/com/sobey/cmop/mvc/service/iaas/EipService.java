@@ -18,6 +18,7 @@ import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.EipPortItemDao;
 import com.sobey.cmop.mvc.dao.NetworkEipItemDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.Resources;
@@ -237,7 +238,7 @@ public class EipService extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		NetworkEipItem networkEipItem = this.getNetworkEipItem(resources.getServiceId());
 
@@ -245,7 +246,7 @@ public class EipService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareEip(resources, networkEipItem, eipPortItems, linkType, linkId, protocols, sourcePorts, targetPorts);
+		boolean isChange = comm.compareResourcesService.compareEip(resources, change, networkEipItem, eipPortItems, linkType, linkId, protocols, sourcePorts, targetPorts);
 
 		// 删除变更前的端口映射
 

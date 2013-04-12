@@ -30,6 +30,16 @@
 			<legend><small>变更MDN点播加速</small></legend>
 			
 			<div class="control-group">
+				<label class="control-label" for="changeDescription">变更描述</label>
+				<div class="controls">
+					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
+						maxlength="200" class="required">${change.description}</textarea>
+				</div>
+			</div>
+			
+			<hr>
+			
+			<div class="control-group">
 				<label class="control-label" for="title">所属服务申请</label>
 				<div class="controls">
 					<p class="help-inline plain-text">${mdnVod.mdnItem.apply.title}</p>

@@ -236,8 +236,15 @@ public class RedmineUtilService extends BaseSevcie {
 					if (!IpPoolConstant.DEFAULT_IPADDRESS.equals(resources.getIpAddress())) {
 						content.append("(" + resources.getIpAddress() + ")");
 					}
+
 					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
-					content.append("变更项:" + BLANK).append("旧值").append(RARR).append("新值").append(NEWLINE);
+
+					content.append("变更项:");
+					if (change.getSubResourcesId() != null) {
+						content.append("(服务子项ID:" + change.getSubResourcesId() + ")");
+					}
+
+					content.append(BLANK + "旧值").append(RARR).append("新值").append(NEWLINE);
 
 					for (ChangeItem changeItem : change.getChangeItems()) {
 
@@ -522,6 +529,7 @@ public class RedmineUtilService extends BaseSevcie {
 							if (FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.RTSP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
+							content.append(NEWLINE);
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
 

@@ -93,10 +93,10 @@
 					<td>
 						<!-- 0.待审批 -->
 						<c:if test="${ empty item.result  }">
-							<a href="${ctx}/audit/resources/${item.serviceTag.id}">审批</a>
+							<a href="${ctx}/audit/resources/${item.serviceTag.id}?auditId=${item.id}">审批</a>
 						</c:if>
 						<c:if test="${not empty item.result }">
-							<a href="${ctx}/audit/resources/${item.serviceTag.id}?view=1">查看</a>
+							<a href="${ctx}/audit/resources/${item.serviceTag.id}?auditId=${item.id}&view=1">查看</a>
 						</c:if>
 					</td>
 				</tr>

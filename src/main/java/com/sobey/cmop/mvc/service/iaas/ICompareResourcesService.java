@@ -2,6 +2,7 @@ package com.sobey.cmop.mvc.service.iaas;
 
 import java.util.List;
 
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
@@ -37,6 +38,8 @@ public interface ICompareResourcesService {
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param computeItem
 	 *            变更前的实例
 	 * @param osType
@@ -57,14 +60,16 @@ public interface ICompareResourcesService {
 	 *            部署路径
 	 * @return
 	 */
-	public boolean compareCompute(Resources resources, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
-			String[] applicationVersions, String[] applicationDeployPaths);
+	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths);
 
 	/**
 	 * 比较存储空间StorageItem变更前和变更后的值<br>
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param storageItem
 	 *            变更前的存储空间ES3
 	 * @param storageType
@@ -75,13 +80,15 @@ public interface ICompareResourcesService {
 	 *            挂载实例Id
 	 * @return
 	 */
-	public boolean compareStorage(Resources resources, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
+	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
 
 	/**
 	 * 比较负载均衡器ELB变更前和变更后的值<br>
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param networkElbItem
 	 *            变更前的负载均衡器ELB
 	 * @param keepSession
@@ -96,14 +103,16 @@ public interface ICompareResourcesService {
 	 *            关联实例Id
 	 * @return
 	 */
-	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts,
-			String[] computeIds);
+	public boolean compareElb(Resources resources, Change change, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts,
+			String[] targetPorts, String[] computeIds);
 
 	/**
 	 * 比较公网IP EIP 变更前和变更后的值<br>
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param networkEipItem
 	 *            变更前的公网IP EIP
 	 * @param eipPortItems
@@ -120,14 +129,16 @@ public interface ICompareResourcesService {
 	 *            目标端口数组
 	 * @return
 	 */
-	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
-			String[] targetPorts);
+	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols,
+			String[] sourcePorts, String[] targetPorts);
 
 	/**
 	 * 比较dns变更前和变更后的值
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param networkDnsItem
 	 *            变更前的DNS对象
 	 * @param domainName
@@ -140,26 +151,30 @@ public interface ICompareResourcesService {
 	 *            目标IP数组
 	 * @return
 	 */
-	public boolean compareDns(Resources resources, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds);
+	public boolean compareDns(Resources resources, Change change, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds);
 
 	/**
 	 * 比较monitorElb变更前后的值
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param monitorElb
 	 *            变更前的monitorElb对象
 	 * @param elbId
 	 *            监控ElbId
 	 * @return
 	 */
-	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId);
+	public boolean compareMonitorElb(Resources resources, Change change, MonitorElb monitorElb, Integer elbId);
 
 	/**
 	 * 比较monitorCompute变更前后的值
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param monitorCompute
 	 *            变更前的monitorCompute对象
 	 * @param ipAddress
@@ -182,15 +197,17 @@ public interface ICompareResourcesService {
 	 * @param mountPoint
 	 * @return
 	 */
-	public boolean compareMonitorCompute(Resources resources, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
-			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical,
-			String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint);
+	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
+			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
+			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint);
 
 	/**
 	 * 比较MdnItem变更前后的值
 	 * 
 	 * @param resources
 	 *            资源
+	 * @param change
+	 *            变更详情对象
 	 * @param mdnItem
 	 *            变更前的MdnItem
 	 * @param coverArea
@@ -199,12 +216,15 @@ public interface ICompareResourcesService {
 	 *            重点覆盖ISP
 	 * @return
 	 */
-	public boolean compareMdnItem(Resources resources, MdnItem mdnItem, String coverArea, String coverIsp);
+	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea, String coverIsp);
 
 	/**
 	 * 比较MdnVodItem变更前后的值
 	 * 
 	 * @param resources
+	 *            资源对象
+	 * @param change
+	 *            变更详情对象
 	 * @param mdnVodItem
 	 * @param vodDomain
 	 * @param vodBandwidth
@@ -213,16 +233,19 @@ public interface ICompareResourcesService {
 	 * @param sourceStreamerUrl
 	 * @return
 	 */
-	public boolean compareMdnVodItem(Resources resources, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl);
+	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth,
+			String sourceStreamerUrl);
 
-	public boolean compareMdnLiveItem(Resources resources, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
-			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate);
+	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
+			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
+			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate);
 
 	/**
 	 * 比较CpItem变更前后的值
 	 * 
 	 * @param resources
+	 * @param change
+	 *            变更详情对象
 	 * @param cpItem
 	 * @param recordStreamUrl
 	 * @param recordBitrate
@@ -249,9 +272,9 @@ public interface ICompareResourcesService {
 	 * @param pictrueOutputMedia
 	 * @return
 	 */
-	public boolean compareCP(Resources resources, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, String publishUrl,
-			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
-			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia);
+	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
+			String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
+			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
+			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia);
 
 }

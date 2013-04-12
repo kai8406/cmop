@@ -69,6 +69,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 * 
 	 * @param resources
 	 *            资源对象
+	 * @param change
+	 *            变更详情对象
 	 * @param fieldName
 	 *            变更项 eg:操作系统 , 操作位数.. 以枚举XXFieldName为准
 	 * @param oldValue
@@ -80,14 +82,51 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 * @param newValue
 	 *            新值字符串
 	 */
-	private boolean saveChangeItemByFieldName(Resources resources, String fieldName, String oldValue, String oldString, String newValue, String newString) {
+	private boolean saveChangeItemByFieldName(Resources resources, Change change, String fieldName, String oldValue, String oldString, String newValue, String newString) {
+		this.saveChangeItemByFieldName(resources, change, null, fieldName, oldValue, oldString, newValue, newString);
+		return true;
+	}
 
-		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+	/**
+	 * 资源变更时,保存变更明细至changeItem中.变更项（字段）名称以枚举XXFieldName为准.(主要用于保存有服务子项的资源,如MDN)
+	 * 
+	 * <pre>
+	 * oldValue和newValue原则上保存变更项的单个ID或多个ID(","分割),而OldString和newString则保存ID对应的文本信息.
+	 * 但是如果变更项本身就是字符串,则xxxValue和xxxString的值相同.
+	 * 
+	 * 以下三种情况可以新创建一个变更明细ChangeItem.
+	 * 
+	 * 1.数据库中没有
+	 * 2.资源状态为 -1:未变更
+	 * 3.资源状态为 6:已创建
+	 * 
+	 * true :  ; false :  不能创建.
+	 * </pre>
+	 * 
+	 * @param resources
+	 *            资源对象
+	 * @param change
+	 *            变更详情对象
+	 * @param subResourcesId
+	 *            资源对象下的服务子项的资源
+	 * @param fieldName
+	 *            变更项 eg:操作系统 , 操作位数.. 以枚举XXFieldName为准
+	 * @param oldValue
+	 *            旧值ID
+	 * @param oldValue
+	 *            旧值字符串
+	 * @param newValue
+	 *            新值ID
+	 * @param newValue
+	 *            新值字符串
+	 */
+	private boolean saveChangeItemByFieldName(Resources resources, Change change, Integer subResourcesId, String fieldName, String oldValue, String oldString, String newValue, String newString) {
 
 		// 根据changeId和fieldName获得变更详情ChangeItem list
 
 		List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeIdAndFieldName(change.getId(), fieldName);
 
+		// 没有ChangeItem,且资源状态时未变更和已创建(即该资源没有变更过)
 		if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger()) || resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
 			// 创建一个新的ChangeItem
@@ -119,8 +158,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareCompute(Resources resources, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
-			String[] applicationVersions, String[] applicationDeployPaths) {
+	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
 
 		// 初始化一个标记,表示其是否更改
 
@@ -138,7 +177,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = osType.toString();
 			String newString = ComputeConstant.OS_TYPE_MAP.get(osType);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -154,7 +193,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = osBit.toString();
 			String newString = ComputeConstant.OS_BIT_MAP.get(osBit);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -172,7 +211,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = computeItem.getComputeType().equals(ComputeConstant.ComputeType.PCS.toInteger()) ? ComputeConstant.PCSServerType.get(serverType) : ComputeConstant.ECSServerType
 					.get(serverType);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -187,7 +226,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = esgId.toString();
 			String newString = this.wrapStringByNetworkEsgItem(esgId);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -201,7 +240,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = remark;
 			String newString = remark;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -229,7 +268,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = "";
 			String newString = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -237,8 +276,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	/**
-	 * 比较应用Application<br>
-	 * true:有变更;false:未变更.<br>
+	 * 比较应用Application, true:有变更;false:未变更.
 	 * 
 	 * @param computeItem
 	 * @param applicationNames
@@ -318,7 +356,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareStorage(Resources resources, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds) {
+	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds) {
 
 		boolean isChange = false;
 
@@ -333,7 +371,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = storageType.toString();
 			String newString = StorageConstant.StorageType.get(storageType);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -348,7 +386,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = space.toString();
 			String newString = space.toString();
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -371,7 +409,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -379,8 +417,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareElb(Resources resources, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts,
-			String[] computeIds) {
+	public boolean compareElb(Resources resources, Change change, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts,
+			String[] targetPorts, String[] computeIds) {
 
 		boolean isChange = false;
 
@@ -396,7 +434,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = keepSession;
 			String newString = NetworkConstant.KeepSession.get(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -410,7 +448,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = "";
 			String newString = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -434,7 +472,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -528,8 +566,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareEip(Resources resources, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
-			String[] targetPorts) {
+	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols,
+			String[] sourcePorts, String[] targetPorts) {
 
 		boolean isChange = false;
 
@@ -554,7 +592,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = this.wrapStringByComputeItem(linkId);
 
 			if (!oldValue.equals(newValue)) {
-				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			}
 
 		} else if (newLinkType.equals(oldLinkType) && NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
@@ -570,7 +608,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = this.wrapStringByNetworkElbItem(linkId);
 
 			if (!oldValue.equals(newValue)) {
-				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			}
 
 		} else if (!newLinkType.equals(oldLinkType)) {
@@ -590,7 +628,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValueCompute = UN_SELECTED_STRING;
 				String newStringCompute = "";
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameCompute, oldValueCompute, oldStringCompute, newValueCompute, newStringCompute);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameCompute, oldValueCompute, oldStringCompute, newValueCompute, newStringCompute);
 
 				// New
 				String fieldNameElb = FieldNameConstant.Eip.关联ELB.toString();
@@ -601,7 +639,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValueElb = linkId.toString();
 				String newStringElb = this.wrapStringByNetworkElbItem(linkId);
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
 
 			} else {
 
@@ -615,7 +653,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValueCompute = linkId.toString();
 				String newStringCompute = this.wrapStringByComputeItem(linkId);
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameCompute, oldValueCompute, oldStringCompute, newValueCompute, newStringCompute);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameCompute, oldValueCompute, oldStringCompute, newValueCompute, newStringCompute);
 
 				// New
 				String fieldNameElb = FieldNameConstant.Eip.关联ELB.toString();
@@ -626,7 +664,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValueElb = UN_SELECTED_STRING;
 				String newStringElb = "";
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
 
 			}
 
@@ -643,7 +681,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = "";
 			String newString = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -718,7 +756,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareDns(Resources resources, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
+	public boolean compareDns(Resources resources, Change change, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
 
 		boolean isChange = false;
 
@@ -733,7 +771,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = domainName;
 			String newString = domainName;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -749,7 +787,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = domainType.toString();
 			String newString = NetworkConstant.DomainType.get(domainType);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -767,7 +805,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValue = cnameDomain;
 				String newString = cnameDomain;
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			}
 
 		} else if (!NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && !NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
@@ -794,7 +832,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newValue = newId;
 				String newString = NetworkDnsItem.extractToString(list);
 
-				isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			}
 
 		} else if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && !NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
@@ -810,7 +848,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValueCNAME = "";
 			String newStringCNAME = "";
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
 
 			// New
 			String fieldName = FieldNameConstant.Dns.目标IP.toString();
@@ -827,7 +865,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = eipIds != null ? StringUtils.join(eipIds, ",") : "";
 			String newString = NetworkDnsItem.extractToString(list);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		} else if (!NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType()) && NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
 
@@ -842,7 +880,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = "";
 			String newString = "";
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 			// New
 			String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
@@ -853,7 +891,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValueCNAME = cnameDomain;
 			String newStringCNAME = cnameDomain;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
 
 		}
 
@@ -861,7 +899,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareMonitorElb(Resources resources, MonitorElb monitorElb, Integer elbId) {
+	public boolean compareMonitorElb(Resources resources, Change change, MonitorElb monitorElb, Integer elbId) {
 
 		boolean isChange = false;
 
@@ -877,95 +915,96 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = elbId.toString();
 			String newString = this.wrapStringByNetworkElbItem(elbId);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 		return isChange;
 	}
 
 	@Override
-	public boolean compareMonitorCompute(Resources resources, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
-			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical,
-			String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
+	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
+			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
+			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
 
 		// 监控实例
 
 		boolean isChange = false;
 
 		if (!monitorCompute.getIpAddress().equals(ipAddress)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控实例.toString(), monitorCompute.getIpAddress(), monitorCompute.getIpAddress(), ipAddress, ipAddress);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.监控实例.toString(), monitorCompute.getIpAddress(), monitorCompute.getIpAddress(), ipAddress,
+					ipAddress);
 		}
 
 		if (!monitorCompute.getPort().equals(port)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控端口.toString(), monitorCompute.getPort(), monitorCompute.getPort(), port, port);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.监控端口.toString(), monitorCompute.getPort(), monitorCompute.getPort(), port, port);
 		}
 
 		if (!monitorCompute.getProcess().equals(process)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.监控进程.toString(), monitorCompute.getProcess(), monitorCompute.getProcess(), process, process);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.监控进程.toString(), monitorCompute.getProcess(), monitorCompute.getProcess(), process, process);
 		}
 
 		if (!monitorCompute.getMountPoint().equals(mountPoint)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.挂载路径.toString(), monitorCompute.getMountPoint(), monitorCompute.getMountPoint(), mountPoint,
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.挂载路径.toString(), monitorCompute.getMountPoint(), monitorCompute.getMountPoint(), mountPoint,
 					mountPoint);
 		}
 
 		if (!monitorCompute.getCpuWarn().equals(cpuWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString(), monitorCompute.getCpuWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString(), monitorCompute.getCpuWarn(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuWarn()), cpuWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(cpuWarn));
 		}
 
 		if (!monitorCompute.getCpuCritical().equals(cpuCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString(), monitorCompute.getCpuCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString(), monitorCompute.getCpuCritical(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getCpuCritical()), cpuCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(cpuCritical));
 		}
 
 		if (!monitorCompute.getMemoryWarn().equals(memoryWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率报警阀值.toString(), monitorCompute.getMemoryWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.内存占用率报警阀值.toString(), monitorCompute.getMemoryWarn(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryWarn()), memoryWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(memoryWarn));
 		}
 
 		if (!monitorCompute.getMemoryCritical().equals(memoryCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.内存占用率警告阀值.toString(), monitorCompute.getMemoryCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.内存占用率警告阀值.toString(), monitorCompute.getMemoryCritical(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getMemoryCritical()), memoryCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(memoryCritical));
 		}
 
 		if (!monitorCompute.getPingLossWarn().equals(pingLossWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString(), monitorCompute.getPingLossWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString(), monitorCompute.getPingLossWarn(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossWarn()), pingLossWarn, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(pingLossWarn));
 		}
 
 		if (!monitorCompute.getPingLossCritical().equals(pingLossCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString(), monitorCompute.getPingLossCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString(), monitorCompute.getPingLossCritical(),
 					MonitorConstant.THRESHOLD_GT_STRING_KEY.get(monitorCompute.getPingLossCritical()), pingLossCritical, MonitorConstant.THRESHOLD_GT_STRING_KEY.get(pingLossCritical));
 		}
 
 		if (!monitorCompute.getDiskWarn().equals(diskWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString(), monitorCompute.getDiskWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString(), monitorCompute.getDiskWarn(),
 					MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskWarn()), diskWarn, MonitorConstant.THRESHOLD_LT_STRING_KEY.get(diskWarn));
 		}
 
 		if (!monitorCompute.getDiskCritical().equals(diskCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString(), monitorCompute.getDiskCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString(), monitorCompute.getDiskCritical(),
 					MonitorConstant.THRESHOLD_LT_STRING_KEY.get(monitorCompute.getDiskCritical()), diskCritical, MonitorConstant.THRESHOLD_LT_STRING_KEY.get(diskCritical));
 		}
 
 		if (!monitorCompute.getPingDelayWarn().equals(pingDelayWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率报警阀值.toString(), monitorCompute.getPingDelayWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.网络延时率报警阀值.toString(), monitorCompute.getPingDelayWarn(),
 					MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayWarn()), pingDelayWarn, MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(pingDelayWarn));
 		}
 
 		if (!monitorCompute.getPingDelayCritical().equals(pingDelayCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.网络延时率警告阀值.toString(), monitorCompute.getPingDelayCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.网络延时率警告阀值.toString(), monitorCompute.getPingDelayCritical(),
 					MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(monitorCompute.getPingDelayCritical()), pingDelayCritical, MonitorConstant.THRESHOLD_NET_GT_STRING_KEY.get(pingDelayCritical));
 		}
 
 		if (!monitorCompute.getMaxProcessWarn().equals(maxProcessWarn)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数报警阀值.toString(), monitorCompute.getMaxProcessWarn(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.最大进程数报警阀值.toString(), monitorCompute.getMaxProcessWarn(),
 					MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessWarn()), maxProcessWarn, MonitorConstant.MAX_PROCESS_STRING_KEY.get(maxProcessWarn));
 		}
 
 		if (!monitorCompute.getMaxProcessCritical().equals(maxProcessCritical)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.monitorCompute.最大进程数警告阀值.toString(), monitorCompute.getMaxProcessCritical(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.monitorCompute.最大进程数警告阀值.toString(), monitorCompute.getMaxProcessCritical(),
 					MonitorConstant.MAX_PROCESS_STRING_KEY.get(monitorCompute.getMaxProcessCritical()), maxProcessCritical, MonitorConstant.MAX_PROCESS_STRING_KEY.get(maxProcessCritical));
 		}
 
@@ -973,7 +1012,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareMdnItem(Resources resources, MdnItem mdnItem, String coverArea, String coverIsp) {
+	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea, String coverIsp) {
 
 		boolean isChange = false;
 
@@ -989,7 +1028,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = coverArea;
 			String newString = coverArea;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -1005,7 +1044,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = coverIsp;
 			String newString = comm.mdnService.wrapStringByMDNCoverIsp(coverIsp);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -1013,7 +1052,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareMdnVodItem(Resources resources, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth,
+			String sourceStreamerUrl) {
 
 		boolean isChange = false;
 
@@ -1027,8 +1067,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = vodDomain;
 			String newString = vodDomain;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnVodItem.getVodBandwidth().equals(vodBandwidth)) {
@@ -1041,8 +1080,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = vodBandwidth;
 			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(vodBandwidth);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnVodItem.getVodProtocol().equals(vodProtocol)) {
@@ -1055,8 +1093,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = vodProtocol;
 			String newString = vodProtocol;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnVodItem.getSourceOutBandwidth().equals(sourceOutBandwidth)) {
@@ -1069,8 +1106,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = sourceOutBandwidth;
 			String newString = sourceOutBandwidth;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnVodItem.getSourceStreamerUrl().equals(sourceStreamerUrl)) {
@@ -1083,17 +1119,16 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = sourceStreamerUrl;
 			String newString = sourceStreamerUrl;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		return isChange;
 	}
 
 	@Override
-	public boolean compareMdnLiveItem(Resources resources, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate,
-			String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
+			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
+			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
 
 		boolean isChange = false;
 
@@ -1107,8 +1142,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = liveDomain;
 			String newString = liveDomain;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnLiveItem.getLiveBandwidth().equals(liveBandwidth)) {
@@ -1121,8 +1155,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = liveBandwidth;
 			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(liveBandwidth);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnLiveItem.getLiveProtocol().equals(liveProtocol)) {
@@ -1135,8 +1168,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = liveProtocol;
 			String newString = liveProtocol;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnLiveItem.getBandwidth().equals(bandwidth)) {
@@ -1149,8 +1181,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = bandwidth;
 			String newString = bandwidth;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnLiveItem.getName().equals(name)) {
@@ -1163,8 +1194,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = name;
 			String newString = name;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!mdnLiveItem.getGuid().equals(guid)) {
@@ -1177,8 +1207,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = guid;
 			String newString = guid;
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
-
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		// 直播流输出模式变更
@@ -1192,27 +1221,28 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = streamOutMode.toString();
 			String newString = MdnConstant.OutputMode.get(streamOutMode);
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 
 			if (MdnConstant.OutputMode.Transfer模式.toInteger().equals(streamOutMode)) { // 变成Transfer模式模式
 
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrl, httpUrl);
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrate, httpBitrate);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrl, httpUrl);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrate, httpBitrate);
 
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrl, hlsUrl);
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrate, hlsBitrate);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrl, hlsUrl);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrate, hlsBitrate);
 
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), "", "", rtspUrl, rtspUrl);
-				isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), "", "", rtspBitrate, rtspBitrate);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), "", "", rtspUrl, rtspUrl);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), "", "", rtspBitrate, rtspBitrate);
 
 			} else {// 变成Encoder模式
 
 				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrlEncoder, httpUrlEncoder);
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrateEncoder, httpBitrateEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrlEncoder, httpUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrateEncoder,
+							httpBitrateEncoder);
 				} else {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrlEncoder, hlsUrlEncoder);
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrateEncoder, hlsBitrateEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrlEncoder, hlsUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrateEncoder, hlsBitrateEncoder);
 				}
 			}
 
@@ -1225,46 +1255,49 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {// HTTP拉流模式
 
 					if (!httpUrlEncoder.equals(mdnLiveItem.getHttpUrl())) {
-						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(), mdnLiveItem.getHttpUrl(), httpUrlEncoder,
-								httpUrlEncoder);
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(),
+								mdnLiveItem.getHttpUrl(), httpUrlEncoder, httpUrlEncoder);
 					}
 					if (!httpBitrateEncoder.equals(mdnLiveItem.getHttpBitrate())) {
-						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(), mdnLiveItem.getHttpBitrate(),
-								httpBitrateEncoder, httpBitrateEncoder);
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(),
+								mdnLiveItem.getHttpBitrate(), httpBitrateEncoder, httpBitrateEncoder);
 					}
 				} else {// RTMP推流模式
 					if (!hlsUrlEncoder.equals(mdnLiveItem.getHlsUrl())) {
-						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(), mdnLiveItem.getHlsUrl(), hlsUrlEncoder,
-								hlsUrlEncoder);
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(),
+								mdnLiveItem.getHlsUrl(), hlsUrlEncoder, hlsUrlEncoder);
 					}
 					if (!hlsBitrateEncoder.equals(mdnLiveItem.getHlsBitrate())) {
-						isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(), mdnLiveItem.getHlsBitrate(),
-								hlsBitrateEncoder, hlsBitrateEncoder);
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
+								mdnLiveItem.getHlsBitrate(), hlsBitrateEncoder, hlsBitrateEncoder);
 					}
 				}
 
 			} else {// Transfer模式
 
 				if (!mdnLiveItem.getHttpUrl().equals(httpUrl)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(), mdnLiveItem.getHttpUrl(), httpUrl, httpUrl);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(),
+							mdnLiveItem.getHttpUrl(), httpUrl, httpUrl);
 				}
 				if (!mdnLiveItem.getHttpBitrate().equals(httpBitrate)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(), mdnLiveItem.getHttpBitrate(), httpBitrate,
-							httpBitrate);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(),
+							mdnLiveItem.getHttpBitrate(), httpBitrate, httpBitrate);
 				}
 				if (!mdnLiveItem.getHlsUrl().equals(hlsUrl)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(), mdnLiveItem.getHlsUrl(), hlsUrl, hlsUrl);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(),
+							mdnLiveItem.getHlsUrl(), hlsUrl, hlsUrl);
 				}
 				if (!mdnLiveItem.getHlsBitrate().equals(hlsBitrate)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(), mdnLiveItem.getHlsBitrate(), hlsBitrate,
-							hlsBitrate);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
+							mdnLiveItem.getHlsBitrate(), hlsBitrate, hlsBitrate);
 				}
 				if (!mdnLiveItem.getRtspUrl().equals(rtspUrl)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), mdnLiveItem.getRtspUrl(), mdnLiveItem.getRtspUrl(), rtspUrl, rtspUrl);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), mdnLiveItem.getRtspUrl(),
+							mdnLiveItem.getRtspUrl(), rtspUrl, rtspUrl);
 				}
 				if (!mdnLiveItem.getRtspBitrate().equals(rtspBitrate)) {
-					isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), mdnLiveItem.getRtspBitrate(), mdnLiveItem.getRtspBitrate(), rtspBitrate,
-							rtspBitrate);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), mdnLiveItem.getRtspBitrate(),
+							mdnLiveItem.getRtspBitrate(), rtspBitrate, rtspBitrate);
 				}
 			}
 
@@ -1274,10 +1307,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareCP(Resources resources, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, String publishUrl,
-			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
-			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia) {
+	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
+			String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
+			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
+			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
 
 		boolean isChange = false;
 
@@ -1287,7 +1320,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = cpItem.getRecordStreamUrl();
 			String newValue = recordStreamUrl;
 			String newString = recordStreamUrl;
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getRecordBitrate().equals(recordBitrate)) {
@@ -1296,7 +1329,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(cpItem.getRecordBitrate());
 			String newValue = recordBitrate;
 			String newString = CPConstant.RECORDBITRATE_MAP_STRING_KEY.get(recordBitrate);
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getExportEncode().equals(exportEncode)) {
@@ -1317,7 +1350,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				newString += CPConstant.EXPORTENCODE_MAP_STRING_KEY.get(key) + "<br>";
 			}
 
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getRecordType().equals(recordType)) {
@@ -1326,7 +1359,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = CPConstant.RecordType.get(cpItem.getRecordType());
 			String newValue = recordType.toString();
 			String newString = CPConstant.RecordType.get(recordType);
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getRecordTime().equals(recordTime)) {
@@ -1335,7 +1368,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = cpItem.getRecordTime();
 			String newValue = recordTime;
 			String newString = recordTime;
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		// 该字段可为null,要考虑到3种情况的比较.
@@ -1346,7 +1379,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = cpItem.getRecordTime();
 			String newValue = recordTime;
 			String newString = recordTime;
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getIsPushCtp().toString().equals(isPushCtp)) {
@@ -1355,33 +1388,33 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = CPConstant.IsPushCtp.get(cpItem.getIsPushCtp());
 			String newValue = isPushCtp;
 			String newString = CPConstant.IsPushCtp.get(CPConstant.IsPushCtp.推送.toString().equals(isPushCtp) ? true : false);
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getVideoFtpIp().equals(videoFtpIp)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP上传IP.toString(), cpItem.getVideoFtpIp(), cpItem.getVideoFtpIp(), videoFtpIp, videoFtpIp);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频FTP上传IP.toString(), cpItem.getVideoFtpIp(), cpItem.getVideoFtpIp(), videoFtpIp, videoFtpIp);
 		}
 		if (!cpItem.getVideoFtpPort().equals(videoFtpPort)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频端口.toString(), cpItem.getVideoFtpPort(), cpItem.getVideoFtpPort(), videoFtpPort, videoFtpPort);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频端口.toString(), cpItem.getVideoFtpPort(), cpItem.getVideoFtpPort(), videoFtpPort, videoFtpPort);
 		}
 		if (!cpItem.getVideoFtpUsername().equals(videoFtpUsername)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP用户名.toString(), cpItem.getVideoFtpUsername(), cpItem.getVideoFtpUsername(), videoFtpUsername,
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频FTP用户名.toString(), cpItem.getVideoFtpUsername(), cpItem.getVideoFtpUsername(), videoFtpUsername,
 					videoFtpUsername);
 		}
 		if (!cpItem.getVideoFtpPassword().equals(videoFtpPassword)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP密码.toString(), cpItem.getVideoFtpPassword(), cpItem.getVideoFtpPassword(), videoFtpPassword,
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频FTP密码.toString(), cpItem.getVideoFtpPassword(), cpItem.getVideoFtpPassword(), videoFtpPassword,
 					videoFtpPassword);
 		}
 		if (!cpItem.getVideoFtpRootpath().equals(videoFtpRootpath)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP根路径.toString(), cpItem.getVideoFtpRootpath(), cpItem.getVideoFtpRootpath(), videoFtpRootpath,
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频FTP根路径.toString(), cpItem.getVideoFtpRootpath(), cpItem.getVideoFtpRootpath(), videoFtpRootpath,
 					videoFtpRootpath);
 		}
 		if (!cpItem.getVideoFtpUploadpath().equals(videoFtpUploadpath)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频FTP上传路径.toString(), cpItem.getVideoFtpUploadpath(), cpItem.getVideoFtpUploadpath(), videoFtpUploadpath,
-					videoFtpUploadpath);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频FTP上传路径.toString(), cpItem.getVideoFtpUploadpath(), cpItem.getVideoFtpUploadpath(),
+					videoFtpUploadpath, videoFtpUploadpath);
 		}
 		if (!cpItem.getVideoOutputGroup().equals(videoOutputGroup)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.视频输出组类型.toString(), cpItem.getVideoOutputGroup(), cpItem.getVideoOutputGroup(), videoOutputGroup,
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.视频输出组类型.toString(), cpItem.getVideoOutputGroup(), cpItem.getVideoOutputGroup(), videoOutputGroup,
 					videoOutputGroup);
 		}
 
@@ -1391,38 +1424,39 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = CPConstant.VideoOutputWay.get(Integer.valueOf(cpItem.getVideoOutputWay()));
 			String newValue = videoOutputWay;
 			String newString = CPConstant.VideoOutputWay.get(Integer.valueOf(videoOutputWay));
-			isChange = this.saveChangeItemByFieldName(resources, fieldName, oldValue, oldString, newValue, newString);
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		if (!cpItem.getPictrueFtpIp().equals(pictrueFtpIp)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP上传IP.toString(), cpItem.getPictrueFtpIp(), cpItem.getPictrueFtpIp(), pictrueFtpIp, pictrueFtpIp);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片FTP上传IP.toString(), cpItem.getPictrueFtpIp(), cpItem.getPictrueFtpIp(), pictrueFtpIp, pictrueFtpIp);
 		}
 		if (!cpItem.getPictrueFtpPort().equals(pictrueFtpPort)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片端口.toString(), cpItem.getPictrueFtpPort(), cpItem.getPictrueFtpPort(), pictrueFtpPort, pictrueFtpPort);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片端口.toString(), cpItem.getPictrueFtpPort(), cpItem.getPictrueFtpPort(), pictrueFtpPort,
+					pictrueFtpPort);
 		}
 		if (!cpItem.getPictrueFtpUsername().equals(pictrueFtpUsername)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP用户名.toString(), cpItem.getPictrueFtpUsername(), cpItem.getPictrueFtpUsername(), pictrueFtpUsername,
-					pictrueFtpUsername);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片FTP用户名.toString(), cpItem.getPictrueFtpUsername(), cpItem.getPictrueFtpUsername(),
+					pictrueFtpUsername, pictrueFtpUsername);
 		}
 		if (!cpItem.getPictrueFtpPassword().equals(pictrueFtpPassword)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP密码.toString(), cpItem.getPictrueFtpPassword(), cpItem.getPictrueFtpPassword(), pictrueFtpPassword,
-					pictrueFtpPassword);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片FTP密码.toString(), cpItem.getPictrueFtpPassword(), cpItem.getPictrueFtpPassword(),
+					pictrueFtpPassword, pictrueFtpPassword);
 		}
 		if (!cpItem.getPictrueFtpRootpath().equals(pictrueFtpRootpath)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP根路径.toString(), cpItem.getPictrueFtpRootpath(), cpItem.getPictrueFtpRootpath(), pictrueFtpRootpath,
-					pictrueFtpRootpath);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片FTP根路径.toString(), cpItem.getPictrueFtpRootpath(), cpItem.getPictrueFtpRootpath(),
+					pictrueFtpRootpath, pictrueFtpRootpath);
 		}
 		if (!cpItem.getPictrueFtpUploadpath().equals(pictrueFtpUploadpath)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片FTP上传路径.toString(), cpItem.getPictrueFtpUploadpath(), cpItem.getPictrueFtpUploadpath(),
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片FTP上传路径.toString(), cpItem.getPictrueFtpUploadpath(), cpItem.getPictrueFtpUploadpath(),
 					pictrueFtpUploadpath, pictrueFtpUploadpath);
 		}
 		if (!cpItem.getPictrueOutputGroup().equals(pictrueOutputGroup)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.图片输出组类型.toString(), cpItem.getPictrueOutputGroup(), cpItem.getPictrueOutputGroup(), pictrueOutputGroup,
-					pictrueOutputGroup);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.图片输出组类型.toString(), cpItem.getPictrueOutputGroup(), cpItem.getPictrueOutputGroup(),
+					pictrueOutputGroup, pictrueOutputGroup);
 		}
 		if (!cpItem.getPictrueOutputMedia().equals(pictrueOutputMedia)) {
-			isChange = this.saveChangeItemByFieldName(resources, FieldNameConstant.CpItem.输出媒体类型.toString(), cpItem.getPictrueOutputMedia(), cpItem.getPictrueOutputMedia(), pictrueOutputMedia,
-					pictrueOutputMedia);
+			isChange = this.saveChangeItemByFieldName(resources, change, FieldNameConstant.CpItem.输出媒体类型.toString(), cpItem.getPictrueOutputMedia(), cpItem.getPictrueOutputMedia(),
+					pictrueOutputMedia, pictrueOutputMedia);
 		}
 
 		return isChange;

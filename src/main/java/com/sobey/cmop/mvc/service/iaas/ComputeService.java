@@ -19,6 +19,7 @@ import com.sobey.cmop.mvc.dao.ApplicationDao;
 import com.sobey.cmop.mvc.dao.ComputeItemDao;
 import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -196,13 +197,14 @@ public class ComputeService extends BaseSevcie {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
-		comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
+		Change change = comm.changeServcie.saveOrUpdateChangeByResources(resources, changeDescription);
 
 		ComputeItem computeItem = comm.computeService.getComputeItem(resources.getServiceId());
 
 		/* 比较实例资源computeItem 变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareCompute(resources, computeItem, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths);
+		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions,
+				applicationDeployPaths);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

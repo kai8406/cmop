@@ -480,24 +480,14 @@ function changeServer(obj){
 								<div class="span2">${eip.identifier}</div>
 								<div class="span10" id="eipDiv">
 							    	<input type="hidden" id="eipId" name="eipId" value="${eip.id}"/>
-							    	<c:if test="${eip.ispType==1}">
-										<select id="eipAddress" name="eipAddress" style="width:104px">
-											<c:forEach var="map" items="${telecomIpPool}">
-												<option value="<c:out value='${map.ipAddress}' />"
-													<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
-												</option>
-											</c:forEach>
-										</select>
-									</c:if>					 
-									<c:if test="${eip.ispType==2}"> 
-										<select id="eipAddress" name="eipAddress" style="width:104px">
-											<c:forEach var="map" items="${telecomIpPool}">
-												<option value="<c:out value='${map.ipAddress}' />" 
-													<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
-												</option>
-											</c:forEach>
-										</select>
-									</c:if>
+									<select id="eipAddress" name="eipAddress" style="width:104px">
+										<c:forEach var="map" items="${telecomIpPool}">
+											<option value="<c:out value='${map.ipAddress}' />"
+												<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
+											</option>
+										</c:forEach>
+									</select>
+									 
 									<c:forEach var="map" items="${ispTypeMap}">
 											<c:if test="${eip.ispType==map.key}"><c:out value="${map.value}" /></c:if>
 									</c:forEach>

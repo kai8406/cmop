@@ -924,7 +924,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	@Override
 	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
 			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
-			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
+			String maxProcessCritical, String port, String process, String mountPoint) {
 
 		// 监控实例
 
@@ -1375,10 +1375,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		if ((cpItem.getPublishUrl() != null & publishUrl != null && !cpItem.getPublishUrl().equals(publishUrl)) || (cpItem.getPublishUrl() == null && publishUrl != null)
 				|| (cpItem.getPublishUrl() != null && publishUrl == null)) {
 			String fieldName = FieldNameConstant.CpItem.发布接口地址.toString();
-			String oldValue = cpItem.getRecordTime();
-			String oldString = cpItem.getRecordTime();
-			String newValue = recordTime;
-			String newString = recordTime;
+			String oldValue = cpItem.getPublishUrl();
+			String oldString = cpItem.getPublishUrl();
+			String newValue = publishUrl;
+			String newString = publishUrl;
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 

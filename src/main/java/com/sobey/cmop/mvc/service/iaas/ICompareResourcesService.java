@@ -190,8 +190,6 @@ public interface ICompareResourcesService {
 	 * @param pingDelayCritical
 	 * @param maxProcessWarn
 	 * @param maxProcessCritical
-	 * @param networkFlowWarn
-	 * @param networkFlowCritical
 	 * @param port
 	 * @param process
 	 * @param mountPoint
@@ -199,7 +197,7 @@ public interface ICompareResourcesService {
 	 */
 	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
 			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
-			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint);
+			String maxProcessCritical, String port, String process, String mountPoint);
 
 	/**
 	 * 比较MdnItem变更前后的值

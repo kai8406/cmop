@@ -621,8 +621,6 @@ public class ResourcesService extends BaseSevcie {
 					monitorCompute.setMaxProcessWarn(changeItem.getOldValue());
 				} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(changeItem.getFieldName())) {
 					monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.网卡流量报警阀值.toString().equals(changeItem.getFieldName())) {
-				} else if (FieldNameConstant.monitorCompute.网卡流量警告阀值.toString().equals(changeItem.getFieldName())) {
 				}
 
 			}

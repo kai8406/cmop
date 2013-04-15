@@ -87,10 +87,6 @@ public class MonitorComputeServcie extends BaseSevcie {
 	 *            最大进程数报警数组
 	 * @param maxProcessCriticals
 	 *            最大进程数警告数组
-	 * @param networkFlowWarns
-	 *            网卡流量报警数组
-	 * @param networkFlowCriticals
-	 *            网卡流浪警告数组
 	 * @param ports
 	 *            监控端口数组
 	 * @param processes
@@ -101,7 +97,7 @@ public class MonitorComputeServcie extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveMonitorComputeToApply(Apply apply, String[] computeIds, String[] cpuWarns, String[] cpuCriticals, String[] memoryWarns, String[] memoryCriticals, String[] pingLossWarns,
 			String[] pingLossCriticals, String[] diskWarns, String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals, String[] maxProcessWarns, String[] maxProcessCriticals,
-			String[] networkFlowWarns, String[] networkFlowCriticals, String[] ports, String[] processes, String[] mountPoints) {
+			String[] ports, String[] processes, String[] mountPoints) {
 
 		if (computeIds != null) {
 
@@ -175,10 +171,6 @@ public class MonitorComputeServcie extends BaseSevcie {
 	 *            最大进程数报警
 	 * @param maxProcessCritical
 	 *            最大进程数警告
-	 * @param networkFlowWarn
-	 *            网卡流量报警
-	 * @param networkFlowCritical
-	 *            网卡流量警告
 	 * @param port
 	 *            监控端口
 	 * @param processe
@@ -188,8 +180,8 @@ public class MonitorComputeServcie extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public void updateMonitorComputeToApply(MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical, String pingLossWarn,
-			String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String networkFlowWarn,
-			String networkFlowCritical, String port, String process, String mountPoint) {
+			String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String port,
+			String process, String mountPoint) {
 
 		monitorCompute.setCpuWarn(cpuWarn);
 		monitorCompute.setCpuCritical(cpuCritical);
@@ -216,7 +208,7 @@ public class MonitorComputeServcie extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveResourcesByMonitorCompute(Resources resources, Integer serviceTagId, String changeDescription, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
 			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
-			String maxProcessCritical, String networkFlowWarn, String networkFlowCritical, String port, String process, String mountPoint) {
+			String maxProcessCritical, String port, String process, String mountPoint) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -227,7 +219,7 @@ public class MonitorComputeServcie extends BaseSevcie {
 		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareMonitorCompute(resources, change, monitorCompute, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn,
-				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, networkFlowWarn, networkFlowCritical, port, process, mountPoint);
+				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

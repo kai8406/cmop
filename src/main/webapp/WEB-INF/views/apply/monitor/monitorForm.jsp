@@ -214,14 +214,6 @@
 					html += '<input type="hidden" value="' + $maxProcess.find(".warn-threshold").val() + '" name="maxProcessWarns">';
 					html += '<input type="hidden" value="' + $maxProcess.find(".critical-threshold").val() + '" name="maxProcessCriticals">';
 					
-					//网卡流量
-					var $networkFlow = $("#networkFlow");
-					html += '<dd><em>' + $networkFlow.find(".control-label").text() + '</em>';
-					html += '&nbsp;&nbsp;报警阀值&nbsp;<strong>' + $networkFlow.find(".warn-threshold>option:selected").text() + '</strong>';
-					html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>' + $networkFlow.find(".critical-threshold>option:selected").text() + '</strong></dd>';
-					html += '<input type="hidden" value="' + $networkFlow.find(".warn-threshold").val() + '" name="networkFlowWarns">';
-					html += '<input type="hidden" value="' + $networkFlow.find(".critical-threshold").val() + '" name="networkFlowCriticals">';
-					html += '</div> ';
 				}
 			});
 			
@@ -512,25 +504,6 @@
 							    		警告阀值&nbsp;
 							    		<select class="input-small critical-threshold">
 											<c:forEach var="map" items="${maxProcessMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-										</select>
-									</div>
-								</div>
-							</div>
-							
-				    		<!-- 网卡流量 -->
-							<div class="control-group threshold" id="networkFlow">
-								<label class="control-label" for="networkFlow">网卡流量</label>
-								<div class="controls">
-									<div class="span2">
-							    		报警阀值&nbsp;
-							    		<select class="input-small warn-threshold">
-											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
-										</select>
-									</div>
-							    	<div class="span2">
-							    		警告阀值&nbsp;
-							    		<select class="input-small critical-threshold">
-											<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }">${map.value }</option></c:forEach>
 										</select>
 									</div>
 								</div>

@@ -440,14 +440,6 @@ public class RedmineUtilService extends BaseSevcie {
 								content.append(FieldNameConstant.monitorCompute.最大进程数警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
 										.append(NEWLINE);
 
-							} else if (FieldNameConstant.monitorCompute.网卡流量报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网卡流量报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.网卡流量警告阀值.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.monitorCompute.网卡流量警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {

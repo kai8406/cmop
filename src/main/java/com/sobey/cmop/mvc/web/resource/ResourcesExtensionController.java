@@ -163,15 +163,14 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "pingLossWarn") String pingLossWarn, @RequestParam(value = "pingLossCritical") String pingLossCritical, @RequestParam(value = "diskWarn") String diskWarn,
 			@RequestParam(value = "diskCritical") String diskCritical, @RequestParam(value = "pingDelayWarn") String pingDelayWarn,
 			@RequestParam(value = "pingDelayCritical") String pingDelayCritical, @RequestParam(value = "maxProcessWarn") String maxProcessWarn,
-			@RequestParam(value = "maxProcessCritical") String maxProcessCritical, @RequestParam(value = "networkFlowWarn") String networkFlowWarn,
-			@RequestParam(value = "networkFlowCritical") String networkFlowCritical, @RequestParam(value = "port", required = false) String port,
+			@RequestParam(value = "maxProcessCritical") String maxProcessCritical, @RequestParam(value = "port", required = false) String port,
 			@RequestParam(value = "process", required = false) String process, @RequestParam(value = "mountPoint", required = false) String mountPoint, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		resources.setUsedby(usedby);
 
 		comm.monitorComputeServcie.saveResourcesByMonitorCompute(resources, serviceTagId, changeDescription, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn,
-				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, networkFlowWarn, networkFlowCritical, port, process, mountPoint);
+				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
 
 		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
 

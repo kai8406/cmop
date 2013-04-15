@@ -276,26 +276,7 @@
 					</div>
 				</div>
 			</div>
-			
-    		<!-- 网卡流量 -->
-			<div class="control-group threshold" id="networkFlow">
-				<label class="control-label" for="networkFlow">网卡流量</label>
-				<div class="controls">
-					<div class="span2">
-			    		报警阀值&nbsp;
-			    		<select class="input-small warn-threshold" name="networkFlowWarn">
-							<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }" <c:if test="${monitorCompute.cpuWarn == map.key }">selected="selected"</c:if>>${map.value }</option></c:forEach>
-						</select>
-					</div>
-			    	<div class="span2">
-			    		警告阀值&nbsp;
-			    		<select class="input-small critical-threshold" name="networkFlowCritical">
-							<c:forEach var="map" items="${thresholdGtMap }"><option value="${map.key }" <c:if test="${monitorCompute.cpuCritical == map.key }">selected="selected"</c:if>>${map.value }</option></c:forEach>
-						</select>
-					</div>
-				</div>
-			</div>
-			
+    		 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

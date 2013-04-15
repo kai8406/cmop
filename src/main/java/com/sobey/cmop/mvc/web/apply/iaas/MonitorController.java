@@ -82,10 +82,6 @@ public class MonitorController extends BaseController {
 	 *            最大进程数报警数组
 	 * @param maxProcessCriticals
 	 *            最大进程数警告数组
-	 * @param networkFlowWarns
-	 *            网卡流量报警数组
-	 * @param networkFlowCriticals
-	 *            网卡流浪警告数组
 	 * @param ports
 	 *            监控端口数组
 	 * @param processes
@@ -115,8 +111,7 @@ public class MonitorController extends BaseController {
 			@RequestParam(value = "pingLossCriticals", required = false) String[] pingLossCriticals, @RequestParam(value = "diskWarns", required = false) String[] diskWarns,
 			@RequestParam(value = "diskCriticals", required = false) String[] diskCriticals, @RequestParam(value = "pingDelayWarns", required = false) String[] pingDelayWarns,
 			@RequestParam(value = "pingDelayCriticals", required = false) String[] pingDelayCriticals, @RequestParam(value = "maxProcessWarns", required = false) String[] maxProcessWarns,
-			@RequestParam(value = "maxProcessCriticals", required = false) String[] maxProcessCriticals, @RequestParam(value = "networkFlowWarns", required = false) String[] networkFlowWarns,
-			@RequestParam(value = "networkFlowCriticals", required = false) String[] networkFlowCriticals, @RequestParam(value = "ports", required = false) String[] ports,
+			@RequestParam(value = "maxProcessCriticals", required = false) String[] maxProcessCriticals, @RequestParam(value = "ports", required = false) String[] ports,
 			@RequestParam(value = "processes", required = false) String[] processes, @RequestParam(value = "mountPoints", required = false) String[] mountPoints, RedirectAttributes redirectAttributes) {
 
 		Apply apply = new Apply();
@@ -128,7 +123,7 @@ public class MonitorController extends BaseController {
 		apply.setDescription(description);
 
 		comm.monitorServcie.saveMonitorToApply(apply, monitorMails, monitorPhones, elbIds, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals,
-				diskWarns, diskCriticals, pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, networkFlowWarns, networkFlowCriticals, ports, processes, mountPoints);
+				diskWarns, diskCriticals, pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, ports, processes, mountPoints);
 
 		redirectAttributes.addFlashAttribute("message", "创建监控成功.");
 
@@ -238,10 +233,6 @@ public class MonitorController extends BaseController {
 	 *            最大进程数报警
 	 * @param maxProcessCritical
 	 *            最大进程数警告
-	 * @param networkFlowWarn
-	 *            网卡流量报警
-	 * @param networkFlowCritical
-	 *            网卡流量警告
 	 * @param port
 	 *            监控端口
 	 * @param process
@@ -260,14 +251,13 @@ public class MonitorController extends BaseController {
 			@RequestParam(value = "pingLossCritical") String pingLossCritical, @RequestParam(value = "diskWarn") String diskWarn, @RequestParam(value = "diskCritical") String diskCritical,
 			@RequestParam(value = "pingDelayWarn") String pingDelayWarn, @RequestParam(value = "pingDelayCritical") String pingDelayCritical,
 			@RequestParam(value = "maxProcessWarn") String maxProcessWarn, @RequestParam(value = "maxProcessCritical") String maxProcessCritical,
-			@RequestParam(value = "networkFlowWarn") String networkFlowWarn, @RequestParam(value = "networkFlowCritical") String networkFlowCritical,
 			@RequestParam(value = "port", required = false) String port, @RequestParam(value = "process", required = false) String process,
 			@RequestParam(value = "mountPoint", required = false) String mountPoint, RedirectAttributes redirectAttributes) {
 
 		MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(id);
 
 		comm.monitorComputeServcie.updateMonitorComputeToApply(monitorCompute, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn, pingLossCritical, diskWarn, diskCritical,
-				pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, networkFlowWarn, networkFlowCritical, port, process, mountPoint);
+				pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
 
 		redirectAttributes.addFlashAttribute("message", "修改实例监控 " + monitorCompute.getIdentifier() + " 成功");
 

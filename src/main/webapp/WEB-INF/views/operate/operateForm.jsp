@@ -32,6 +32,11 @@ $(document).ready(function() {
         			isUsed = true;
         		}
         	});
+        	$("#updateDiv #elbDiv").each(function () {
+        		if ($(this).find("#innerIp").val()==ip) {
+        			isUsed = true;
+        		}
+        	});
         	if (isUsed) {
         		alert("您选择的IP已被选用，请重新选择！");
         	} else {
@@ -96,6 +101,7 @@ function checkValid() {
 	//拼装计算和存储资源相关属性
 	var computes="",storages="",hostNames="",serverAlias="",osStorageAlias="",controllerAlias="",volumes="",sep=",";
 	var innerIps="",eipIds="",eipAddresss="";
+	var virtualIps="",elbIds="";
 	$("#updateDiv #computeDiv").each(function () {
 		computes = computes+$(this).find("#computeId").val()+sep;
 		hostNames = hostNames+$(this).find("#hostName").val()+" "+sep;
@@ -123,6 +129,10 @@ function checkValid() {
 		eipIds = eipIds+$(this).find("#eipId").val()+sep;
 		eipAddresss = eipAddresss+$(this).find("#eipAddress").val()+sep;
     });
+	$("#updateDiv #elbDiv").each(function () {
+		elbIds = elbIds+$(this).find("#elbId").val()+sep;
+		virtualIps = virtualIps+$(this).find("#innerIp").val()+sep;
+    });
 	$('#computes').val(computes);
 	$('#storages').val(storages);
 	$('#hostNames').val(hostNames);
@@ -136,6 +146,8 @@ function checkValid() {
 	if ($('#location').length>0) {
 		$('#locationAlias').val($('#location').val());
 	}
+	$('#elbIds').val(elbIds);
+	$('#virtualIps').val(virtualIps);
 	//if (${isShow} && $('#hostNames').val()=="") {
 	//	alert("主机名不能为空！");
 	//	$('#hostNames').focus();
@@ -152,6 +164,8 @@ function checkValid() {
 	//alert($('#eipIds').val());
 	//alert($('#eipAddresss').val());
 	//alert($('#locationAlias').val());
+	//alert($('#elbIds').val());
+	//alert($('#virtualIps').val());	
 	//return false;
 
 	$("#updateBtn").click(function(){
@@ -190,6 +204,10 @@ function changeVlan(){
         		$(this).find("#ipPool").empty();
         		$(this).find("#ipPool").append(html);
         	});
+        	$("#updateDiv #elbDiv").each(function () {
+        		$(this).find("#ipPool").empty();
+        		$(this).find("#ipPool").append(html);
+        	});        	
         }
     });
 }
@@ -243,7 +261,7 @@ function changeServer(obj){
 							<div class="span8"><em>详细描述:</em></div>	
 						</div>
 					    <div class="row-fluid" >
-							<div class="span12">${issue.description}</div>	
+							<div class="span12">${description}</div>	
 						</div>
 					</div>		
 				</div>
@@ -378,6 +396,8 @@ function changeServer(obj){
 						<input type="hidden" id="eipIds" name="eipIds"/>
 						<input type="hidden" id="eipAddresss" name="eipAddresss"/>
 						<input type="hidden" id="locationAlias" name="locationAlias"/>
+						<input type="hidden" id="elbIds" name="elbIds"/>
+						<input type="hidden" id="virtualIps" name="virtualIps"/>
 						
 					    <c:if test="${not empty computeList || not empty networkEipList}">
 					    	<div class="row-fluid" style="padding-bottom: 5px; padding-top: 5px;">
@@ -495,7 +515,18 @@ function changeServer(obj){
 							</div>
 						</c:forEach>
 							
-						<!-- ELB 暂时不处理 -->
+						<!-- ELB -->
+						<c:forEach var="elb" items="${elbList}">
+							<div class="row-fluid" style="padding-bottom: 5px;">
+								<div class="span2">${elb.identifier}</div>
+								<div class="span10" id="elbDiv">
+							    	<input type="hidden" id="elbId" name="elbId" value="${elb.id}"/>
+							    	<input type="text" id="innerIp" name="innerIp" readonly="readonly" value="${elb.virtualIp}" class="input-small" placeholder="虚拟负载IP">
+									<select id="ipPool" name="ipPool" class="input-small">
+									</select>
+								</div>
+							</div>
+						</c:forEach>						
 					</div>
 
 					<div class="row-fluid">	

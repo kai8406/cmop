@@ -32,6 +32,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.framework.utils.DateUtil;
 
 /**
  * 生成满足 Redmine格式的文本(用于通过API插入redmine).
@@ -77,7 +78,7 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("服务起止日期: ").append(apply.getServiceStart()).append(" 至 ").append(apply.getServiceEnd()).append(NEWLINE);
 			content.append("用途描述: ").append(apply.getDescription()).append(NEWLINE);
 			content.append("申请人: ").append(apply.getUser().getName()).append(NEWLINE);
-			content.append("申请时间: ").append(apply.getCreateTime()).append(NEWLINE);
+			content.append("申请时间: ").append(DateUtil.formatDate(apply.getCreateTime())).append(NEWLINE);
 			content.append("</pre>");
 			content.append(NEWLINE);
 
@@ -206,7 +207,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 			StringBuilder content = new StringBuilder();
 
-			content.append("*资源变更的详细信息*").append(NEWLINE + NEWLINE);
+			content.append("*服务变更的详细信息*").append(NEWLINE + NEWLINE);
 			content.append("* +*服务标签基本信息*+").append(NEWLINE);
 			content.append("<pre>").append(NEWLINE);
 			content.append("标签名: ").append(serviceTag.getName()).append(NEWLINE);
@@ -216,7 +217,7 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("申请人: ").append(serviceTag.getUser().getName()).append(NEWLINE);
 			content.append("</pre>");
 			content.append(NEWLINE + NEWLINE);
-			content.append("* +*资源变更信息*+").append(NEWLINE);
+			content.append("* +*变更信息*+").append(NEWLINE);
 
 			content.append("<pre>").append(NEWLINE);
 

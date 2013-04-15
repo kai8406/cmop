@@ -17,7 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
+import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEipItem;
+import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
+import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Servlets;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -91,14 +95,23 @@ public class OperateController extends BaseController {
 
 			// 更新写入Redmine的IP
 			List list = comm.operateService.getComputeStorageElbEip(redmineIssue);
-			List computeList = (List) list.get(0);
-			List storageList = (List) list.get(1);
-			List networkElbList = (List) list.get(2);
-			List networkEipList = (List) list.get(3);
+			List<ComputeItem> computeList = (List) list.get(0);
+			List<StorageItem> storageList = (List) list.get(1);
+			List<NetworkElbItem> networkElbList = (List) list.get(2);
+			List<NetworkEipItem> networkEipList = (List) list.get(3);
 			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
-			// TODO 添加计算资源的IP
+			String defaultIp = "\\(0\\.0\\.0\\.0\\)";
+			for (ComputeItem computeItem : computeList) {
+				desc = desc.replaceAll(computeItem.getIdentifier() + defaultIp, computeItem.getIdentifier() + "(" + computeItem.getInnerIp() + ")");
+			}
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
-			// TODO 添加EIP的IP
+			for (NetworkEipItem eipItem : networkEipList) {
+				desc = desc.replaceAll(eipItem.getIdentifier() + defaultIp, eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
+			}
+			logger.info("--->更新写入Redmine的IP（ELB）..." + networkElbList.size());
+			for (NetworkElbItem elbItem : networkElbList) {
+				desc = desc.replaceAll(elbItem.getIdentifier() + defaultIp, elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
+			}
 			model.addAttribute("description", desc);
 
 			if (computeList.size() > 0) {
@@ -169,12 +182,12 @@ public class OperateController extends BaseController {
 			@RequestParam("doneRatio") int doneRatio, @RequestParam("computes") String computes, @RequestParam("storages") String storages, @RequestParam("hostNames") String hostNames,
 			@RequestParam("serverAlias") String serverAlias, @RequestParam("osStorageAlias") String osStorageAlias, @RequestParam("controllerAlias") String controllerAlias,
 			@RequestParam("volumes") String volumes, @RequestParam("innerIps") String innerIps, @RequestParam("eipIds") String eipIds, @RequestParam("eipAddresss") String eipAddresss,
-			@RequestParam("locationAlias") String locationAlias, RedirectAttributes redirectAttributes) {
+			@RequestParam("locationAlias") String locationAlias, @RequestParam("elbIds") String elbIds, @RequestParam("virtualIps") String virtualIps, RedirectAttributes redirectAttributes) {
 		logger.info("[issueId,projectId,priority,assignTo,dueDate,estimatedHours,doneRatio,note]：" + issueId + "," + projectId + "," + priority + "," + assignTo + "," + dueDate + "," + estimatedHours
 				+ "," + doneRatio + "," + note);
 		logger.info("[computes,storages,hostNames,serverAlias,osStorageAlias,controllerAlias, volumes]：" + computes + "|" + storages + "|" + hostNames + "|" + serverAlias + "|" + osStorageAlias + "|"
 				+ controllerAlias + "|" + volumes);
-		logger.info("[innerIps,eipIds,eipAddresss,locationAlias]：" + innerIps + "|" + eipIds + "|" + eipAddresss + "|" + locationAlias);
+		logger.info("[innerIps,eipIds,eipAddresss,locationAlias,elbIds,virtualIps]：" + innerIps + "|" + eipIds + "|" + eipAddresss + "|" + locationAlias + "|" + elbIds + "|" + virtualIps);
 
 		Issue issue = RedmineService.getIssue(issueId);
 		// 此处的User是redmine中的User对象.
@@ -198,7 +211,8 @@ public class OperateController extends BaseController {
 		issue.setProject(project); // 所属项目
 		issue.setAuthor(author); // issue作者
 		// TODO 还有IP分配等功能,待以后完成.
-		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias);
+		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias,
+				elbIds, virtualIps);
 		String message = result ? "工单更新成功！" : "工单更新失败，请稍后重试或联系管理员！";
 		redirectAttributes.addFlashAttribute("message", message);
 

@@ -143,7 +143,7 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes,
-			String innerIps, String eipIds, String eipAddresss, String location) {
+			String innerIps, String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
 		long start = System.currentTimeMillis();
 
 		logger.info("--->工单处理...");
@@ -157,7 +157,7 @@ public class OperateService extends BaseSevcie {
 			if (isChanged) {
 
 				// 更新写入OneCMDB时需要人工选择填入的关联项
-				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location);
+				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps);
 				if (!saveOk) {
 					return false;
 				}
@@ -179,7 +179,7 @@ public class OperateService extends BaseSevcie {
 				if (applyId != null) {
 
 					// 服务申请
-					this.applyOperate(issue, applyId);
+					this.applyOperate(issue, comm.applyService.getApply(applyId));
 
 				} else if (serviceTagId != null && recycleId == null) {
 
@@ -217,14 +217,12 @@ public class OperateService extends BaseSevcie {
 	}
 
 	/**
-	 * 服务申请的工单处理.<br>
-	 * 包括邮件的发送;申请单状态的更改;工单处理完成后向resources表插入数据;数据同步至OneCMDB.
+	 * 服务申请的工单处理. 包括邮件的发送;申请单状态的更改;工单处理完成后向resources表插入数据;数据同步至OneCMDB.
 	 * 
 	 */
 	@Transactional(readOnly = false)
-	private void applyOperate(Issue issue, Integer applyId) {
+	private void applyOperate(Issue issue, Apply apply) {
 		logger.info("--->服务申请处理...");
-		Apply apply = comm.applyService.getApply(applyId);
 
 		if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) { // 处理完成,状态为已创建
 
@@ -282,6 +280,7 @@ public class OperateService extends BaseSevcie {
 
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
+				resources.setOldIp(resources.getIpAddress());
 				comm.resourcesService.saveOrUpdate(resources);
 
 				// 清除服务变更Change的内容
@@ -291,7 +290,7 @@ public class OperateService extends BaseSevcie {
 				Integer serviceType = resources.getServiceType();
 				Integer serviceId = resources.getServiceId();
 
-				// resource变更审批通过时,同步数据到oneCMDB.
+				/* resource变更审批通过时,同步数据到oneCMDB. */
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
@@ -584,7 +583,7 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
-			String eipIds, String eipAddresss, String location) {
+			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
 		try {
 			String sep = ",";
 			if (computeIds.length() > 0) {
@@ -690,6 +689,9 @@ public class OperateService extends BaseSevcie {
 				logger.info("--->更新写入OneCMDB关联项（EIP）..." + eipId.length);
 				NetworkEipItem eipItem;
 				for (int i = 0; i < eipId.length; i++) {
+					if (eipId[i] == null || eipId[i].equals("") || eipId[i].equals("null")) {
+						continue;
+					}
 					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
 					// 释放原来的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
@@ -702,13 +704,44 @@ public class OperateService extends BaseSevcie {
 				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
 				if (eipId.length > 0) {
 					int i = eipId.length - 1;
-					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
+					if (eipId[i] == null || eipId[i].equals("") || eipId[i].equals("null")) {
+					} else {
+						eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
+						// 释放原来的IP
+						comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
+						// 更新新的IP
+						comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
+						eipItem.setIpAddress(eipAddress[i]);
+						comm.eipService.saveOrUpdate(eipItem);
+					}
+				}
+			}
+
+			if (elbIds.length() > 0) {
+				String[] elbId = elbIds.split(sep);
+				String[] virtualIp = virtualIps.split(sep);
+				logger.info("--->更新写入OneCMDB关联项（ELB）..." + elbId.length);
+				NetworkElbItem elbItem;
+				for (int i = 0; i < elbId.length; i++) {
+					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
 					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
+					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
-					eipItem.setIpAddress(eipAddress[i]);
-					comm.eipService.saveOrUpdate(eipItem);
+					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
+					elbItem.setVirtualIp(virtualIp[i]);
+					comm.elbService.saveOrUpdate(elbItem);
+				}
+
+				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
+				if (elbId.length > 0) {
+					int i = elbId.length - 1;
+					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
+					// 释放原来的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
+					// 更新新的IP
+					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
+					elbItem.setVirtualIp(virtualIp[i]);
+					comm.elbService.saveOrUpdate(elbItem);
 				}
 			}
 

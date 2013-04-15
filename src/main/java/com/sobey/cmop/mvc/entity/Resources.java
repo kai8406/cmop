@@ -37,6 +37,7 @@ public class Resources implements java.io.Serializable {
 	private Integer status;
 	private String ipAddress;
 	private Integer usedby;
+	private String oldIp;
 	private Set<Change> changes = new HashSet<Change>(0);
 
 	// Constructors
@@ -58,7 +59,7 @@ public class Resources implements java.io.Serializable {
 
 	/** full constructor */
 	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, Date createTime, Integer status, String ipAddress, Integer usedby,
-			Set<Change> changes) {
+			String oldIp, Set<Change> changes) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.serviceTag = serviceTag;
@@ -68,6 +69,7 @@ public class Resources implements java.io.Serializable {
 		this.status = status;
 		this.ipAddress = ipAddress;
 		this.usedby = usedby;
+		this.oldIp = oldIp;
 		this.changes = changes;
 	}
 
@@ -165,6 +167,15 @@ public class Resources implements java.io.Serializable {
 
 	public void setUsedby(Integer usedby) {
 		this.usedby = usedby;
+	}
+
+	@Column(name = "old_ip", length = 45)
+	public String getOldIp() {
+		return oldIp;
+	}
+
+	public void setOldIp(String oldIp) {
+		this.oldIp = oldIp;
 	}
 
 	@JsonIgnore

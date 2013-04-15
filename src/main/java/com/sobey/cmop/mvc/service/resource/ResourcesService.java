@@ -765,6 +765,7 @@ public class ResourcesService extends BaseSevcie {
 		resources.setCreateTime(new Date());
 		resources.setStatus(ResourcesConstant.Status.未变更.toInteger());
 		resources.setIpAddress(ipAddress);
+		resources.setOldIp(ipAddress);
 
 		return saveOrUpdate(resources);
 

@@ -76,7 +76,7 @@ public class IpPoolConstant {
 	 */
 	public enum PoolType implements ICommonEnum {
 
-		私网IP池(1), 公网IP池(2), 互联网IP池(3);
+		私网IP池(1), 公网IP池(2), 互联网IP池(3), 虚拟负载IP池(4);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

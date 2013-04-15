@@ -168,7 +168,7 @@ public class NetworkEipItem implements java.io.Serializable {
 	@ManyToMany
 	@JoinTable(name = "dns_eip_item", joinColumns = { @JoinColumn(name = "eip_item_id") }, inverseJoinColumns = { @JoinColumn(name = "dns_item_id") })
 	// Fecth策略定义
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SUBSELECT)
 	// 集合按id排序.
 	@OrderBy("id")
 	// 集合中对象id的缓存.

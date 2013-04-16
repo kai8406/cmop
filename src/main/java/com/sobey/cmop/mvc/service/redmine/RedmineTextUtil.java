@@ -166,15 +166,13 @@ public class RedmineTextUtil {
 
 			for (NetworkEipItem eipItem : eipItems) {
 				content.append("标识符(互联网IP):").append(BLANK).append(eipItem.getIdentifier()).append("(").append(eipItem.getIpAddress()).append(")").append(NEWLINE);
-				// content.append("IP地址:").append(BLANK).append(eipItem.getIpAddress()).append(NEWLINE);
 				content.append("ISP运营商:").append(BLANK).append(NetworkConstant.ISPType.get(eipItem.getIspType())).append(NEWLINE);
 
 				if (eipItem.getComputeItem() != null) {
 
 					// 关联实例
 					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(").append(eipItem.getComputeItem().getInnerIp())
-							.append(")").append(NEWLINE); // eipItem.getComputeItem().getRemark()
-															// + " - " +
+							.append(")").append(NEWLINE);
 
 				} else {
 

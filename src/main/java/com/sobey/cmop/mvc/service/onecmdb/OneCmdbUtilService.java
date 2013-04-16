@@ -184,8 +184,6 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci.addAttributeValue(new ValueBean("Storage", storageAlias, true));
 		}
 
-		// 如果服务标签不为null,则更新oneCMDB中实例的ApplicationService(服务标签)属性
-
 		if (serviceTag != null) {
 			ci.addAttributeValue(new ValueBean("Service", serviceTag.getIdentifier(), true));
 			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
@@ -332,18 +330,15 @@ public class OneCmdbUtilService extends BaseSevcie {
 		List<CiBean> ciList = new ArrayList<CiBean>();
 
 		CiBean ci = new CiBean("ELB", networkElbItem.getIdentifier(), false);
+
 		ci.addAttributeValue(new ValueBean("Name", networkElbItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkElbItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("ConStatus", networkElbItem.getKeepSession() ? "是" : "否", false));
+
 		for (ComputeItem computeItem : networkElbItem.getComputeItemList()) {
-			String computeAlias;
-			if (computeItem.getIdentifier().startsWith("ECS")) {
-				computeAlias = OneCmdbService.findCiAliasByText("ECS", computeItem.getIdentifier());
-			} else {
-				computeAlias = OneCmdbService.findCiAliasByText("PCS", computeItem.getIdentifier());
-			}
-			ci.addAttributeValue(new ValueBean("Server", computeAlias, true));
+			ci.addAttributeValue(new ValueBean("Server", computeItem.getIdentifier(), true));
 		}
+
 		ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" + networkElbItem.getVirtualIp(), true));
 
 		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
@@ -427,11 +422,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 			// AssociateInstance：关联实例
 			ci.addAttributeValue(new ValueBean("AssociateInstance", networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getRemark() + ":"
 					+ networkEipItem.getComputeItem().getInnerIp() + ")", false));
+			ci.addAttributeValue(new ValueBean("AssociateELB", "", false));
 		}
 
 		if (networkEipItem.getNetworkElbItem() != null) {
 			// AssociateELB：关联ELB
 			ci.addAttributeValue(new ValueBean("AssociateELB", networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")", false));
+			ci.addAttributeValue(new ValueBean("AssociateInstance", "", false));
 		}
 
 		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开

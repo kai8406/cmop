@@ -558,7 +558,7 @@ public class AuditService extends BaseSevcie {
 
 				// 发送邮件到下一个审批人
 
-				comm.templateMailService.sendResourcesNotificationMail(serviceTag, nextAuditFlow);
+				comm.templateMailService.sendResourcesNotificationMail(serviceTag, nextAuditFlow, audit);
 
 				for (Resources resources : resourcesList) {
 					// 更改资源的状态为 2.审批中.

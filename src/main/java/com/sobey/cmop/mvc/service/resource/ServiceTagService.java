@@ -284,12 +284,6 @@ public class ServiceTagService extends BaseSevcie {
 
 				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 
-				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
-
-				logger.info("--->拼装邮件内容...");
-
-				comm.templateMailService.sendResourcesNotificationMail(serviceTag, auditFlow);
-
 				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. 将资源状态和服务标签状态同步 */
 
 				serviceTag.setAuditFlow(auditFlow);
@@ -315,6 +309,12 @@ public class ServiceTagService extends BaseSevcie {
 
 				/* Step.6 将变更详情拷贝一份,用于审批记录页面查看和历史记录. */
 				comm.changeHistoryService.copyHistory(resourcesList, audit);
+
+				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
+
+				logger.info("--->拼装邮件内容...");
+
+				comm.templateMailService.sendResourcesNotificationMail(serviceTag, auditFlow, audit);
 
 			} catch (Exception e) {
 

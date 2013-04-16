@@ -63,7 +63,7 @@
 					
 					<c:forEach var="change" items="${resource.changes }">
 					
-						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
+						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述:&nbsp;${change.description }</p>
 						
 						<table class="table table-bordered">
 				            <thead>

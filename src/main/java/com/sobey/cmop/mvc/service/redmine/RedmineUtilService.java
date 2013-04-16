@@ -269,7 +269,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (FieldNameConstant.Compate.用途信息.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getOldString()).append(NEWLINE);
+								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 
 							} else if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
 

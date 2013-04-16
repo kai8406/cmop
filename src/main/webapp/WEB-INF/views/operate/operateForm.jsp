@@ -399,7 +399,7 @@ function changeServer(obj){
 						<input type="hidden" id="elbIds" name="elbIds"/>
 						<input type="hidden" id="virtualIps" name="virtualIps"/>
 						
-					    <c:if test="${not empty computeList || not empty networkEipList}">
+					    <c:if test="${not empty computeList || not empty eipList  ||  not empty elbList}">
 					    	<div class="row-fluid" style="padding-bottom: 5px; padding-top: 5px;">
 								<div class="span2">IDC和VLAN</div>
 								<div class="span10" id="locationDiv">

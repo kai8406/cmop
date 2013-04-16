@@ -117,26 +117,11 @@ public class OperateController extends BaseController {
 			if (computeList.size() > 0) {
 				model.addAttribute("computeList", computeList);
 				int poolType = 0;
-				// if (desc.indexOf("资源类型：生产") > 0) {
-				// poolType = 4;
-				// } else if (desc.indexOf("资源类型：测试") > 0) {
-				// poolType = 6;
-				// } else if (desc.indexOf("资源类型：公测") > 0) {
-				// poolType = 5;
-				// }
 				logger.info("--->has compute: " + computeList.size() + ",poolType=" + poolType);
 				model.addAttribute("server", comm.operateService.findHostMapByServerType(2)); // 物理机
 				model.addAttribute("hostServer", comm.operateService.findHostMapByServerType(1));
 				model.addAttribute("osStorage", comm.oneCmdbUtilService.getOsStorageFromOnecmdb());
-				model.addAttribute("location", comm.operateService.getLocationFromOnecmdb());
-				// 默认都是西安IDC，所以去掉另外两个VLAN
-				Map map = comm.operateService.getVlanFromOnecmdb();
-				map.remove("Vlans1354090853077");
-				map.remove("Vlans1354090927684");
-				model.addAttribute("vlan", map);
-				// 根据第一个计算资源的IP获取初始化的IpPool
-				// model.addAttribute("initIpPool",
-				// ipPoolManager.findIpPoolByIpAddress(((Object[])computeList.get(0))[5].toString()));
+
 			}
 			if (storageList.size() > 0) {
 				model.addAttribute("storageList", storageList);
@@ -153,6 +138,13 @@ public class OperateController extends BaseController {
 				model.addAttribute("elbList", networkElbList);
 				// 暂不处理ELB的虚拟IP池
 			}
+
+			model.addAttribute("location", comm.operateService.getLocationFromOnecmdb());
+			// 默认都是西安IDC，所以去掉另外两个VLAN
+			Map map = comm.operateService.getVlanFromOnecmdb();
+			map.remove("Vlans1354090853077");
+			map.remove("Vlans1354090927684");
+			model.addAttribute("vlan", map);
 
 			return "operate/operateForm";
 		} else { // 查询Redmine中的Issue信息失败

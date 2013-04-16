@@ -194,7 +194,7 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据Type字段获得用户List.<br>
+	 * 根据Type字段获得用户List.
 	 * 
 	 * type从 枚举 DefaultGroups 获得：1-管理员；2-申请人；3-审批人. 设置type为 3.审批人. 获得领导列表
 	 * 
@@ -242,7 +242,8 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得指定用户所拥有的权限组<br>
+	 * 获得指定用户所拥有的权限组
+	 * 
 	 * 如果指定用户没有权限组,则返回默认权限:2.apply 申请人
 	 * 
 	 * @param userId

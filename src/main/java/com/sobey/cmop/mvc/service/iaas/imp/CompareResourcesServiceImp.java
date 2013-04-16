@@ -47,7 +47,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	private static Logger logger = LoggerFactory.getLogger(CompareResourcesServiceImp.class);
 
 	/**
-	 * EIP变更,未选择的关联,在Change用 0 表示.<br>
+	 * EIP变更,未选择的关联,在Change用 0 表示.
 	 */
 	private static final String UN_SELECTED_STRING = "0";
 
@@ -480,8 +480,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	/**
-	 * 比较应用ElbPortItem<br>
-	 * true:有变更;false:未变更.<br>
+	 * 比较应用ElbPortItem
+	 * 
+	 * true:有变更;false:未变更.
 	 * 
 	 * @param networkElbItem
 	 * @param protocols
@@ -709,8 +710,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	/**
-	 * 比较应用EipPortItem<br>
-	 * true:有变更;false:未变更.<br>
+	 * 比较应用EipPortItem
+	 * 
+	 * true:有变更;false:未变更.
 	 * 
 	 * @param eipPortItems
 	 *            端口信息

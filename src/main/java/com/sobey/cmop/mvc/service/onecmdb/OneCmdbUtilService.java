@@ -279,6 +279,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		// 更新oneCMDB中的es3关联属性.
 		for (ComputeItem computeItem : storageItem.getComputeItemList()) {
+			// this.deleteComputeItemToOneCMDB(computeItem);
 			this.saveComputeToOneCMDB(computeItem, serviceTag);
 		}
 

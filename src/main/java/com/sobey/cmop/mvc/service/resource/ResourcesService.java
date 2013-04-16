@@ -72,7 +72,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得在工单流程中的资源Resources列表.<br>
+	 * 获得在工单流程中的资源Resources列表.
+	 * 
 	 * Status: 4.已审批 ; 5.创建中
 	 * 
 	 * @return
@@ -88,7 +89,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 等待提交变更资源Resources列表 和 资源变更业务的审批流程中资源Resources列表.<br>
+	 * 等待提交变更资源Resources列表 和 资源变更业务的审批流程中资源Resources列表.
 	 * 
 	 * Status: 0.已变更 ; 1.待审批 ; 2.审批中
 	 * 
@@ -108,7 +109,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 审批结束后工单流程中的变更资源Resources列表<br>
+	 * 审批结束后工单流程中的变更资源Resources列表
+	 * 
 	 * Status: 2.审批中 ; 4.已审批 ; 5.创建中 ; 6.已创建
 	 * 
 	 * @param serviceTagId
@@ -136,7 +138,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得等待提交变更资源Resources列表.<br>
+	 * 获得等待提交变更资源Resources列表.
 	 * 
 	 * Status: 0.已变更
 	 * 
@@ -219,8 +221,8 @@ public class ResourcesService extends BaseSevcie {
 	 * 根据服务类型serviceType 获得资源的个数
 	 * 
 	 * @param serviceType
-	 *            服务类型 1.PCS;2.ECS;3.ES3 ... <br>
-	 *            用ResourcesConstant中的Enum : ServiceType
+	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
+	 *            ServiceType
 	 * @return
 	 */
 	public Long getResourcesStatistics(Integer serviceType) {
@@ -301,7 +303,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源回收<br>
+	 * 资源回收
+	 * 
 	 * serviceTagId 非空时表示是服务标签回收,为null or "" 表示单个回收.
 	 * 
 	 * @param resourcesList
@@ -788,7 +791,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.<br>
+	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.
+	 * 
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
 	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,

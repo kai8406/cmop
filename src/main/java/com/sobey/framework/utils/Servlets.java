@@ -147,7 +147,7 @@ public class Servlets {
 	}
 
 	/**
-	 * 取得带相同前缀的Request Parameters, copy from spring WebUtils.<br>
+	 * 取得带相同前缀的Request Parameters, copy from spring WebUtils.
 	 * 
 	 * 返回的结果的Parameter名已去除前缀.
 	 */

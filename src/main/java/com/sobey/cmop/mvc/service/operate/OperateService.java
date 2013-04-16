@@ -254,8 +254,7 @@ public class OperateService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源变更的工单处理.<br>
-	 * 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
+	 * 资源变更的工单处理. 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
 	 * 
 	 */
 	/**
@@ -360,8 +359,7 @@ public class OperateService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源回收的工单处理.<br>
-	 * 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
+	 * 资源回收的工单处理. 包括邮件的发送;服务标签servicTag和资源resources状态的更改;数据同步至OneCMDB.
 	 * 
 	 */
 	@Transactional(readOnly = false)
@@ -468,7 +466,7 @@ public class OperateService extends BaseSevcie {
 	}
 
 	/**
-	 * 故障申报的工单处理.<br>
+	 * 故障申报的工单处理.
 	 * 
 	 */
 	@Transactional(readOnly = false)

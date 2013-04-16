@@ -490,7 +490,7 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
-	 * 使用Freemarker生成html格式内容.<br>
+	 * 使用Freemarker生成html格式内容.
 	 * 
 	 * @param template
 	 *            freemarker的模板

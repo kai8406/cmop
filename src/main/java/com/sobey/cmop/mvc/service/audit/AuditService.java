@@ -148,7 +148,7 @@ public class AuditService extends BaseSevcie {
 	// ============ 审批流程 AuditFlow============ //
 
 	/**
-	 * 审批audit页面(Apply)的分页查询.<br>
+	 * 审批audit页面(Apply)的分页查询.
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数
@@ -167,7 +167,7 @@ public class AuditService extends BaseSevcie {
 	}
 
 	/**
-	 * 审批audit页面(resources)的分页查询.<br>
+	 * 审批audit页面(resources)的分页查询.
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数
@@ -224,8 +224,7 @@ public class AuditService extends BaseSevcie {
 	 *            服务申请ID
 	 * @param userId
 	 *            审批人ID
-	 * @return true :已审批<br>
-	 *         false:未审批
+	 * @return true :已审批 ; false:未审批
 	 */
 	private boolean isAudited(Integer applyId, Integer serviceTagId, Integer userId) {
 

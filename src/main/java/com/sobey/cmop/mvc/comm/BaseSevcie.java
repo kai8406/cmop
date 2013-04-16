@@ -11,9 +11,12 @@ import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 import com.sobey.framework.utils.PropertiesLoader;
 
 /**
- * Service的基类<br>
- * 包含了常用的分页参数,当前用户ID,所有业务的Service注入等.<br>
+ * Service的基类
+ * 
+ * <pre>
+ * 包含了常用的分页参数,当前用户ID,所有业务的Service注入等.
  * 建议每个Sevice都实现此类.
+ * </pre>
  * 
  * @author liukai
  * 
@@ -32,16 +35,14 @@ public class BaseSevcie {
 	public static PropertiesLoader CONFIG_LOADER = new PropertiesLoader("classpath:/config.properties");
 
 	/**
-	 * 创建分页请求.<br>
-	 * 默认以id为DESC 倒序查询
+	 * 创建分页请求. 默认以id为DESC 倒序查询
 	 */
 	public PageRequest buildPageRequest(int pageNumber, int pagzSize) {
 		return new PageRequest(pageNumber - 1, pagzSize, new Sort(Direction.DESC, "id"));
 	}
 
 	/**
-	 * 创建分页请求.<br>
-	 * 以传入的sort排序
+	 * 创建分页请求. 以传入的sort排序
 	 */
 	public PageRequest buildPageRequest(int pageNumber, int pagzSize, Sort sort) {
 		return new PageRequest(pageNumber - 1, pagzSize, sort);

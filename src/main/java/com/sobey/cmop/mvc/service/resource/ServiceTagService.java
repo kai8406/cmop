@@ -207,9 +207,9 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 提交服务标签ServiceTag的分页(status为 0.已变更 的数据)<br>
-	 * 资源变更后,资源本身和其所属的服务标签的状态都会变更为 0.已变更.<br>
-	 * 即此服务标签下有变更后等待提交的资源.
+	 * 提交服务标签ServiceTag的分页(status为 0.已变更 的数据)
+	 * 
+	 * 资源变更后,资源本身和其所属的服务标签的状态都会变更为 0.已变更. 即此服务标签下有变更后等待提交的资源.
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数
@@ -254,7 +254,7 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 提交变更,向第一位审批人发起审批邮件<br>
+	 * 提交变更,向第一位审批人发起审批邮件
 	 * 
 	 * 
 	 * @param serviceTag

@@ -19,7 +19,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * 比较资源的新旧值<br>
+ * 比较资源的新旧值
  * 
  * <pre>
  * 比较资源变更前和变更后的值,并保存于变更详情ChangeItem表中.
@@ -34,7 +34,7 @@ import com.sobey.cmop.mvc.entity.StorageItem;
 public interface ICompareResourcesService {
 
 	/**
-	 * 比较实例资源computeItem 变更前和变更后的值<br>
+	 * 比较实例资源computeItem 变更前和变更后的值
 	 * 
 	 * @param resources
 	 *            资源
@@ -64,7 +64,7 @@ public interface ICompareResourcesService {
 			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths);
 
 	/**
-	 * 比较存储空间StorageItem变更前和变更后的值<br>
+	 * 比较存储空间StorageItem变更前和变更后的值
 	 * 
 	 * @param resources
 	 *            资源
@@ -83,7 +83,7 @@ public interface ICompareResourcesService {
 	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
 
 	/**
-	 * 比较负载均衡器ELB变更前和变更后的值<br>
+	 * 比较负载均衡器ELB变更前和变更后的值
 	 * 
 	 * @param resources
 	 *            资源
@@ -107,7 +107,7 @@ public interface ICompareResourcesService {
 			String[] targetPorts, String[] computeIds);
 
 	/**
-	 * 比较公网IP EIP 变更前和变更后的值<br>
+	 * 比较公网IP EIP 变更前和变更后的值
 	 * 
 	 * @param resources
 	 *            资源

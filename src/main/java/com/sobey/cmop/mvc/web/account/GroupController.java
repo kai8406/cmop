@@ -103,8 +103,7 @@ public class GroupController extends BaseController {
 	}
 
 	/**
-	 * 接收页面传递到后台类似:{"user:view","group:view"}的String[]数组.<br>
-	 * 将其转换成List类型的集合返回.<br>
+	 * 接收页面传递到后台类似:{"user:view","group:view"}的String[]数组. 将其转换成List类型的集合返回.
 	 * 
 	 * 不能直接将asList转换成集合放入对象中,要将转换为ArrayList. 否则会报
 	 * {@link UnsupportedOperationException}的错误

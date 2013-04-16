@@ -262,7 +262,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			}
 
-			String oldValue = this.wrapApplicationFromComputeItemToString(computeItem);
+			String oldValue = applicationSb.toString();
 			String oldString = applicationSb.toString();
 
 			String newValue = "";
@@ -317,19 +317,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		return CollectionUtils.isEqualCollection(nameList, oldNameList) && CollectionUtils.isEqualCollection(versionList, oldVersionList)
 				&& CollectionUtils.isEqualCollection(deployPathList, oldDeployPathList) ? false : true;
 
-	}
-
-	/**
-	 * 将compute下的application List 转换成id字符串(newString) . eg:1,2
-	 * 
-	 * @param computeItem
-	 * @return
-	 */
-	private String wrapApplicationFromComputeItemToString(ComputeItem computeItem) {
-
-		List<Application> applications = comm.computeService.getApplicationByComputeItemId(computeItem.getId());
-
-		return Collections3.extractToString(applications, "id", ",");
 	}
 
 	/**
@@ -442,7 +429,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		if (this.compareElbPortItem(elbPortItems, protocols, sourcePorts, targetPorts)) {
 
 			String fieldName = FieldNameConstant.Elb.端口信息.toString();
-			String oldValue = Collections3.extractToString(elbPortItems, "id", ",");
+			String oldValue = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
 			String oldString = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
 
 			String newValue = "";
@@ -458,7 +445,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		if (!oldId.equals(newId)) {
 
-			String fieldName = FieldNameConstant.Storage.挂载实例.toString();
+			String fieldName = FieldNameConstant.Elb.关联实例.toString();
 
 			String oldValue = oldId;
 			String oldString = networkElbItem.getMountComputes();
@@ -676,7 +663,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String fieldName = FieldNameConstant.Eip.端口信息.toString();
 
-			String oldValue = Collections3.extractToString(eipPortItems, "id", ",");
+			String oldValue = this.wrapEipPortItemFromNetworkEipItemToString(networkEipItem);
 			String oldString = this.wrapEipPortItemFromNetworkEipItemToString(networkEipItem);
 
 			String newValue = "";

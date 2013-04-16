@@ -31,6 +31,8 @@ import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
@@ -402,6 +404,118 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 还原compute中的application.
+	 * 
+	 * 将变更前的值,按字符分割后放入数组中,再调用updateApplication方法重新插入数据库.
+	 * 
+	 * @param computeItem
+	 *            compute对象
+	 * @param oldChangeValue
+	 *            变更前的值
+	 */
+	private void restoreApplication(ComputeItem computeItem, String oldChangeValue) {
+
+		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
+		String[] applications = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+
+		String[] applicationNames = new String[applications.length];
+		String[] applicationVersions = new String[applications.length];
+		String[] applicationDeployPaths = new String[applications.length];
+
+		if (applications != null && applications.length != 0) {
+
+			for (int i = 0; i < applications.length; i++) {
+
+				String[] apps = StringUtils.split(applications[i], ",");
+
+				for (int j = 0; j < apps.length; j++) {
+					applicationNames[i] = apps[0];
+					applicationVersions[i] = apps[1];
+					applicationDeployPaths[i] = apps[2];
+				}
+			}
+		}
+		comm.computeService.updateApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
+	}
+
+	/**
+	 * 还原ELB的端口信息
+	 * 
+	 * @param networkElbItem
+	 * @param oldChangeValue
+	 */
+	private void restoreELBPort(NetworkElbItem networkElbItem, String oldChangeValue) {
+		this.restorePort(networkElbItem, null, oldChangeValue);
+	}
+
+	/**
+	 * 还原EIP的端口信息
+	 * 
+	 * @param networkEipItem
+	 * @param oldChangeValue
+	 */
+	private void restoreEIPPort(NetworkEipItem networkEipItem, String oldChangeValue) {
+		this.restorePort(null, networkEipItem, oldChangeValue);
+	}
+
+	/**
+	 * 还原ELB或EIP的端口信息(用于多态的调用)
+	 * 
+	 * @param networkElbItem
+	 * @param networkEipItem
+	 * @param oldChangeValue
+	 */
+	private void restorePort(NetworkElbItem networkElbItem, NetworkEipItem networkEipItem, String oldChangeValue) {
+
+		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
+		String[] portItems = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+
+		String[] protocols = new String[portItems.length];
+		String[] sourcePorts = new String[portItems.length];
+		String[] targetPorts = new String[portItems.length];
+
+		if (portItems != null && portItems.length != 0) {
+
+			for (int i = 0; i < portItems.length; i++) {
+
+				String[] ports = StringUtils.split(portItems[i], ",");
+
+				for (int j = 0; j < ports.length; j++) {
+					protocols[i] = ports[0];
+					sourcePorts[i] = ports[1];
+					targetPorts[i] = ports[2];
+				}
+			}
+		}
+
+		if (networkElbItem != null) {
+
+			/* ELB : 将ELB下的所有映射信息删除,并插入新的端口映射信息 */
+
+			comm.elbService.deleteElbPortItem(comm.elbService.getElbPortItemListByElbId(networkElbItem.getId()));
+
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				comm.elbService.saveOrUpdateElbPortItem(elbPortItem);
+			}
+		}
+
+		if (networkEipItem != null) {
+
+			/* EIP : 将EIP下的所有映射信息删除,并插入新的端口映射信息 */
+
+			comm.eipService.deleteEipPortItem(comm.eipService.getEipPortItemListByEipId(networkEipItem.getId()));
+
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				comm.eipService.saveOrUpdateEipPortItem(eipPortItem);
+			}
+
+		}
+
+	}
+
+	/**
 	 * 还原资源Resources变更项. 将ChangeItem中的旧值覆盖至各个资源的属性中,保存. 各个资源还原后,将服务变更Change删除.
 	 * 
 	 * @param resources
@@ -444,7 +558,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 
-					// 应用信息无法还原.
+					this.restoreApplication(computeItem, changeItem.getOldValue());
 
 				}
 
@@ -468,6 +582,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
 
+					// 分割变更前保存的Id,查询出来后保存.
 					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
 
 					if (computeIds != null) {
@@ -498,16 +613,23 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// 端口信息无法还原.
+					this.restoreELBPort(networkElbItem, changeItem.getOldValue());
 
 				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-					String[] computeIdArray = StringUtils.split(changeItem.getOldValue(), ",");
-					for (String computeId : computeIdArray) {
-						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					// 分割变更前保存的Id,查询出来后保存.
+					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
+
+					if (computeIds != null) {
+						List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+						for (int i = 0; i < computeIds.length; i++) {
+							ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+							computeItemList.add(computeItem);
+						}
+
+						networkElbItem.setComputeItemList(computeItemList);
 					}
-					networkElbItem.setComputeItemList(computeItemList);
+
 				}
 
 			}
@@ -526,7 +648,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// 端口信息无法还原.
+					this.restoreEIPPort(networkEipItem, changeItem.getOldValue());
 
 				} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
 

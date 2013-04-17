@@ -202,3 +202,10 @@ function setOsBitCheckedByOsType() {
 		$("input[name=osBit]").removeAttr("disabled");
 	}
 };
+
+/**
+ * 清除tr.clone输入框class的required.
+ */
+function clearCloneClassOfRequired(){
+	$("tr.clone").find("input").removeClass("required");
+};

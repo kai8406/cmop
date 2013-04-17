@@ -18,10 +18,6 @@
 				if (e.which == 13) {return false;}
 			});
 			
-			$("input[type=submit]").click(function() {
-				$("tr.clone").find("input").removeClass("required");
-			});
-			
 			/*关联实例和关联ELB select控件的切换*/
 			$("input[name='linkRadio']").click(function() {
 				if ($(this).val() == "isCompute") {
@@ -269,7 +265,7 @@
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input class="btn btn-primary" type="submit" onclick="clearCloneClassOfRequired()" value="提交">
 			</div>
 			
 		</fieldset>

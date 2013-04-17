@@ -198,7 +198,6 @@ public class MonitorComputeServcie extends BaseSevcie {
 		monitorCompute.setPort(port);
 		monitorCompute.setProcess(process);
 		monitorCompute.setMountPoint(mountPoint);
-
 		monitorCompute.setIpAddress(ipAddress);
 
 		this.saveOrUpdate(monitorCompute);
@@ -246,6 +245,7 @@ public class MonitorComputeServcie extends BaseSevcie {
 		monitorCompute.setPort(port);
 		monitorCompute.setProcess(process);
 		monitorCompute.setMountPoint(mountPoint);
+		monitorCompute.setIpAddress(ipAddress);
 
 		this.saveOrUpdate(monitorCompute);
 

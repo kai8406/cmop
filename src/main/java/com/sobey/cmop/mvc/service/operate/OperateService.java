@@ -279,8 +279,6 @@ public class OperateService extends BaseSevcie {
 
 			for (Resources resources : resourcesList) {
 				resources.setStatus(ResourcesConstant.Status.已创建.toInteger());
-				resources.setOldIp(resources.getIpAddress());
-				comm.resourcesService.saveOrUpdate(resources);
 
 				// 清除服务变更Change的内容
 				List<Change> changes = comm.changeServcie.getChangeListByResourcesId(resources.getId());
@@ -293,8 +291,12 @@ public class OperateService extends BaseSevcie {
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
+					ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+
 					// PCS & ECS
-					comm.oneCmdbUtilService.saveComputeToOneCMDB(comm.computeService.getComputeItem(serviceId), serviceTag);
+					comm.oneCmdbUtilService.saveComputeToOneCMDB(computeItem, serviceTag);
+
+					resources.setIpAddress(computeItem.getInnerIp());
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
 
@@ -303,13 +305,21 @@ public class OperateService extends BaseSevcie {
 
 				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
 
+					NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
+
 					// ELB
-					comm.oneCmdbUtilService.saveELBToOneCMDB(comm.elbService.getNetworkElbItem(serviceId), serviceTag);
+					comm.oneCmdbUtilService.saveELBToOneCMDB(networkElbItem, serviceTag);
+
+					resources.setIpAddress(networkElbItem.getVirtualIp());
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
 
+					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
+
 					// EIP
-					comm.oneCmdbUtilService.saveEIPToOneCMDB(comm.eipService.getNetworkEipItem(serviceId), serviceTag);
+					comm.oneCmdbUtilService.saveEIPToOneCMDB(networkEipItem, serviceTag);
+
+					resources.setIpAddress(networkEipItem.getIpAddress());
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
 
@@ -319,7 +329,12 @@ public class OperateService extends BaseSevcie {
 				} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
 
 					// TODO 待完成.
+
 					// monitorCompute
+
+					MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(serviceId);
+
+					resources.setIpAddress(monitorCompute.getIpAddress());
 
 				} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
 
@@ -334,6 +349,8 @@ public class OperateService extends BaseSevcie {
 					// CP
 				}
 
+				resources.setOldIp(resources.getIpAddress());
+				comm.resourcesService.saveOrUpdate(resources);
 			}
 
 			// 工单处理完成，给申请人发送邮件

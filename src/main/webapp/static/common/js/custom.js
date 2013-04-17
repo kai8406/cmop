@@ -32,7 +32,7 @@ $("button.reset").on('click', function(){
 /**
  * 所有input:submit的控件点击后,将其设置为disabled不可用,页面弹出遮罩层
  */
-$("input[type=submit],.loading").on('click', function(){
+$("input[type=submit],button.loading").on('click', function(){
 	
 	//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
 	var $resourcesDIV = $("#resourcesDIV");
@@ -47,6 +47,10 @@ $("input[type=submit],.loading").on('click', function(){
 	var $this = $(this);
 	$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
 	
+});
+
+$("a.loading").on('click', function(){
+   $("body").modalmanager('loading');
 });
 
 /**

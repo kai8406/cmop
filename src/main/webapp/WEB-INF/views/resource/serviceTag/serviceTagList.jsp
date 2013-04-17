@@ -143,7 +143,7 @@
 								<div class="modal-body">是否回收该资源下所有的资源?</div>
 								<div class="modal-footer">
 									<button class="btn" data-dismiss="modal">关闭</button>
-									<a href="delete/${item.id}" class="btn btn-primary">确定</a>
+									<a href="delete/${item.id}" class="btn btn-primary loading">确定</a>
 								</div>
 							</div>
 						</c:if>

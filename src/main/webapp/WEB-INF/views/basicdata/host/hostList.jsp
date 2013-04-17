@@ -103,7 +103,7 @@
 							<div class="modal-body">是否删除?</div>
 							<div class="modal-footer">
 								<a class="btn" data-dismiss="modal" href="#">关闭</a> 
-								<a href="${ctx}/basicdata/host/delete/${item.id}" class="btn btn-primary">确定</a>
+								<a href="${ctx}/basicdata/host/delete/${item.id}" class="btn btn-primary loading">确定</a>
 							</div>
 						</div>
 						

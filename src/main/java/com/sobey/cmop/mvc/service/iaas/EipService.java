@@ -87,7 +87,9 @@ public class EipService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public void deleteNetworkEipItem(Integer id) {
-		networkEipItemDao.delete(id);
+		if (this.getNetworkEipItem(id) != null) {
+			networkEipItemDao.delete(id);
+		}
 	}
 
 	/**

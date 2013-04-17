@@ -144,11 +144,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci = new CiBean("PCS", computeItem.getIdentifier(), false);
 
 			ci.addAttributeValue(new ValueBean("Server", "Server" + computeItem.getServerAlias(), true));
+			ci.addAttributeValue(new ValueBean("Specification", ComputeConstant.PCSServerType.get(computeItem.getServerType()), false));
 
 		} else {
 
 			String MemSize = "";
 			String CoreNum = "";
+			String Disk = "20GB";
 
 			if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
 				MemSize = "1G";
@@ -167,6 +169,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci.addAttributeValue(new ValueBean("OsStorage", computeItem.getOsStorageAlias(), true));
 			ci.addAttributeValue(new ValueBean("MemSize", MemSize, false));
 			ci.addAttributeValue(new ValueBean("CoreNum", CoreNum, false));
+			ci.addAttributeValue(new ValueBean("Disk", Disk, false));
 
 		}
 
@@ -417,6 +420,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("Name", networkEipItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkEipItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + networkEipItem.getIpAddress(), true));
+		ci.addAttributeValue(new ValueBean("ISP", NetworkConstant.ISPType.get(networkEipItem.getIspType()), false));
 
 		if (networkEipItem.getComputeItem() != null) {
 			// AssociateInstance：关联实例

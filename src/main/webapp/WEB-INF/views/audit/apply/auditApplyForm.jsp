@@ -457,7 +457,7 @@ function setResult(result) {
 						<input class="btn" type="button" value="返回" onclick="history.back()">
 						<c:if test="${empty view}">
 							<c:forEach var="map" items="${auditResultMap}">
-								<button class="btn btn-primary" onclick="return setResult(${map.key})">${map.value}</button>
+								<button class="btn btn-primary loading" onclick="return setResult(${map.key})">${map.value}</button>
 							</c:forEach>
 						</c:if>
 					</c:if>
@@ -466,7 +466,7 @@ function setResult(result) {
 						<button class="btn" onclick="window.close();">&nbsp;关&nbsp;闭&nbsp;</button>
 						<c:forEach var="map" items="${auditResultMap}">
 							<c:if test="${result==map.key}">
-								<button class="btn btn-primary" onclick="return setResult(${map.key})">${map.value}</button>
+								<button class="btn btn-primary loading" onclick="return setResult(${map.key})">${map.value}</button>
 							</c:if>
 						</c:forEach>
 					</c:if>

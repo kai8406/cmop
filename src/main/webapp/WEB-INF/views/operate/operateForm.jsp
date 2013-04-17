@@ -168,9 +168,6 @@ function checkValid() {
 	//alert($('#virtualIps').val());	
 	//return false;
 
-	$("#updateBtn").click(function(){
-		$(this).modalmanager('loading');
-	});
 }
 
 function changeLocation(){
@@ -533,7 +530,7 @@ function changeServer(obj){
 						<div class="form-actions">
 							<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 							<c:if test="${issue!=null && issue.doneRatio!=100 && issue.assignee.id==user.redmineUserId}">
-								<button id="updateBtn" class="btn btn-info" onclick="return checkValid();" style="margin-left: 30px;">&nbsp;提&nbsp;交&nbsp;</button>
+								<button class="btn btn-primary loading" onclick="return checkValid();">提交</button>
 							</c:if>
 						</div>
 					</div>					

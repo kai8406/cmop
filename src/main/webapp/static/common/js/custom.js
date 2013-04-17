@@ -13,49 +13,6 @@ $(document).ready(function() {
 	$('.tip-top').tooltip({ placement: 'top' });	
 	$('.tip-bottom').tooltip({ placement: 'bottom' });	
 	
- 	// === Reset 点击reset按钮,form里的输入框清空,并提交form执行一次查询. ===//
- 	
- 	$("button.reset").on('click', function(){
- 		
- 		$(this).closest("form").find("input[type=text],select").val("").end().submit();
- 		
- 	});
- 	
- 	
- 	// === option 点击More,得到更多的搜索条件===//
- 	
- 	$("button.options").on('click', function(){
- 		
- 		//搜索框切换+清空文本.
- 		
- 		$("div.options").toggle(300).find("input[type=text],select").val('');
- 		
- 		//图标切换
- 		
- 		$(this).find("i").toggleClass("icon-resize-small icon-resize-full");
- 		
- 	});
- 	
- 	
- 	// === 所有input:submit的控件点击后,将其设置为disabled不可用,页面弹出遮罩层===//
- 	
-	$("input[type=submit],.loading").on('click', function(){
-		
-		//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
-		var $resourcesDIV = $("#resourcesDIV");
-		if($resourcesDIV.length > 0){
-			var $resources = $resourcesDIV.find("div.resources");
-			if($resources.length == 0){
-				alert("请创建资源.");
-				return false;
-			}
-		}
-		
-		var $this = $(this);
-		$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
-		
-	});
-	
 	
 	//=== 复制tr.clone的table tr ===//
 	
@@ -63,6 +20,34 @@ $(document).ready(function() {
 	
 });
 
+/**
+ * Reset 点击reset按钮,form里的输入框清空,并提交form执行一次查询.
+ */	
+$("button.reset").on('click', function(){
+	
+	$(this).closest("form").find("input[type=text],select").val("").end().submit();
+	
+});
+	
+/**
+ * 所有input:submit的控件点击后,将其设置为disabled不可用,页面弹出遮罩层
+ */
+$("input[type=submit],.loading").on('click', function(){
+	
+	//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
+	var $resourcesDIV = $("#resourcesDIV");
+	if($resourcesDIV.length > 0){
+		var $resources = $resourcesDIV.find("div.resources");
+		if($resources.length == 0){
+			alert("请创建资源.");
+			return false;
+		}
+	}
+	
+	var $this = $(this);
+	$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
+	
+});
 
 /**
  * checkbox 全选和取消
@@ -152,7 +137,9 @@ function checkTimeReset(){
 	  return checkTime($("#serviceStart").val(),$("#serviceEnd").val());
 }
 
-
+/**
+ * 复制tr.clone的table tr
+ */
 function cloneParamTable() {
 	$(document).on("click", "a.clone", function() {
 		var $this = $(this);

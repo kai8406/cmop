@@ -75,7 +75,8 @@
 							var loopId = instanceCount+ i; 
 							var html = '<div class="resources alert alert-block alert-info fade in">';
 							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
-							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + ' &nbsp;' + serverTypeText + '</strong></dd>';
+							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + '</strong></dd>';
+							html += '<dd><em>规格</em>&nbsp;&nbsp;<strong>' + serverTypeText + '</strong></dd>';
 							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required span2" name="remarks" id="remarks' + loopId + '"></dd>';
 							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" class="required span2">' + esgHTML + '</select></dd>';
 							html += '<input type="hidden" name="osTypes" value="' + osId + '">';

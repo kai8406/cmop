@@ -340,6 +340,10 @@ public class OperateService extends BaseSevcie {
 
 					// monitorElb
 
+					MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(serviceId);
+
+					resources.setIpAddress(monitorElb.getNetworkElbItem().getVirtualIp());
+
 				} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
 
 					// MDN

@@ -289,7 +289,7 @@ public class ResourcesService extends BaseSevcie {
 
 		// Elb监控
 		for (MonitorElb monitorElb : apply.getMonitorElbs()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem().getVirtualIp());
 		}
 
 		// MDN

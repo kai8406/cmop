@@ -21,7 +21,6 @@ import com.sobey.cmop.mvc.dao.IpPoolDao;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
-import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
@@ -68,22 +67,40 @@ public class IpPoolService extends BaseSevcie {
 	}
 
 	/**
-	 * 保存IP，增加了所在IDC和VLAN，录入时使用
+	 * 保存IP(录入时使用).根据成功录入的ip数量返回message.
 	 * 
 	 * @param ipAddress
 	 * @param poolType
-	 * @param location
+	 * @param vlan
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean saveIpPool(String ipAddress, Integer poolType, Location location, Vlan vlan) {
+	public String saveIpPool(String ipAddress, Integer poolType, Vlan vlan) {
+
+		String message = "";
 
 		List<String> ipAddressList = this.getInsertIpAddressList(ipAddress);
 
-		// 排除重复IP
-		ipAddressList.removeAll(this.getAllIpAddress());
+		// 插入ip数量
+		int insertCount = ipAddressList.size();
 
-		return this.saveIpPool(ipAddressList, poolType, IpPoolConstant.IpStatus.未使用.toInteger(), vlan);
+		List<String> allIpAddressList = this.getAllIpAddress();
+
+		/* 排除重复IP */
+		ipAddressList.removeAll(allIpAddressList);
+
+		// 成功插入IP的数量
+		int insertSuccessCount = ipAddressList.size();
+
+		if (insertSuccessCount == 0) {
+			message = "创建IP已存在";
+		} else {
+			message = "插入IP " + insertCount + " 条,成功创建IP " + insertSuccessCount + " 条";
+		}
+
+		this.saveIpPool(ipAddressList, poolType, IpPoolConstant.IpStatus.未使用.toInteger(), vlan);
+
+		return message;
 	}
 
 	/**

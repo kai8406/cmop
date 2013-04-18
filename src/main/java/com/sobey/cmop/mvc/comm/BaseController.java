@@ -35,9 +35,12 @@ import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.cmop.mvc.service.account.ShiroDbRealm.ShiroUser;
 
 /**
- * Contoller的基类.<br>
- * 包含了常用的分页,查询参数,当前用户ID,所有业务的Service注入等.<br>
+ * Contoller的基类.
+ * 
+ * <pre>
+ * 包含了常用的分页,查询参数,当前用户ID,所有业务的Service注入等.
  * 建议每个Controller都实现此类.
+ * </pre>
  * 
  * @author liukai
  * 
@@ -56,16 +59,18 @@ public class BaseController {
 	public static final String PAGE_SIZE = "100000";
 
 	/**
-	 * 查询前缀 :search_<br>
-	 * 页面的查询条件中name的前缀必须包含： REQUEST_PREFIX+查询格式(LIKE,EQ..) +查询参数.<br>
+	 * 查询前缀 :search_
+	 * 
+	 * <pre>
+	 * 页面的查询条件中name的前缀必须包含： REQUEST_PREFIX+查询格式(LIKE,EQ..) +查询参数.
 	 * eg: search_LIKE_name
+	 * </pre>
 	 * 
 	 */
 	public static final String REQUEST_PREFIX = "search_";
 
 	/**
-	 * 获得当前登录用户的ID.<br>
-	 * 如果没有当前用户则返回 0
+	 * 获得当前登录用户的ID. 如果没有当前用户则返回 0
 	 */
 	public Integer getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
@@ -491,8 +496,7 @@ public class BaseController {
 	}
 
 	/**
-	 * 资源变更页面可选择的服务标签列表.<br>
-	 * 该服务标签是 可用的,没有在审批流程中的服务标签.<br>
+	 * 资源变更页面可选择的服务标签列表. 该服务标签是 可用的,没有在审批流程中的服务标签.
 	 */
 	@ModelAttribute("tags")
 	public List<ServiceTag> tags() {

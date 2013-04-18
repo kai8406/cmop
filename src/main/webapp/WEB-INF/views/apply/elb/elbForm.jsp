@@ -24,11 +24,6 @@
 				}
 			});
 			
-			$("input[type=submit]").click(function(){
-				$("tr.clone").find("input").removeClass("required");
-			});
-			
-			
 		});
 		
 		 /*点击弹出窗口保存时,连同ELB的信息生成HTML代码插入页面.*/
@@ -201,7 +196,7 @@
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input class="btn btn-primary" type="submit" onclick="clearCloneClassOfRequired()" value="提交">
 			</div>
 			
 		</fieldset>

@@ -63,7 +63,7 @@
 					
 					<c:forEach var="change" items="${resource.changes }">
 					
-						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p>
+						<p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述:&nbsp;${change.description }</p>
 						
 						<table class="table table-bordered">
 				            <thead>
@@ -101,7 +101,7 @@
 						<div class="modal-body">是否提交变更?</div>
 						<div class="modal-footer">
 							<button class="btn" data-dismiss="modal">关闭</button>
-							<a href="${ctx}/serviceTag/commit/${serviceTag.id}" class="btn btn-primary">确定</a>
+							<a href="${ctx}/serviceTag/commit/${serviceTag.id}" class="btn btn-primary loading">确定</a>
 						</div>
 					</div>
 					</c:if>

@@ -161,7 +161,7 @@
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</span>
@@ -194,7 +194,7 @@
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/es3/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/es3/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</span>
@@ -233,7 +233,7 @@
 								<div class="modal-body">是否删除?</div>
 								<div class="modal-footer">
 									<button class="btn" data-dismiss="modal">关闭</button>
-									<a href="${ctx}/apply/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									<a href="${ctx}/apply/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 								</div>
 							</div>
 						</span>
@@ -280,7 +280,7 @@
 								<div class="modal-body">是否删除?</div>
 								<div class="modal-footer">
 									<button class="btn" data-dismiss="modal">关闭</button>
-									<a href="${ctx}/apply/eip/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+									<a href="${ctx}/apply/eip/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 								</div>
 							</div>
 						</span>
@@ -318,7 +318,7 @@
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/dns/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/dns/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</span>
@@ -407,7 +407,7 @@
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/monitor/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/monitor/compute/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</span>
@@ -436,7 +436,7 @@
 									<div class="modal-body">是否删除?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="${ctx}/apply/monitor/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+										<a href="${ctx}/apply/monitor/elb/delete/${item.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</span>
@@ -486,7 +486,7 @@
 											<div class="modal-body">是否删除?</div>
 											<div class="modal-footer">
 												<button class="btn" data-dismiss="modal">关闭</button>
-												<a href="${ctx}/apply/mdn/mdnVod/delete/${vod.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+												<a href="${ctx}/apply/mdn/mdnVod/delete/${vod.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 											</div>
 										</div>
 									</span>
@@ -540,7 +540,7 @@
 											<div class="modal-body">是否删除?</div>
 											<div class="modal-footer">
 												<button class="btn" data-dismiss="modal">关闭</button>
-												<a href="${ctx}/apply/mdn/mdnLive/delete/${live.id}/applyId/${apply.id}" class="btn btn-primary">确定</a>
+												<a href="${ctx}/apply/mdn/mdnLive/delete/${live.id}/applyId/${apply.id}" class="btn btn-primary loading">确定</a>
 											</div>
 										</div>
 									</span>

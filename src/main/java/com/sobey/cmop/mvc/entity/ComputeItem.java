@@ -266,7 +266,7 @@ public class ComputeItem implements java.io.Serializable {
 	@ManyToMany
 	@JoinTable(name = "compute_storage_item", joinColumns = { @JoinColumn(name = "compute_item_id") }, inverseJoinColumns = { @JoinColumn(name = "storage_item_id") })
 	// Fecth策略定义
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SUBSELECT)
 	// 集合按id排序.
 	@OrderBy("id")
 	// 集合中对象id的缓存.

@@ -21,7 +21,7 @@ public class SimpleMailService extends BaseSevcie {
 	private JavaMailSender mailSender;
 
 	/**
-	 * 发送纯文本的通知邮件.<br>
+	 * 发送纯文本的通知邮件.
 	 * 
 	 * <pre>
 	 * to	 收件人邮箱

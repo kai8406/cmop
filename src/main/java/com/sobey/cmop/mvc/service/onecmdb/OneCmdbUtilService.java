@@ -144,11 +144,13 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci = new CiBean("PCS", computeItem.getIdentifier(), false);
 
 			ci.addAttributeValue(new ValueBean("Server", "Server" + computeItem.getServerAlias(), true));
+			ci.addAttributeValue(new ValueBean("Specification", ComputeConstant.PCSServerType.get(computeItem.getServerType()), false));
 
 		} else {
 
 			String MemSize = "";
 			String CoreNum = "";
+			String Disk = "20GB";
 
 			if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
 				MemSize = "1G";
@@ -167,6 +169,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci.addAttributeValue(new ValueBean("OsStorage", computeItem.getOsStorageAlias(), true));
 			ci.addAttributeValue(new ValueBean("MemSize", MemSize, false));
 			ci.addAttributeValue(new ValueBean("CoreNum", CoreNum, false));
+			ci.addAttributeValue(new ValueBean("Disk", Disk, false));
 
 		}
 
@@ -183,8 +186,6 @@ public class OneCmdbUtilService extends BaseSevcie {
 					storageItem.getIdentifier());
 			ci.addAttributeValue(new ValueBean("Storage", storageAlias, true));
 		}
-
-		// 如果服务标签不为null,则更新oneCMDB中实例的ApplicationService(服务标签)属性
 
 		if (serviceTag != null) {
 			ci.addAttributeValue(new ValueBean("Service", serviceTag.getIdentifier(), true));
@@ -275,8 +276,15 @@ public class OneCmdbUtilService extends BaseSevcie {
 		}
 
 		ciList.add(ci);
+		boolean flag = OneCmdbService.update(ciList);
 
-		return OneCmdbService.update(ciList);
+		// 更新oneCMDB中的es3关联属性.
+		for (ComputeItem computeItem : storageItem.getComputeItemList()) {
+			// this.deleteComputeItemToOneCMDB(computeItem);
+			this.saveComputeToOneCMDB(computeItem, serviceTag);
+		}
+
+		return flag;
 
 	}
 
@@ -325,13 +333,16 @@ public class OneCmdbUtilService extends BaseSevcie {
 		List<CiBean> ciList = new ArrayList<CiBean>();
 
 		CiBean ci = new CiBean("ELB", networkElbItem.getIdentifier(), false);
+
 		ci.addAttributeValue(new ValueBean("Name", networkElbItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkElbItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("ConStatus", networkElbItem.getKeepSession() ? "是" : "否", false));
-		// ci.addAttributeValue(new ValueBean("Server",
-		// networkElbItem.getIdentifier(), true));
-		// ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" +
-		// networkElbItem.getVirtualIp(), true));
+
+		for (ComputeItem computeItem : networkElbItem.getComputeItemList()) {
+			ci.addAttributeValue(new ValueBean("Server", computeItem.getIdentifier(), true));
+		}
+
+		ci.addAttributeValue(new ValueBean("VIP", "IPAddress-" + networkElbItem.getVirtualIp(), true));
 
 		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
 		String protocol = "";
@@ -409,16 +420,19 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("Name", networkEipItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkEipItem.getApply().getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + networkEipItem.getIpAddress(), true));
+		ci.addAttributeValue(new ValueBean("ISP", NetworkConstant.ISPType.get(networkEipItem.getIspType()), false));
 
 		if (networkEipItem.getComputeItem() != null) {
 			// AssociateInstance：关联实例
 			ci.addAttributeValue(new ValueBean("AssociateInstance", networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getRemark() + ":"
 					+ networkEipItem.getComputeItem().getInnerIp() + ")", false));
+			ci.addAttributeValue(new ValueBean("AssociateELB", "", false));
 		}
 
 		if (networkEipItem.getNetworkElbItem() != null) {
 			// AssociateELB：关联ELB
 			ci.addAttributeValue(new ValueBean("AssociateELB", networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")", false));
+			ci.addAttributeValue(new ValueBean("AssociateInstance", "", false));
 		}
 
 		// 规则：协议,端口,源端口.如果有多条规则，则按","隔开
@@ -644,8 +658,10 @@ public class OneCmdbUtilService extends BaseSevcie {
 			nodeName = "InternetPool";
 		} else if (IpPoolConstant.PoolType.公网IP池.toInteger().equals(poolType)) {
 			nodeName = "PublicPool";
-		} else {
+		} else if (IpPoolConstant.PoolType.私网IP池.toInteger().equals(poolType)) {
 			nodeName = "PrivatePool";
+		} else if (IpPoolConstant.PoolType.虚拟负载IP池.toInteger().equals(poolType)) {
+			nodeName = "VIPPool";
 		}
 
 		return nodeName;
@@ -666,8 +682,10 @@ public class OneCmdbUtilService extends BaseSevcie {
 		for (IpPool ipPool : ipPools) {
 			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "IPAddress-" + ipPool.getIpAddress(), false);
 			router.addAttributeValue(new ValueBean("IPAddress", ipPool.getIpAddress(), false));
-			router.addAttributeValue(new ValueBean("NetMask", "255.255.254.1", false));
-			router.addAttributeValue(new ValueBean("GateWay", "172.0.0.1", false));
+			// router.addAttributeValue(new ValueBean("NetMask",
+			// "255.255.254.1", false));
+			// router.addAttributeValue(new ValueBean("GateWay", "172.0.0.1",
+			// false));
 			router.addAttributeValue(new ValueBean("Location", ipPool.getVlan().getLocation().getAlias(), true));
 			router.addAttributeValue(new ValueBean("Vlan", ipPool.getVlan().getAlias(), true));
 			// TODO IP状态待确定.看IP状态是否需要同步.

@@ -44,9 +44,9 @@ public class EsgService extends BaseSevcie {
 	}
 
 	/**
-	 * 新增ESG.<br>
-	 * 注意ESG表中的User_id 是否为null关系着该ESG是否是公用的ESG.<br>
-	 * null表示公用,反之是只有创建人才能使用.
+	 * 新增ESG.
+	 * 
+	 * 注意ESG表中的User_id 是否为null关系着该ESG是否是公用的ESG. null表示公用,反之是只有创建人才能使用.
 	 * 
 	 * @param description
 	 *            安全组的描述
@@ -86,9 +86,8 @@ public class EsgService extends BaseSevcie {
 	}
 
 	/**
-	 * 如果权限角色是 1.管理员 admin 或 3.审批人 audit 创建的ESG,设置ESG中User_id为null.<br>
-	 * 其它权限角色创建的ESG中的User_id为创建人的Id.<br>
-	 * user_id为null 的ESG为公共可用的ESG.不为null的为当前用户可见的.<br>
+	 * 如果权限角色是 1.管理员 admin 或 3.审批人 audit 创建的ESG,设置ESG中User_id为null.
+	 * 其它权限角色创建的ESG中的User_id为创建人的Id. user_id为null 的ESG为公共可用的ESG.不为null的为当前用户可见的.
 	 * 一个用户选择ESG时,应该会显示自己创建的ESG和公共可用的ESG.
 	 * 
 	 * @param user
@@ -116,7 +115,7 @@ public class EsgService extends BaseSevcie {
 	}
 
 	/**
-	 * 当前用户创建的+公用的(user_id 为null) ESG列表.<br>
+	 * 当前用户创建的+公用的(user_id 为null) ESG列表.
 	 * 
 	 * @return
 	 */

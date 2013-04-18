@@ -150,7 +150,7 @@ public class StorageItem implements java.io.Serializable {
 	@ManyToMany
 	@JoinTable(name = "compute_storage_item", joinColumns = { @JoinColumn(name = "storage_item_id") }, inverseJoinColumns = { @JoinColumn(name = "compute_item_id") })
 	// Fecth策略定义
-	@Fetch(FetchMode.JOIN)
+	@Fetch(FetchMode.SUBSELECT)
 	// 集合按id排序.
 	@OrderBy("id")
 	// 集合中对象id的缓存.
@@ -182,7 +182,7 @@ public class StorageItem implements java.io.Serializable {
 	public static String extractToString(final List<ComputeItem> computeItems) {
 		StringBuilder sb = new StringBuilder();
 		for (ComputeItem computeItem : computeItems) {
-			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(",");
+			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getInnerIp()).append(")").append(",");
 		}
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";

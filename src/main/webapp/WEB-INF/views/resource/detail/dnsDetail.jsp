@@ -68,7 +68,7 @@
 				<c:when test="${not empty dns.cnameDomain }">
 					<div class="control-group">
 						<label class="control-label" for="cnameDomain">CNAME域名</label>
-						<div class="controls"><p class="help-inline plain-text">${dns.domainName}</p></div>
+						<div class="controls"><p class="help-inline plain-text">${dns.cnameDomain}</p></div>
 					</div>
 				</c:when>
 				<c:otherwise>

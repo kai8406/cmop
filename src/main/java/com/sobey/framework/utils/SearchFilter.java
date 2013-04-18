@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Maps;
 
 /**
- * 查询条件过滤器<br>
+ * 查询条件过滤器
  * 
  * <pre>
  * EQ      等价于 SQL中的   … where x.lastname = ?1 and x.firstname = ?2
@@ -52,13 +52,16 @@ public class SearchFilter {
 	public Operator operator;
 
 	/**
-	 * 关联路径转换.<br>
-	 * 如Apply下名为"user.name"的fileName,转换为 Apply.user.name 属性<br>
-	 * 当此对象作为Map中的value时:<br>
+	 * 关联路径转换.
+	 * 
+	 * <pre>
+	 * 如Apply下名为"user.name"的fileName,转换为 Apply.user.name 属性
+	 * 当此对象作为Map中的value时:
 	 * 
 	 * map.put("audit.auditFlow.user.id", new SearchFilter("auditFlow.user.id",
-	 * Operator.EQ, userId));<br>
+	 * Operator.EQ, userId));
 	 * key必须给出value的上级关联对象.
+	 * </pre>
 	 * 
 	 * @param fieldName
 	 * @param operator

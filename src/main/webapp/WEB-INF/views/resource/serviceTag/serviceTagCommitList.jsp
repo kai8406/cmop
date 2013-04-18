@@ -86,7 +86,7 @@
 									<div class="modal-body">是否提交变更?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
-										<a href="commit/${item.id}" class="btn btn-primary">确定</a>
+										<a href="commit/${item.id}" class="btn btn-primary loading">确定</a>
 									</div>
 								</div>
 							</c:if>

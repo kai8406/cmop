@@ -26,6 +26,7 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
@@ -248,7 +249,7 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送MIME格式的资源变更审批通知邮件.
 	 */
-	public void sendResourcesNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow) {
+	public void sendResourcesNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow, Audit audit) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -263,9 +264,13 @@ public class TemplateMailService extends BaseSevcie {
 		// 变更 审批Audit
 
 		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+
 		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-				+ AuditConstant.Result.不同意但继续;
-		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
+				+ AuditConstant.Result.不同意但继续 + "&auditId=" + audit.getId();
+
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回
+				+ "&auditId=" + audit.getId();
+		;
 
 		map.put("passUrl", passUrl);
 		map.put("disagreeContinueUrl", disagreeContinueUrl);
@@ -348,8 +353,9 @@ public class TemplateMailService extends BaseSevcie {
 
 		Map<String, Object> map = this.freemarkerParameterMap();
 
+		
 		map.put("computes", computeItems);
-		map.put("storageItems", storageItems);
+		map.put("storages", storageItems);
 		map.put("elbs", elbItems);
 		map.put("eips", eipItems);
 		map.put("dnses", dnsItems);
@@ -412,7 +418,7 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("failure", failure);
 		map.put("computes", computeItems);
-		map.put("storageItems", storageItems);
+		map.put("storages", storageItems);
 		map.put("elbs", elbItems);
 		map.put("eips", eipItems);
 		map.put("dnses", dnsItems);
@@ -490,7 +496,7 @@ public class TemplateMailService extends BaseSevcie {
 	}
 
 	/**
-	 * 使用Freemarker生成html格式内容.<br>
+	 * 使用Freemarker生成html格式内容.
 	 * 
 	 * @param template
 	 *            freemarker的模板

@@ -99,14 +99,12 @@ public class ElbService extends BaseSevcie {
 	}
 
 	/**
-	 * 删除ELB<br>
-	 * 删除前,断开该ELB关联实例Compute的关系.
+	 * 删除ELB
 	 * 
 	 * @param id
 	 */
 	@Transactional(readOnly = false)
 	public void deleteNetworkElbItem(Integer id) {
-
 		networkElbItemDao.delete(id);
 	}
 

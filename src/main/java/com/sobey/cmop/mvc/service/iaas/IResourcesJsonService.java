@@ -20,9 +20,10 @@ import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 /**
- * 将参数类型为Integer的字段转化成字符串后封装,以方便页面Json的操作.<br>
- * 比如 ComputeItem中的操作系统等字段是用Integer类型保存的.通过操作系统的值获得对应的操作系统文本后插入XXJson对象中<br>
- * 转后后的对象看entity文件下的ToJson中
+ * 将参数类型为Integer的字段转化成字符串后封装,以方便页面Json的操作.
+ * 
+ * 比如 ComputeItem中的操作系统等字段是用Integer类型保存的.通过操作系统的值获得对应的操作系统文本后插入XXJson对象中
+ * 转化后的对象看entity文件下的ToJson中
  * 
  * @author liukai
  * 

@@ -23,8 +23,7 @@ public class MonitorConstant {
 	}
 
 	/**
-	 * 阀值. 大于 > <br>
-	 * key String
+	 * 阀值. 大于 > ,key String.
 	 */
 	public static final Map<String, String> THRESHOLD_GT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
@@ -58,8 +57,7 @@ public class MonitorConstant {
 	}
 
 	/**
-	 * 阀值.小于 < <br>
-	 * key String
+	 * 阀值.小于 < , key String.
 	 */
 	public static final Map<String, String> THRESHOLD_LT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
@@ -95,8 +93,7 @@ public class MonitorConstant {
 	}
 
 	/**
-	 * 网络阀值 大于><br>
-	 * key String
+	 * 网络阀值 大于>, key String.
 	 */
 	public static final Map<String, String> THRESHOLD_NET_GT_STRING_KEY = new LinkedHashMap<String, String>();
 	static {
@@ -137,8 +134,7 @@ public class MonitorConstant {
 	}
 
 	/**
-	 * 最大进程数<br>
-	 * key String
+	 * 最大进程数, key String.
 	 */
 	public static final Map<String, String> MAX_PROCESS_STRING_KEY = new LinkedHashMap<String, String>();
 	static {

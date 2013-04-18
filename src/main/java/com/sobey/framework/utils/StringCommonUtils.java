@@ -5,8 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 public class StringCommonUtils {
 
 	/**
-	 * 替换字符串中指定的字符串,并将最后一个字符去掉.<br>
-	 * eg.
+	 * 替换字符串中指定的字符串,并将最后一个字符去掉. eg.
 	 * 
 	 * <pre>
 	 * StringCommonUtils.replaceAndSubstringText(&quot;1-2-&quot;, &quot;-&quot;, &quot;,&quot;) = &quot;1,2&quot;

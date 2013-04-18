@@ -1,8 +1,7 @@
 package com.sobey.cmop.mvc.entity.ToJson;
 
 /**
- * Json格式返回到页面的Compute对象.<br>
- * 针对osType等Integer类型的属性,将其转换成字符串后返回页面
+ * Json格式返回到页面的Compute对象. 针对osType等Integer类型的属性,将其转换成字符串后返回页面
  * 
  * @author liukai
  * 

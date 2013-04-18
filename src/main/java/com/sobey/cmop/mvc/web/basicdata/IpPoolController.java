@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.IpPool;
-import com.sobey.cmop.mvc.entity.Location;
 import com.sobey.cmop.mvc.entity.Vlan;
 import com.sobey.framework.utils.Servlets;
 
@@ -57,22 +56,15 @@ public class IpPoolController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "poolType") Integer poolType, @RequestParam(value = "locationId") Integer locationId,
-			@RequestParam(value = "vlanId") Integer vlanId, RedirectAttributes redirectAttributes) {
-
-		Location location = comm.locationService.getLocation(locationId);
+	public String save(@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "poolType") Integer poolType, @RequestParam(value = "vlanId") Integer vlanId,
+			RedirectAttributes redirectAttributes) {
 
 		Vlan vlan = comm.vlanService.getVlan(vlanId);
 
-		boolean flag = comm.ipPoolService.saveIpPool(ipAddress, poolType, location, vlan);
+		String message = comm.ipPoolService.saveIpPool(ipAddress, poolType, vlan);
 
-		if (flag) {
-			redirectAttributes.addFlashAttribute("message", "创建IP成功");
-			return REDIRECT_SUCCESS_URL;
-		} else {
-			redirectAttributes.addFlashAttribute("message", "创建IP失败,请检查IP是否已存在");
-			return "redirect:/basicdata/ippool/save/";
-		}
+		redirectAttributes.addFlashAttribute("message", message);
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	/**

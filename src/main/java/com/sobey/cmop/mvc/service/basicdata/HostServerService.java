@@ -110,7 +110,8 @@ public class HostServerService extends BaseSevcie {
 
 		// step.2 更改IP状态为 已使用
 		ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-		ipPool.setHostServer(hostServer);
+		// 服务器本身的IP不关联到自己，只有在工单处理时才关联
+		// ipPool.setHostServer(hostServer);
 		comm.ipPoolService.saveOrUpdate(ipPool);
 
 		this.saveOrUpdate(hostServer);
@@ -144,11 +145,10 @@ public class HostServerService extends BaseSevcie {
 
 		// step.1 如果IP进行了修改,则初始化以前老的ip
 		if (!hostServer.getIpAddress().equals(ipAddress)) {
-
 			comm.ipPoolService.initIpPool(hostServer.getIpAddress());
-
 			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-			ipPool.setHostServer(hostServer);
+			// 服务器本身的IP不关联到自己，只有在工单处理时才关联
+			// ipPool.setHostServer(hostServer);
 			comm.ipPoolService.saveOrUpdate(ipPool);
 		}
 

@@ -128,7 +128,8 @@ public class RedmineService extends BaseSevcie {
 	}
 
 	/**
-	 * 更新Issue<br>
+	 * 更新Issue.
+	 * 
 	 * 如果没有更新成功,用递归算法重复4次
 	 * 
 	 * @param issue
@@ -177,7 +178,8 @@ public class RedmineService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据issueId获取Issue<br>
+	 * 根据issueId获取Issue
+	 * 
 	 * 如果没有值,用递归算法重复4次,
 	 * 
 	 * @param issueId
@@ -221,7 +223,8 @@ public class RedmineService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据subject获得Issue.<br>
+	 * 根据subject获得Issue.
+	 * 
 	 * 如果没有值,用递归算法重复4次,如果最后还是获取不了值,则返回Null.
 	 * 
 	 * @param subject

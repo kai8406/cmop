@@ -11,8 +11,9 @@ import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 
 /**
- * 根据资源Resources对象Id获得指定用户的所有基础设施的信息并对其进行对象封装.<br>
- * 本质上就是查出审批通过的各个Iaas的List,dao查询出来的是无泛型的List,将其封装成 Iass对象 List,已方便后续的操作.<br>
+ * 根据资源Resources对象Id获得指定用户的所有基础设施的信息并对其进行对象封装.
+ * 
+ * 本质上就是查出审批通过的各个Iaas的List,dao查询出来的是无泛型的List,将其封装成 Iass对象 List,已方便后续的操作.
  * 注意表中的字段顺序!!!
  * 
  * @author liukai

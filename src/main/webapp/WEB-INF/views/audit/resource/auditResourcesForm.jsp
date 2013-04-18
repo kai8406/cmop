@@ -68,9 +68,11 @@ function setResult(result) {
 		
 				<hr>
 				<c:forEach var="change" items="${changes}">       
-					<%-- <p>变更资源标识符&nbsp;<strong>${resource.serviceIdentifier}<c:if test="${resource.ipAddress != DEFAULT_IPADDRESS }">(${ resource.ipAddress })</c:if></strong> &nbsp;&nbsp; 变更描述&nbsp;${change.description }</p> --%>
+					<p>变更资源标识符&nbsp;<strong>${change.resourcesInfo}</strong>&nbsp;&nbsp; 变更描述:&nbsp;${change.description }</p>
 					<table class="table table-bordered">
-			            <thead><tr><th class="span2">变更项</th><th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
+			            <thead><tr>
+			            <th class="span2">变更项<c:if test="${not empty change.subResourcesId }">(服务子项ID:${change.subResourcesId })</c:if></th>
+			            <th class="span2">旧值</th><th class="span2">新值</th></tr></thead>
 			            <tbody>
 				            <c:forEach var="item" items="${change.changeItemHistories }">
 								<tr>
@@ -135,7 +137,7 @@ function setResult(result) {
 						<input class="btn" type="button" value="返回" onclick="history.back()">
 						<c:if test="${empty view}">
 							<c:forEach var="map" items="${auditResultMap}">
-								<button class="btn btn-primary" onclick="return setResult('${map.key}')">${map.value}</button>
+								<button class="btn btn-primary loading" onclick="return setResult('${map.key}')">${map.value}</button>
 							</c:forEach>
 						</c:if>
 					</c:if>
@@ -144,7 +146,7 @@ function setResult(result) {
 						<button class="btn" onclick="window.close();">&nbsp;关&nbsp;闭&nbsp;</button>
 						<c:forEach var="map" items="${auditResultMap}">
 							<c:if test="${result==map.key}">
-								<button class="btn btn-primary" onclick="return setResult('${map.key}')">${map.value}</button>
+								<button class="btn btn-primary loading" onclick="return setResult('${map.key}')">${map.value}</button>
 							</c:if>
 						</c:forEach>
 					</c:if>

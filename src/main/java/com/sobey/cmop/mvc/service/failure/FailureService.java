@@ -216,7 +216,7 @@ public class FailureService extends BaseSevcie {
 	}
 
 	/**
-	 * 故障申报Failure的分页查询.<br>
+	 * 故障申报Failure的分页查询.
 	 * 
 	 * @param searchParams
 	 *            页面传递过来的参数

@@ -133,8 +133,7 @@ public class MdnContoller extends BaseController {
 	}
 
 	/**
-	 * 从服务申请表页面跳转到MDN的修改页面. <br>
-	 * MDN的vod和live另外写个修改方法.
+	 * 从服务申请表页面跳转到MDN的修改页面. MDN的vod和live另外写个修改方法.
 	 */
 	@RequestMapping(value = "/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {

@@ -1,7 +1,7 @@
 package com.sobey.cmop.mvc.entity.ToJson;
 
 /**
- * Json格式返回到页面的Storage对象.<br>
+ * Json格式返回到页面的Storage对象.
  * 
  * @author liukai
  * 

@@ -31,6 +31,8 @@ import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ChangeItem;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
+import com.sobey.cmop.mvc.entity.EipPortItem;
+import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
@@ -72,7 +74,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得在工单流程中的资源Resources列表.<br>
+	 * 获得在工单流程中的资源Resources列表.
+	 * 
 	 * Status: 4.已审批 ; 5.创建中
 	 * 
 	 * @return
@@ -88,7 +91,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 等待提交变更资源Resources列表 和 资源变更业务的审批流程中资源Resources列表.<br>
+	 * 等待提交变更资源Resources列表 和 资源变更业务的审批流程中资源Resources列表.
 	 * 
 	 * Status: 0.已变更 ; 1.待审批 ; 2.审批中
 	 * 
@@ -108,7 +111,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 审批结束后工单流程中的变更资源Resources列表<br>
+	 * 审批结束后工单流程中的变更资源Resources列表
+	 * 
 	 * Status: 2.审批中 ; 4.已审批 ; 5.创建中 ; 6.已创建
 	 * 
 	 * @param serviceTagId
@@ -136,7 +140,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 获得等待提交变更资源Resources列表.<br>
+	 * 获得等待提交变更资源Resources列表.
 	 * 
 	 * Status: 0.已变更
 	 * 
@@ -219,8 +223,8 @@ public class ResourcesService extends BaseSevcie {
 	 * 根据服务类型serviceType 获得资源的个数
 	 * 
 	 * @param serviceType
-	 *            服务类型 1.PCS;2.ECS;3.ES3 ... <br>
-	 *            用ResourcesConstant中的Enum : ServiceType
+	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
+	 *            ServiceType
 	 * @return
 	 */
 	public Long getResourcesStatistics(Integer serviceType) {
@@ -285,7 +289,7 @@ public class ResourcesService extends BaseSevcie {
 
 		// Elb监控
 		for (MonitorElb monitorElb : apply.getMonitorElbs()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem().getVirtualIp());
 		}
 
 		// MDN
@@ -301,7 +305,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源回收<br>
+	 * 资源回收
+	 * 
 	 * serviceTagId 非空时表示是服务标签回收,为null or "" 表示单个回收.
 	 * 
 	 * @param resourcesList
@@ -399,6 +404,118 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 还原compute中的application.
+	 * 
+	 * 将变更前的值,按字符分割后放入数组中,再调用updateApplication方法重新插入数据库.
+	 * 
+	 * @param computeItem
+	 *            compute对象
+	 * @param oldChangeValue
+	 *            变更前的值
+	 */
+	private void restoreApplication(ComputeItem computeItem, String oldChangeValue) {
+
+		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
+		String[] applications = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+
+		String[] applicationNames = new String[applications.length];
+		String[] applicationVersions = new String[applications.length];
+		String[] applicationDeployPaths = new String[applications.length];
+
+		if (applications != null && applications.length != 0) {
+
+			for (int i = 0; i < applications.length; i++) {
+
+				String[] apps = StringUtils.split(applications[i], ",");
+
+				for (int j = 0; j < apps.length; j++) {
+					applicationNames[i] = apps[0];
+					applicationVersions[i] = apps[1];
+					applicationDeployPaths[i] = apps[2];
+				}
+			}
+		}
+		comm.computeService.updateApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
+	}
+
+	/**
+	 * 还原ELB的端口信息
+	 * 
+	 * @param networkElbItem
+	 * @param oldChangeValue
+	 */
+	private void restoreELBPort(NetworkElbItem networkElbItem, String oldChangeValue) {
+		this.restorePort(networkElbItem, null, oldChangeValue);
+	}
+
+	/**
+	 * 还原EIP的端口信息
+	 * 
+	 * @param networkEipItem
+	 * @param oldChangeValue
+	 */
+	private void restoreEIPPort(NetworkEipItem networkEipItem, String oldChangeValue) {
+		this.restorePort(null, networkEipItem, oldChangeValue);
+	}
+
+	/**
+	 * 还原ELB或EIP的端口信息(用于多态的调用)
+	 * 
+	 * @param networkElbItem
+	 * @param networkEipItem
+	 * @param oldChangeValue
+	 */
+	private void restorePort(NetworkElbItem networkElbItem, NetworkEipItem networkEipItem, String oldChangeValue) {
+
+		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
+		String[] portItems = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+
+		String[] protocols = new String[portItems.length];
+		String[] sourcePorts = new String[portItems.length];
+		String[] targetPorts = new String[portItems.length];
+
+		if (portItems != null && portItems.length != 0) {
+
+			for (int i = 0; i < portItems.length; i++) {
+
+				String[] ports = StringUtils.split(portItems[i], ",");
+
+				for (int j = 0; j < ports.length; j++) {
+					protocols[i] = ports[0];
+					sourcePorts[i] = ports[1];
+					targetPorts[i] = ports[2];
+				}
+			}
+		}
+
+		if (networkElbItem != null) {
+
+			/* ELB : 将ELB下的所有映射信息删除,并插入新的端口映射信息 */
+
+			comm.elbService.deleteElbPortItem(comm.elbService.getElbPortItemListByElbId(networkElbItem.getId()));
+
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				comm.elbService.saveOrUpdateElbPortItem(elbPortItem);
+			}
+		}
+
+		if (networkEipItem != null) {
+
+			/* EIP : 将EIP下的所有映射信息删除,并插入新的端口映射信息 */
+
+			comm.eipService.deleteEipPortItem(comm.eipService.getEipPortItemListByEipId(networkEipItem.getId()));
+
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				comm.eipService.saveOrUpdateEipPortItem(eipPortItem);
+			}
+
+		}
+
+	}
+
+	/**
 	 * 还原资源Resources变更项. 将ChangeItem中的旧值覆盖至各个资源的属性中,保存. 各个资源还原后,将服务变更Change删除.
 	 * 
 	 * @param resources
@@ -441,7 +558,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 
-					// 应用信息无法还原.
+					this.restoreApplication(computeItem, changeItem.getOldValue());
 
 				}
 
@@ -465,6 +582,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
 
+					// 分割变更前保存的Id,查询出来后保存.
 					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
 
 					if (computeIds != null) {
@@ -495,16 +613,23 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// 端口信息无法还原.
+					this.restoreELBPort(networkElbItem, changeItem.getOldValue());
 
 				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
 
-					List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-					String[] computeIdArray = StringUtils.split(changeItem.getOldValue(), ",");
-					for (String computeId : computeIdArray) {
-						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					// 分割变更前保存的Id,查询出来后保存.
+					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
+
+					if (computeIds != null) {
+						List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+						for (int i = 0; i < computeIds.length; i++) {
+							ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+							computeItemList.add(computeItem);
+						}
+
+						networkElbItem.setComputeItemList(computeItemList);
 					}
-					networkElbItem.setComputeItemList(computeItemList);
+
 				}
 
 			}
@@ -523,7 +648,7 @@ public class ResourcesService extends BaseSevcie {
 
 				} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
 
-					// 端口信息无法还原.
+					this.restoreEIPPort(networkEipItem, changeItem.getOldValue());
 
 				} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
 
@@ -765,6 +890,7 @@ public class ResourcesService extends BaseSevcie {
 		resources.setCreateTime(new Date());
 		resources.setStatus(ResourcesConstant.Status.未变更.toInteger());
 		resources.setIpAddress(ipAddress);
+		resources.setOldIp(ipAddress);
 
 		return saveOrUpdate(resources);
 
@@ -787,7 +913,8 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.<br>
+	 * 根据resource得出对应的服务类型对象封装成PCS,ECS,ES3...的集合.
+	 * 
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
 	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,

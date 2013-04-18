@@ -411,6 +411,12 @@ public class OperateService extends BaseSevcie {
 
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
+					// 删除compute下关联eip在oneCMDB中的数据.
+					List<NetworkEipItem> networkEipItems = comm.eipService.getNetworkEipItemListByComputeItemId(serviceId);
+					for (NetworkEipItem networkEipItem : networkEipItems) {
+						comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
+					}
+
 					// PCS & ECS
 					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
 					comm.computeService.deleteCompute(serviceId);
@@ -424,7 +430,17 @@ public class OperateService extends BaseSevcie {
 				} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
 
 					// ELB
-					comm.oneCmdbUtilService.deleteELBToOneCMDB(comm.elbService.getNetworkElbItem(serviceId));
+
+					NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
+
+					// 删除elb下关联eip在oneCMDB中的数据.
+					if (!networkElbItem.getNetworkEipItems().isEmpty()) {
+						for (NetworkEipItem networkEipItem : networkElbItem.getNetworkEipItems()) {
+							comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
+						}
+					}
+
+					comm.oneCmdbUtilService.deleteELBToOneCMDB(networkElbItem);
 					comm.elbService.deleteNetworkElbItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {

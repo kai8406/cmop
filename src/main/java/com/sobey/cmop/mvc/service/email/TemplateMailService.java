@@ -353,8 +353,9 @@ public class TemplateMailService extends BaseSevcie {
 
 		Map<String, Object> map = this.freemarkerParameterMap();
 
+		
 		map.put("computes", computeItems);
-		map.put("storageItems", storageItems);
+		map.put("storages", storageItems);
 		map.put("elbs", elbItems);
 		map.put("eips", eipItems);
 		map.put("dnses", dnsItems);
@@ -417,7 +418,7 @@ public class TemplateMailService extends BaseSevcie {
 
 		map.put("failure", failure);
 		map.put("computes", computeItems);
-		map.put("storageItems", storageItems);
+		map.put("storages", storageItems);
 		map.put("elbs", elbItems);
 		map.put("eips", eipItems);
 		map.put("dnses", dnsItems);

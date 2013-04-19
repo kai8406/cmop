@@ -133,10 +133,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			ChangeItem changeItem = new ChangeItem();
 			changeItem.setChange(change);
 			changeItem.setFieldName(fieldName);
-			changeItem.setOldValue(oldValue);
-			changeItem.setOldString(oldString);
-			changeItem.setNewValue(newValue);
-			changeItem.setNewString(newString);
+			changeItem.setOldValue(StringUtils.defaultIfEmpty(oldValue, ""));
+			changeItem.setOldString(StringUtils.defaultIfEmpty(oldString, ""));
+			changeItem.setNewValue(StringUtils.defaultIfEmpty(newValue, ""));
+			changeItem.setNewString(StringUtils.defaultIfEmpty(newString, ""));
 
 			comm.changeServcie.saveOrUpdateChangeItem(changeItem);
 
@@ -146,8 +146,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			ChangeItem changeItem = changeItems.get(0);
 
-			changeItem.setNewValue(newValue);
-			changeItem.setNewString(newString);
+			changeItem.setNewValue(StringUtils.defaultIfEmpty(newValue, ""));
+			changeItem.setNewString(StringUtils.defaultIfEmpty(newString, ""));
 
 			comm.changeServcie.saveOrUpdateChangeItem(changeItem);
 
@@ -1117,7 +1117,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	@Override
 	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
 			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
-			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+			String httpBitrate, String hlsUrl, String hlsBitrate) {
 
 		boolean isChange = false;
 
@@ -1212,26 +1212,22 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
 
-			if (MdnConstant.OutputMode.Transfer模式.toInteger().equals(streamOutMode)) { // 变成Transfer模式模式
+			if (MdnConstant.OutputMode.Transfer模式.toInteger().equals(streamOutMode)) { // 由Encoder模式变成Transfer模式模式
 
 				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrl, httpUrl);
 				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrate, httpBitrate);
 
-				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrl, hlsUrl);
-				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrate, hlsBitrate);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HSL流地址.toString(), "", "", hlsUrl, hlsUrl);
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HSL流混合码率.toString(), "", "", hlsBitrate, hlsBitrate);
 
-				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), "", "", rtspUrl, rtspUrl);
-				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), "", "", rtspBitrate, rtspBitrate);
+			} else {// 由Transfer模式模式变成Encoder模式
 
-			} else {// 变成Encoder模式
-
-				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), "", "", httpUrlEncoder, httpUrlEncoder);
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), "", "", httpBitrateEncoder,
-							httpBitrateEncoder);
-				} else {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), "", "", hlsUrlEncoder, hlsUrlEncoder);
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), "", "", hlsBitrateEncoder, hlsBitrateEncoder);
+				if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.拉流地址.toString(), "", "", httpUrlEncoder, httpUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.拉流混合码率.toString(), "", "", httpBitrateEncoder, httpBitrateEncoder);
+				} else if (MdnConstant.EncoderMode.推流模式.toInteger().equals(encoderMode)) {
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.推流地址.toString(), "", "", hlsUrlEncoder, hlsUrlEncoder);
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.推流混合码率.toString(), "", "", hlsBitrateEncoder, hlsBitrateEncoder);
 				}
 			}
 
@@ -1241,23 +1237,34 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 				// 比较编码器模式
 
-				if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {// HTTP拉流模式
+				String fieldName = FieldNameConstant.MdnLiveItem.编码器模式.toString();
+
+				String oldValue = mdnLiveItem.getEncoderMode().toString();
+				String oldString = MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode());
+
+				String newValue = encoderMode.toString();
+				String newString = MdnConstant.EncoderMode.get(encoderMode);
+
+				isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue, oldString, newValue, newString);
+
+				if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {// HTTP拉流模式
 
 					if (!httpUrlEncoder.equals(mdnLiveItem.getHttpUrl())) {
-						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流地址.toString(), mdnLiveItem.getHttpUrl(),
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.拉流地址.toString(), mdnLiveItem.getHttpUrl(),
 								mdnLiveItem.getHttpUrl(), httpUrlEncoder, httpUrlEncoder);
 					}
 					if (!httpBitrateEncoder.equals(mdnLiveItem.getHttpBitrate())) {
-						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString(), mdnLiveItem.getHttpBitrate(),
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.拉流混合码率.toString(), mdnLiveItem.getHttpBitrate(),
 								mdnLiveItem.getHttpBitrate(), httpBitrateEncoder, httpBitrateEncoder);
 					}
-				} else {// RTMP推流模式
+				} else {
+
 					if (!hlsUrlEncoder.equals(mdnLiveItem.getHlsUrl())) {
-						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(),
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.推流地址.toString(), mdnLiveItem.getHlsUrl(),
 								mdnLiveItem.getHlsUrl(), hlsUrlEncoder, hlsUrlEncoder);
 					}
 					if (!hlsBitrateEncoder.equals(mdnLiveItem.getHlsBitrate())) {
-						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
+						isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.推流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
 								mdnLiveItem.getHlsBitrate(), hlsBitrateEncoder, hlsBitrateEncoder);
 					}
 				}
@@ -1273,21 +1280,14 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 							mdnLiveItem.getHttpBitrate(), httpBitrate, httpBitrate);
 				}
 				if (!mdnLiveItem.getHlsUrl().equals(hlsUrl)) {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流地址.toString(), mdnLiveItem.getHlsUrl(),
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HSL流地址.toString(), mdnLiveItem.getHlsUrl(),
 							mdnLiveItem.getHlsUrl(), hlsUrl, hlsUrl);
 				}
 				if (!mdnLiveItem.getHlsBitrate().equals(hlsBitrate)) {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
+					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.HSL流混合码率.toString(), mdnLiveItem.getHlsBitrate(),
 							mdnLiveItem.getHlsBitrate(), hlsBitrate, hlsBitrate);
 				}
-				if (!mdnLiveItem.getRtspUrl().equals(rtspUrl)) {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流地址.toString(), mdnLiveItem.getRtspUrl(),
-							mdnLiveItem.getRtspUrl(), rtspUrl, rtspUrl);
-				}
-				if (!mdnLiveItem.getRtspBitrate().equals(rtspBitrate)) {
-					isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString(), mdnLiveItem.getRtspBitrate(),
-							mdnLiveItem.getRtspBitrate(), rtspBitrate, rtspBitrate);
-				}
+
 			}
 
 		}

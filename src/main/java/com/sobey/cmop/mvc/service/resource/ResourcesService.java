@@ -34,6 +34,8 @@ import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
 import com.sobey.cmop.mvc.entity.MdnItem;
+import com.sobey.cmop.mvc.entity.MdnLiveItem;
+import com.sobey.cmop.mvc.entity.MdnVodItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.MonitorMail;
@@ -289,7 +291,8 @@ public class ResourcesService extends BaseSevcie {
 
 		// Elb监控
 		for (MonitorElb monitorElb : apply.getMonitorElbs()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem().getVirtualIp());
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem()
+					.getVirtualIp());
 		}
 
 		// MDN
@@ -526,349 +529,425 @@ public class ResourcesService extends BaseSevcie {
 		Integer serviceType = resources.getServiceType();
 		Integer serviceId = resources.getServiceId();
 
-		Change change = comm.changeServcie.findChangeByResourcesId(resources.getId());
+		List<Change> changes = comm.changeServcie.getChangeListByResourcesId(resources.getId());
 
-		List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeId(change.getId());
+		for (Change change : changes) {
 
-		if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeId(change.getId());
 
-			ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
-			for (ChangeItem changeItem : changeItems) {
+				ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
 
-				if (FieldNameConstant.Compate.操作系统.toString().equals(changeItem.getFieldName())) {
+				for (ChangeItem changeItem : changeItems) {
 
-					computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
+					if (FieldNameConstant.Compate.操作系统.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Compate.操作位数.toString().equals(changeItem.getFieldName())) {
+						computeItem.setOsType(Integer.valueOf(changeItem.getOldValue()));
 
-					computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
+					} else if (FieldNameConstant.Compate.操作位数.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Compate.规格.toString().equals(changeItem.getFieldName())) {
+						computeItem.setOsBit(Integer.valueOf(changeItem.getOldValue()));
 
-					computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
+					} else if (FieldNameConstant.Compate.规格.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Compate.用途信息.toString().equals(changeItem.getFieldName())) {
+						computeItem.setServerType(Integer.valueOf(changeItem.getOldValue()));
 
-					computeItem.setRemark(changeItem.getOldValue());
+					} else if (FieldNameConstant.Compate.用途信息.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Compate.ESG.toString().equals(changeItem.getFieldName())) {
+						computeItem.setRemark(changeItem.getOldValue());
 
-					computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.valueOf(changeItem.getOldValue())));
+					} else if (FieldNameConstant.Compate.ESG.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
+						computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.valueOf(changeItem.getOldValue())));
 
-					this.restoreApplication(computeItem, changeItem.getOldValue());
+					} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 
-				}
+						this.restoreApplication(computeItem, changeItem.getOldValue());
 
-			}
-
-			comm.computeService.saveOrUpdate(computeItem);
-
-		} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
-
-			StorageItem storageItem = comm.es3Service.getStorageItem(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.Storage.存储类型.toString().equals(changeItem.getFieldName())) {
-
-					storageItem.setStorageType(Integer.valueOf(changeItem.getOldValue()));
-
-				} else if (FieldNameConstant.Storage.容量空间.toString().equals(changeItem.getFieldName())) {
-
-					storageItem.setSpace(Integer.valueOf(changeItem.getOldValue()));
-
-				} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
-
-					// 分割变更前保存的Id,查询出来后保存.
-					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
-
-					if (computeIds != null) {
-						List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-						for (int i = 0; i < computeIds.length; i++) {
-							ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-							computeItemList.add(computeItem);
-						}
-
-						storageItem.setComputeItemList(computeItemList);
 					}
 
 				}
 
-			}
+				comm.computeService.saveOrUpdate(computeItem);
 
-			comm.es3Service.saveOrUpdate(storageItem);
+			} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
 
-		} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+				StorageItem storageItem = comm.es3Service.getStorageItem(serviceId);
 
-			NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
+				for (ChangeItem changeItem : changeItems) {
 
-			for (ChangeItem changeItem : changeItems) {
+					if (FieldNameConstant.Storage.存储类型.toString().equals(changeItem.getFieldName())) {
 
-				if (FieldNameConstant.Elb.是否保持会话.toString().equals(changeItem.getFieldName())) {
+						storageItem.setStorageType(Integer.valueOf(changeItem.getOldValue()));
 
-					networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false);
+					} else if (FieldNameConstant.Storage.容量空间.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
+						storageItem.setSpace(Integer.valueOf(changeItem.getOldValue()));
 
-					this.restoreELBPort(networkElbItem, changeItem.getOldValue());
+					} else if (FieldNameConstant.Storage.挂载实例.toString().equals(changeItem.getFieldName())) {
 
-				} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
+						// 分割变更前保存的Id,查询出来后保存.
+						String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
 
-					// 分割变更前保存的Id,查询出来后保存.
-					String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
-
-					if (computeIds != null) {
-						List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-						for (int i = 0; i < computeIds.length; i++) {
-							ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-							computeItemList.add(computeItem);
-						}
-
-						networkElbItem.setComputeItemList(computeItemList);
-					}
-
-				}
-
-			}
-
-			comm.elbService.saveOrUpdate(networkElbItem);
-
-		} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
-
-			NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.Eip.ISP.toString().equals(changeItem.getFieldName())) {
-
-					networkEipItem.setIspType(Integer.valueOf(changeItem.getOldValue()));
-
-				} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
-
-					this.restoreEIPPort(networkEipItem, changeItem.getOldValue());
-
-				} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
-
-					networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
-
-				} else if (FieldNameConstant.Eip.关联实例.toString().equals(changeItem.getFieldName())) {
-
-					networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue())));
-
-				}
-
-			}
-
-			comm.eipService.saveOrUpdate(networkEipItem);
-
-		} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
-
-			NetworkDnsItem networkDnsItem = comm.dnsService.getNetworkDnsItem(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.Dns.域名.toString().equals(changeItem.getFieldName())) {
-
-					networkDnsItem.setDomainName(changeItem.getOldValue());
-
-				} else if (FieldNameConstant.Dns.域名类型.toString().equals(changeItem.getFieldName())) {
-
-					networkDnsItem.setDomainType(Integer.valueOf(changeItem.getOldValue()));
-
-				} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(changeItem.getFieldName())) {
-
-					networkDnsItem.setCnameDomain(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
-
-				} else if (FieldNameConstant.Dns.目标IP.toString().equals(changeItem.getFieldName())) {
-
-					if (StringUtils.isNotBlank(changeItem.getOldValue())) {
-
-						String[] eipIds = StringUtils.split(changeItem.getOldValue(), ",");
-						if (eipIds != null) {
-							List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
-							for (String eipId : eipIds) {
-								NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipId));
-								networkEipItemList.add(networkEipItem);
+						if (computeIds != null) {
+							List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+							for (int i = 0; i < computeIds.length; i++) {
+								ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+								computeItemList.add(computeItem);
 							}
 
-							networkDnsItem.setNetworkEipItemList(networkEipItemList);
-
+							storageItem.setComputeItemList(computeItemList);
 						}
 
 					}
 
 				}
 
+				comm.es3Service.saveOrUpdate(storageItem);
+
+			} else if (ResourcesConstant.ServiceType.ELB.toInteger().equals(serviceType)) {
+
+				NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.Elb.是否保持会话.toString().equals(changeItem.getFieldName())) {
+
+						networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false);
+
+					} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
+
+						this.restoreELBPort(networkElbItem, changeItem.getOldValue());
+
+					} else if (FieldNameConstant.Elb.关联实例.toString().equals(changeItem.getFieldName())) {
+
+						// 分割变更前保存的Id,查询出来后保存.
+						String[] computeIds = StringUtils.split(changeItem.getOldValue(), ",");
+
+						if (computeIds != null) {
+							List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+							for (int i = 0; i < computeIds.length; i++) {
+								ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+								computeItemList.add(computeItem);
+							}
+
+							networkElbItem.setComputeItemList(computeItemList);
+						}
+
+					}
+
+				}
+
+				comm.elbService.saveOrUpdate(networkElbItem);
+
+			} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
+
+				NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.Eip.ISP.toString().equals(changeItem.getFieldName())) {
+
+						networkEipItem.setIspType(Integer.valueOf(changeItem.getOldValue()));
+
+					} else if (FieldNameConstant.Eip.端口信息.toString().equals(changeItem.getFieldName())) {
+
+						this.restoreEIPPort(networkEipItem, changeItem.getOldValue());
+
+					} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
+
+						networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
+
+					} else if (FieldNameConstant.Eip.关联实例.toString().equals(changeItem.getFieldName())) {
+
+						networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue())));
+
+					}
+
+				}
+
+				comm.eipService.saveOrUpdate(networkEipItem);
+
+			} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
+
+				NetworkDnsItem networkDnsItem = comm.dnsService.getNetworkDnsItem(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.Dns.域名.toString().equals(changeItem.getFieldName())) {
+
+						networkDnsItem.setDomainName(changeItem.getOldValue());
+
+					} else if (FieldNameConstant.Dns.域名类型.toString().equals(changeItem.getFieldName())) {
+
+						networkDnsItem.setDomainType(Integer.valueOf(changeItem.getOldValue()));
+
+					} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(changeItem.getFieldName())) {
+
+						networkDnsItem.setCnameDomain(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
+
+					} else if (FieldNameConstant.Dns.目标IP.toString().equals(changeItem.getFieldName())) {
+
+						if (StringUtils.isNotBlank(changeItem.getOldValue())) {
+
+							String[] eipIds = StringUtils.split(changeItem.getOldValue(), ",");
+							if (eipIds != null) {
+								List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
+								for (String eipId : eipIds) {
+									NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipId));
+									networkEipItemList.add(networkEipItem);
+								}
+
+								networkDnsItem.setNetworkEipItemList(networkEipItemList);
+							}
+						}
+					}
+
+				}
+
+				comm.dnsService.saveOrUpdate(networkDnsItem);
+
+			} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
+
+				MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.monitorCompute.监控实例.toString().equals(changeItem.getFieldName())) {
+
+						monitorCompute.setIpAddress(changeItem.getOldValue());
+
+					} else if (FieldNameConstant.monitorCompute.监控端口.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setPort(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.监控进程.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setProcess(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.挂载路径.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setMountPoint(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setCpuWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setCpuCritical(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.内存占用率报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setMemoryWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.内存占用率警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setPingLossWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setPingLossCritical(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setDiskWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setDiskCritical(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.网络延时率报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setPingLossWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.网络延时率警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setPingLossCritical(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.最大进程数报警阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setMaxProcessWarn(changeItem.getOldValue());
+					} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(changeItem.getFieldName())) {
+						monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
+					}
+
+				}
+
+				comm.monitorComputeServcie.saveOrUpdate(monitorCompute);
+
+			} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
+
+				MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.monitorElb.监控ELB.toString().equals(changeItem.getFieldName())) {
+						monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
+					}
+				}
+				comm.monitorElbServcie.saveOrUpdate(monitorElb);
+			} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
+
+				MdnItem mdnItem = comm.mdnService.getMdnItem(serviceId);
+				MdnVodItem mdnVodItem = comm.mdnService.getMdnVodItem(change.getSubResourcesId());
+				MdnLiveItem mdnLiveItem = comm.mdnService.getMdnLiveItem(change.getSubResourcesId());
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
+						mdnItem.setCoverArea(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
+						mdnItem.setCoverIsp(changeItem.getOldValue());
+					}
+
+					// vod
+					if (FieldNameConstant.MdnVodItem.点播服务域名.toString().equals(changeItem.getFieldName())) {
+						mdnVodItem.setVodDomain(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnVodItem.点播加速服务带宽.toString().equals(changeItem.getFieldName())) {
+						mdnVodItem.setVodBandwidth(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnVodItem.点播播放协议选择.toString().equals(changeItem.getFieldName())) {
+						mdnVodItem.setVodProtocol(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnVodItem.Streamer地址.toString().equals(changeItem.getFieldName())) {
+						mdnVodItem.setSourceStreamerUrl(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnVodItem.点播出口带宽.toString().equals(changeItem.getFieldName())) {
+						mdnVodItem.setSourceOutBandwidth(changeItem.getOldValue());
+					}
+
+					// live
+					if (FieldNameConstant.MdnLiveItem.直播服务域名.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setLiveDomain(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setLiveBandwidth(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.直播播放协议选择.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setLiveProtocol(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.直播流输出模式.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setStreamOutMode(Integer.valueOf(changeItem.getOldValue()));
+					}
+
+					if (FieldNameConstant.MdnLiveItem.频道名称.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setName(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.频道GUID.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setGuid(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.直播出口带宽.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setBandwidth(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.MdnLiveItem.编码器模式.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setEncoderMode(Integer.valueOf(changeItem.getOldValue()));
+					}
+
+					if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.拉流地址.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setHttpUrl(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
+					}
+
+					if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.拉流混合码率.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setHttpBitrate(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
+					}
+
+					if (FieldNameConstant.MdnLiveItem.HSL流地址.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.推流地址.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
+					}
+
+					if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.推流混合码率.toString().equals(changeItem.getFieldName())) {
+						mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
+					}
+
+				}
+
+				comm.mdnService.saveOrUpdate(mdnItem);
+				comm.mdnService.saveOrUpdate(mdnLiveItem);
+				comm.mdnService.saveOrUpdate(mdnVodItem);
+
+			} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
+
+				CpItem cpItem = comm.cpService.getCpItem(serviceId);
+
+				for (ChangeItem changeItem : changeItems) {
+
+					if (FieldNameConstant.CpItem.收录流URL.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordStreamUrl(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.收录码率.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordBitrate(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.输出编码.toString().equals(changeItem.getFieldName())) {
+						cpItem.setExportEncode(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.收录类型.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordType(Integer.valueOf(changeItem.getOldValue()));
+					}
+
+					if (FieldNameConstant.CpItem.收录时段.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordTime(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.发布接口地址.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPublishUrl(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(changeItem.getFieldName())) {
+						cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
+					}
+
+					if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpIp(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频端口.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpPort(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频FTP用户名.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpUsername(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频FTP密码.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpPassword(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频FTP根路径.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpRootpath(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频FTP上传路径.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoFtpUploadpath(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.视频输出组类型.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoOutputGroup(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.输出方式配置.toString().equals(changeItem.getFieldName())) {
+						cpItem.setVideoOutputWay(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.图片FTP上传IP.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpIp(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片端口.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpPort(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片FTP用户名.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpUsername(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片FTP密码.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpPassword(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片FTP根路径.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpRootpath(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片FTP上传路径.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueFtpUploadpath(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.图片输出组类型.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueOutputGroup(changeItem.getOldValue());
+					}
+					if (FieldNameConstant.CpItem.输出媒体类型.toString().equals(changeItem.getFieldName())) {
+						cpItem.setPictrueOutputMedia(changeItem.getOldValue());
+					}
+
+				}
+				comm.cpService.saveOrUpdate(cpItem);
 			}
 
-			comm.dnsService.saveOrUpdate(networkDnsItem);
+			// 清除服务变更Change的内容
+			comm.changeServcie.deleteChange(change.getId());
 
-		} else if (ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger().equals(serviceType)) {
-
-			MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.monitorCompute.监控实例.toString().equals(changeItem.getFieldName())) {
-
-					monitorCompute.setIpAddress(changeItem.getOldValue());
-
-				} else if (FieldNameConstant.monitorCompute.监控端口.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setPort(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.监控进程.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setProcess(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.挂载路径.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setMountPoint(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setCpuWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setCpuCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.内存占用率报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setMemoryWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.内存占用率警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setPingLossWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setPingLossCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setDiskWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setDiskCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.网络延时率报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setPingLossWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.网络延时率警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setPingLossCritical(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.最大进程数报警阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setMaxProcessWarn(changeItem.getOldValue());
-				} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(changeItem.getFieldName())) {
-					monitorCompute.setMaxProcessCritical(changeItem.getOldValue());
-				}
-
-			}
-
-			comm.monitorComputeServcie.saveOrUpdate(monitorCompute);
-
-		} else if (ResourcesConstant.ServiceType.MONITOR_ELB.toInteger().equals(serviceType)) {
-
-			MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.monitorElb.监控ELB.toString().equals(changeItem.getFieldName())) {
-					monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
-				}
-			}
-			comm.monitorElbServcie.saveOrUpdate(monitorElb);
-		} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
-
-			MdnItem mdnItem = comm.mdnService.getMdnItem(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
-					mdnItem.setCoverArea(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
-					mdnItem.setCoverIsp(changeItem.getOldValue());
-				}
-			}
-			comm.mdnService.saveOrUpdate(mdnItem);
-
-		} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
-
-			CpItem cpItem = comm.cpService.getCpItem(serviceId);
-
-			for (ChangeItem changeItem : changeItems) {
-
-				if (FieldNameConstant.CpItem.收录流URL.toString().equals(changeItem.getFieldName())) {
-					cpItem.setRecordStreamUrl(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.收录码率.toString().equals(changeItem.getFieldName())) {
-					cpItem.setRecordBitrate(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.输出编码.toString().equals(changeItem.getFieldName())) {
-					cpItem.setExportEncode(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.收录类型.toString().equals(changeItem.getFieldName())) {
-					cpItem.setRecordType(Integer.valueOf(changeItem.getOldValue()));
-				}
-
-				if (FieldNameConstant.CpItem.收录时段.toString().equals(changeItem.getFieldName())) {
-					cpItem.setRecordTime(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.发布接口地址.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPublishUrl(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(changeItem.getFieldName())) {
-					cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
-				}
-
-				if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpIp(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频端口.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpPort(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频FTP用户名.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpUsername(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频FTP密码.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpPassword(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频FTP根路径.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpRootpath(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频FTP上传路径.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoFtpUploadpath(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.视频输出组类型.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoOutputGroup(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.输出方式配置.toString().equals(changeItem.getFieldName())) {
-					cpItem.setVideoOutputWay(changeItem.getOldValue());
-				}
-
-				if (FieldNameConstant.CpItem.图片FTP上传IP.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpIp(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片端口.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpPort(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片FTP用户名.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpUsername(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片FTP密码.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpPassword(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片FTP根路径.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpRootpath(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片FTP上传路径.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueFtpUploadpath(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.图片输出组类型.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueOutputGroup(changeItem.getOldValue());
-				}
-				if (FieldNameConstant.CpItem.输出媒体类型.toString().equals(changeItem.getFieldName())) {
-					cpItem.setPictrueOutputMedia(changeItem.getOldValue());
-				}
-
-			}
-			comm.cpService.saveOrUpdate(cpItem);
 		}
-
-		// 清除服务变更Change的内容
-		comm.changeServcie.deleteChange(change.getId());
-
 		return resources;
 	}
 

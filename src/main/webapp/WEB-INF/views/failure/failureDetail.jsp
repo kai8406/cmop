@@ -369,6 +369,7 @@
 							<br>
 							<dt>MDN点播加速</dt>
 							<c:forEach var="vod" items="${item.mdnVodItems}">
+								<dd><em>服务子项ID</em>&nbsp;&nbsp;${vod.id}</dd>
 								<dd><em>服务域名</em>&nbsp;&nbsp;${vod.vodDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == vod.vodBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${vod.vodProtocol}</dd>
@@ -382,6 +383,7 @@
 							<br>
 							<dt>MDN直播</dt>
 							<c:forEach var="live" items="${item.mdnLiveItems}">
+								<dd><em>服务子项ID</em>&nbsp;&nbsp;${live.id}</dd>
 								<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${live.liveProtocol}</dd>
@@ -389,29 +391,38 @@
 								<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>
 								<dd><em>频道GUID</em>&nbsp;&nbsp;${live.guid}</dd>
 								<dd><em>直播流输出模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${outputModeMap }"><c:if test="${map.key == live.streamOutMode }">${map.value }</c:if></c:forEach></dd>
+								<c:if test="${live.encoderMode != 0 }">
+									<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
+								</c:if>
 								<c:choose>
 									<c:when test="${live.streamOutMode == 1  }">
-										<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
 										<c:choose>
 											<c:when test="${live.encoderMode == 1 }">
-												<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
-												<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+												<c:if test="${not empty live.httpUrl }">
+													<dd><em>拉流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
+												</c:if>
+												<c:if test="${not empty live.httpBitrate }">
+													<dd><em>拉流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
+												</c:if>
 											</c:when>
-											<c:otherwise>
-												<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-												<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
-											</c:otherwise>
+											<c:when test="${live.encoderMode == 2 }">
+												<c:if test="${not empty live.hlsUrl }">
+													<dd><em>推流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+												</c:if>
+												<c:if test="${not empty live.hlsBitrate }">
+													<dd><em>推流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+												</c:if>
+											</c:when>
+											<c:otherwise></c:otherwise>
 										</c:choose>
 									</c:when>
 									<c:otherwise>
 										<dd><em>HTTP流地址</em>&nbsp;&nbsp;${live.httpUrl}</dd>
 										<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;${live.httpBitrate}</dd>
 										
-										<dd><em>M3U8流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
-										<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
+										<dd><em>HSL流地址</em>&nbsp;&nbsp;${live.hlsUrl}</dd>
+										<dd><em>HSL流混合码率</em>&nbsp;&nbsp;${live.hlsBitrate}</dd>
 										
-										<dd><em>RTSP流地址</em>&nbsp;&nbsp;${live.rtspUrl}</dd>
-										<dd><em>RTSP流混合码率</em>&nbsp;&nbsp;${live.rtspBitrate}</dd>
 									</c:otherwise>
 								</c:choose>
 								<br>

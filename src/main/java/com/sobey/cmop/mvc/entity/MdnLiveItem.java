@@ -35,8 +35,6 @@ public class MdnLiveItem implements java.io.Serializable {
 	private String httpBitrate;
 	private String hlsUrl;
 	private String hlsBitrate;
-	private String rtspUrl;
-	private String rtspBitrate;
 
 	// Constructors
 
@@ -58,7 +56,7 @@ public class MdnLiveItem implements java.io.Serializable {
 
 	/** full constructor */
 	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol, Integer streamOutMode, String name, String guid, String bandwidth, Integer encoderMode,
-			String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+			String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate) {
 		this.mdnItem = mdnItem;
 		this.liveDomain = liveDomain;
 		this.liveBandwidth = liveBandwidth;
@@ -72,8 +70,6 @@ public class MdnLiveItem implements java.io.Serializable {
 		this.httpBitrate = httpBitrate;
 		this.hlsUrl = hlsUrl;
 		this.hlsBitrate = hlsBitrate;
-		this.rtspUrl = rtspUrl;
-		this.rtspBitrate = rtspBitrate;
 	}
 
 	// Property accessors
@@ -204,24 +200,6 @@ public class MdnLiveItem implements java.io.Serializable {
 
 	public void setHlsBitrate(String hlsBitrate) {
 		this.hlsBitrate = hlsBitrate;
-	}
-
-	@Column(name = "rtsp_url", length = 100)
-	public String getRtspUrl() {
-		return this.rtspUrl;
-	}
-
-	public void setRtspUrl(String rtspUrl) {
-		this.rtspUrl = rtspUrl;
-	}
-
-	@Column(name = "rtsp_bitrate", length = 45)
-	public String getRtspBitrate() {
-		return this.rtspBitrate;
-	}
-
-	public void setRtspBitrate(String rtspBitrate) {
-		this.rtspBitrate = rtspBitrate;
 	}
 
 }

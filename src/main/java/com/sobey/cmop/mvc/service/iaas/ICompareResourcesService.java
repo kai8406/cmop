@@ -236,7 +236,7 @@ public interface ICompareResourcesService {
 
 	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
 			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
-			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate);
+			String httpBitrate, String hlsUrl, String hlsBitrate);
 
 	/**
 	 * 比较CpItem变更前后的值

@@ -257,9 +257,6 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 				mdnLiveJson.setHlsUrl(mdnLiveItem.getHlsUrl());
 				mdnLiveJson.setHlsBitrate(mdnLiveItem.getHlsBitrate());
 
-				mdnLiveJson.setRtspUrl(mdnLiveItem.getRtspUrl());
-				mdnLiveJson.setRtspBitrate(mdnLiveItem.getRtspBitrate());
-
 				mdnLiveJsons.add(mdnLiveJson);
 			}
 

@@ -194,8 +194,8 @@ public class RedmineUtilService extends BaseSevcie {
 		RedmineTextUtil.generateMonitorPhone(content, monitorPhones);
 		RedmineTextUtil.generateMonitorCompute(content, monitorComputes);
 		RedmineTextUtil.generateMonitorElb(content, monitorElbs);
-		RedmineTextUtil.generateMonitorMdn(content, mdnItems);
-		RedmineTextUtil.generateMonitorCP(content, cpItems);
+		RedmineTextUtil.generateMdn(content, mdnItems);
+		RedmineTextUtil.generateCP(content, cpItems);
 
 	}
 
@@ -510,17 +510,11 @@ public class RedmineUtilService extends BaseSevcie {
 							if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.HTTP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
-							if (FieldNameConstant.MdnLiveItem.M3U8流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.M3U8流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							if (FieldNameConstant.MdnLiveItem.HSL流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.HSL流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
-							if (FieldNameConstant.MdnLiveItem.M3U8流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.M3U8流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.RTSP流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.RTSP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.RTSP流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.RTSP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.HSL流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
 							content.append(NEWLINE);
 

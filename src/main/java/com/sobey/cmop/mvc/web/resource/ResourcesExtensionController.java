@@ -253,8 +253,7 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "httpBitrateEncoder", required = false) String httpBitrateEncoder, @RequestParam(value = "hlsUrlEncoder", required = false) String hlsUrlEncoder,
 			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
 			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
-			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
-			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		if (resources.getUsedby() == null) {
@@ -263,7 +262,7 @@ public class ResourcesExtensionController extends BaseController {
 		}
 
 		comm.mdnService.saveResourcesByMdnLive(resources, changeDescription, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder,
-				httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+				httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
 

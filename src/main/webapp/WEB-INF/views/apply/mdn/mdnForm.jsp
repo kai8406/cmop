@@ -38,6 +38,7 @@
 				}
 			});
 			
+			//点击直播输出流模式
 			$("input:radio[name='outputMode']").click(function() {
 				if ($(this).val() == 1) {
 					$("#EncoderDiv").addClass("show").removeClass("hidden");
@@ -48,12 +49,13 @@
 				}
 			});
 			
+			//点击编码器模式
 			$("input:radio[name='encoderMode']").click(function() {
 				if ($(this).val() == 1) {
 					$("#HTTPDIV").addClass("show").removeClass("hidden");
-					$("#M3U8DIV").addClass("hidden").removeClass("show");
+					$("#HSLDIV").addClass("hidden").removeClass("show");
 				} else {
-					$("#M3U8DIV").addClass("show").removeClass("hidden");
+					$("#HSLDIV").addClass("show").removeClass("hidden");
 					$("#HTTPDIV").addClass("hidden").removeClass("show");
 				}
 			});
@@ -74,9 +76,11 @@
 					protocolId += $(this).val() + "-";
 					protocolText += $(this).val() + ",";
 				});
+				
 				//处理掉字符串的尾巴","
 				protocolId = protocolId.substring(0, protocolId.length - 1);
 				protocolText = protocolText.substring(0, protocolText.length - 1);
+				
 				//判断是vod or live,和ul中的li顺序有关系.第一个是vod,第二个是live.注意.
 				if ($("#mdn-tab").find("li:first").hasClass("active")) { /* vod */
 					var vodStreamer = $("#vodStreamer").val();
@@ -112,8 +116,6 @@
 					var httpBitrate = $("#httpBitrate").val();
 					var hlsUrl = $("#hlsUrl").val();
 					var hlsBitrate = $("#hlsBitrate").val();
-					var rtspUrl = $("#rtspUrl").val();
-					var rtspBitrate = $("#rtspBitrate").val();
 					
 					html += '<div class="resources alert alert-block alert-info fade in">';
 					html += '<button data-dismiss="alert" class="close" type="button">×</button>';
@@ -138,17 +140,18 @@
 						html += '<input type="hidden" name="httpBitrates" value="' + httpBitrateEncoder + '">';
 						html += '<input type="hidden" name="hlsUrls" value="' + hlsUrlEncoder + '">';
 						html += '<input type="hidden" name="hlsBitrates" value="' + hlsBitrateEncoder + '">';
-						html += '<input type="hidden" name="rtspUrls" value="' + rtspUrl + '">';
-						html += '<input type="hidden" name="rtspBitrates" value="' + rtspBitrate + '">';
-						html += '<dd><em>编码器模式</em>&nbsp;&nbsp;<strong>' + encoderModeText + '</strong></dd>';
-						if (encoderMode.val() == 1) {
-							//HTTP拉流模式
-							html += '<dd><em>HTTP流地址</em>&nbsp;&nbsp;<strong>' + httpUrlEncoder + '</strong></dd>';
-							html += '<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;<strong>' + httpBitrateEncoder + '</strong></dd>';
-						} else {
-							//RTMP推流模式
-							html += '<dd><em>M3U8流地址</em>&nbsp;&nbsp;<strong>' + hlsUrlEncoder + '</strong></dd>';
-							html += '<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;<strong>' + hlsBitrateEncoder + '</strong></dd>';
+						
+						if(encoderMode.val() != undefined){//选择编码器模式
+							html += '<dd><em>编码器模式</em>&nbsp;&nbsp;<strong>' + encoderModeText + '</strong></dd>';
+							if (encoderMode.val() == 1) {
+								//HTTP拉流模式
+								html += '<dd><em>拉流地址</em>&nbsp;&nbsp;<strong>' + httpUrlEncoder + '</strong></dd>';
+								html += '<dd><em>拉流混合码率</em>&nbsp;&nbsp;<strong>' + httpBitrateEncoder + '</strong></dd>';
+							} else {
+								//RTMP推流模式
+								html += '<dd><em>推流地址</em>&nbsp;&nbsp;<strong>' + hlsUrlEncoder + '</strong></dd>';
+								html += '<dd><em>推流混合码率</em>&nbsp;&nbsp;<strong>' + hlsBitrateEncoder + '</strong></dd>';
+							}
 						}
 					} else {
 						//Transfer模式
@@ -156,17 +159,12 @@
 						html += '<input type="hidden" name="httpBitrates" value="' + httpBitrate + '">';
 						html += '<input type="hidden" name="hlsUrls" value="' + hlsUrl + '">';
 						html += '<input type="hidden" name="hlsBitrates" value="' + hlsBitrate + '">';
-						html += '<input type="hidden" name="rtspUrls" value="' + rtspUrl + '">';
-						html += '<input type="hidden" name="rtspBitrates" value="' + rtspBitrate + '">';
 						//HTTP拉流模式
 						html += '<dd><em>HTTP流地址</em>&nbsp;&nbsp;<strong>' + httpUrl + '</strong></dd>';
 						html += '<dd><em>HTTP流混合码率</em>&nbsp;&nbsp;<strong>' + httpBitrate + '</strong></dd>';
 						//RTMP推流模式
-						html += '<dd><em>M3U8流地址</em>&nbsp;&nbsp;<strong>' + hlsUrl + '</strong></dd>';
-						html += '<dd><em>M3U8流混合码率</em>&nbsp;&nbsp;<strong>' + hlsBitrate + '</strong></dd>';
-						//RTMP推流模式
-						html += '<dd><em>RTSP流地址</em>&nbsp;&nbsp;<strong>' + rtspUrl + '</strong></dd>';
-						html += '<dd><em>RTSP流混合码率</em>&nbsp;&nbsp;<strong>' + rtspBitrate + '</strong></dd>';
+						html += '<dd><em>HSL流地址</em>&nbsp;&nbsp;<strong>' + hlsUrl + '</strong></dd>';
+						html += '<dd><em>HSL流混合码率</em>&nbsp;&nbsp;<strong>' + hlsBitrate + '</strong></dd>';
 					}
 					html += '</div>';
 				}
@@ -233,7 +231,7 @@
 					<label class="control-label" for="description">用途描述</label>
 					<div class="controls">
 						<textarea rows="3" id="description" name="description" placeholder="...用途描述"
-							maxlength="500" class="required"></textarea>
+							maxlength="2000" class="required"></textarea>
 					</div>
 				</div>
 				
@@ -356,46 +354,44 @@
 								<div class="controls">
 									<c:forEach var="map" items="${encoderModeMap}">
 										<label class="radio inline">
-											<input type="radio" id="encoderMode" name="encoderMode" value="${map.key }"
-												 <c:if test="${map.key == 1 }">checked="checked" </c:if>
-												><span class="radioText">${map.value }</span>
+											<input type="radio" id="encoderMode" name="encoderMode" value="${map.key }"><span class="radioText">${map.value }</span>
 										</label>
 									</c:forEach>
 								</div>
 							</div>
 							
 							<!-- HTTP拉流模式  -->
-							<div id="HTTPDIV" class="show">
+							<div id="HTTPDIV" class="hidden">
 								<div class="control-group">
-									<label class="control-label" for="httpUrlEncoder">HTTP流地址</label>
+									<label class="control-label" for="httpUrlEncoder">流地址</label>
 									<div class="controls">
-										<input type="text" id="httpUrlEncoder" class="required" maxlength="45" placeholder="...HTTP流地址">
+										<input type="text" id="httpUrlEncoder" maxlength="45" placeholder="...拉流地址">
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label" for="httpBitrateEncoder">HTTP流混合码率</label>
+									<label class="control-label" for="httpBitrateEncoder">混合码率</label>
 									<div class="controls">
-										<input type="text" id="httpBitrateEncoder" class="required" maxlength="45" placeholder="...HTTP流混合码率">
+										<input type="text" id="httpBitrateEncoder" maxlength="45" placeholder="...拉流混合码率">
 									</div>
 								</div>
 							</div><!-- HTTP拉流模式 End -->
 							
-							<!-- M3U8DIV推流模式  -->
-							<div id="M3U8DIV" class="hidden">
+							<!-- HSLDIV推流模式  -->
+							<div id="HSLDIV" class="hidden">
 								<div class="control-group">
-									<label class="control-label" for="hlsUrlEncoder">M3U8流地址</label>
+									<label class="control-label" for="hlsUrlEncoder">流地址</label>
 									<div class="controls">
-										<input type="text" id="hlsUrlEncoder" class="required" maxlength="45" placeholder="...M3U8流地址">
+										<input type="text" id="hlsUrlEncoder" maxlength="45" placeholder="...推流地址">
 									</div>
 								</div>
 								
 								<div class="control-group">
-									<label class="control-label" for="hlsBitrateEncoder">M3U8混合码率</label>
+									<label class="control-label" for="hlsBitrateEncoder">混合码率</label>
 									<div class="controls">
-										<input type="text" id="hlsBitrateEncoder" class="required" maxlength="45" placeholder="...M3U8流混合码率">
+										<input type="text" id="hlsBitrateEncoder" maxlength="45" placeholder="...推流混合码率">
 									</div>
 								</div>
-							</div><!-- M3U8DIV推流模式 End -->
+							</div><!-- HSLDIV推流模式 End -->
 						
 						</div><!-- 选择Encoder End -->
 						
@@ -417,30 +413,16 @@
 							</div>
 							
 							<div class="control-group">
-								<label class="control-label" for="hlsUrl">M3U8流地址</label>
+								<label class="control-label" for="hlsUrl">HSL流地址</label>
 								<div class="controls">
-									<input type="text" id="hlsUrl" class="required" maxlength="45" placeholder="...M3U8流地址">
+									<input type="text" id="hlsUrl" class="required" maxlength="45" placeholder="...HSL流地址">
 								</div>
 							</div>
 							
 							<div class="control-group">
-								<label class="control-label" for="hlsBitrate">M3U8混合码率</label>
+								<label class="control-label" for="hlsBitrate">HSL混合码率</label>
 								<div class="controls">
-									<input type="text" id="hlsBitrate"  class="required" maxlength="45" placeholder="...M3U8流混合码率">
-								</div>
-							</div>
-							
-							<div class="control-group">
-								<label class="control-label" for="rtspUrl">RTSP流地址</label>
-								<div class="controls">
-									<input type="text" id="rtspUrl" class="required" maxlength="45" placeholder="...RTSP流地址">
-								</div>
-							</div>
-							
-							<div class="control-group">
-								<label class="control-label" for="rtspBitrate">RTSP混合码率</label>
-								<div class="controls">
-									<input type="text" id="rtspBitrate"  class="required" maxlength="45" placeholder="...RTSP流混合码率">
+									<input type="text" id="hlsBitrate"  class="required" maxlength="45" placeholder="...HSL流混合码率">
 								</div>
 							</div>
 								

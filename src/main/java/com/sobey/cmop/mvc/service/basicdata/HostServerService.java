@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
+import com.sobey.cmop.mvc.entity.ServerModel;
 import com.sobey.cmop.mvc.service.vm.HostTree;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
@@ -91,35 +93,57 @@ public class HostServerService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public HostServer addHostServer(String displayName, String ipAddress, String locationAlias, Integer serverType) {
+	public boolean addHostServer(Integer serverType, Integer serverModelId, String rack, String site, String height, String locationAlias, String ipAddress, String description) {
 
+		boolean flag = true;
+
+		ServerModel serverModel = comm.serverModelService.getServerModel(serverModelId);
 		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
 
-		// step.1
-		String alias = "Host" + Identities.uuid2();
+		String[] racks = StringUtils.split(rack, "&");
+		String rackAlias = racks[0];
+		String rackName = racks[1];
 
-		HostServer hostServer = new HostServer();
+		// Company Model Rack-Site
+		// eg:HP DL2000 0416-1-1
+		String displayName = serverModel.getCompany() + " " + serverModel.getName() + " " + rackName + "-" + site;
 
-		hostServer.setAlias(alias);
-		hostServer.setCreateTime(new Date());
-		hostServer.setDisplayName(displayName);
-		hostServer.setIpAddress(ipAddress);
-		hostServer.setLocationAlias(locationAlias);
-		hostServer.setPoolType(ipPool.getPoolType());
-		hostServer.setServerType(serverType);
+		// 判断服务器是否重名.
+		if (this.findByDisplayName(displayName) == null) {
+			// step.1
+			String alias = "Host" + Identities.uuid2();
 
-		// step.2 更改IP状态为 已使用
-		ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-		// 服务器本身的IP不关联到自己，只有在工单处理时才关联
-		// ipPool.setHostServer(hostServer);
-		comm.ipPoolService.saveOrUpdate(ipPool);
+			HostServer hostServer = new HostServer();
 
-		this.saveOrUpdate(hostServer);
+			hostServer.setAlias(alias);
+			hostServer.setCreateTime(new Date());
+			hostServer.setDisplayName(displayName);
+			hostServer.setIpAddress(ipAddress);
+			hostServer.setLocationAlias(locationAlias);
+			hostServer.setPoolType(ipPool.getPoolType());
+			hostServer.setServerType(serverType);
+			hostServer.setHeight(height);
+			hostServer.setSite(site);
+			hostServer.setServerModel(serverModel);
+			hostServer.setDescription(description);
+			hostServer.setRack(rackName);
+			hostServer.setRackAlias(rackAlias);
 
-		// step.3 同步oneCMDB
-		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+			// step.2 更改IP状态为 已使用
+			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
 
-		return hostServer;
+			comm.ipPoolService.saveOrUpdate(ipPool);
+
+			this.saveOrUpdate(hostServer);
+
+			// step.3 同步oneCMDB
+			comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+		} else {
+
+			flag = false;
+		}
+
+		return flag;
 	}
 
 	/**
@@ -137,34 +161,57 @@ public class HostServerService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public HostServer updateHostServer(Integer id, String displayName, String ipAddress, String locationAlias, Integer serverType) {
+	public boolean updateHostServer(Integer id, Integer serverType, Integer serverModelId, String rack, String site, String height, String locationAlias, String ipAddress, String description,
+			String oldDisplayName) {
 
+		boolean flag = true;
+
+		ServerModel serverModel = comm.serverModelService.getServerModel(serverModelId);
 		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
-
 		HostServer hostServer = this.getHostServer(id);
 
-		// step.1 如果IP进行了修改,则初始化以前老的ip
-		if (!hostServer.getIpAddress().equals(ipAddress)) {
-			comm.ipPoolService.initIpPool(hostServer.getIpAddress());
-			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-			// 服务器本身的IP不关联到自己，只有在工单处理时才关联
-			// ipPool.setHostServer(hostServer);
-			comm.ipPoolService.saveOrUpdate(ipPool);
+		String[] racks = StringUtils.split(rack, "&");
+		String rackAlias = racks[0];
+		String rackName = racks[1];
+
+		// Company Model Rack-Site
+		// eg:HP DL2000 0416-1-1
+		String displayName = serverModel.getCompany() + " " + serverModel.getName() + " " + rackName + "-" + site;
+
+		// 判断服务器是否重名.
+		if (this.findByDisplayName(displayName) == null || displayName.equals(hostServer.getDisplayName())) {
+
+			// step.1 如果IP进行了修改,则初始化以前老的ip
+			if (!hostServer.getIpAddress().equals(ipAddress)) {
+				comm.ipPoolService.initIpPool(hostServer.getIpAddress());
+				ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+				comm.ipPoolService.saveOrUpdate(ipPool);
+			}
+
+			// step.2 保存服务器信息.
+			hostServer.setDisplayName(displayName);
+			hostServer.setIpAddress(ipAddress);
+			hostServer.setLocationAlias(locationAlias);
+			hostServer.setPoolType(ipPool.getPoolType());
+			hostServer.setServerType(serverType);
+			hostServer.setHeight(height);
+			hostServer.setSite(site);
+			hostServer.setServerModel(serverModel);
+			hostServer.setDescription(description);
+			hostServer.setRack(rackName);
+			hostServer.setRackAlias(rackAlias);
+
+			this.saveOrUpdate(hostServer);
+
+			// step.3 同步oneCMDB
+			comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+
+		} else {
+
+			flag = false;
 		}
 
-		// step.2 保存服务器信息.
-		hostServer.setDisplayName(displayName);
-		hostServer.setIpAddress(ipAddress);
-		hostServer.setLocationAlias(locationAlias);
-		hostServer.setPoolType(ipPool.getPoolType());
-		hostServer.setServerType(serverType);
-
-		this.saveOrUpdate(hostServer);
-
-		// step.3 同步oneCMDB
-		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
-
-		return hostServer;
+		return flag;
 	}
 
 	@Transactional(readOnly = false)

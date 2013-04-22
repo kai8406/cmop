@@ -145,8 +145,7 @@
 							</c:choose>
 						</dd>
 						
-						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})</dd>
-						
+						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.mountESG}</dd>
 						<br>
 						
 					</c:forEach>

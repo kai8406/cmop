@@ -21,6 +21,7 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 
@@ -155,7 +156,13 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark) {
+	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark) {
+
+		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+
+		for (String esgId : esgIds) {
+			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		}
 
 		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
 
@@ -163,7 +170,7 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
+		computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 		return comm.computeService.saveOrUpdate(computeItem);
 	}
@@ -192,7 +199,7 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
+	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark, String[] applicationNames,
 			String[] applicationVersions, String[] applicationDeployPaths, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
@@ -203,7 +210,7 @@ public class ComputeService extends BaseSevcie {
 
 		/* 比较实例资源computeItem 变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions,
+		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgIds, remark, applicationNames, applicationVersions,
 				applicationDeployPaths);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
@@ -220,7 +227,13 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
+
+		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+		for (String esgId : esgIds) {
+			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		}
+
+		computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 		// 更新compute
 
@@ -274,7 +287,10 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setOsBit(Integer.parseInt(osBits[i]));
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
-			computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
+
+			// TODO 封装compute中的esg,待前台确定esg的格式再完成.
+			// computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
+
 			computeItem.setInnerIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computes.add(computeItem);

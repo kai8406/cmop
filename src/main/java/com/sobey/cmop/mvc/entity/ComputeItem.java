@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -53,11 +54,11 @@ public class ComputeItem implements java.io.Serializable {
 	private String serverAlias;
 	private String hostServerAlias;
 	private String osStorageAlias;
-	private NetworkEsgItem networkEsgItem;
 	private Set<Application> applications = new HashSet<Application>(0);
 	private Set<NetworkEipItem> networkEipItems = new HashSet<NetworkEipItem>(0);
 	private List<StorageItem> storageItemList = Lists.newArrayList();// 有序的关联对象集合
 	private List<NetworkElbItem> networkElbItemList = Lists.newArrayList();// 有序的关联对象集合
+	private List<NetworkEsgItem> networkEsgItemList = Lists.newArrayList();// 有序的关联对象集合
 
 	// Constructors
 
@@ -80,8 +81,7 @@ public class ComputeItem implements java.io.Serializable {
 
 	/** full constructor */
 	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit, Integer serverType, String remark, String innerIp, String oldIp, String hostName,
-			String serverAlias, String hostServerAlias, String osStorageAlias, NetworkEsgItem networkEsgItem, NetworkElbItem networkElbItem, Set<Application> applications,
-			Set<NetworkEipItem> networkEipItems) {
+			String serverAlias, String hostServerAlias, String osStorageAlias, Set<Application> applications, Set<NetworkEipItem> networkEipItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.computeType = computeType;
@@ -95,7 +95,6 @@ public class ComputeItem implements java.io.Serializable {
 		this.serverAlias = serverAlias;
 		this.hostServerAlias = hostServerAlias;
 		this.osStorageAlias = osStorageAlias;
-		this.networkEsgItem = networkEsgItem;
 		this.applications = applications;
 		this.networkEipItems = networkEipItems;
 	}
@@ -232,17 +231,6 @@ public class ComputeItem implements java.io.Serializable {
 	}
 
 	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "esg_id")
-	public NetworkEsgItem getNetworkEsgItem() {
-		return this.networkEsgItem;
-	}
-
-	public void setNetworkEsgItem(NetworkEsgItem networkEsgItem) {
-		this.networkEsgItem = networkEsgItem;
-	}
-
-	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "computeItem")
 	public Set<Application> getApplications() {
 		return this.applications;
@@ -296,6 +284,48 @@ public class ComputeItem implements java.io.Serializable {
 
 	public void setNetworkElbItemList(List<NetworkElbItem> networkElbItemList) {
 		this.networkElbItemList = networkElbItemList;
+	}
+
+	// 多对多定义
+	@ManyToMany
+	@JoinTable(name = "compute_esg_item", joinColumns = { @JoinColumn(name = "compute_item_id") }, inverseJoinColumns = { @JoinColumn(name = "esg_item_id") })
+	// Fecth策略定义
+	@Fetch(FetchMode.SUBSELECT)
+	// 集合按id排序.
+	@OrderBy("id")
+	// 集合中对象id的缓存.
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@NotFound(action = NotFoundAction.IGNORE)
+	public List<NetworkEsgItem> getNetworkEsgItemList() {
+		return networkEsgItemList;
+	}
+
+	public void setNetworkEsgItemList(List<NetworkEsgItem> networkEsgItemList) {
+		this.networkEsgItemList = networkEsgItemList;
+	}
+
+	/**
+	 * compute关联的安全组ESG的标识符字符串, 多个字符串用','分隔.
+	 */
+	// 非持久化属性.
+	@Transient
+	public String getMountESG() {
+		return extractToString(networkEsgItemList);
+	}
+
+	/**
+	 * 组装ESG
+	 * 
+	 * @param networkEsgItems
+	 * @return
+	 */
+	public static String extractToString(final List<NetworkEsgItem> networkEsgItems) {
+		StringBuilder sb = new StringBuilder();
+		for (NetworkEsgItem networkEsgItem : networkEsgItems) {
+			sb.append(networkEsgItem.getIdentifier()).append("(").append(networkEsgItem.getDescription()).append(")").append(",");
+		}
+		String str = sb.toString();
+		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";
 	}
 
 	@Override

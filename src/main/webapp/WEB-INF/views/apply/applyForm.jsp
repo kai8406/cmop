@@ -152,7 +152,7 @@
 						</dd>
 						
 						<dd>
-							<em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})
+							<dd><em>关联ESG</em>&nbsp;&nbsp;${item.mountESG}</dd>
 							<span class="pull-right">
 								<a href="${ctx}/apply/compute/update/${item.id}/applyId/${apply.id}">修改</a>&nbsp;
 								<a href="#deleteComputeModal${item.id}" data-toggle="modal">删除</a>

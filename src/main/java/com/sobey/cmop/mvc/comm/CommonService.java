@@ -10,6 +10,7 @@ import com.sobey.cmop.mvc.service.audit.AuditService;
 import com.sobey.cmop.mvc.service.basicdata.HostServerService;
 import com.sobey.cmop.mvc.service.basicdata.IpPoolService;
 import com.sobey.cmop.mvc.service.basicdata.LocationService;
+import com.sobey.cmop.mvc.service.basicdata.ServerModelService;
 import com.sobey.cmop.mvc.service.basicdata.VlanService;
 import com.sobey.cmop.mvc.service.basicdata.imports.ImportService;
 import com.sobey.cmop.mvc.service.department.DepartmentService;
@@ -145,6 +146,9 @@ public class CommonService {
 
 	@Resource
 	public ResourcesService resourcesService;
+
+	@Resource
+	public ServerModelService serverModelService;
 
 	@Resource
 	public ServiceTagService serviceTagService;

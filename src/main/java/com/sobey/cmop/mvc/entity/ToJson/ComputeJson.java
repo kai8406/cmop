@@ -21,7 +21,7 @@ public class ComputeJson implements java.io.Serializable {
 	private String serverAlias;
 	private String hostServerAlias;
 	private String osStorageAlias;
-	private String networkEsgItem;
+	private String mountESG;
 
 	public Integer getId() {
 		return id;
@@ -127,12 +127,12 @@ public class ComputeJson implements java.io.Serializable {
 		this.osStorageAlias = osStorageAlias;
 	}
 
-	public String getNetworkEsgItem() {
-		return networkEsgItem;
+	public String getMountESG() {
+		return mountESG;
 	}
 
-	public void setNetworkEsgItem(String networkEsgItem) {
-		this.networkEsgItem = networkEsgItem;
+	public void setMountESG(String mountESG) {
+		this.mountESG = mountESG;
 	}
 
 }

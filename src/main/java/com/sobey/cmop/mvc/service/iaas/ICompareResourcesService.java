@@ -48,8 +48,8 @@ public interface ICompareResourcesService {
 	 *            操作位数
 	 * @param serverType
 	 *            规格
-	 * @param esgId
-	 *            关联ESG
+	 * @param esgIds
+	 *            关联ESG数组
 	 * @param remark
 	 *            备注
 	 * @param applicationNames
@@ -60,7 +60,7 @@ public interface ICompareResourcesService {
 	 *            部署路径
 	 * @return
 	 */
-	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark,
 			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths);
 
 	/**

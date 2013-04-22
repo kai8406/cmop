@@ -57,15 +57,11 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
 
 			// PCS
-
 			json.setServerType(ComputeConstant.PCSServerType.get(computeItem.getServerType()));
-
 		} else {
 
 			// ECS
-
 			json.setServerType(ComputeConstant.ECSServerType.get(computeItem.getServerType()));
-
 		}
 
 		json.setRemark(computeItem.getRemark());
@@ -73,7 +69,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setOldIp(computeItem.getOldIp());
 		json.setHostName(computeItem.getHostName());
 		json.setOsStorageAlias(computeItem.getOsStorageAlias());
-		json.setNetworkEsgItem(computeItem.getNetworkEsgItem().getIdentifier() + "(" + computeItem.getNetworkEsgItem().getDescription() + ")");
+		json.setMountESG(computeItem.getMountESG());
 
 		return json;
 

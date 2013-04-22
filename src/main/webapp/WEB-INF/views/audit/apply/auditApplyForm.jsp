@@ -12,13 +12,10 @@ $(document).ready(function() {
 });
 
 function setResult(result) {
-    if (result != "1" && $('#opinion').val() == "") {
-        alert("请填写审批意见！");
-        $('#opinion').focus();
-        return false;
-    }
+	if (result == "1" && $('#opinion').val() == "") {
+		$('#opinion').val("同意");
+	}
     $('#result').val(result);
-    return true;
 }
 </script>
 </head>
@@ -95,8 +92,7 @@ function setResult(result) {
 							</c:choose>
 						</dd>
 						
-						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.networkEsgItem.identifier}(${item.networkEsgItem.description})</dd>
-						
+						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.mountESG}</dd>
 						<br>
 						
 					</c:forEach>

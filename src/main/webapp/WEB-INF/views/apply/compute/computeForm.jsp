@@ -24,7 +24,7 @@
 				dataType: "json",
 				success: function(data) {
 					for (var i = 0; i < data.length; i++) {
-						esgHTML += '<option value="' + data[i].id + '">' + data[i].description + '</option>';
+						esgHTML += '<option value="' + data[i].id + '">' + data[i].identifier+'('+data[i].description+')' + '</option>';
 					}
 				}
 			});
@@ -77,8 +77,8 @@
 							html += '<button type="button" class="close" data-dismiss="alert">×</button>';
 							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + '</strong></dd>';
 							html += '<dd><em>规格</em>&nbsp;&nbsp;<strong>' + serverTypeText + '</strong></dd>';
-							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required span2" name="remarks" id="remarks' + loopId + '"></dd>';
-							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" class="required span2">' + esgHTML + '</select></dd>';
+							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required" name="remarks" id="remarks' + loopId + '"></dd>';
+							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" id="esgIds" multiple class="required">' + esgHTML + '</select></dd>';
 							html += '<input type="hidden" name="osTypes" value="' + osId + '">';
 							html += '<input type="hidden" name="osBits" value="' + osBitId + '">';
 							html += '<input type="hidden" name="serverTypes" value="' + serverTypeId + '">';

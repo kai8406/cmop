@@ -59,7 +59,7 @@ public class EsgService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public NetworkEsgItem saveESG(String description, String[] protocols, String[] portRanges, String[] visitSources) {
+	public NetworkEsgItem saveESG(String description, String[] protocols, String[] portRanges, String[] visitSources, String[] visitTargets) {
 
 		String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ESG.toInteger());
 
@@ -73,13 +73,15 @@ public class EsgService extends BaseSevcie {
 		networkEsgItemDao.save(networkEsgItem);
 
 		// ESG的规则保存
-		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItemToList(networkEsgItem, protocols, portRanges, visitSources);
+		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItemToList(networkEsgItem, protocols, portRanges, visitSources, visitTargets);
 		esgRuleItemDao.save(esgRuleItems);
 
 		/* 保存至oneCMDB */
 
 		List<NetworkEsgItem> networkEsgItems = new ArrayList<NetworkEsgItem>();
 		networkEsgItems.add(networkEsgItem);
+
+		// 将ESG同步至oneCMDB
 		comm.oneCmdbUtilService.saveESGToOneCMDB(networkEsgItems);
 
 		return networkEsgItem;
@@ -147,10 +149,10 @@ public class EsgService extends BaseSevcie {
 	 *            绑定规则的访问源，如：192.168.0.1/10，默认：0.0.0.0/0
 	 * @return
 	 */
-	private List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources) {
+	private List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols, String[] portRanges, String[] visitSources, String[] visitTargets) {
 		List<EsgRuleItem> esgRuleItems = new ArrayList<EsgRuleItem>();
 		for (int i = 0; i < protocols.length; i++) {
-			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i]);
+			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i], visitTargets[i]);
 			esgRuleItems.add(esgRuleItem);
 		}
 

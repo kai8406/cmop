@@ -3,12 +3,12 @@
 <html>
 <head>
 
-	<title>基础数据-IDC管理</title>
+	<title>基础数据-服务器型号管理</title>
 	
 	<script>
 		$(document).ready(function() {
 			
-			$("ul#navbar li#basicdata, li#location").addClass("active");
+			$("ul#navbar li#basicdata, li#serverModel").addClass("active");
 			
 		});
 	</script>
@@ -24,7 +24,7 @@
 		<div class="row">
 			
 			<div class="span3">
-				<label class="control-label search-text">IDC名称</label> 
+				<label class="control-label search-text">名称</label> 
 				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}">
 			</div>
 			
@@ -38,7 +38,7 @@
 	</form>
 	
 	<div class="row">
-		<div class="span4"><a class="btn" href="save/">创建IDC</a></div>
+		<div class="span4"><a class="btn" href="save/">创建服务器型号</a></div>
 		<div class="pull-right"><tags:singlePage page="${page}" /></div>
 	</div>
 	
@@ -46,11 +46,13 @@
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>IDC名称</th>
-				<th>城市</th>
-				<th>地址</th>
-				<th>邮编</th>
-				<th>电话</th>
+				<th>名称</th>
+				<th>所属公司</th>
+				<th>CPU个数</th>
+				<th>内存槽数</th>
+				<th>硬盘托架数</th>
+				<th>PCI插槽数</th>
+				<th>网卡口数</th>
 				<th>操作</th>
 			</tr>
 		</thead>
@@ -58,10 +60,12 @@
 			<c:forEach items="${page.content}" var="item">
 				<tr>
 					<td>${item.name}</td>
-					<td>${item.city}</td>
-					<td>${item.address}</td>
-					<td>${item.postcode}</td>
-					<td>${item.telephone}</td>
+					<td>${item.company}</td>
+					<td>${item.cpu}</td>
+					<td>${item.memory}</td>
+					<td>${item.disk}</td>
+					<td>${item.pci}</td>
+					<td>${item.port}</td>
 					<td>
 						<a href="update/${item.id}">修改</a>
 						<a href="#deleteModal${item.id}" data-toggle="modal">删除</a>

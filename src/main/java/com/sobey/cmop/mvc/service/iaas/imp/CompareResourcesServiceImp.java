@@ -158,7 +158,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark,
+	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark,
 			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
 
 		// 初始化一个标记,表示其是否更改
@@ -215,21 +215,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		}
 
-		// ESG
-		if (!computeItem.getNetworkEsgItem().getId().equals(esgId)) {
-
-			String fieldName = FieldNameConstant.Compate.ESG.toString();
-
-			String oldValue = computeItem.getNetworkEsgItem().getId().toString();
-			String oldString = this.wrapStringByNetworkEsgItem(computeItem.getNetworkEsgItem().getId());
-
-			String newValue = esgId.toString();
-			String newString = this.wrapStringByNetworkEsgItem(esgId);
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
-
 		// Remark
 		if (!computeItem.getRemark().equals(remark)) {
 
@@ -267,6 +252,28 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String newValue = "";
 			String newString = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+
+		}
+
+		// ESG.先将新旧值关联的esgId拼装成","的字符串,再比较两个字符串是否相等.
+		String oldId = Collections3.extractToString(computeItem.getNetworkEsgItemList(), "id", ",");
+		String newId = esgIds != null ? StringUtils.join(esgIds, ",") : "";
+		if (!oldId.equals(newId)) {
+
+			String fieldName = FieldNameConstant.Storage.挂载实例.toString();
+
+			String oldValue = oldId;
+			String oldString = computeItem.getMountESG();
+
+			// 根据computeIds查询compute的List,再得出字符串.
+			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+			for (int i = 0; i < esgIds.length; i++) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+			}
+			String newValue = newId;
+			String newString = ComputeItem.extractToString(networkEsgItemList);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 

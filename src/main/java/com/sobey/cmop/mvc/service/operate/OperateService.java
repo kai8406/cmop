@@ -668,40 +668,6 @@ public class OperateService extends BaseSevcie {
 					computeItem.setInnerIp(innerIp[i]);
 					comm.computeService.saveOrUpdate(computeItem);
 				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				int last = compute.length - 1;
-				if (compute.length > 0 && !innerIp[last].equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
-					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[last]));
-					// 释放原来的IP
-					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
-						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-						ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
-						ipPool.setHostServer(null);
-						comm.ipPoolService.saveIpPool(ipPool);
-					}
-
-					// 更新新的IP
-					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[last]);
-					ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-					ipPool.setHostServer(comm.hostServerService.findByAlias(server[last]));
-					comm.ipPoolService.saveIpPool(ipPool);
-
-					computeItem.setHostName(hostName[last].trim());
-					if (computeItem.getComputeType() == 1) {
-						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
-						String alias = computeItem.getServerAlias();
-						HostServer host = comm.hostServerService.findByAlias(alias);
-						if (StringUtils.isEmpty(alias) || (host != null && host.getIpPools().size() <= 0)) {
-							computeItem.setServerAlias(server[last]);
-						}
-					} else {
-						computeItem.setHostServerAlias(server[last]);
-						computeItem.setOsStorageAlias(osStorage[last]);
-					}
-					computeItem.setInnerIp(innerIp[last]);
-					comm.computeService.saveOrUpdate(computeItem);
-				}
 			}
 
 			if (storageIds.length() > 0) {
@@ -735,21 +701,6 @@ public class OperateService extends BaseSevcie {
 					eipItem.setIpAddress(eipAddress[i]);
 					comm.eipService.saveOrUpdate(eipItem);
 				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				if (eipId.length > 0) {
-					int i = eipId.length - 1;
-					if (eipId[i] == null || eipId[i].equals("") || eipId[i].equals("null")) {
-					} else {
-						eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
-						// 释放原来的IP
-						comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
-						// 更新新的IP
-						comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
-						eipItem.setIpAddress(eipAddress[i]);
-						comm.eipService.saveOrUpdate(eipItem);
-					}
-				}
 			}
 
 			if (elbIds.length() > 0) {
@@ -758,18 +709,6 @@ public class OperateService extends BaseSevcie {
 				logger.info("--->更新写入OneCMDB关联项（ELB）..." + elbId.length);
 				NetworkElbItem elbItem;
 				for (int i = 0; i < elbId.length; i++) {
-					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
-					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
-					// 更新新的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
-					elbItem.setVirtualIp(virtualIp[i]);
-					comm.elbService.saveOrUpdate(elbItem);
-				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				if (elbId.length > 0) {
-					int i = elbId.length - 1;
 					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
 					// 释放原来的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());

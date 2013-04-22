@@ -40,7 +40,7 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/compute", method = RequestMethod.POST)
 	public String updateCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") Integer esgId, @RequestParam(value = "remark") String remark,
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") String[] esgIds, @RequestParam(value = "remark") String remark,
 			@RequestParam(value = "applicationName") String[] applicationNames, @RequestParam(value = "applicationVersion") String[] applicationVersions,
 			@RequestParam(value = "applicationDeployPath") String[] applicationDeployPaths, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
 			@RequestParam(value = "changeDescription") String changeDescription,
@@ -50,7 +50,8 @@ public class ResourcesExtensionController extends BaseController {
 		Resources resources = comm.resourcesService.getResources(id);
 		resources.setUsedby(usedby);
 
-		comm.computeService.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
+		comm.computeService
+				.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgIds, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
 
 		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
 

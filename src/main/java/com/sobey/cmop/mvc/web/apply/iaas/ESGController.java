@@ -41,14 +41,16 @@ public class ESGController extends BaseController {
 	 *            端口范围数组
 	 * @param visitSources
 	 *            访问源数组
+	 * @param visitTargets
+	 *            访问目的数组
 	 * @param redirectAttributes
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "description") String description, @RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "portRanges") String[] portRanges,
-			@RequestParam(value = "visitSources") String[] visitSources, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "visitSources") String[] visitSources, @RequestParam(value = "visitTarget") String[] visitTargets, RedirectAttributes redirectAttributes) {
 
-		NetworkEsgItem esg = comm.esgService.saveESG(description, protocols, portRanges, visitSources);
+		NetworkEsgItem esg = comm.esgService.saveESG(description, protocols, portRanges, visitSources, visitTargets);
 
 		redirectAttributes.addFlashAttribute("message", "创建 " + esg.getIdentifier() + " 成功.");
 

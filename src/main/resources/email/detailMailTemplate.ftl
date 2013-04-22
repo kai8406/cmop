@@ -108,7 +108,7 @@
 							</#if>
 						
 					  	</li>
-						<li><em>关联ESG</em>&nbsp;:${compute.networkEsgItem.identifier}(${compute.networkEsgItem.description})</li>
+						<li><em>关联ESG</em>&nbsp;:${compute.mountESG}</li>
 						<br>
 					</ul>
 				</#list>

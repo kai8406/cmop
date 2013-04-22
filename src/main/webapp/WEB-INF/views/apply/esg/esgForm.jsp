@@ -30,11 +30,12 @@
 				var protocol = $("#protocol").val();
 				var portRange = $("#portRange").val();
 				var visitSource = $("#visitSource").val();
+				var visitTarget = $("#visitTarget").val();
 				
 				//如果重复,则删除重复的项.
 				$("div.resources").each(function() {
 					var $this = $(this);
-					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.remove();
+					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.find("input[name='visitTarget']").val() == visitTarget && $this.remove();
 				});
 				
 				var html = '<div class="resources alert alert-block alert-info fade in">';
@@ -44,7 +45,8 @@
 				html += '<input type="hidden" value="' + visitSource + '" name="visitSources">';
 				html += '<dd><em>协议</em>&nbsp;&nbsp;<strong>' + protocol + '</strong></dd>';
 				html += '<dd><em>端口范围</em>&nbsp;&nbsp;<strong>' + portRange + '</strong></dd>';
-				html += '<dd><em>访问源</em>&nbsp;&nbsp;<strong>' + visitSource + '</strong></dd>';
+				html += '<dd><em>访问来源IP</em>&nbsp;&nbsp;<strong>' + visitSource + '</strong></dd>';
+				html += '<dd><em>访问目的IP</em>&nbsp;&nbsp;<strong>' + visitTarget + '</strong></dd>';
 				html += '</div>';
 				
 				$("#resourcesDIV dl").append(html);
@@ -106,9 +108,16 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="visitSource">访问源</label>
+				<label class="control-label" for="visitSource">访问来源IP</label>
 				<div class="controls">
 					<input type="text" id="visitSource" name="visitSource" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="visitTarget">访问目的IP</label>
+				<div class="controls">
+					<input type="text" id="visitTarget" name="visitTarget" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			

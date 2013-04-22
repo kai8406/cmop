@@ -43,6 +43,7 @@ import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
@@ -559,7 +560,17 @@ public class ResourcesService extends BaseSevcie {
 
 					} else if (FieldNameConstant.Compate.ESG.toString().equals(changeItem.getFieldName())) {
 
-						computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.valueOf(changeItem.getOldValue())));
+						// 分割变更前保存的Id,查询出来后保存.
+						String[] esgIds = StringUtils.split(changeItem.getOldValue(), ",");
+
+						if (esgIds != null) {
+							List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+							for (int i = 0; i < esgIds.length; i++) {
+								networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+							}
+
+							computeItem.setNetworkEsgItemList(networkEsgItemList);
+						}
 
 					} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 

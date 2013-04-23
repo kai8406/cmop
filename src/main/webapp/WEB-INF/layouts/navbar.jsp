@@ -49,6 +49,10 @@
 							<li id="basicdata" class="tip-bottom" title="基础数据"><a href="${ctx}/basicdata/location/">基础数据</a></li>
 						</shiro:hasPermission>
 						
+						<shiro:hasPermission name="esg:view">
+							<li id="esg" class="tip-bottom" title=安全组ESG管理><a href="${ctx}/esg/">ESG管理</a></li>
+						</shiro:hasPermission>
+						
 					</ul>
 
 					<ul class="nav pull-right" >

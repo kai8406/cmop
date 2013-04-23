@@ -46,6 +46,7 @@ public class NetworkEsgItem implements java.io.Serializable {
 	private User user;
 	private String identifier;
 	private String description;
+	private Boolean share;
 	private Set<EsgRuleItem> esgRuleItems = new HashSet<EsgRuleItem>(0);
 	private List<ComputeItem> computeItemList = Lists.newArrayList();// 有序的关联对象集合
 
@@ -56,17 +57,19 @@ public class NetworkEsgItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public NetworkEsgItem(User user, String identifier, String description) {
+	public NetworkEsgItem(User user, String identifier, String description, Boolean share) {
 		this.user = user;
 		this.identifier = identifier;
 		this.description = description;
+		this.share = share;
 	}
 
 	/** full constructor */
-	public NetworkEsgItem(User user, String identifier, String description, Set<EsgRuleItem> esgRuleItems) {
+	public NetworkEsgItem(User user, String identifier, String description, Boolean share, Set<EsgRuleItem> esgRuleItems) {
 		this.user = user;
 		this.identifier = identifier;
 		this.description = description;
+		this.share = share;
 		this.esgRuleItems = esgRuleItems;
 	}
 
@@ -109,6 +112,15 @@ public class NetworkEsgItem implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "share")
+	public Boolean getShare() {
+		return share;
+	}
+
+	public void setShare(Boolean share) {
+		this.share = share;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkEsgItem")

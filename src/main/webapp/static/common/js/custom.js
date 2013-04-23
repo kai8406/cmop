@@ -209,3 +209,10 @@ function setOsBitCheckedByOsType() {
 function clearCloneClassOfRequired(){
 	$("tr.clone").find("input").removeClass("required");
 };
+
+/**
+ * 清除input输入框元素的required.
+ */
+function clearInputeOfRequired(){
+	$("input").removeClass("required");
+};

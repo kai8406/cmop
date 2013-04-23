@@ -15,6 +15,6 @@ import com.sobey.cmop.mvc.entity.NetworkEsgItem;
  */
 public interface NetworkEsgItemDao extends PagingAndSortingRepository<NetworkEsgItem, Integer>, JpaSpecificationExecutor<NetworkEsgItem> {
 
-	List<NetworkEsgItem> findByUserIdOrUserIdIsNullOrderByIdDesc(Integer userId);
+	List<NetworkEsgItem> findByUserIdOrShare(Integer userId, Boolean shares);
 
 }

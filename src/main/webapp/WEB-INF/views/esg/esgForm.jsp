@@ -9,7 +9,7 @@
 	<script>
 		$(document).ready(function() {
 			
-			$("ul#navbar li#apply").addClass("active");
+			$("ul#navbar li#esg").addClass("active");
 			
 			$("#description").focus();
 			
@@ -19,9 +19,11 @@
 			});
 			
 			 $('#inputForm').validate();
-			
+			 
 			/*点击页面"生成规则"按钮时,根据前面的协议,端口范围,访问源生成alert的资源.*/
-			$(document).on("click", "#createBtn", function() {
+			$("#createBtn").click(function() {
+				
+				$("input").addClass("required");
 				
 				if (!$("#inputForm").valid()) {
 					return false;
@@ -35,7 +37,7 @@
 				//如果重复,则删除重复的项.
 				$("div.resources").each(function() {
 					var $this = $(this);
-					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.find("input[name='visitTarget']").val() == visitTarget && $this.remove();
+					$this.find("input[name='protocols']").val() == protocol && $this.find("input[name='portRanges']").val() == portRange && $this.find("input[name='visitSources']").val() == visitSource && $this.find("input[name='visitTargets']").val() == visitTarget && $this.remove();
 				});
 				
 				var html = '<div class="resources alert alert-block alert-info fade in">';
@@ -43,6 +45,7 @@
 				html += '<input type="hidden" value="' + protocol + '" name="protocols">';
 				html += '<input type="hidden" value="' + portRange + '" name="portRanges">';
 				html += '<input type="hidden" value="' + visitSource + '" name="visitSources">';
+				html += '<input type="hidden" value="' + visitTarget + '" name="visitTargets">';
 				html += '<dd><em>协议</em>&nbsp;&nbsp;<strong>' + protocol + '</strong></dd>';
 				html += '<dd><em>端口范围</em>&nbsp;&nbsp;<strong>' + portRange + '</strong></dd>';
 				html += '<dd><em>访问来源IP</em>&nbsp;&nbsp;<strong>' + visitSource + '</strong></dd>';
@@ -53,6 +56,7 @@
 			});
 			 
 		});
+		 
 	</script>
 	
 </head>
@@ -67,10 +71,7 @@
 		
 		<fieldset>
 			<legend><small>
-				<c:choose>
-					<c:when test="${not empty esg }">修改安全组ESG </c:when>
-					<c:otherwise>创建安全组ESG</c:otherwise>
-				</c:choose>
+				<c:choose><c:when test="${not empty esg }">修改</c:when><c:otherwise>创建</c:otherwise></c:choose>安全组ESG
 			</small></legend>
 			
 			<c:if test="${not empty esg}">
@@ -103,21 +104,21 @@
 			<div class="control-group">
 				<label class="control-label" for="portRange">端口范围</label>
 				<div class="controls">
-					<input type="text" id="portRange" name="portRange" class="required portValidate" placeholder="80 or 8080/65535">
+					<input type="text" id="portRange" class="required portValidate" placeholder="80 or 8080/65535">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="visitSource">访问来源IP</label>
 				<div class="controls">
-					<input type="text" id="visitSource" name="visitSource" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
+					<input type="text" id="visitSource" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="visitTarget">访问目的IP</label>
 				<div class="controls">
-					<input type="text" id="visitTarget" name="visitTarget" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
+					<input type="text" id="visitTarget"  class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			
@@ -128,11 +129,25 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
+			<div id="resourcesDIV"><dl class="dl-horizontal">
+				<c:forEach var="item" items="${esg.esgRuleItems }">
+					<div class="resources alert alert-block alert-info fade in">
+						<button data-dismiss="alert" class="close" type="button">×</button>
+						<input type="hidden" name="protocols" value="${item.protocol }">
+						<input type="hidden" name="portRanges" value="${item.portRange }">
+						<input type="hidden" name="visitSources" value="${item.visitSource }">
+						<input type="hidden" name="visitTargets" value="${item.visitTarget }">
+						<dd><em>协议</em>&nbsp;&nbsp;<strong>${item.protocol }</strong></dd>
+						<dd><em>端口范围</em>&nbsp;&nbsp;<strong>${item.portRange }</strong></dd>
+						<dd><em>访问来源IP</em>&nbsp;&nbsp;<strong>${item.visitSource }</strong></dd>
+						<dd><em>访问目的IP</em>&nbsp;&nbsp;<strong>${item.visitTarget }</strong></dd>
+					</div>
+				</c:forEach>
+			</dl></div>
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
-				<input class="btn btn-primary" type="submit" value="提交">
+				<input class="btn btn-primary" type="submit" onclick="clearInputeOfRequired()" value="提交">
 			</div>
 			
 		</fieldset>

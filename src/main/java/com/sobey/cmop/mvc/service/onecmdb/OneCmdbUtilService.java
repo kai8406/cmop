@@ -108,7 +108,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 		CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
 
 		// BelongsTo：属于某个申请人，先写文本
-		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
 		ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));

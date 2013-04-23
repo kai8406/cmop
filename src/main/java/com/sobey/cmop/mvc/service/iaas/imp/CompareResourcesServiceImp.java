@@ -262,7 +262,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		String newId = esgIds != null ? StringUtils.join(esgIds, ",") : "";
 		if (!oldId.equals(newId)) {
 
-			String fieldName = FieldNameConstant.Storage.挂载实例.toString();
+			String fieldName = FieldNameConstant.Compate.ESG.toString();
 
 			String oldValue = oldId;
 			String oldString = computeItem.getMountESG();

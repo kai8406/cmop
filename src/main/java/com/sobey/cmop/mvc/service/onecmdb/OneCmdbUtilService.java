@@ -799,9 +799,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 
 		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getIpAddress(), false);
-		ci.addAttributeValue(new ValueBean("Location", hostServer.getLocationAlias(), true));
+		// ci.addAttributeValue(new ValueBean("Location",
+		// hostServer.getLocationAlias(), true));
 		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
-		ci.addAttributeValue(new ValueBean("Hardware", "Server" + hostServer.getAlias(), true));
+		ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
+		// ci.addAttributeValue(new ValueBean("Hardware", "Server" +
+		// hostServer.getAlias(), true));
 		ciBeanList.add(ci);
 
 		return OneCmdbService.update(ciBeanList);

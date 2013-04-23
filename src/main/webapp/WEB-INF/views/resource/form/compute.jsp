@@ -19,6 +19,49 @@
 				setOsBitCheckedByOsType();
 			});
 			
+			$("#addESGBtn").click(function() {
+				if (!$("#inputForm").valid()) {
+					return false;
+				}
+			});
+			
+		});
+		
+		/*点击弹出窗口保存时,生成Compute标识符信息HTML代码插入页面.*/
+		$(document).on("click", "#ModalSave", function() {
+			
+			var selectedArray = [],
+				html = "";
+			
+			var $ModalDiv = $(this).parent().parent();
+			var $CheckedIds = $ModalDiv.find("tbody input:checked");
+			
+			//遍历页面,将页面存在的esgIds放入临时数组中.
+			$("div.resources").each(function() {
+				selectedArray.push($(this).find("#esgIds").val());
+			});
+			
+			//遍历挂载Compute的Id,先判断页面是否有选中的computeId,有的话跳过.
+			$CheckedIds.each(function(){
+				var $this = $(this);
+				if ($.inArray($this.val(), selectedArray) == -1) {
+					var $td = $this.closest("tr").find("td");
+					var esgInfo = $td.eq(1).text() + "(" + $td.eq(2).text() + ")";	
+					html += '<div class="resources alert alert-block alert-info fade in">';
+					html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+					html += '<input type="hidden" value="' + $this.val() + '" id="esgIds" name="esgIds">';
+					html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + esgInfo + '</strong></dd>';
+					html += '</div> ';
+				}
+			});
+			
+			//初始化
+			selectedArray = [];
+			$("input[type=checkbox]").removeAttr('checked');
+			 
+			//插入HTML文本
+			$("#resourcesDIV dl").append(html);
+			
 		});
 	</script>
 	
@@ -145,27 +188,11 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
-				<div class="controls">
-					<select id="esgId" name="esgId" class="required">
-						<c:forEach var="item" items="${esgList}">
-							<option value="${item.id }" 
-								<c:if test="${item.id == compute.networkEsgItem.id }">
-									selected="selected"
-								</c:if>
-							>${item.identifier}(${item.description})</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="remark">用途信息</label>
 				<div class="controls">
 					<input type="text" id="remark" name="remark" value="${compute.remark }" class="required" maxlength="45" placeholder="...用途信息">
 				</div>
 			</div>
-			
 			
 			<table class="table table-bordered table-condensed"  >
 				<thead><tr><th>应用名称</th><th>应用版本</th><th>部署路径</th><th></th></tr></thead>
@@ -191,7 +218,29 @@
 						</c:otherwise>
 					</c:choose>
 				</tbody>
-			</table>	
+			</table>
+			
+			<div class="control-group">
+				<div class="controls">
+					 <a id="addESGBtn" class="btn" data-toggle="modal" href="#esgModal">ESG相关资源</a>
+				</div>
+			</div>	
+			
+			<!-- 生成的资源 -->
+			<div id="resourcesDIV"><dl class="dl-horizontal">
+				<c:forEach var="esg" items="${compute.networkEsgItemList }">
+					<div class="resources alert alert-block alert-info fade in">
+						<button data-dismiss="alert" class="close" type="button">×</button>
+						<input type="hidden" name="esgIds" id="esgIds" value="${esg.id }">
+						<dd>
+							<em>关联ESG</em>&nbsp;&nbsp;<strong>${esg.identifier}</strong>
+						</dd>
+						<dd>
+							<em>ESG描述</em>&nbsp;&nbsp;<strong>${esg.description}</strong>
+						</dd>
+					</div>
+				</c:forEach>
+			</dl></div>
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
@@ -201,6 +250,40 @@
 		</fieldset>
 		
 	</form>
+	
+	<!-- ESG选择的Modal -->
+	<form id="modalForm" action="#" >
+		<div id="esgModal" class="modal container hide fade" tabindex="-1">
+	
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>实例</h4></div>
+				
+			<div class="modal-body">
+				<div class="singlePage">
+				<table class="table table-striped table-bordered table-condensed">
+					<thead><tr>
+						<th><input type="checkbox"></th>
+						<th>标识符</th>
+						<th>安全组描述</th>
+					</tr></thead>
+					<tbody id="resources-tbody">
+						<c:forEach var="item" items="${esgList }">
+							<tr>
+								<td><input type="checkbox" value="${item.id }"></td>
+								<td>${item.identifier}</td>
+								<td>${item.description }</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				</div>
+			</div>
+				
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
+			</div>
+		</div>
+	</form><!-- ESG选择的Modal End -->
 	
 </body>
 </html>

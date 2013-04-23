@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -273,7 +274,6 @@ public class ComputeService extends BaseSevcie {
 		List<ComputeItem> computes = new ArrayList<ComputeItem>();
 
 		for (int i = 0; i < osTypes.length; i++) {
-
 			// 区分PCS和ECS然后生成标识符identifier
 
 			Integer serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(computeType) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
@@ -288,9 +288,14 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
 
-			// TODO 封装compute中的esg,待前台确定esg的格式再完成.
-			// computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
+			// 分割关联esg的Id.
+			String[] esgIdArray = StringUtils.split(esgIds[i], ",");
+			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+			for (String esgId : esgIdArray) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
 
+			}
+			computeItem.setNetworkEsgItemList(networkEsgItemList);
 			computeItem.setInnerIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computes.add(computeItem);

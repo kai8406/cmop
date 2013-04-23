@@ -563,14 +563,13 @@ public class ResourcesService extends BaseSevcie {
 						// 分割变更前保存的Id,查询出来后保存.
 						String[] esgIds = StringUtils.split(changeItem.getOldValue(), ",");
 
-						if (esgIds != null) {
-							List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-							for (int i = 0; i < esgIds.length; i++) {
-								networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
-							}
+						List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+						for (String esgId : esgIds) {
 
-							computeItem.setNetworkEsgItemList(networkEsgItemList);
+							networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
 						}
+
+						computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 					} else if (FieldNameConstant.Compate.应用信息.toString().equals(changeItem.getFieldName())) {
 

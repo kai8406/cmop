@@ -40,7 +40,7 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/compute", method = RequestMethod.POST)
 	public String updateCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") String[] esgIds, @RequestParam(value = "remark") String remark,
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgIds") String[] esgIds, @RequestParam(value = "remark") String remark,
 			@RequestParam(value = "applicationName") String[] applicationNames, @RequestParam(value = "applicationVersion") String[] applicationVersions,
 			@RequestParam(value = "applicationDeployPath") String[] applicationDeployPaths, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
 			@RequestParam(value = "changeDescription") String changeDescription,

@@ -145,7 +145,7 @@
 						html += '<dd><em>用途信息</em>&nbsp;&nbsp;<strong>' + data.remark + '</strong></dd>';
 						html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + data.osType + '&nbsp;' + data.osBit + '</strong></dd>';
 						html += '<dd><em>规格</em>&nbsp;&nbsp;<strong>' + data.serverType + '</strong></dd>';
-						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.networkEsgItem + '</strong></dd>';
+						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.mountESG + '</strong></dd>';
 						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>' + data.innerIp  + '</strong></dd>';
 						html += '</div>';
 						$("#resourcesDIV dl").append(html);

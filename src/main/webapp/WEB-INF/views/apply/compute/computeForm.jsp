@@ -4,10 +4,15 @@
 <html>
 <head>
 
+<link rel="stylesheet" href="${ctx}/static/select2/select2.css">
+<script src="${ctx}/static/select2/select2.js"></script>
+<script src="${ctx}/static/select2/select2_locale_zh-CN.js"></script>
+
 	<title>服务申请</title>
 
 	<script>
 		$(document).ready(function() {
+			
 			
 			$("ul#navbar li#apply").addClass("active");
 		
@@ -78,7 +83,8 @@
 							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + '</strong></dd>';
 							html += '<dd><em>规格</em>&nbsp;&nbsp;<strong>' + serverTypeText + '</strong></dd>';
 							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required" name="remarks" id="remarks' + loopId + '"></dd>';
-							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select name="esgIds" id="esgIds" multiple class="required">' + esgHTML + '</select></dd>';
+							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select id="esgIds'+loopId+'" multiple class="required multipleESG">' + esgHTML + '</select></dd>';
+							html += '<input type="hidden" name="esgIds">';
 							html += '<input type="hidden" name="osTypes" value="' + osId + '">';
 							html += '<input type="hidden" name="osBits" value="' + osBitId + '">';
 							html += '<input type="hidden" name="serverTypes" value="' + serverTypeId + '">';
@@ -86,6 +92,14 @@
 							
 							$("#resourcesDIV dl").append(html);
 						}
+						
+						//初始化select2插件
+						$("select.multipleESG").select2();
+						
+						//为每个select.multipleESG元素绑定一个事件:每次变更select中的值,最近的隐藏域值也改变.
+						$("select.multipleESG").on("change",function(){
+							$(this).parent().parent().find("input[name='esgIds']").val($(this).val());
+						});
 						
 					}
 					
@@ -95,7 +109,11 @@
 			});
 			 
 			
+			
 		});
+		
+		
+		
 	</script>
 	
 </head>

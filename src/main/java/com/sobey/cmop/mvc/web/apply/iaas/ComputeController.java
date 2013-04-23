@@ -57,7 +57,6 @@ public class ComputeController extends BaseController {
 			@RequestParam(value = "osBits") String[] osBits, @RequestParam(value = "serverTypes") String[] serverTypes, @RequestParam(value = "remarks") String[] remarks,
 			@RequestParam(value = "esgIds") String[] esgIds, RedirectAttributes redirectAttributes) {
 
-		// TODO esgIds 的格式未定下.
 		comm.computeService.saveComputeToApply(computeType, applyId, osTypes, osBits, serverTypes, remarks, esgIds);
 
 		redirectAttributes.addFlashAttribute("message", "创建实例成功.");
@@ -95,7 +94,8 @@ public class ComputeController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") String[] esgIds, @RequestParam(value = "remark") String remark, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgIds") String[] esgIds, @RequestParam(value = "remark") String remark,
+			RedirectAttributes redirectAttributes) {
 
 		ComputeItem computeItem = comm.computeService.updateComputeToApply(id, osType, osBit, serverType, esgIds, remark);
 

@@ -27,6 +27,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Lists;
 
@@ -129,6 +130,7 @@ public class NetworkEsgItem implements java.io.Serializable {
 	// 集合中对象id的缓存.
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
 	public List<ComputeItem> getComputeItemList() {
 		return computeItemList;
 	}

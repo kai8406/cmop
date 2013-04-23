@@ -84,45 +84,55 @@ public class OneCmdbUtilService extends BaseSevcie {
 	/**
 	 * 新增或更新ESG至oneCMDB
 	 * 
-	 * @param networkEsgItems
-	 *            ESG集合
+	 * @param networkEsgItem
+	 *            ESG
 	 * @return
 	 */
-	public boolean saveESGToOneCMDB(Collection<NetworkEsgItem> networkEsgItems) {
+	public boolean saveESGToOneCMDB(NetworkEsgItem networkEsgItem) {
 
 		List<CiBean> ciList = new ArrayList<CiBean>();
 
-		for (NetworkEsgItem networkEsgItem : networkEsgItems) {
-
-			// 规则：协议,端口范围,访问源.如果有多条规则，则按","隔开
-			String protocol = "";
-			String portRange = "";
-			String visitSource = "";
-			String visitTarget = "";
-			List<EsgRuleItem> esgRuleItems = comm.esgService.getEsgRuleItemListByEsgId(networkEsgItem.getId());
-			for (EsgRuleItem esgRuleItem : esgRuleItems) {
-				protocol += esgRuleItem.getProtocol() + ",";
-				portRange += esgRuleItem.getPortRange() + ",";
-				visitSource += esgRuleItem.getVisitSource() + ",";
-				visitTarget += esgRuleItem.getVisitTarget() + ",";
-			}
-
-			CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
-
-			// BelongsTo：属于某个申请人，先写文本
-			ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
-			ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
-			ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
-			ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
-			ci.addAttributeValue(new ValueBean("SourceIP", StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
-			ci.addAttributeValue(new ValueBean("TargetIP", StringCommonUtils.replaceAndSubstringText(visitTarget, ",", ","), false));
-			ci.setDescription(networkEsgItem.getDescription());
-
-			ciList.add(ci);
+		// 规则：协议,端口范围,访问源.如果有多条规则，则按","隔开
+		String protocol = "";
+		String portRange = "";
+		String visitSource = "";
+		String visitTarget = "";
+		List<EsgRuleItem> esgRuleItems = comm.esgService.getEsgRuleItemListByEsgId(networkEsgItem.getId());
+		for (EsgRuleItem esgRuleItem : esgRuleItems) {
+			protocol += esgRuleItem.getProtocol() + ",";
+			portRange += esgRuleItem.getPortRange() + ",";
+			visitSource += esgRuleItem.getVisitSource() + ",";
+			visitTarget += esgRuleItem.getVisitTarget() + ",";
 		}
 
-		return OneCmdbService.update(ciList);
+		CiBean ci = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
 
+		// BelongsTo：属于某个申请人，先写文本
+		ci.addAttributeValue(new ValueBean("BelongsTo", comm.accountService.getCurrentUser().getName(), false));
+		ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
+		ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("SourceIP", StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("TargetIP", StringCommonUtils.replaceAndSubstringText(visitTarget, ",", ","), false));
+		ci.setDescription(networkEsgItem.getDescription());
+
+		ciList.add(ci);
+
+		return OneCmdbService.update(ciList);
+	}
+
+	/**
+	 * 删除oneCMDB中的安全组NetworkEsgItem
+	 * 
+	 * @param networkEsgItem
+	 */
+	public void deleteESGToOneCMDB(NetworkEsgItem networkEsgItem) {
+		if (networkEsgItem != null) {
+			List<CiBean> ciBeanList = new ArrayList<CiBean>();
+			CiBean router = new CiBean("ESG", networkEsgItem.getIdentifier(), false);
+			ciBeanList.add(router);
+			OneCmdbService.delete(ciBeanList);
+		}
 	}
 
 	// ===========ComputeItem ===========//

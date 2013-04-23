@@ -99,6 +99,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setIdentifier(elbItem.getIdentifier());
 		json.setKeepSession(NetworkConstant.KeepSession.get(elbItem.getKeepSession()));
 		json.setVirtualIp(elbItem.getVirtualIp());
+		json.setOldIp(elbItem.getOldIp());
 		json.setMountComputes(elbItem.getMountComputes());
 
 		return json;

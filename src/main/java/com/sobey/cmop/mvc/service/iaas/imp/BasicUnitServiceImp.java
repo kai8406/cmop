@@ -154,7 +154,8 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 		networkElbItem.setApply(comm.applyService.getApply(Integer.valueOf(object[1].toString())));
 		networkElbItem.setIdentifier(object[2].toString());
 		networkElbItem.setVirtualIp(object[3] != null ? object[3].toString() : null);
-		Boolean keepSession = NetworkConstant.KeepSession.保持.toString().equals(object[4].toString()) ? true : false;
+		networkElbItem.setOldIp(object[4] != null ? object[4].toString() : null);
+		Boolean keepSession = NetworkConstant.KeepSession.保持.toString().equals(object[5].toString()) ? true : false;
 		networkElbItem.setKeepSession(keepSession);
 
 		return networkElbItem;

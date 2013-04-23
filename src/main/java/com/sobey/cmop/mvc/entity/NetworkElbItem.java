@@ -45,6 +45,7 @@ public class NetworkElbItem implements java.io.Serializable {
 	private String identifier;
 	private Boolean keepSession;
 	private String virtualIp;
+	private String oldIp;
 	private Set<ElbPortItem> elbPortItems = new HashSet<ElbPortItem>(0);
 	private Set<NetworkEipItem> networkEipItems = new HashSet<NetworkEipItem>(0);
 	private MonitorElb monitorElb;
@@ -57,19 +58,21 @@ public class NetworkElbItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp) {
+	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, String oldIp) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.keepSession = keepSession;
 		this.virtualIp = virtualIp;
+		this.oldIp = oldIp;
 	}
 
 	/** full constructor */
-	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, MonitorElb monitorElb, Set<ElbPortItem> elbPortItems, Set<NetworkEipItem> networkEipItems) {
+	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, String oldIp, MonitorElb monitorElb, Set<ElbPortItem> elbPortItems, Set<NetworkEipItem> networkEipItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.keepSession = keepSession;
 		this.virtualIp = virtualIp;
+		this.oldIp = oldIp;
 		this.elbPortItems = elbPortItems;
 		this.monitorElb = monitorElb;
 		this.networkEipItems = networkEipItems;
@@ -122,6 +125,15 @@ public class NetworkElbItem implements java.io.Serializable {
 
 	public void setVirtualIp(String virtualIp) {
 		this.virtualIp = virtualIp;
+	}
+
+	@Column(name = "old_ip", length = 45)
+	public void setOldIp(String oldIp) {
+		this.oldIp = oldIp;
+	}
+
+	public String getOldIp() {
+		return oldIp;
 	}
 
 	@JsonIgnore

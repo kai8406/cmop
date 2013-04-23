@@ -292,4 +292,66 @@ public class NetworkConstant {
 		}
 	}
 
+	/**
+	 * ESG是否公用.
+	 * 
+	 * <pre>
+	 * true :1-公用
+	 * false:0-私用
+	 * 
+	 * <pre>
+	 * 
+	 * @author liukai
+	 * 
+	 */
+	public enum Share implements ICommonEnum {
+
+		公用(true), 私用(false);
+
+		public static final Map<Boolean, String> map = Maps.newLinkedHashMap();
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
+		static {
+			for (Share e : Share.values()) {
+
+				map.put(e.code, e.name());
+
+			}
+		}
+		static {
+			for (Share e : Share.values()) {
+
+				mapKeyStr.put(String.valueOf(e.code), e.name());
+
+			}
+		}
+
+		public static String get(Boolean code) {
+			return map.get(code);
+		}
+
+		private boolean code;
+
+		private Share(boolean code) {
+			this.code = code;
+		}
+
+		public Boolean toBoolean() {
+			return this.code;
+
+		}
+
+		@Override
+		public Integer toInteger() {
+			return this.code ? 1 : 0;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+
+	}
+
 }

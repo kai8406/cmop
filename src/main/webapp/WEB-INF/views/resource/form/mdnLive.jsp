@@ -171,13 +171,13 @@
 					<div class="control-group">
 						<label class="control-label" for="httpUrlEncoder">流地址</label>
 						<div class="controls">
-							<input type="text" id="httpUrlEncoder" name="httpUrlEncoder" value="${mdnLive.httpUrl }" class="mdn-encoder"  maxlength="45" placeholder="...拉流地址">
+							<input type="text" id="httpUrlEncoder" name="httpUrlEncoder" value="${mdnLive.httpUrl }" class="required mdn-encoder"  maxlength="45" placeholder="...拉流地址">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="httpBitrateEncoder">混合码率</label>
 						<div class="controls">
-							<input type="text" id="httpBitrateEncoder" name="httpBitrateEncoder" value="${mdnLive.httpBitrate }" class="mdn-encoder" maxlength="45" placeholder="...拉流混合码率">
+							<input type="text" id="httpBitrateEncoder" name="httpBitrateEncoder" value="${mdnLive.httpBitrate }" class="required mdn-encoder" maxlength="45" placeholder="...拉流混合码率">
 						</div>
 					</div>
 				</div><!-- HTTP拉流模式 End -->

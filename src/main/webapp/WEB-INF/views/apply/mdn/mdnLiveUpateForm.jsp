@@ -229,7 +229,7 @@
 			</div><!-- 选择Transfer End -->
 			
 			<div class="form-actions">
-				<a href="${ctx}/apply/update/${mdnLive.mdnItem.id}/" class="btn">返回</a>
+				<a href="${ctx}/apply/update/${mdnLive.mdnItem.apply.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">
 			</div>
 			

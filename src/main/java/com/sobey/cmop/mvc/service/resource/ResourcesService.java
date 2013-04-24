@@ -309,7 +309,18 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 资源回收
+	 * 资源回收 针对单个资源
+	 * 
+	 * @param resourcesList
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public boolean recycleResources(List<Resources> resourcesList) {
+		return this.recycleResources(resourcesList, null);
+	}
+
+	/**
+	 * 资源回收 针对服务器标签
 	 * 
 	 * serviceTagId 非空时表示是服务标签回收,为null or "" 表示单个回收.
 	 * 
@@ -863,8 +874,14 @@ public class ResourcesService extends BaseSevcie {
 				}
 
 				comm.mdnService.saveOrUpdate(mdnItem);
-				comm.mdnService.saveOrUpdate(mdnLiveItem);
-				comm.mdnService.saveOrUpdate(mdnVodItem);
+
+				if (mdnLiveItem != null) {
+					comm.mdnService.saveOrUpdate(mdnLiveItem);
+				}
+
+				if (mdnVodItem != null) {
+					comm.mdnService.saveOrUpdate(mdnVodItem);
+				}
 
 			} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
 

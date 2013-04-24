@@ -200,7 +200,7 @@
 					</td>
 					<td>
 						<c:forEach var="allowResousStatus" items="${allowResourcesStatus }">
-							<c:if test="${ item.serviceTag.status == allowResousStatus }">
+							<c:if test="${ item.serviceTag.status == allowResousStatus && item.status != 7 }">
 								<a href="update/${item.id}">变更</a>
 								<a href="#deleteModal${item.id}" data-toggle="modal">回收</a>
 								<div id="deleteModal${item.id }" class="modal hide fade" tabindex="-1" data-width="250">

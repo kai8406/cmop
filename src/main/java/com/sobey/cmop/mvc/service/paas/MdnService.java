@@ -352,13 +352,7 @@ public class MdnService extends BaseSevcie {
 							mdnLiveItem.setHttpUrl(StringUtils.defaultIfBlank(httpUrls[i], null));
 						}
 
-						mdnLiveItem.setHlsBitrate(null);
-						mdnLiveItem.setHlsUrl(null);
-
 					} else if (MdnConstant.EncoderMode.推流模式.toInteger().equals(encoderMode)) {
-
-						mdnLiveItem.setHttpBitrate(null);
-						mdnLiveItem.setHttpUrl(null);
 
 						if (hlsBitrates.length != 0) {
 							mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsBitrates[i], null));
@@ -368,13 +362,6 @@ public class MdnService extends BaseSevcie {
 							mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsUrls[i], null));
 						}
 
-					} else {
-
-						mdnLiveItem.setHttpBitrate(null);
-						mdnLiveItem.setHttpUrl(null);
-
-						mdnLiveItem.setHlsBitrate(null);
-						mdnLiveItem.setHlsUrl(null);
 					}
 
 				} else {
@@ -469,7 +456,6 @@ public class MdnService extends BaseSevcie {
 
 				mdnLiveItem.setHlsBitrate(null);
 				mdnLiveItem.setHlsUrl(null);
-
 			}
 
 		} else {

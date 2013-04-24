@@ -213,7 +213,7 @@
 					html += '&nbsp;&nbsp;警告阀值&nbsp;<strong>' + $maxProcess.find(".critical-threshold>option:selected").text() + '</strong></dd>';
 					html += '<input type="hidden" value="' + $maxProcess.find(".warn-threshold").val() + '" name="maxProcessWarns">';
 					html += '<input type="hidden" value="' + $maxProcess.find(".critical-threshold").val() + '" name="maxProcessCriticals">';
-					
+					html += '</div> ';
 				}
 			});
 			

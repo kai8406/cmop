@@ -361,9 +361,7 @@
 									<li><em>频道名称</em>&nbsp;:${live.name}</li>
 									<li><em>频道GUID</em>&nbsp;:${live.guid}</li>
 									<li><em>直播流输出模式</em>&nbsp;:<#list outputModeMap?keys as k ><#if live.streamOutMode?string == k>${outputModeMap[k]}</#if></#list></li>
-									<#if live.encoderMode != 0>
-										<li><em>编码器模式</em>&nbsp;:<#list encoderModeMap?keys as k ><#if live.encoderMode?string == k>${encoderModeMap[k]}</#if></#list></li>
-									</#if>
+									<li><em>编码器模式</em>&nbsp;:<#list encoderModeMap?keys as k ><#if live.encoderMode?string == k>${encoderModeMap[k]}</#if></#list></li>
 									<#if live.streamOutMode == 1 >
 										<#if live.encoderMode == 1>
 											<#if live.httpUrl?exists>

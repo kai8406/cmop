@@ -50,13 +50,19 @@
 			});
 			
 			//点击编码器模式
-			$("input:radio[name='encoderMode']").click(function() {
+			$("#encoderMode").change(function() {
+				
+				$("input.mdn-encoder").val("");
+				
 				if ($(this).val() == 1) {
 					$("#HTTPDIV").addClass("show").removeClass("hidden");
 					$("#HSLDIV").addClass("hidden").removeClass("show");
-				} else {
+				} else if($(this).val() == 2) {
 					$("#HSLDIV").addClass("show").removeClass("hidden");
 					$("#HTTPDIV").addClass("hidden").removeClass("show");
+				}else{
+					$("#HTTPDIV").addClass("hidden").removeClass("show");
+					$("#HSLDIV").addClass("hidden").removeClass("show");
 				}
 			});
 			
@@ -106,8 +112,8 @@
 					var outputModeText = outputMode.closest("label.radio").find(".radioText").text();
 					
 					//编码器模式
-					var encoderMode = $("input:radio[name='encoderMode']:checked");
-					var encoderModeText = encoderMode.closest("label.radio").find(".radioText").text();
+					var encoderMode = $("#encoderMode");
+					var encoderModeText = encoderMode.find("option:selected").text();
 					var httpUrlEncoder = $("#httpUrlEncoder").val();
 					var httpBitrateEncoder = $("#httpBitrateEncoder").val();
 					var hlsUrlEncoder = $("#hlsUrlEncoder").val();
@@ -147,7 +153,7 @@
 								//HTTP拉流模式
 								html += '<dd><em>拉流地址</em>&nbsp;&nbsp;<strong>' + httpUrlEncoder + '</strong></dd>';
 								html += '<dd><em>拉流混合码率</em>&nbsp;&nbsp;<strong>' + httpBitrateEncoder + '</strong></dd>';
-							} else {
+							} else if(encoderMode.val() == 2) {
 								//RTMP推流模式
 								html += '<dd><em>推流地址</em>&nbsp;&nbsp;<strong>' + hlsUrlEncoder + '</strong></dd>';
 								html += '<dd><em>推流混合码率</em>&nbsp;&nbsp;<strong>' + hlsBitrateEncoder + '</strong></dd>';
@@ -352,11 +358,11 @@
 							<div class="control-group">
 								<label class="control-label" for="encoderMode">编码器模式</label>
 								<div class="controls">
-									<c:forEach var="map" items="${encoderModeMap}">
-										<label class="radio inline">
-											<input type="radio" id="encoderMode" name="encoderMode" value="${map.key }"><span class="radioText">${map.value }</span>
-										</label>
-									</c:forEach>
+									<select id="encoderMode" name="encoderMode" class="required">
+										<c:forEach var="map" items="${encoderModeMap}">
+												<option value="${map.key }">${map.value }</option>
+										</c:forEach>
+									</select>
 								</div>
 							</div>
 							

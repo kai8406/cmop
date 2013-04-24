@@ -377,11 +377,12 @@ public class RedmineTextUtil {
 						content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":").append(BLANK).append(mdnLiveItem.getName()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.频道GUID + ":").append(BLANK).append(mdnLiveItem.getGuid()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播流输出模式 + ":").append(BLANK).append(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode())).append(NEWLINE);
+						content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":").append(BLANK).append(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode())).append(NEWLINE);
 
 						if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {
 
 							if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(mdnLiveItem.getEncoderMode())) {
-								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":").append(BLANK).append(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode())).append(NEWLINE);
+
 								if (StringUtils.isNotBlank(mdnLiveItem.getHttpUrl())) {
 									content.append(FieldNameConstant.MdnLiveItem.拉流地址 + ":").append(BLANK).append(mdnLiveItem.getHttpUrl()).append(NEWLINE);
 								}
@@ -390,7 +391,7 @@ public class RedmineTextUtil {
 								}
 
 							} else if (MdnConstant.EncoderMode.推流模式.toInteger().equals(mdnLiveItem.getEncoderMode())) {
-								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":").append(BLANK).append(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode())).append(NEWLINE);
+
 								if (StringUtils.isNotBlank(mdnLiveItem.getHlsUrl())) {
 									content.append(FieldNameConstant.MdnLiveItem.推流地址 + ":").append(BLANK).append(mdnLiveItem.getHlsUrl()).append(NEWLINE);
 								}

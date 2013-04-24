@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant.EncoderMode;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MdnItemDao;
@@ -326,26 +327,20 @@ public class MdnService extends BaseSevcie {
 			for (int i = 0; i < liveDomains.length; i++) {
 				MdnLiveItem mdnLiveItem = new MdnLiveItem();
 
-				// 当页面没有选择编码模式的情况下,radio会传递undefined到
-				Integer encoderMode = 0;
-				if (!encoderModes[i].equals("undefined")) {
-					encoderMode = Integer.valueOf(encoderModes[i]);
-				}
-
 				Integer streamOutMode = Integer.valueOf(streamOutModes[i]);
+				Integer encoderMode = Integer.valueOf(encoderModes[i]);
 
 				mdnLiveItem.setMdnItem(mdnItem);
 				mdnLiveItem.setLiveDomain(liveDomains[i]);
 				mdnLiveItem.setLiveBandwidth(liveBandwidths[i]);
 				mdnLiveItem.setLiveProtocol(StringUtils.replace(liveProtocols[i], "-", ","));
 				mdnLiveItem.setStreamOutMode(streamOutMode);
+				mdnLiveItem.setEncoderMode(encoderMode);
 				mdnLiveItem.setName(channelNames[i]);
 				mdnLiveItem.setGuid(channelGUIDs[i]);
 				mdnLiveItem.setBandwidth(bandwidths[i]);
 
 				if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(streamOutMode)) {
-
-					mdnLiveItem.setEncoderMode(encoderMode);
 
 					if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {
 
@@ -364,10 +359,11 @@ public class MdnService extends BaseSevcie {
 
 						mdnLiveItem.setHttpBitrate(null);
 						mdnLiveItem.setHttpUrl(null);
+
 						if (hlsBitrates.length != 0) {
 							mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsBitrates[i], null));
-
 						}
+
 						if (hlsUrls.length != 0) {
 							mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsUrls[i], null));
 						}
@@ -383,7 +379,7 @@ public class MdnService extends BaseSevcie {
 
 				} else {
 
-					mdnLiveItem.setEncoderMode(MdnConstant.ENCODERMODE_UNCHECKED);
+					mdnLiveItem.setEncoderMode(EncoderMode.缺省模式.toInteger());
 
 					mdnLiveItem.setHttpBitrate(httpBitrates[i]);
 					mdnLiveItem.setHttpUrl(httpUrls[i]);
@@ -449,7 +445,7 @@ public class MdnService extends BaseSevcie {
 
 		if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(streamOutMode)) {
 
-			mdnLiveItem.setEncoderMode(encoderMode == null ? MdnConstant.ENCODERMODE_UNCHECKED : encoderMode);
+			mdnLiveItem.setEncoderMode(encoderMode);
 
 			if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {
 
@@ -478,7 +474,7 @@ public class MdnService extends BaseSevcie {
 
 		} else {
 
-			mdnLiveItem.setEncoderMode(MdnConstant.ENCODERMODE_UNCHECKED);
+			mdnLiveItem.setEncoderMode(MdnConstant.EncoderMode.缺省模式.toInteger());
 
 			mdnLiveItem.setHttpBitrate(httpBitrate);
 			mdnLiveItem.setHttpUrl(httpUrl);

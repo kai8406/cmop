@@ -96,9 +96,7 @@
 						<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>
 						<dd><em>频道GUID</em>&nbsp;&nbsp;${live.guid}</dd>
 						<dd><em>直播流输出模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${outputModeMap }"><c:if test="${map.key == live.streamOutMode }">${map.value }</c:if></c:forEach></dd>
-						<c:if test="${live.encoderMode != 0 }">
-							<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
-						</c:if>
+						<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
 						<c:choose>
 							<c:when test="${live.streamOutMode == 1  }">
 								<c:choose>

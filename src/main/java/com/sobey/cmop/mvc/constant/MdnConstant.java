@@ -13,11 +13,6 @@ import com.google.common.collect.Maps;
 public class MdnConstant {
 
 	/**
-	 * MDN中,编码模式未选中. 值=0
-	 */
-	public static final int ENCODERMODE_UNCHECKED = 0;
-
-	/**
 	 * 输出模式
 	 * 
 	 * <pre>
@@ -77,6 +72,7 @@ public class MdnConstant {
 	 * 编码器模式
 	 * 
 	 * <pre>
+	 * 0-缺省模式
 	 * 1-拉流模式
 	 * 2-推流模式
 	 * </pre>
@@ -86,7 +82,7 @@ public class MdnConstant {
 	 */
 	public enum EncoderMode implements ICommonEnum {
 
-		拉流模式(1), 推流模式(2);
+		缺省模式(0), 拉流模式(1), 推流模式(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

@@ -175,7 +175,7 @@ public class EsgService extends BaseSevcie {
 	}
 
 	/**
-	 * 如果权限角色是 1.管理员 admin 或 3.审批人 audit 创建的ESG,设置ESG中share为true.
+	 * 如果权限角色是 1.管理员 <b>admin</b> 创建的ESG,设置ESG中share为true.
 	 * 其它权限角色创建的ESG中的share为false.
 	 * 
 	 * share为true 的ESG为公共可用的ESG.不为true的为当前用户可见的.
@@ -194,7 +194,6 @@ public class EsgService extends BaseSevcie {
 		// 设置指定的权限角色.该权限角色创建的ESG将成为公共可以用的ESG.
 
 		groups.add(AccountConstant.DefaultGroups.admin.toInteger());
-		groups.add(AccountConstant.DefaultGroups.audit.toInteger());
 
 		// 如果包含有指定权限角色,则设置User为null并break Loop.
 		for (Group group : user.getGroupList()) {

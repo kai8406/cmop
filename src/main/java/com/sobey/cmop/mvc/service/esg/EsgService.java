@@ -164,6 +164,9 @@ public class EsgService extends BaseSevcie {
 
 		this.saveOrUpdate(networkEsgItem);
 
+		// 删除老的rule
+		this.deleteEsgRuleItem(this.getEsgRuleItemListByEsgId(id));
+
 		// ESG的规则保存
 		List<EsgRuleItem> esgRuleItems = this.wrapEsgRuleItemToList(networkEsgItem, protocols, portRanges, visitSources, visitTargets);
 		this.saveOrUpate(esgRuleItems);
@@ -239,7 +242,6 @@ public class EsgService extends BaseSevcie {
 		}
 
 		return esgRuleItems;
-
 	}
 
 	public EsgRuleItem getEsgRule(Integer id) {
@@ -265,7 +267,11 @@ public class EsgService extends BaseSevcie {
 	 */
 	public List<EsgRuleItem> getEsgRuleItemListByEsgId(Integer esgId) {
 		return esgRuleItemDao.findByNetworkEsgItemId(esgId);
+	}
 
+	@Transactional(readOnly = false)
+	public void deleteEsgRuleItem(Collection<EsgRuleItem> esgRuleItems) {
+		esgRuleItemDao.delete(esgRuleItems);
 	}
 
 }

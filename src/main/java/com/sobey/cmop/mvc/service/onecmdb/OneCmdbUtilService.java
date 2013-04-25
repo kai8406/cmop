@@ -808,13 +808,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 
-		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getIpAddress(), false);
-		// ci.addAttributeValue(new ValueBean("Location",
-		// hostServer.getLocationAlias(), true));
+		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
 		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
 		ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
-		// ci.addAttributeValue(new ValueBean("Hardware", "Server" +
-		// hostServer.getAlias(), true));
+		ci.addAttributeValue(new ValueBean("Sit", hostServer.getNicSite(), false));
+		ci.addAttributeValue(new ValueBean("MacAddress", hostServer.getMac(), false));
+		ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
 		ciBeanList.add(ci);
 
 		return OneCmdbService.update(ciBeanList);
@@ -828,7 +827,7 @@ public class OneCmdbUtilService extends BaseSevcie {
 	public void deleteServerPortToOneCMDB(HostServer hostServer) {
 		if (hostServer != null) {
 			List<CiBean> ciBeanList = new ArrayList<CiBean>();
-			CiBean router = new CiBean("ServerPort", "ServerPort" + hostServer.getIpAddress(), false);
+			CiBean router = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
 			ciBeanList.add(router);
 			OneCmdbService.delete(ciBeanList);
 		}

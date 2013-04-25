@@ -40,6 +40,11 @@ public class HostServer implements java.io.Serializable {
 	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
 	private Date createTime;
 	private String description;
+	private String nicSite;
+	private String switchName;
+	private String switchAlias;
+	private String switchSite;
+	private String mac;
 
 	// Constructors
 	/** default constructor */
@@ -200,6 +205,51 @@ public class HostServer implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "nic_site", length = 45)
+	public String getNicSite() {
+		return nicSite;
+	}
+
+	public void setNicSite(String nicSite) {
+		this.nicSite = nicSite;
+	}
+
+	@Column(name = "switch_name", length = 45)
+	public String getSwitchName() {
+		return switchName;
+	}
+
+	public void setSwitchName(String switchName) {
+		this.switchName = switchName;
+	}
+
+	@Column(name = "switch_site", length = 45)
+	public String getSwitchSite() {
+		return switchSite;
+	}
+
+	public void setSwitchSite(String switchSite) {
+		this.switchSite = switchSite;
+	}
+
+	@Column(name = "switch_alias", length = 45)
+	public String getSwitchAlias() {
+		return switchAlias;
+	}
+
+	public void setSwitchAlias(String switchAlias) {
+		this.switchAlias = switchAlias;
+	}
+
+	@Column(name = "mac", length = 45)
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
 	}
 
 	@JsonBackReference

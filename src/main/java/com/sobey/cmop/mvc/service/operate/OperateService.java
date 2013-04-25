@@ -420,8 +420,13 @@ public class OperateService extends BaseSevcie {
 						comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
 					}
 
+					ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(computeItem.getInnerIp());
+
 					// PCS & ECS
-					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
+					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(computeItem);
 					comm.computeService.deleteCompute(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
@@ -436,6 +441,9 @@ public class OperateService extends BaseSevcie {
 
 					NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
 
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(networkElbItem.getVirtualIp());
+
 					// 删除elb下关联eip在oneCMDB中的数据.
 					if (!networkElbItem.getNetworkEipItems().isEmpty()) {
 						for (NetworkEipItem networkEipItem : networkElbItem.getNetworkEipItems()) {
@@ -448,8 +456,13 @@ public class OperateService extends BaseSevcie {
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
 
+					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
+
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(networkEipItem.getIpAddress());
+
 					// EIP
-					comm.oneCmdbUtilService.deleteEIPToOneCMDB(comm.eipService.getNetworkEipItem(serviceId));
+					comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
 					comm.eipService.deleteNetworkEipItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {

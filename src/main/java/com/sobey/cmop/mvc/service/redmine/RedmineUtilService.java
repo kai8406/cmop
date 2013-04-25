@@ -240,9 +240,10 @@ public class RedmineUtilService extends BaseSevcie {
 
 					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
 
-					content.append("变更项:");
 					if (change.getSubResourcesId() != null) {
-						content.append("(服务子项ID:" + change.getSubResourcesId() + ")");
+						content.append(NEWLINE).append("变更项:(服务子项ID:" + change.getSubResourcesId() + ")");
+					} else {
+						content.append("变更项:");
 					}
 
 					content.append(BLANK + "旧值").append(RARR).append("新值").append(NEWLINE);
@@ -448,9 +449,7 @@ public class RedmineUtilService extends BaseSevcie {
 							// monitorElb
 
 							if (FieldNameConstant.monitorElb.监控ELB.toString().equals(fieldName)) {
-
 								content.append(FieldNameConstant.monitorElb.监控ELB + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
@@ -503,7 +502,6 @@ public class RedmineUtilService extends BaseSevcie {
 							if (FieldNameConstant.MdnLiveItem.编码器模式.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
-
 							if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
@@ -516,7 +514,6 @@ public class RedmineUtilService extends BaseSevcie {
 							if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.HSL流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
-							content.append(NEWLINE);
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
 

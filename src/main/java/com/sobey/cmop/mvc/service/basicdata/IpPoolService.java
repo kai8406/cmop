@@ -277,16 +277,19 @@ public class IpPoolService extends BaseSevcie {
 	}
 
 	/**
-	 * 初始化IP,将IP的状态设置为未使用状态,关联的HostServer设置为null.
+	 * 初始化IP,将IP的状态设置为未使用状态,关联的HostServer设置为null. 如果IP不存在数据库中,则返回null值.
 	 * 
 	 * @param ipAddress
 	 * @return
 	 */
 	public IpPool initIpPool(String ipAddress) {
 		IpPool ipPool = ipPoolDao.findByIpAddress(ipAddress);
-		ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
-		ipPool.setHostServer(null);
-		return this.saveOrUpdate(ipPool);
+		if (ipPool != null) {
+			ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
+			ipPool.setHostServer(null);
+			return this.saveOrUpdate(ipPool);
+		}
+		return null;
 	}
 
 	/**

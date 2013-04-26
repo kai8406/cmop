@@ -161,6 +161,9 @@ public class HostServerService extends BaseSevcie {
 		// 判断服务器是否重名.
 		if (this.findByDisplayName(displayName) == null || displayName.equals(hostServer.getDisplayName())) {
 
+			// 初始化修改前的IP.
+			comm.ipPoolService.initIpPool(hostServer.getIpAddress());
+
 			IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
 
 			hostServer.setDisplayName(displayName);

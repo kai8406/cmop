@@ -35,7 +35,6 @@
 			<a href="${ctx}/apply/elb/save/" class="btn tip-bottom" title="ELB 负载均衡器">ELB &raquo;</a>
 			<a href="${ctx}/apply/eip/save/" class="btn tip-bottom" title="EIP 公网IP及端口映射">EIP &raquo;</a>
 			<a href="${ctx}/apply/dns/save/" class="btn tip-bottom" title="DNS 域名映射">DNS &raquo;</a>
-			<a href="${ctx}/apply/esg/save/" class="btn tip-bottom" title="ESG 安全组">ESG &raquo;</a>
 			<a href="${ctx}/apply/monitor/save/" class="btn tip-bottom" title="Monitor 实例监控 & ELB监控">Monitor &raquo;</a>
 		</div>
 		<div class="span12 quick-actions">

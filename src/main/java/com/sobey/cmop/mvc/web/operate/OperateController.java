@@ -100,17 +100,22 @@ public class OperateController extends BaseController {
 			List<NetworkElbItem> networkElbList = (List) list.get(2);
 			List<NetworkEipItem> networkEipList = (List) list.get(3);
 			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
-			String defaultIp = "\\(0\\.0\\.0\\.0\\)";
+			String oldIp = "";
 			for (ComputeItem computeItem : computeList) {
-				desc = desc.replaceAll(computeItem.getIdentifier() + defaultIp, computeItem.getIdentifier() + "(" + computeItem.getInnerIp() + ")");
+				oldIp = transDot(computeItem.getOldIp());
+				System.out.println(oldIp);
+				desc = desc.replaceAll(computeItem.getIdentifier() + oldIp, computeItem.getIdentifier() + "(" + computeItem.getInnerIp() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
 			for (NetworkEipItem eipItem : networkEipList) {
-				desc = desc.replaceAll(eipItem.getIdentifier() + defaultIp, eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
+				oldIp = transDot(eipItem.getOldIp());
+				System.out.println(oldIp);
+				desc = desc.replaceAll(eipItem.getIdentifier() + oldIp, eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（ELB）..." + networkElbList.size());
 			for (NetworkElbItem elbItem : networkElbList) {
-				desc = desc.replaceAll(elbItem.getIdentifier() + defaultIp, elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
+				oldIp = transDot(elbItem.getOldIp());
+				desc = desc.replaceAll(elbItem.getIdentifier() + oldIp, elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
 			}
 			model.addAttribute("description", desc);
 
@@ -142,8 +147,6 @@ public class OperateController extends BaseController {
 			model.addAttribute("location", comm.operateService.getLocationFromOnecmdb());
 			// 默认都是西安IDC，所以去掉另外两个VLAN
 			Map map = comm.operateService.getVlanFromOnecmdb();
-			map.remove("Vlans1354090853077");
-			map.remove("Vlans1354090927684");
 			model.addAttribute("vlan", map);
 
 			return "operate/operateForm";
@@ -151,6 +154,10 @@ public class OperateController extends BaseController {
 			redirectAttributes.addFlashAttribute("message", "查询工单信息失败，请稍后重试！");
 			return "redirect:/operate";
 		}
+	}
+
+	private String transDot(String oldIp) {
+		return "\\(" + oldIp.replaceAll("\\.", "\\\\.") + "\\)";
 	}
 
 	/**

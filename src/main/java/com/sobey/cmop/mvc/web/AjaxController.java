@@ -41,6 +41,19 @@ public class AjaxController extends BaseController {
 	}
 
 	/**
+	 * Ajax请求校验服务器型号名称是否唯一
+	 * 
+	 * @param oldName
+	 * @param name
+	 * @return
+	 */
+	@RequestMapping(value = "checkServerModel")
+	@ResponseBody
+	public String checkServerModel(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
+		return name.equals(oldName) || comm.serverModelService.findServerModelByName(name) == null ? "true" : "false";
+	}
+
+	/**
 	 * Ajax请求校验email是否唯一.
 	 * 
 	 * @param oldEmail
@@ -103,19 +116,6 @@ public class AjaxController extends BaseController {
 	@ResponseBody
 	public String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.vlanService.findVlanByName(name) == null ? "true" : "false";
-	}
-
-	/**
-	 * Ajax请求校验HostServer DisplayName是否唯一.
-	 * 
-	 * @param oldDisplayName
-	 * @param displayName
-	 * @return
-	 */
-	@RequestMapping(value = "checkDisplayName")
-	@ResponseBody
-	public String checkDisplayName(@RequestParam("oldDisplayName") String oldDisplayName, @RequestParam("displayName") String displayName) {
-		return displayName.equals(oldDisplayName) || comm.hostServerService.findByDisplayName(displayName) == null ? "true" : "false";
 	}
 
 	/**

@@ -72,8 +72,9 @@ public class MdnConstant {
 	 * 编码器模式
 	 * 
 	 * <pre>
-	 * 1-HTTP拉流模式
-	 * 2-RTMP推流模式
+	 * 0-缺省模式
+	 * 1-拉流模式
+	 * 2-推流模式
 	 * </pre>
 	 * 
 	 * @author liukai
@@ -81,7 +82,7 @@ public class MdnConstant {
 	 */
 	public enum EncoderMode implements ICommonEnum {
 
-		HTTP拉流模式(1), RTMP推流模式(2);
+		缺省模式(0), 拉流模式(1), 推流模式(2);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

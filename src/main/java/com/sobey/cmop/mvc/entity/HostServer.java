@@ -11,8 +11,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Audit entity. @author MyEclipse Persistence Tools
@@ -22,14 +26,25 @@ import javax.persistence.Table;
 public class HostServer implements java.io.Serializable {
 	// Fields
 	private Integer id;
+	private ServerModel serverModel;
 	private Integer serverType;
 	private Integer poolType;
 	private String displayName;
+	private String rack;
+	private String rackAlias;
+	private String site;
+	private String height;
 	private String alias;
 	private String locationAlias;
 	private String ipAddress;
 	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
 	private Date createTime;
+	private String description;
+	private String nicSite;
+	private String switchName;
+	private String switchAlias;
+	private String switchSite;
+	private String mac;
 
 	// Constructors
 	/** default constructor */
@@ -45,15 +60,22 @@ public class HostServer implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public HostServer(Integer serverType, Integer poolType, String displayName, String alias, String locationAlias, Set<IpPool> ipPools, String ipAddress, Date createTime) {
+	public HostServer(Integer serverType, Integer poolType, String displayName, String rack, String rackAlias, String site, String height, String alias, String locationAlias, Set<IpPool> ipPools,
+			String ipAddress, Date createTime, String description, ServerModel serverModel) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;
+		this.rack = rack;
+		this.rackAlias = rackAlias;
+		this.site = site;
+		this.height = height;
 		this.alias = alias;
 		this.locationAlias = locationAlias;
 		this.ipAddress = ipAddress;
 		this.ipPools = ipPools;
 		this.createTime = createTime;
+		this.description = description;
+		this.serverModel = serverModel;
 	}
 
 	// Property accessors
@@ -93,6 +115,42 @@ public class HostServer implements java.io.Serializable {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	@Column(name = "rack", length = 45)
+	public String getRack() {
+		return rack;
+	}
+
+	public void setRack(String rack) {
+		this.rack = rack;
+	}
+
+	@Column(name = "rack_alias", length = 45)
+	public String getRackAlias() {
+		return rackAlias;
+	}
+
+	public void setRackAlias(String rackAlias) {
+		this.rackAlias = rackAlias;
+	}
+
+	@Column(name = "site", length = 45)
+	public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
+	}
+
+	@Column(name = "height", length = 45)
+	public String getHeight() {
+		return height;
+	}
+
+	public void setHeight(String height) {
+		this.height = height;
 	}
 
 	@Column(name = "alias", length = 45)
@@ -138,6 +196,71 @@ public class HostServer implements java.io.Serializable {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	@Column(name = "description", length = 100)
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Column(name = "nic_site", length = 45)
+	public String getNicSite() {
+		return nicSite;
+	}
+
+	public void setNicSite(String nicSite) {
+		this.nicSite = nicSite;
+	}
+
+	@Column(name = "switch_name", length = 45)
+	public String getSwitchName() {
+		return switchName;
+	}
+
+	public void setSwitchName(String switchName) {
+		this.switchName = switchName;
+	}
+
+	@Column(name = "switch_site", length = 45)
+	public String getSwitchSite() {
+		return switchSite;
+	}
+
+	public void setSwitchSite(String switchSite) {
+		this.switchSite = switchSite;
+	}
+
+	@Column(name = "switch_alias", length = 45)
+	public String getSwitchAlias() {
+		return switchAlias;
+	}
+
+	public void setSwitchAlias(String switchAlias) {
+		this.switchAlias = switchAlias;
+	}
+
+	@Column(name = "mac", length = 45)
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "server_model_id")
+	public ServerModel getServerModel() {
+		return serverModel;
+	}
+
+	public void setServerModel(ServerModel serverModel) {
+		this.serverModel = serverModel;
 	}
 
 }

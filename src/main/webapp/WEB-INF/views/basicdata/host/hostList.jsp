@@ -54,10 +54,10 @@
 	<table class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
+				<th>服务器名称</th>
 				<th>服务器类型</th>
 				<th>IP池类型</th>
 				<th>IP地址</th>
-				<th>服务器名称</th>
 				<th>IDC</th>
 				<th>操作</th>
 			</tr>
@@ -65,31 +65,16 @@
 		<tbody>
 			<c:forEach items="${page.content}" var="item">
 				<tr>
+					<td><a href="detail/${item.id}">${item.displayName}</a></td>
 					<td>
-						<c:forEach var="map" items="${hostServerTypeMap}">
-							<c:if test="${map.key == item.serverType}">
-								<c:out value="${map.value }" />
-							</c:if>
-						</c:forEach>
+						<c:forEach var="map" items="${hostServerTypeMap}"><c:if test="${map.key == item.serverType}">${map.value }</c:if></c:forEach>
 					</td>
-
 					<td>
-						<c:forEach var="map" items="${poolTypeMap }">
-							<c:if test="${map.key == item.poolType }">
-								<c:out value="${map.value }" />
-							</c:if>
-						</c:forEach>
+						<c:forEach var="map" items="${poolTypeMap }"><c:if test="${map.key == item.poolType }">${map.value }</c:if></c:forEach>
 					</td>
-					
 					<td>${item.ipAddress}</td>
-					<td>${item.displayName}</td>
-					
 					<td>
-						<c:forEach var="location" items="${locationList}">
-							<c:if test="${location.alias == item.locationAlias }">
-								${location.name }
-							</c:if>
-						</c:forEach>
+						<c:forEach var="location" items="${locationList}"><c:if test="${location.alias == item.locationAlias }">${location.name }</c:if></c:forEach>
 				 	</td>
 					
 					<td>

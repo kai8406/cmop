@@ -24,6 +24,7 @@ public class EsgRuleItem implements java.io.Serializable {
 	private String protocol;
 	private String portRange;
 	private String visitSource;
+	private String visitTarget;
 
 	// Constructors
 
@@ -31,12 +32,21 @@ public class EsgRuleItem implements java.io.Serializable {
 	public EsgRuleItem() {
 	}
 
-	/** full constructor */
+	/** minimal constructor */
 	public EsgRuleItem(NetworkEsgItem networkEsgItem, String protocol, String portRange, String visitSource) {
 		this.networkEsgItem = networkEsgItem;
 		this.protocol = protocol;
 		this.portRange = portRange;
 		this.visitSource = visitSource;
+	}
+
+	/** full constructor */
+	public EsgRuleItem(NetworkEsgItem networkEsgItem, String protocol, String portRange, String visitSource, String visitTarget) {
+		this.networkEsgItem = networkEsgItem;
+		this.protocol = protocol;
+		this.portRange = portRange;
+		this.visitSource = visitSource;
+		this.visitTarget = visitTarget;
 	}
 
 	// Property accessors
@@ -86,6 +96,15 @@ public class EsgRuleItem implements java.io.Serializable {
 
 	public void setVisitSource(String visitSource) {
 		this.visitSource = visitSource;
+	}
+
+	@Column(name = "visit_target", length = 45)
+	public String getVisitTarget() {
+		return this.visitTarget;
+	}
+
+	public void setVisitTarget(String visitTarget) {
+		this.visitTarget = visitTarget;
 	}
 
 }

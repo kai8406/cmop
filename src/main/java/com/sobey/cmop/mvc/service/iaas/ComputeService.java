@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import com.sobey.cmop.mvc.entity.Application;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.Change;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 
@@ -155,7 +157,13 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark) {
+	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark) {
+
+		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+
+		for (String esgId : esgIds) {
+			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		}
 
 		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
 
@@ -163,7 +171,7 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
+		computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 		return comm.computeService.saveOrUpdate(computeItem);
 	}
@@ -192,7 +200,7 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, Integer esgId, String remark, String[] applicationNames,
+	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark, String[] applicationNames,
 			String[] applicationVersions, String[] applicationDeployPaths, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
@@ -203,7 +211,7 @@ public class ComputeService extends BaseSevcie {
 
 		/* 比较实例资源computeItem 变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions,
+		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgIds, remark, applicationNames, applicationVersions,
 				applicationDeployPaths);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
@@ -220,7 +228,13 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
-		computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(esgId));
+
+		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+		for (String esgId : esgIds) {
+			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		}
+
+		computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 		// 更新compute
 
@@ -260,7 +274,6 @@ public class ComputeService extends BaseSevcie {
 		List<ComputeItem> computes = new ArrayList<ComputeItem>();
 
 		for (int i = 0; i < osTypes.length; i++) {
-
 			// 区分PCS和ECS然后生成标识符identifier
 
 			Integer serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(computeType) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
@@ -274,7 +287,15 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setOsBit(Integer.parseInt(osBits[i]));
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
-			computeItem.setNetworkEsgItem(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgIds[i])));
+
+			// 分割关联esg的Id.
+			String[] esgIdArray = StringUtils.split(esgIds[i], ",");
+			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+			for (String esgId : esgIdArray) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
+
+			}
+			computeItem.setNetworkEsgItemList(networkEsgItemList);
 			computeItem.setInnerIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computes.add(computeItem);

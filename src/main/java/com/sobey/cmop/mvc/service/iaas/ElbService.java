@@ -130,6 +130,7 @@ public class ElbService extends BaseSevcie {
 			networkElbItem.setApply(apply);
 			networkElbItem.setIdentifier(identifier);
 			networkElbItem.setVirtualIp(IpPoolConstant.DEFAULT_IPADDRESS);
+			networkElbItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSessions[i]) ? true : false);
 
 			// 关联实例

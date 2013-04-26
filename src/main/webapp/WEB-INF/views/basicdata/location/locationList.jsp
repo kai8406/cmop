@@ -24,7 +24,7 @@
 		<div class="row">
 			
 			<div class="span3">
-				<label class="control-label search-text"> IDC名称</label> 
+				<label class="control-label search-text">IDC名称</label> 
 				<input type="text" name="search_LIKE_name" class="span2" maxlength="45" value="${param.search_LIKE_name}">
 			</div>
 			

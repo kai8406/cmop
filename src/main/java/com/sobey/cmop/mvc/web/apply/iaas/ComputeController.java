@@ -94,9 +94,10 @@ public class ComputeController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") Integer esgId, @RequestParam(value = "remark") String remark, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgIds") String[] esgIds, @RequestParam(value = "remark") String remark,
+			RedirectAttributes redirectAttributes) {
 
-		ComputeItem computeItem = comm.computeService.updateComputeToApply(id, osType, osBit, serverType, esgId, remark);
+		ComputeItem computeItem = comm.computeService.updateComputeToApply(id, osType, osBit, serverType, esgIds, remark);
 
 		redirectAttributes.addFlashAttribute("message", "修改实例 " + computeItem.getIdentifier() + " 成功");
 

@@ -12,6 +12,7 @@ public class ElbJson implements java.io.Serializable {
 	private String identifier;
 	private String keepSession;
 	private String virtualIp;
+	private String oldIp;
 	private String elbPortItems;
 	private String mountComputes;
 
@@ -45,6 +46,14 @@ public class ElbJson implements java.io.Serializable {
 
 	public void setVirtualIp(String virtualIp) {
 		this.virtualIp = virtualIp;
+	}
+
+	public void setOldIp(String oldIp) {
+		this.oldIp = oldIp;
+	}
+
+	public String getOldIp() {
+		return oldIp;
 	}
 
 	public String getElbPortItems() {

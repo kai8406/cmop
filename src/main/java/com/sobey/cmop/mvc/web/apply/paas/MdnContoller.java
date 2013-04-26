@@ -85,10 +85,6 @@ public class MdnContoller extends BaseController {
 	 *            M3U8流地址数组
 	 * @param hlsBitrates
 	 *            M3U8流混合码率数组
-	 * @param rtspUrls
-	 *            RTSP流地址数组
-	 * @param rtspBitrates
-	 *            RTSP流混合码率数组
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -114,8 +110,7 @@ public class MdnContoller extends BaseController {
 			@RequestParam(value = "channelNames", required = false) String[] channelNames, @RequestParam(value = "channelGUIDs", required = false) String[] channelGUIDs,
 			@RequestParam(value = "streamOutModes", required = false) String[] streamOutModes, @RequestParam(value = "encoderModes", required = false) String[] encoderModes,
 			@RequestParam(value = "httpUrls", required = false) String[] httpUrls, @RequestParam(value = "httpBitrates", required = false) String[] httpBitrates,
-			@RequestParam(value = "hlsUrls", required = false) String[] hlsUrls, @RequestParam(value = "hlsBitrates", required = false) String[] hlsBitrates,
-			@RequestParam(value = "rtspUrls", required = false) String[] rtspUrls, @RequestParam(value = "rtspBitrates", required = false) String[] rtspBitrates, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "hlsUrls", required = false) String[] hlsUrls, @RequestParam(value = "hlsBitrates", required = false) String[] hlsBitrates, RedirectAttributes redirectAttributes) {
 
 		Apply apply = new Apply();
 		apply.setServiceTag(serviceTag);
@@ -125,7 +120,7 @@ public class MdnContoller extends BaseController {
 		apply.setDescription(description);
 
 		comm.mdnService.saveMdnToApply(apply, coverArea, coverIsp, vodDomains, vodBandwidths, vodProtocols, sourceOutBandwidths, sourceStreamerUrls, liveDomains, liveBandwidths, liveProtocols,
-				bandwidths, channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates, rtspUrls, rtspBitrates);
+				bandwidths, channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates);
 
 		redirectAttributes.addFlashAttribute("message", "创建MDN成功.");
 
@@ -280,10 +275,6 @@ public class MdnContoller extends BaseController {
 	 *            M3U8流地址
 	 * @param hlsBitrate
 	 *            M3U8流混合码率
-	 * @param rtspUrl
-	 *            RTSP流地址
-	 * @param rtspBitrate
-	 *            RTSP流混合码率
 	 * @param redirectAttributes
 	 * @return
 	 */
@@ -295,13 +286,12 @@ public class MdnContoller extends BaseController {
 			@RequestParam(value = "httpBitrateEncoder", required = false) String httpBitrateEncoder, @RequestParam(value = "hlsUrlEncoder", required = false) String hlsUrlEncoder,
 			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
 			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
-			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
-			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, RedirectAttributes redirectAttributes) {
 
 		MdnLiveItem mdnLiveItem = comm.mdnService.getMdnLiveItem(id);
 
 		comm.mdnService.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
-				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "修改MDN直播成功");
 

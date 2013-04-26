@@ -90,11 +90,9 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="esgId">关联ESG</label>
+				<label class="control-label" for="mountESG">关联ESG</label>
 				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:forEach var="item" items="${esgList}"><c:if test="${item.id == compute.networkEsgItem.id}">${item.identifier}(${item.description})</c:if></c:forEach>
-					</p>
+					<p class="help-inline plain-text">${compute.mountESG}</p>	
 				</div>
 			</div>
 			

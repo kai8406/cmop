@@ -177,7 +177,7 @@
 				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
 			</div>
 		</div>
-	</form><!-- 实例规格选择的Modal End -->
+	</form><!-- 实例选择的Modal End -->
 	
 </body>
 </html>

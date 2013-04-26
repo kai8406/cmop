@@ -10,18 +10,19 @@ import com.sobey.cmop.mvc.service.audit.AuditService;
 import com.sobey.cmop.mvc.service.basicdata.HostServerService;
 import com.sobey.cmop.mvc.service.basicdata.IpPoolService;
 import com.sobey.cmop.mvc.service.basicdata.LocationService;
+import com.sobey.cmop.mvc.service.basicdata.ServerModelService;
 import com.sobey.cmop.mvc.service.basicdata.VlanService;
 import com.sobey.cmop.mvc.service.basicdata.imports.ImportService;
 import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
+import com.sobey.cmop.mvc.service.esg.EsgService;
 import com.sobey.cmop.mvc.service.failure.FailureService;
 import com.sobey.cmop.mvc.service.iaas.ComputeService;
 import com.sobey.cmop.mvc.service.iaas.DnsService;
 import com.sobey.cmop.mvc.service.iaas.EipService;
 import com.sobey.cmop.mvc.service.iaas.ElbService;
 import com.sobey.cmop.mvc.service.iaas.Es3Service;
-import com.sobey.cmop.mvc.service.iaas.EsgService;
 import com.sobey.cmop.mvc.service.iaas.IBasicUnitService;
 import com.sobey.cmop.mvc.service.iaas.ICompareResourcesService;
 import com.sobey.cmop.mvc.service.iaas.IResourcesJsonService;
@@ -145,6 +146,9 @@ public class CommonService {
 
 	@Resource
 	public ResourcesService resourcesService;
+
+	@Resource
+	public ServerModelService serverModelService;
 
 	@Resource
 	public ServiceTagService serviceTagService;

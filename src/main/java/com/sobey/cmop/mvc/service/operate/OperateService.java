@@ -157,7 +157,8 @@ public class OperateService extends BaseSevcie {
 			if (isChanged) {
 
 				// 更新写入OneCMDB时需要人工选择填入的关联项
-				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps);
+				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps,
+						issue);
 				if (!saveOk) {
 					return false;
 				}
@@ -296,6 +297,7 @@ public class OperateService extends BaseSevcie {
 					// PCS & ECS
 					comm.oneCmdbUtilService.saveComputeToOneCMDB(computeItem, serviceTag);
 
+					resources.setOldIp(resources.getIpAddress());
 					resources.setIpAddress(computeItem.getInnerIp());
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
@@ -310,6 +312,7 @@ public class OperateService extends BaseSevcie {
 					// ELB
 					comm.oneCmdbUtilService.saveELBToOneCMDB(networkElbItem, serviceTag);
 
+					resources.setOldIp(resources.getIpAddress());
 					resources.setIpAddress(networkElbItem.getVirtualIp());
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
@@ -319,6 +322,7 @@ public class OperateService extends BaseSevcie {
 					// EIP
 					comm.oneCmdbUtilService.saveEIPToOneCMDB(networkEipItem, serviceTag);
 
+					resources.setOldIp(resources.getIpAddress());
 					resources.setIpAddress(networkEipItem.getIpAddress());
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
@@ -353,7 +357,6 @@ public class OperateService extends BaseSevcie {
 					// CP
 				}
 
-				resources.setOldIp(resources.getIpAddress());
 				comm.resourcesService.saveOrUpdate(resources);
 			}
 
@@ -417,8 +420,13 @@ public class OperateService extends BaseSevcie {
 						comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
 					}
 
+					ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
+
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(computeItem.getInnerIp());
+
 					// PCS & ECS
-					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(comm.computeService.getComputeItem(serviceId));
+					comm.oneCmdbUtilService.deleteComputeItemToOneCMDB(computeItem);
 					comm.computeService.deleteCompute(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.ES3.toInteger().equals(serviceType)) {
@@ -433,6 +441,9 @@ public class OperateService extends BaseSevcie {
 
 					NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
 
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(networkElbItem.getVirtualIp());
+
 					// 删除elb下关联eip在oneCMDB中的数据.
 					if (!networkElbItem.getNetworkEipItems().isEmpty()) {
 						for (NetworkEipItem networkEipItem : networkElbItem.getNetworkEipItems()) {
@@ -445,8 +456,13 @@ public class OperateService extends BaseSevcie {
 
 				} else if (ResourcesConstant.ServiceType.EIP.toInteger().equals(serviceType)) {
 
+					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
+
+					// 初始化IPAddress
+					comm.ipPoolService.initIpPool(networkEipItem.getIpAddress());
+
 					// EIP
-					comm.oneCmdbUtilService.deleteEIPToOneCMDB(comm.eipService.getNetworkEipItem(serviceId));
+					comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
 					comm.eipService.deleteNetworkEipItem(serviceId);
 
 				} else if (ResourcesConstant.ServiceType.DNS.toInteger().equals(serviceType)) {
@@ -614,11 +630,14 @@ public class OperateService extends BaseSevcie {
 	 * @param eipIds
 	 * @param eipAddresss
 	 * @param location
+	 * @param elbIds
+	 * @param virtualIps
+	 * @param issue
 	 * @return
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
-			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
+			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps, Issue issue) {
 		try {
 			String sep = ",";
 			if (computeIds.length() > 0) {
@@ -665,41 +684,10 @@ public class OperateService extends BaseSevcie {
 						computeItem.setHostServerAlias(server[i]);
 						computeItem.setOsStorageAlias(osStorage[i]);
 					}
+					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+						computeItem.setOldIp(computeItem.getInnerIp());
+					}
 					computeItem.setInnerIp(innerIp[i]);
-					comm.computeService.saveOrUpdate(computeItem);
-				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				int last = compute.length - 1;
-				if (compute.length > 0 && !innerIp[last].equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
-					computeItem = comm.computeService.getComputeItem(Integer.parseInt(compute[last]));
-					// 释放原来的IP
-					if (!computeItem.getInnerIp().equals(IpPoolConstant.DEFAULT_IPADDRESS)) {
-						ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
-						ipPool.setStatus(IpPoolConstant.IpStatus.未使用.toInteger());
-						ipPool.setHostServer(null);
-						comm.ipPoolService.saveIpPool(ipPool);
-					}
-
-					// 更新新的IP
-					ipPool = comm.ipPoolService.findIpPoolByIpAddress(innerIp[last]);
-					ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-					ipPool.setHostServer(comm.hostServerService.findByAlias(server[last]));
-					comm.ipPoolService.saveIpPool(ipPool);
-
-					computeItem.setHostName(hostName[last].trim());
-					if (computeItem.getComputeType() == 1) {
-						// 如果是物理机，先判断其原值是否关联，如果已关联，则忽略新值，因为一个物理机只能被一个PCS关联
-						String alias = computeItem.getServerAlias();
-						HostServer host = comm.hostServerService.findByAlias(alias);
-						if (StringUtils.isEmpty(alias) || (host != null && host.getIpPools().size() <= 0)) {
-							computeItem.setServerAlias(server[last]);
-						}
-					} else {
-						computeItem.setHostServerAlias(server[last]);
-						computeItem.setOsStorageAlias(osStorage[last]);
-					}
-					computeItem.setInnerIp(innerIp[last]);
 					comm.computeService.saveOrUpdate(computeItem);
 				}
 			}
@@ -732,23 +720,11 @@ public class OperateService extends BaseSevcie {
 					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
+					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+						eipItem.setOldIp(eipItem.getIpAddress());
+					}
 					eipItem.setIpAddress(eipAddress[i]);
 					comm.eipService.saveOrUpdate(eipItem);
-				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				if (eipId.length > 0) {
-					int i = eipId.length - 1;
-					if (eipId[i] == null || eipId[i].equals("") || eipId[i].equals("null")) {
-					} else {
-						eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
-						// 释放原来的IP
-						comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
-						// 更新新的IP
-						comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
-						eipItem.setIpAddress(eipAddress[i]);
-						comm.eipService.saveOrUpdate(eipItem);
-					}
 				}
 			}
 
@@ -763,18 +739,9 @@ public class OperateService extends BaseSevcie {
 					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
-					elbItem.setVirtualIp(virtualIp[i]);
-					comm.elbService.saveOrUpdate(elbItem);
-				}
-
-				// 不知为何最后一个虽显示更新到了，但下面的查询语句显示读取到的还是以前的值，临时解决：再做一次更新
-				if (elbId.length > 0) {
-					int i = elbId.length - 1;
-					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
-					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
-					// 更新新的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
+					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
+						elbItem.setOldIp(elbItem.getVirtualIp());
+					}
 					elbItem.setVirtualIp(virtualIp[i]);
 					comm.elbService.saveOrUpdate(elbItem);
 				}

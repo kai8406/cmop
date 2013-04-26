@@ -40,7 +40,7 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/compute", method = RequestMethod.POST)
 	public String updateCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgId") Integer esgId, @RequestParam(value = "remark") String remark,
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgIds") String[] esgIds, @RequestParam(value = "remark") String remark,
 			@RequestParam(value = "applicationName") String[] applicationNames, @RequestParam(value = "applicationVersion") String[] applicationVersions,
 			@RequestParam(value = "applicationDeployPath") String[] applicationDeployPaths, @RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
 			@RequestParam(value = "changeDescription") String changeDescription,
@@ -50,7 +50,8 @@ public class ResourcesExtensionController extends BaseController {
 		Resources resources = comm.resourcesService.getResources(id);
 		resources.setUsedby(usedby);
 
-		comm.computeService.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgId, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
+		comm.computeService
+				.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgIds, remark, applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
 
 		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
 
@@ -253,8 +254,7 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "httpBitrateEncoder", required = false) String httpBitrateEncoder, @RequestParam(value = "hlsUrlEncoder", required = false) String hlsUrlEncoder,
 			@RequestParam(value = "hlsBitrateEncoder", required = false) String hlsBitrateEncoder, @RequestParam(value = "httpUrl", required = false) String httpUrl,
 			@RequestParam(value = "httpBitrate", required = false) String httpBitrate, @RequestParam(value = "hlsUrl", required = false) String hlsUrl,
-			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "rtspUrl", required = false) String rtspUrl,
-			@RequestParam(value = "rtspBitrate", required = false) String rtspBitrate, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "hlsBitrate", required = false) String hlsBitrate, @RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 		if (resources.getUsedby() == null) {
@@ -263,7 +263,7 @@ public class ResourcesExtensionController extends BaseController {
 		}
 
 		comm.mdnService.saveResourcesByMdnLive(resources, changeDescription, liveId, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder,
-				httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+				httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
 

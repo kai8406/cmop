@@ -11,18 +11,6 @@
 			$("ul#navbar li#basicdata").addClass("active");
 			
 			changeLocation();
-		
-			$("#inputForm").validate({
-				rules:{
-					displayName:{
-						remote: "${ctx}/ajax/checkDisplayName?oldDisplayName=${hostServer.displayName}"
-					}
-				},
-				messages:{
-					displayName:{remote:"服务器名称已存在"}
-				}
-			});
-			
 		});
 		
 		function changeLocation() {
@@ -78,17 +66,9 @@
 		
 		<fieldset>
 		
-			<legend><small>
-				<c:choose><c:when test="${not empty hostServer.id }">修改</c:when><c:otherwise>创建</c:otherwise></c:choose>服务器
-			</small></legend>
-			
-			<div class="control-group">
-				<label class="control-label" for="displayName">服务器名称</label>
-				<div class="controls">
-					<input type="text" id="displayName" name="displayName" value="${hostServer.displayName}" 
-					class="required hostNameValidate" maxlength="45" placeholder="..格式如:HP DL2000 0416-1-1">
-				</div>
-			</div>
+			<legend>
+				<small><c:choose><c:when test="${not empty hostServer.id }">修改</c:when><c:otherwise>创建</c:otherwise></c:choose>服务器</small>
+			</legend>
 			
 			<div class="control-group">
 				<label class="control-label" for="serverType">服务器类型</label>
@@ -99,6 +79,77 @@
 						 	value="${map.key}">${map.value}</option>
 						</c:forEach>
 					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="serverModelId">服务器型号</label>
+				<div class="controls">
+					<select name="serverModelId" id="serverModelId" class="required">
+						<c:forEach var="item" items="${serverModelList }">
+							<option value="${item.id}" <c:if test="${item.id == hostServer.serverModel.id }"> selected="selected"</c:if>
+							>${item.name }</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="rack">Rack(机柜位置)</label>
+				<div class="controls">
+					<select id="rack" name="rack" class="required">
+						<c:forEach var="map" items="${rackMap }">
+							<option <c:if test="${map.key == hostServer.rackAlias }">selected="selected"</c:if>
+							 value="${map.key }&${map.value}">${map.value }</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="site">Site(模块位置)</label>
+				<div class="controls">
+					<input type="text" id="site" name="site" value="${hostServer.site}" class="required" maxlength="45" placeholder="..模块位置.eg:1-1,4-2">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="switchs">交换机</label>
+				<div class="controls">
+					<select id="switchs" name="switchs" class="required">
+						<c:forEach var="map" items="${switchMap }">
+							<option <c:if test="${map.key == hostServer.switchAlias }">selected="selected"</c:if>
+							 value="${map.key }&${map.value}">${map.value }</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="switchSite">交换机口</label>
+				<div class="controls">
+					<input type="text" id="switchSite" name="switchSite" value="${hostServer.switchSite}" class="required" maxlength="45" placeholder="..交换机口">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="nicSite">网卡号</label>
+				<div class="controls">
+					<input type="text" id="nicSite" name="nicSite" value="${hostServer.nicSite}" class="required" maxlength="45" placeholder="..网卡号">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="mac">Mac</label>
+				<div class="controls">
+					<input type="text" id="mac" name="mac" value="${hostServer.mac}"  class="required" maxlength="45" placeholder="..Mac地址">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="height">高度</label>
+				<div class="controls">
+					<input type="text" id="height" name="height" value="${hostServer.height}"  class="required" maxlength="45" placeholder="..格式如:1U,2U">
 				</div>
 			</div>
 			
@@ -127,6 +178,14 @@
 					<select id="ipAddress" name="ipAddress" class="required">
 						<option value="${hostServer.ipAddress }">${hostServer.ipAddress }</option>
 					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="description">用途描述</label>
+				<div class="controls">
+					<textarea rows="3" id="description" name="description" placeholder="...用途描述"
+						maxlength="100" class="required ">${hostServer.description }</textarea>
 				</div>
 			</div>	
 					

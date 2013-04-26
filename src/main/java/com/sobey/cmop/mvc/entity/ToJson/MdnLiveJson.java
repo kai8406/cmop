@@ -21,8 +21,6 @@ public class MdnLiveJson implements java.io.Serializable {
 	private String httpBitrate;
 	private String hlsUrl;
 	private String hlsBitrate;
-	private String rtspUrl;
-	private String rtspBitrate;
 
 	public Integer getId() {
 		return id;
@@ -126,22 +124,6 @@ public class MdnLiveJson implements java.io.Serializable {
 
 	public void setHlsBitrate(String hlsBitrate) {
 		this.hlsBitrate = hlsBitrate;
-	}
-
-	public String getRtspUrl() {
-		return rtspUrl;
-	}
-
-	public void setRtspUrl(String rtspUrl) {
-		this.rtspUrl = rtspUrl;
-	}
-
-	public String getRtspBitrate() {
-		return rtspBitrate;
-	}
-
-	public void setRtspBitrate(String rtspBitrate) {
-		this.rtspBitrate = rtspBitrate;
 	}
 
 }

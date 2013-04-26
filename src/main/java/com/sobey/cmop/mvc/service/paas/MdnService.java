@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
+import com.sobey.cmop.mvc.constant.MdnConstant.EncoderMode;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.MdnItemDao;
@@ -104,10 +105,6 @@ public class MdnService extends BaseSevcie {
 	 *            M3U8流地址数组
 	 * @param hlsBitrates
 	 *            M3U8流混合码率数组
-	 * @param rtspUrls
-	 *            RTSP流地址数组
-	 * @param rtspBitrates
-	 *            RTSP流混合码率数组
 	 */
 	@Transactional(readOnly = false)
 	public void saveMdnToApply(Apply apply, String coverArea, String coverIsp,
@@ -116,7 +113,7 @@ public class MdnService extends BaseSevcie {
 			String[] sourceStreamerUrls
 			// live
 			, String[] liveDomains, String[] liveBandwidths, String[] liveProtocols, String[] bandwidths, String[] channelNames, String[] channelGUIDs, String[] streamOutModes, String[] encoderModes,
-			String[] httpUrls, String[] httpBitrates, String[] hlsUrls, String[] hlsBitrates, String[] rtspUrls, String[] rtspBitrates) {
+			String[] httpUrls, String[] httpBitrates, String[] hlsUrls, String[] hlsBitrates) {
 
 		// Step1. 创建一个服务申请Apply
 
@@ -137,8 +134,7 @@ public class MdnService extends BaseSevcie {
 
 		// Step3. 创建live MDN.
 
-		this.saveMdnLiveItem(mdnItem, liveDomains, liveBandwidths, liveProtocols, bandwidths, channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates,
-				rtspUrls, rtspBitrates);
+		this.saveMdnLiveItem(mdnItem, liveDomains, liveBandwidths, liveProtocols, bandwidths, channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates);
 
 	}
 
@@ -322,65 +318,61 @@ public class MdnService extends BaseSevcie {
 	 *            M3U8流地址数组
 	 * @param hlsBitrates
 	 *            M3U8流混合码率数组
-	 * @param rtspUrls
-	 *            RTSP流地址数组
-	 * @param rtspBitrates
-	 *            RTSP流混合码率数组
 	 */
 	@Transactional(readOnly = false)
 	public void saveMdnLiveItem(MdnItem mdnItem, String[] liveDomains, String[] liveBandwidths, String[] liveProtocols, String[] bandwidths, String[] channelNames, String[] channelGUIDs,
-			String[] streamOutModes, String[] encoderModes, String[] httpUrls, String[] httpBitrates, String[] hlsUrls, String[] hlsBitrates, String[] rtspUrls, String[] rtspBitrates) {
+			String[] streamOutModes, String[] encoderModes, String[] httpUrls, String[] httpBitrates, String[] hlsUrls, String[] hlsBitrates) {
 
 		if (liveDomains != null) {
 			for (int i = 0; i < liveDomains.length; i++) {
 				MdnLiveItem mdnLiveItem = new MdnLiveItem();
 
-				Integer encoderMode = Integer.valueOf(encoderModes[i]);
 				Integer streamOutMode = Integer.valueOf(streamOutModes[i]);
+				Integer encoderMode = Integer.valueOf(encoderModes[i]);
 
 				mdnLiveItem.setMdnItem(mdnItem);
 				mdnLiveItem.setLiveDomain(liveDomains[i]);
 				mdnLiveItem.setLiveBandwidth(liveBandwidths[i]);
 				mdnLiveItem.setLiveProtocol(StringUtils.replace(liveProtocols[i], "-", ","));
 				mdnLiveItem.setStreamOutMode(streamOutMode);
+				mdnLiveItem.setEncoderMode(encoderMode);
 				mdnLiveItem.setName(channelNames[i]);
 				mdnLiveItem.setGuid(channelGUIDs[i]);
 				mdnLiveItem.setBandwidth(bandwidths[i]);
-				mdnLiveItem.setEncoderMode(encoderMode);
 
 				if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(streamOutMode)) {
 
-					if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
+					if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {
 
-						mdnLiveItem.setHttpBitrate(httpBitrates[i]);
-						mdnLiveItem.setHttpUrl(httpUrls[i]);
+						if (httpBitrates.length != 0) {
+							mdnLiveItem.setHttpBitrate(StringUtils.defaultIfBlank(httpBitrates[i], null));
+						}
 
-						mdnLiveItem.setHlsBitrate(null);
-						mdnLiveItem.setHlsUrl(null);
+						if (httpUrls.length != 0) {
+							mdnLiveItem.setHttpUrl(StringUtils.defaultIfBlank(httpUrls[i], null));
+						}
 
-					} else {
+					} else if (MdnConstant.EncoderMode.推流模式.toInteger().equals(encoderMode)) {
 
-						mdnLiveItem.setHttpBitrate(null);
-						mdnLiveItem.setHttpUrl(null);
+						if (hlsBitrates.length != 0) {
+							mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsBitrates[i], null));
+						}
 
-						mdnLiveItem.setHlsBitrate(hlsBitrates[i]);
-						mdnLiveItem.setHlsUrl(hlsUrls[i]);
+						if (hlsUrls.length != 0) {
+							mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsUrls[i], null));
+						}
 
 					}
 
-					mdnLiveItem.setRtspBitrate(null);
-					mdnLiveItem.setRtspUrl(null);
 				} else {
+
+					mdnLiveItem.setEncoderMode(EncoderMode.缺省模式.toInteger());
 
 					mdnLiveItem.setHttpBitrate(httpBitrates[i]);
 					mdnLiveItem.setHttpUrl(httpUrls[i]);
 
 					mdnLiveItem.setHlsBitrate(hlsBitrates[i]);
 					mdnLiveItem.setHlsUrl(hlsUrls[i]);
-
-					mdnLiveItem.setRtspBitrate(rtspBitrates[i]);
-					mdnLiveItem.setRtspUrl(rtspUrls[i]);
-
 				}
 
 				this.saveOrUpdate(mdnLiveItem);
@@ -425,15 +417,10 @@ public class MdnService extends BaseSevcie {
 	 *            M3U8流地址
 	 * @param hlsBitrate
 	 *            M3U8流混合码率
-	 * @param rtspUrl
-	 *            RTSP流地址
-	 * @param rtspBitrate
-	 *            RTSP流混合码率
 	 */
 	@Transactional(readOnly = false)
 	public void updateMdnLiveItemToApply(MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol, Integer streamOutMode,
-			Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl,
-			String hlsBitrate, String rtspUrl, String rtspBitrate) {
+			Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate) {
 
 		mdnLiveItem.setBandwidth(bandwidth);
 		mdnLiveItem.setName(name);
@@ -442,40 +429,44 @@ public class MdnService extends BaseSevcie {
 		mdnLiveItem.setLiveBandwidth(liveBandwidth);
 		mdnLiveItem.setLiveProtocol(liveProtocol);
 		mdnLiveItem.setStreamOutMode(streamOutMode);
-		mdnLiveItem.setEncoderMode(encoderMode);
 
 		if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(streamOutMode)) {
 
-			if (MdnConstant.EncoderMode.HTTP拉流模式.toInteger().equals(encoderMode)) {
+			mdnLiveItem.setEncoderMode(encoderMode);
 
-				mdnLiveItem.setHttpBitrate(httpUrlEncoder);
-				mdnLiveItem.setHttpUrl(httpBitrateEncoder);
+			if (MdnConstant.EncoderMode.拉流模式.toInteger().equals(encoderMode)) {
+
+				mdnLiveItem.setHttpBitrate(StringUtils.defaultIfBlank(httpUrlEncoder, null));
+				mdnLiveItem.setHttpUrl(StringUtils.defaultIfBlank(httpBitrateEncoder, null));
 
 				mdnLiveItem.setHlsBitrate(null);
 				mdnLiveItem.setHlsUrl(null);
 
-			} else {
+			} else if (MdnConstant.EncoderMode.推流模式.toInteger().equals(encoderMode)) {
 
 				mdnLiveItem.setHttpBitrate(null);
 				mdnLiveItem.setHttpUrl(null);
 
-				mdnLiveItem.setHlsBitrate(hlsUrlEncoder);
-				mdnLiveItem.setHlsUrl(hlsBitrateEncoder);
+				mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsUrlEncoder, null));
+				mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsBitrateEncoder, null));
 
+			} else {
+				mdnLiveItem.setHttpBitrate(null);
+				mdnLiveItem.setHttpUrl(null);
+
+				mdnLiveItem.setHlsBitrate(null);
+				mdnLiveItem.setHlsUrl(null);
 			}
 
-			mdnLiveItem.setRtspBitrate(null);
-			mdnLiveItem.setRtspUrl(null);
 		} else {
+
+			mdnLiveItem.setEncoderMode(MdnConstant.EncoderMode.缺省模式.toInteger());
 
 			mdnLiveItem.setHttpBitrate(httpBitrate);
 			mdnLiveItem.setHttpUrl(httpUrl);
 
 			mdnLiveItem.setHlsBitrate(hlsBitrate);
 			mdnLiveItem.setHlsUrl(hlsUrl);
-
-			mdnLiveItem.setRtspBitrate(rtspBitrate);
-			mdnLiveItem.setRtspUrl(rtspUrl);
 
 		}
 
@@ -513,7 +504,7 @@ public class MdnService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public void saveResourcesByMdnLive(Resources resources, String changeDescription, Integer liveId, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
 			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
-			String httpBitrate, String hlsUrl, String hlsBitrate, String rtspUrl, String rtspBitrate) {
+			String httpBitrate, String hlsUrl, String hlsBitrate) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -526,7 +517,7 @@ public class MdnService extends BaseSevcie {
 		/* 比较资源变更前和变更后的值. */
 
 		boolean isChange = comm.compareResourcesService.compareMdnLiveItem(resources, change, mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode,
-				httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+				httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		// 当资源有更改的时候,更改状态.如果和资源不相关的如:服务标签,指派人等变更,则不变更资源的状态.
 		if (isChange) {
@@ -537,7 +528,7 @@ public class MdnService extends BaseSevcie {
 		comm.serviceTagService.saveOrUpdate(serviceTag);
 
 		this.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder,
-				hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate, rtspUrl, rtspBitrate);
+				hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		// 更新resources
 

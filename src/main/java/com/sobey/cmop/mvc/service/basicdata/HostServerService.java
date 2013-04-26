@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
+import com.sobey.cmop.mvc.entity.ServerModel;
 import com.sobey.cmop.mvc.service.vm.HostTree;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
@@ -41,6 +43,11 @@ public class HostServerService extends BaseSevcie {
 
 	@Resource
 	private IpPoolDaoCustom ipPoolDaoCustom;
+
+	/**
+	 * 1/0/: 模板
+	 */
+	private static final String SWITCH_FORMAT = " 1/0/";
 
 	/**
 	 * 新增,保存HostServer
@@ -79,7 +86,8 @@ public class HostServerService extends BaseSevcie {
 	}
 
 	/**
-	 * 新增HostServer
+	 * 
+	 * 新增,更新HostServer
 	 * 
 	 * <pre>
 	 * 1.保存服务器.
@@ -88,83 +96,186 @@ public class HostServerService extends BaseSevcie {
 	 * </pre>
 	 * 
 	 * @param hostServer
+	 *            hostServer对象
+	 * @param serverType
+	 *            服务器类型
+	 * @param serverModelId
+	 *            服务器型号
+	 * @param rack
+	 *            机柜位置
+	 * @param site
+	 *            模块位置
+	 * @param nicSite
+	 *            网卡位置
+	 * @param switchs
+	 *            交换机(alias+name)
+	 * @param switchSite
+	 *            交换机口
+	 * @param mac
+	 *            mac
+	 * @param height
+	 *            高度
+	 * @param locationAlias
+	 *            IDC alias
+	 * @param ipAddress
+	 *            服务器自身IP
+	 * @param description
+	 *            说明
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public HostServer addHostServer(String displayName, String ipAddress, String locationAlias, Integer serverType) {
+	private boolean saveOrUpdateHostServer(HostServer hostServer, Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac,
+			String height, String locationAlias, String ipAddress, String description) {
 
-		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
+		boolean flag = false;
 
-		// step.1
-		String alias = "Host" + Identities.uuid2();
+		ServerModel serverModel = comm.serverModelService.getServerModel(serverModelId);
 
-		HostServer hostServer = new HostServer();
+		String[] racks = StringUtils.split(rack, "&");
+		String rackAlias = racks[0];
+		String rackName = racks[1];
 
-		hostServer.setAlias(alias);
-		hostServer.setCreateTime(new Date());
-		hostServer.setDisplayName(displayName);
-		hostServer.setIpAddress(ipAddress);
-		hostServer.setLocationAlias(locationAlias);
-		hostServer.setPoolType(ipPool.getPoolType());
-		hostServer.setServerType(serverType);
+		/*
+		 * DisplayName
+		 * 
+		 * Company Model Rack-Site
+		 * 
+		 * eg:HP DL2000 0416-1-1
+		 */
+		String displayName = serverModel.getCompany() + " " + serverModel.getName() + " " + rackName + "-" + site;
 
-		// step.2 更改IP状态为 已使用
-		ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-		// 服务器本身的IP不关联到自己，只有在工单处理时才关联
-		// ipPool.setHostServer(hostServer);
-		comm.ipPoolService.saveOrUpdate(ipPool);
+		String[] switchArray = StringUtils.split(switchs, "&");
+		String switchAlias = switchArray[0];
 
-		this.saveOrUpdate(hostServer);
+		/*
+		 * 交换机插入oneCMDB中的格式化模板.最终结果为 XA041101SW 1/0/12
+		 * 
+		 * XA041101SW:交换机名
+		 * 
+		 * 1/0/: 模板(常量)
+		 * 
+		 * 12:交换机位置
+		 */
+		String switchName = switchArray[1] + SWITCH_FORMAT + switchSite;
 
-		// step.3 同步oneCMDB
-		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+		// 判断服务器是否重名.
+		if (this.findByDisplayName(displayName) == null || displayName.equals(hostServer.getDisplayName())) {
 
-		return hostServer;
+			IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
+
+			hostServer.setDisplayName(displayName);
+			hostServer.setIpAddress(ipAddress);
+			hostServer.setLocationAlias(locationAlias);
+			hostServer.setPoolType(ipPool.getPoolType());
+			hostServer.setServerType(serverType);
+			hostServer.setHeight(height);
+			hostServer.setSite(site);
+			hostServer.setServerModel(serverModel);
+			hostServer.setDescription(description);
+			hostServer.setRack(rackName);
+			hostServer.setRackAlias(rackAlias);
+			hostServer.setMac(mac);
+			hostServer.setSwitchAlias(switchAlias);
+			hostServer.setSwitchName(switchName);
+			hostServer.setNicSite(nicSite);
+			hostServer.setSwitchSite(switchSite);
+
+			// step.2 更改IP状态为 已使用
+			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+
+			comm.ipPoolService.saveOrUpdate(ipPool);
+
+			this.saveOrUpdate(hostServer);
+
+			// step.3 同步oneCMDB
+			comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
+
+			flag = true;
+		}
+
+		return flag;
 	}
 
 	/**
-	 * 更新HostServer
+	 * 新增HostServer
 	 * 
-	 * <pre>
-	 * 1.对IP进行处理(如果IP改变,则将改变前的IP状态改为未使用,改变后的IP设置为已使用)
-	 * 2.保存服务器信息.
-	 * 3.同步数据至oneCMDB.
-	 * </pre>
-	 * 
-	 * @param hostServer
+	 * @param serverType
+	 *            服务器类型
+	 * @param serverModelId
+	 *            服务器型号
+	 * @param rack
+	 *            机柜位置
+	 * @param site
+	 *            模块位置
+	 * @param nicSite
+	 *            网卡位置
+	 * @param switchs
+	 *            交换机(alias+name)
+	 * @param switchSite
+	 *            交换机口
+	 * @param mac
+	 *            mac
+	 * @param height
+	 *            高度
+	 * @param locationAlias
+	 *            IDC alias
 	 * @param ipAddress
-	 *            修改后的IP
+	 *            服务器自身IP
+	 * @param description
+	 *            说明
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public HostServer updateHostServer(Integer id, String displayName, String ipAddress, String locationAlias, Integer serverType) {
+	public boolean addHostServer(Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac, String height,
+			String locationAlias, String ipAddress, String description) {
 
-		IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
+		String alias = "Host" + Identities.uuid2();
+
+		HostServer hostServer = new HostServer();
+		hostServer.setAlias(alias);
+		hostServer.setCreateTime(new Date());
+
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+	}
+
+	/**
+	 * 更新 hostServer
+	 * 
+	 * @param id
+	 *            hostServerId
+	 * @param serverType
+	 *            服务器类型
+	 * @param serverModelId
+	 *            服务器型号
+	 * @param rack
+	 *            机柜位置
+	 * @param site
+	 *            模块位置
+	 * @param nicSite
+	 *            网卡位置
+	 * @param switchs
+	 *            交换机(alias+name)
+	 * @param switchSite
+	 *            交换机口
+	 * @param mac
+	 *            mac
+	 * @param height
+	 *            高度
+	 * @param locationAlias
+	 *            IDC alias
+	 * @param ipAddress
+	 *            服务器自身IP
+	 * @param description
+	 *            说明
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public boolean updateHostServer(Integer id, Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac, String height,
+			String locationAlias, String ipAddress, String description) {
 
 		HostServer hostServer = this.getHostServer(id);
 
-		// step.1 如果IP进行了修改,则初始化以前老的ip
-		if (!hostServer.getIpAddress().equals(ipAddress)) {
-			comm.ipPoolService.initIpPool(hostServer.getIpAddress());
-			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-			// 服务器本身的IP不关联到自己，只有在工单处理时才关联
-			// ipPool.setHostServer(hostServer);
-			comm.ipPoolService.saveOrUpdate(ipPool);
-		}
-
-		// step.2 保存服务器信息.
-		hostServer.setDisplayName(displayName);
-		hostServer.setIpAddress(ipAddress);
-		hostServer.setLocationAlias(locationAlias);
-		hostServer.setPoolType(ipPool.getPoolType());
-		hostServer.setServerType(serverType);
-
-		this.saveOrUpdate(hostServer);
-
-		// step.3 同步oneCMDB
-		comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
-
-		return hostServer;
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
 	}
 
 	@Transactional(readOnly = false)

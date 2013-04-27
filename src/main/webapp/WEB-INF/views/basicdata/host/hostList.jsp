@@ -24,6 +24,12 @@
 	<form class="form-inline well well-small" action="#">
 		<div class="row">
 			<div class="span3">
+				<label class="search-text">IP地址</label> 
+				<input type="text" name="search_EQ_ipAddress" class="span2" maxlength="45" 
+					value="${param.search_EQ_ipAddress}">
+			</div>
+			
+			<div class="span3">
 				<label class="control-label">服务器类型:</label> 
 				<select name="search_EQ_serverType" class="input-medium">
 					<option value="">全部</option>

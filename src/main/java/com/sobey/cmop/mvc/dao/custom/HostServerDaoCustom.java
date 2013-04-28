@@ -3,7 +3,7 @@ package com.sobey.cmop.mvc.dao.custom;
 import java.util.List;
 
 /**
- * 自定义Dao
+ * HostServer的自定义Dao
  * 
  * @author liukai
  * 
@@ -11,12 +11,11 @@ import java.util.List;
 public interface HostServerDaoCustom {
 
 	/**
-	 * 获得指定宿主机Host下的ECS.
+	 * 获得指定宿主机Host下的ECS List.
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public List getEcsByHost(Integer id);
-
-	public int deleteHostByServerType(int type);
 
 }

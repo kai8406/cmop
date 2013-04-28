@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.basicdata;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.dao.HostServerDao;
 import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.ServerModel;
@@ -313,8 +315,27 @@ public class HostServerService extends BaseSevcie {
 		return hostServerDao.findAll(spec, pageRequest);
 	}
 
-	public List getEcsByHost(Integer id) {
-		return hostServerDaoCustom.getEcsByHost(id);
+	/**
+	 * 获得指定宿主机Host下的ECS.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List<ComputeItem> getEcsByHost(Integer id) {
+
+		List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
+
+		List list = hostServerDaoCustom.getEcsByHost(id);
+
+		for (int i = 0; i < list.size(); i++) {
+
+			Object[] object = (Object[]) list.get(i);
+
+			computeItems.add(comm.basicUnitService.wrapComputeItem(object));
+		}
+
+		return computeItems;
 	}
 
 	/**

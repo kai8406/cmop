@@ -98,7 +98,7 @@
 							</div>
 						</div>
 						
-						<a href="${ctx}/basicdata/host/ecs/${item.id}">虚拟机[${fn:length(item.ipPools)}]</a>
+						<a href="${ctx}/basicdata/host/hostTree/${item.id}">虚拟机[${fn:length(item.ipPools)}]</a>
 						
 					</td>
 				</tr>

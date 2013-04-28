@@ -181,11 +181,18 @@ public class HostServerController extends BaseController {
 		return "basicdata/host/hostDetail";
 	}
 
-	@RequestMapping(value = { "ecs/{id}" })
+	/**
+	 * 跳转至查看hostServer下虚拟机的查看页面.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = { "hostTree/{id}" })
 	public String ecs(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("hostServer", comm.hostServerService.getHostServer(id));
 		model.addAttribute("ecsList", comm.hostServerService.getEcsByHost(id));
-		return "basicdata/host/ecsList";
+		return "basicdata/host/hostTree";
 	}
 
 	@RequestMapping(value = { "syn" })

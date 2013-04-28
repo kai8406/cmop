@@ -189,10 +189,35 @@ public class HostServerController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = { "hostTree/{id}" })
-	public String ecs(@PathVariable("id") Integer id, Model model) {
+	public String hostTree(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("hostServer", comm.hostServerService.getHostServer(id));
 		model.addAttribute("ecsList", comm.hostServerService.getEcsByHost(id));
+
+		model.addAttribute("server", comm.operateService.findHostMapByServerType(2)); // 物理机
+		model.addAttribute("vm", comm.operateService.findHostMapByServerType(1)); // 宿主机
+
 		return "basicdata/host/hostTree";
+	}
+
+	/**
+	 * 重新保存hostServer和PCS,ECS的关系.
+	 * 
+	 * @param id
+	 *            hostServerId
+	 * @param computeIds
+	 *            实例的IP数组
+	 * @param serverAlias
+	 *            实例关联的hostServer alias 数组
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@RequestMapping(value = "/hostTree", method = RequestMethod.POST)
+	public String updateHostTree(@RequestParam(value = "computeIds", required = false) String[] computeIds, @RequestParam(value = "serverAlias", required = false) String[] serverAlias,
+			RedirectAttributes redirectAttributes) {
+
+		comm.hostServerService.updateHostServerTree(computeIds, serverAlias);
+		redirectAttributes.addFlashAttribute("message", "更新宿主机/服务器挂载的实例");
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequestMapping(value = { "syn" })

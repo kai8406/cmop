@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.dao.HostServerDao;
 import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
@@ -281,6 +282,45 @@ public class HostServerService extends BaseSevcie {
 		HostServer hostServer = this.getHostServer(id);
 
 		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+	}
+
+	/**
+	 * 更新HostServer挂载的实例.
+	 * 
+	 * <pre>
+	 * 1.根据computeId获得compute对象,并将根据实例对象的资源类型computeType更新serverAlias或hostServerAlias.
+	 * 2.根据compute对象里的innerIp获得IpPool对象,并将由serverAlias获得的hostServer对象更新至IpPool中.
+	 * 
+	 * <pre>
+	 * 
+	 * @param computeIds
+	 *            实例ID数组
+	 * @param serverAlias
+	 * hostServer(宿主机 & 物理机) Alias 数组
+	 */
+	@Transactional(readOnly = false)
+	public void updateHostServerTree(String[] computeIds, String[] serverAlias) {
+
+		if (computeIds != null) {
+			for (int i = 0; i < serverAlias.length; i++) {
+
+				// step.1
+				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+
+				if (ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType())) {
+					computeItem.setServerAlias(serverAlias[i]);
+				} else {
+					computeItem.setHostServerAlias(serverAlias[i]);
+				}
+				comm.computeService.saveOrUpdate(computeItem);
+
+				// step.2
+				IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(computeItem.getInnerIp());
+				ipPool.setHostServer(this.findByAlias(serverAlias[i]));
+				comm.ipPoolService.saveOrUpdate(ipPool);
+
+			}
+		}
 	}
 
 	@Transactional(readOnly = false)

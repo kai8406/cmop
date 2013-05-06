@@ -97,6 +97,8 @@ table {
 		
 		<hr>
 		
+		<li>PCS & ECS的<strong>关联ESG</strong>,ES3的<strong>挂载实例</strong>,ELB的<strong>关联实例</strong>有变更的话,请手动修改oneCMDB中的数据</li>
+		
 		<#if (resourcesList?exists) && (resourcesList?size > 0) >
 		<li>
 			<#list resourcesList as resource>

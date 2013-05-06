@@ -62,6 +62,12 @@ public class RedmineUtilService extends BaseSevcie {
 	private static final String RARR = BLANK + "→" + BLANK;
 
 	/**
+	 * 因为oneCMDB中的update方法,没有更改复杂对象的功能.
+	 * 故只能通过redmine显示的方法通知管理人员手动修改变更对象在oneCMDB中的数据.
+	 */
+	private static final String CHANGE_ONECMDB_NOTIFICATION = "(提交后,请按工单手动修改oneCMDB中的数据)";
+
+	/**
 	 * 生成满足redmine显示的服务申请Apply文本.
 	 */
 	public String applyRedmineDesc(Apply apply) {
@@ -279,8 +285,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.ESG + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
+								content.append(FieldNameConstant.Compate.ESG + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
+										.append(changeItem.getNewString()).append(NEWLINE);
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
@@ -298,9 +304,10 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (FieldNameConstant.Storage.挂载实例.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Storage.挂载实例 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
+								content.append(FieldNameConstant.Storage.挂载实例 + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
+										.append(changeItem.getNewString()).append(NEWLINE);
 							}
+
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
 
 							// 变更负载均衡器ELB
@@ -316,9 +323,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 							} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Elb.关联实例 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
+								content.append(FieldNameConstant.Elb.关联实例 + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
 										.append(changeItem.getNewString()).append(NEWLINE);
-
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {

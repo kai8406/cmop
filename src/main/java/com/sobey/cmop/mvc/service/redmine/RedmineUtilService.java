@@ -249,7 +249,7 @@ public class RedmineUtilService extends BaseSevcie {
 					if (change.getSubResourcesId() != null) {
 						content.append(NEWLINE).append("变更项:(服务子项ID:" + change.getSubResourcesId() + ")");
 					} else {
-						content.append("变更项:");
+						content.append(NEWLINE).append("变更项:");
 					}
 
 					content.append(BLANK + "旧值").append(RARR).append("新值").append(NEWLINE);
@@ -467,6 +467,7 @@ public class RedmineUtilService extends BaseSevcie {
 							if (FieldNameConstant.MdnItem.重点覆盖ISP.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnItem.重点覆盖ISP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
+
 							// MDNVod
 							if (FieldNameConstant.MdnVodItem.点播服务域名.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnVodItem.点播服务域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
@@ -507,6 +508,18 @@ public class RedmineUtilService extends BaseSevcie {
 							}
 							if (FieldNameConstant.MdnLiveItem.编码器模式.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.拉流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.拉流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.拉流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.拉流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.推流地址.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.推流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							}
+							if (FieldNameConstant.MdnLiveItem.推流混合码率.toString().equals(fieldName)) {
+								content.append(FieldNameConstant.MdnLiveItem.推流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
 							}
 							if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(fieldName)) {
 								content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);

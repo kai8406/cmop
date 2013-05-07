@@ -877,38 +877,14 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	@Override
 	public boolean compareDns(Resources resources, Change change, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
 
+		/**
+		 * 关于挂载实例的处理逻辑说明请查看 compareCompute方法
+		 */
+
+		// Step.1设置一个boolean类型的flag.用于检测挂载实例是否修改.
+		boolean flag = false;
+
 		boolean isChange = false;
-
-		// 域名
-
-		if (!networkDnsItem.getDomainName().equals(domainName)) {
-
-			String fieldName = FieldNameConstant.Dns.域名.toString();
-			String oldValue = networkDnsItem.getDomainName();
-			String oldString = networkDnsItem.getDomainName();
-
-			String newValue = domainName;
-			String newString = domainName;
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
-
-		// 域名类型
-
-		if (!networkDnsItem.getDomainType().equals(domainType)) {
-
-			String fieldName = FieldNameConstant.Dns.域名类型.toString();
-
-			String oldValue = networkDnsItem.getDomainType().toString();
-			String oldString = NetworkConstant.DomainType.get(networkDnsItem.getDomainType());
-
-			String newValue = domainType.toString();
-			String newString = NetworkConstant.DomainType.get(domainType);
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
 
 		if (networkDnsItem.getDomainType().equals(domainType) && NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
 
@@ -1011,6 +987,73 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newStringCNAME = cnameDomain;
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
+		}
+
+		// 域名类型
+
+		if (!networkDnsItem.getDomainType().equals(domainType)) {
+
+			String fieldName = FieldNameConstant.Dns.域名类型.toString();
+
+			String oldValue = networkDnsItem.getDomainType().toString();
+			String oldString = NetworkConstant.DomainType.get(networkDnsItem.getDomainType());
+
+			String newValue = domainType.toString();
+			String newString = NetworkConstant.DomainType.get(domainType);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// Step.1 如果有变更,设置为true.
+		flag = isChange;
+
+		// 域名
+
+		if (!networkDnsItem.getDomainName().equals(domainName)) {
+
+			String fieldName = FieldNameConstant.Dns.域名.toString();
+			String oldValue = networkDnsItem.getDomainName();
+			String oldString = networkDnsItem.getDomainName();
+
+			String newValue = domainName;
+			String newString = domainName;
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// Step.2 关联实例没有变更,同时其他属性有变更,插入一条关联实例的数据到数据库中,方便页面查看所有关联的ESG.
+		if (isChange && !flag) {
+
+			if (NetworkConstant.DomainType.CNAME.toInteger().equals(networkDnsItem.getDomainType())) {
+
+				// CNAME(3)
+
+				String fieldNameCNAME = FieldNameConstant.Dns.CNAME域名.toString();
+
+				String oldValueCNAME = networkDnsItem.getCnameDomain();
+				String oldStringCNAME = networkDnsItem.getCnameDomain();
+
+				String newValueCNAME = networkDnsItem.getCnameDomain();
+				String newStringCNAME = networkDnsItem.getCnameDomain();
+
+				this.saveChangeItemByFieldName(resources, change, fieldNameCNAME, oldValueCNAME, oldStringCNAME, newValueCNAME, newStringCNAME);
+
+			} else {
+
+				// GSLB(1), A(2)
+
+				String oldId = Collections3.extractToString(networkDnsItem.getNetworkEipItemList(), "id", ",");
+
+				String fieldName = FieldNameConstant.Dns.目标IP.toString();
+
+				String oldValue = oldId;
+				String oldString = networkDnsItem.getMountElbs();
+
+				String newValue = oldId;
+				String newString = networkDnsItem.getMountElbs();
+
+				this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+			}
 
 		}
 

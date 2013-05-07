@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,6 +39,8 @@ import com.sobey.framework.utils.SearchFilter;
 @Service
 @Transactional(readOnly = true)
 public class HostServerService extends BaseSevcie {
+
+	private static Logger logger = LoggerFactory.getLogger(HostServerService.class);
 
 	@Resource
 	private HostServerDao hostServerDao;
@@ -391,11 +395,9 @@ public class HostServerService extends BaseSevcie {
 
 			// 2. 更新宿主机对应IP状态及其关联虚拟机IP状态为：未使用
 			int updateCount = ipPoolDaoCustom.updateIpPoolByStatus(IpPoolConstant.IpStatus.未使用.toInteger());
-			System.out.println(updateCount);
 
 			// 3. 删除所有宿主机
 			// int deleteCount = hostServerDaoCustom.deleteHostByServerType(1);
-			// System.out.println(deleteCount);
 
 			List<String> hostList;
 			List<Map> hostListMap;
@@ -415,7 +417,7 @@ public class HostServerService extends BaseSevcie {
 					// 4. 写入新的宿主机
 					hostServerList = hostServerDao.findByIpAddress(ipAddress);
 					if (hostServerList != null && hostServerList.size() > 0) {
-						System.out.println("已存在的宿主机：" + ipAddress + "，hostServerList.size=" + hostServerList.size());
+						logger.info("已存在的宿主机：" + ipAddress + "，hostServerList.size=" + hostServerList.size());
 						hostServer = (HostServer) hostServerList.get(0);
 					} else {
 						hostServer = new HostServer(1, IpPoolConstant.PoolType.私网IP池.toInteger(), hostList.get(i), new Date()); // 名称默认为IP；IP池默认为私网IP池
@@ -427,7 +429,7 @@ public class HostServerService extends BaseSevcie {
 
 					// 5. 更新宿主机对应IP状态为：已使用
 					if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
-						System.out.println("已存在的宿主机IP：" + ipAddress);
+						logger.info("已存在的宿主机IP：" + ipAddress);
 						comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IpStatus.已使用.toInteger(), null);
 					} else {
 						comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
@@ -441,7 +443,7 @@ public class HostServerService extends BaseSevcie {
 						vmCount++;
 
 						if (comm.ipPoolService.findIpPoolByIpAddress(ipAddress) != null) {
-							System.out.println("已存在的虚拟机IP：" + ipAddress);
+							logger.info("已存在的虚拟机IP：" + ipAddress);
 							comm.ipPoolService.updateIpPoolByIpAddress(ipAddress, IpPoolConstant.IpStatus.已使用.toInteger(), hostServer);
 						} else {
 							comm.ipPoolService.saveIpPool(ipAddress, IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1), hostServer); // 默认西安虚拟机内网VLAN

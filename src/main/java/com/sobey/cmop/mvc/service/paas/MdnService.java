@@ -447,8 +447,8 @@ public class MdnService extends BaseSevcie {
 				mdnLiveItem.setHttpBitrate(null);
 				mdnLiveItem.setHttpUrl(null);
 
-				mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsUrlEncoder, null));
-				mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsBitrateEncoder, null));
+				mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(hlsBitrateEncoder, null));
+				mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(hlsUrlEncoder, null));
 
 			} else {
 				mdnLiveItem.setHttpBitrate(null);

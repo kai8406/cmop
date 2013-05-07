@@ -161,9 +161,49 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark,
 			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
 
+		/**
+		 * 现在需求是:不管变更了哪些属性.PCS & ECS的 关联ESG, ES3的 挂载实例, ELB的 关联实例
+		 * 有变更.EIP的关联实例&关联ELB
+		 * 
+		 * 1.设置一个boolean类型的flag.用于检测关联ESG是否修改.
+		 * 
+		 * 2.当flag为false(即关联ESG没有变更.),同时其他属性有变更,插入一条关联ESG的数据到数据库中,方便页面查看所有关联的ESG
+		 * 
+		 * 注意执行的先后顺序.应该最先判断关联ESG是否变更.从而保证isChange没有被其它项影响.
+		 * 
+		 */
+
 		// 初始化一个标记,表示其是否更改
 
 		boolean isChange = false;
+
+		// Step.1设置一个boolean类型的flag.用于检测关联ESG是否修改.
+		boolean flag = false;
+
+		// ESG.先将新旧值关联的esgId拼装成","的字符串,再比较两个字符串是否相等.
+		String oldId = Collections3.extractToString(computeItem.getNetworkEsgItemList(), "id", ",");
+		String newId = esgIds != null ? StringUtils.join(esgIds, ",") : "";
+
+		if (!oldId.equals(newId)) {
+
+			String fieldName = FieldNameConstant.Compate.ESG.toString();
+
+			String oldValue = oldId;
+			String oldString = computeItem.getMountESG();
+
+			// 根据computeIds查询compute的List,再得出字符串.
+			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+			for (int i = 0; i < esgIds.length; i++) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+			}
+			String newValue = newId;
+			String newString = ComputeItem.extractToString(networkEsgItemList);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+
+			// Step.1 如果有变更,设置为true.
+			flag = isChange;
+		}
 
 		// 操作系统
 
@@ -178,7 +218,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = ComputeConstant.OS_TYPE_MAP.get(osType);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
 		}
 
 		// 位数
@@ -194,7 +233,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = ComputeConstant.OS_BIT_MAP.get(osBit);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
 		}
 
 		// 规格
@@ -212,7 +250,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 					.get(serverType);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
 		}
 
 		// Remark
@@ -254,13 +291,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = this.wrapApplicationToString(applicationNames, applicationVersions, applicationDeployPaths);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
 		}
 
-		// ESG.先将新旧值关联的esgId拼装成","的字符串,再比较两个字符串是否相等.
-		String oldId = Collections3.extractToString(computeItem.getNetworkEsgItemList(), "id", ",");
-		String newId = esgIds != null ? StringUtils.join(esgIds, ",") : "";
-		if (!oldId.equals(newId)) {
+		// Step.2 关联ESG没有变更,同时其他属性有变更,插入一条关联ESG的数据到数据库中,方便页面查看所有关联的ESG.
+		if (isChange && !flag) {
 
 			String fieldName = FieldNameConstant.Compate.ESG.toString();
 
@@ -275,7 +309,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newValue = newId;
 			String newString = ComputeItem.extractToString(networkEsgItemList);
 
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+			this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
 		}
 
@@ -352,37 +386,14 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	@Override
 	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds) {
 
+		/**
+		 * 关于挂载实例的处理逻辑说明请查看 compareCompute方法
+		 */
+
+		// Step.1设置一个boolean类型的flag.用于检测挂载实例是否修改.
+		boolean flag = false;
+
 		boolean isChange = false;
-
-		// 存储类型
-
-		if (!storageItem.getStorageType().equals(storageType)) {
-
-			String fieldName = FieldNameConstant.Storage.存储类型.toString();
-			String oldValue = storageItem.getStorageType().toString();
-			String oldString = StorageConstant.StorageType.get(storageItem.getStorageType());
-
-			String newValue = storageType.toString();
-			String newString = StorageConstant.StorageType.get(storageType);
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
-
-		// 容量空间
-
-		if (!storageItem.getSpace().equals(space)) {
-
-			String fieldName = FieldNameConstant.Storage.容量空间.toString();
-			String oldValue = storageItem.getSpace().toString();
-			String oldString = storageItem.getSpace().toString();
-
-			String newValue = space.toString();
-			String newString = space.toString();
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
 
 		// 先将新旧值关联的computeId拼装成","的字符串,再比较两个字符串是否相等.
 		String oldId = Collections3.extractToString(storageItem.getComputeItemList(), "id", ",");
@@ -405,6 +416,56 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
+			// Step.1 如果有变更,设置为true.
+			flag = isChange;
+		}
+
+		// 存储类型
+
+		if (!storageItem.getStorageType().equals(storageType)) {
+
+			String fieldName = FieldNameConstant.Storage.存储类型.toString();
+			String oldValue = storageItem.getStorageType().toString();
+			String oldString = StorageConstant.StorageType.get(storageItem.getStorageType());
+
+			String newValue = storageType.toString();
+			String newString = StorageConstant.StorageType.get(storageType);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// 容量空间
+
+		if (!storageItem.getSpace().equals(space)) {
+
+			String fieldName = FieldNameConstant.Storage.容量空间.toString();
+			String oldValue = storageItem.getSpace().toString();
+			String oldString = storageItem.getSpace().toString();
+
+			String newValue = space.toString();
+			String newString = space.toString();
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// Step.2 挂载实例没有变更,同时其他属性有变更,插入一条挂载实例的数据到数据库中,方便页面查看所有挂载实例.
+		if (isChange && !flag) {
+
+			String fieldName = FieldNameConstant.Storage.挂载实例.toString();
+
+			String oldValue = oldId;
+			String oldString = storageItem.getMountComputes();
+
+			// 根据computeIds查询compute的List,再得出字符串.
+			List<ComputeItem> list = new ArrayList<ComputeItem>();
+			for (int i = 0; i < computeIds.length; i++) {
+				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+				list.add(computeItem);
+			}
+			String newValue = newId;
+			String newString = StorageItem.extractToString(list);
+
+			this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		return isChange;
@@ -414,37 +475,14 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	public boolean compareElb(Resources resources, Change change, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts,
 			String[] targetPorts, String[] computeIds) {
 
+		/**
+		 * 关于挂载实例的处理逻辑说明请查看 compareCompute方法
+		 */
+
+		// Step.1设置一个boolean类型的flag.用于检测挂载实例是否修改.
+		boolean flag = false;
+
 		boolean isChange = false;
-
-		// 存储类型
-
-		if (!networkElbItem.getKeepSession().toString().equals(keepSession)) {
-
-			String fieldName = FieldNameConstant.Elb.是否保持会话.toString();
-
-			String oldValue = networkElbItem.getKeepSession().toString();
-			String oldString = NetworkConstant.KeepSession.get(networkElbItem.getKeepSession());
-
-			String newValue = keepSession;
-			String newString = NetworkConstant.KeepSession.get(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
-
-		// 端口信息
-		if (this.compareElbPortItem(elbPortItems, protocols, sourcePorts, targetPorts)) {
-
-			String fieldName = FieldNameConstant.Elb.端口信息.toString();
-			String oldValue = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
-			String oldString = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
-
-			String newValue = "";
-			String newString = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
-
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
-
-		}
 
 		// 先将新旧值关联的computeId拼装成","的字符串,再比较两个字符串是否相等.
 		String oldId = Collections3.extractToString(networkElbItem.getComputeItemList(), "id", ",");
@@ -468,6 +506,55 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 
+			flag = isChange;
+		}
+
+		// 存储类型
+
+		if (!networkElbItem.getKeepSession().toString().equals(keepSession)) {
+
+			String fieldName = FieldNameConstant.Elb.是否保持会话.toString();
+
+			String oldValue = networkElbItem.getKeepSession().toString();
+			String oldString = NetworkConstant.KeepSession.get(networkElbItem.getKeepSession());
+
+			String newValue = keepSession;
+			String newString = NetworkConstant.KeepSession.get(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// 端口信息
+		if (this.compareElbPortItem(elbPortItems, protocols, sourcePorts, targetPorts)) {
+
+			String fieldName = FieldNameConstant.Elb.端口信息.toString();
+			String oldValue = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
+			String oldString = this.wrapElbPortItemFromNetworkElbItemToString(networkElbItem);
+
+			String newValue = "";
+			String newString = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// Step.2 关联实例没有变更,同时其他属性有变更,插入一条关联实例的数据到数据库中,方便页面查看所有关联的ESG.
+		if (isChange && !flag) {
+
+			String fieldName = FieldNameConstant.Elb.关联实例.toString();
+
+			String oldValue = oldId;
+			String oldString = networkElbItem.getMountComputes();
+
+			// 根据computeIds查询compute的List,再得出字符串.
+			List<ComputeItem> list = new ArrayList<ComputeItem>();
+			for (int i = 0; i < computeIds.length; i++) {
+				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+				list.add(computeItem);
+			}
+			String newValue = newId;
+			String newString = StorageItem.extractToString(list);
+
+			this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		return isChange;
@@ -563,6 +650,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	@Override
 	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols,
 			String[] sourcePorts, String[] targetPorts) {
+
+		/**
+		 * 关于挂载实例的处理逻辑说明请查看 compareCompute方法
+		 */
+
+		// Step.1设置一个boolean类型的flag.用于检测挂载实例是否修改.
+		boolean flag = false;
 
 		boolean isChange = false;
 
@@ -660,10 +754,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String newStringElb = "";
 
 				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameElb, oldValueElb, oldStringElb, newValueElb, newStringElb);
-
 			}
 
 		}
+
+		flag = isChange;
 
 		// 端口信息
 		if (this.compareEipPortItem(eipPortItems, protocols, sourcePorts, targetPorts)) {
@@ -677,6 +772,34 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String newString = this.wrapPortItemToString(protocols, sourcePorts, targetPorts);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		// Step.2
+		// 关联实例&关联ELB没有变更,同时其他属性有变更,插入一条关联实例&关联ELB的数据到数据库中,方便页面查看所有关联实例&关联ELB.
+		if (isChange && !flag) {
+
+			if (NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
+				String fieldName = FieldNameConstant.Eip.关联ELB.toString();
+
+				String oldValue = networkEipItem.getNetworkElbItem().getId().toString();
+				String oldString = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
+
+				String newValue = linkId.toString();
+				String newString = this.wrapStringByNetworkElbItem(linkId);
+
+				this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+			} else {
+
+				String fieldName = FieldNameConstant.Eip.关联实例.toString();
+
+				String oldValue = networkEipItem.getComputeItem().getId().toString();
+				String oldString = this.wrapStringByComputeItem(networkEipItem.getComputeItem().getId());
+
+				String newValue = linkId.toString();
+				String newString = this.wrapStringByComputeItem(linkId);
+
+				this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+			}
 
 		}
 

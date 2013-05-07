@@ -182,7 +182,7 @@ public class StorageItem implements java.io.Serializable {
 	public static String extractToString(final List<ComputeItem> computeItems) {
 		StringBuilder sb = new StringBuilder();
 		for (ComputeItem computeItem : computeItems) {
-			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getInnerIp()).append(")").append(",");
+			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(",");
 		}
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";

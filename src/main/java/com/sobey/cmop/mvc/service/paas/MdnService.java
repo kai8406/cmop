@@ -224,7 +224,10 @@ public class MdnService extends BaseSevcie {
 	}
 
 	public MdnVodItem getMdnVodItem(Integer id) {
-		return mdnVodItemDao.findOne(id);
+		if (id != null) {
+			return mdnVodItemDao.findOne(id);
+		}
+		return null;
 	}
 
 	@Transactional(readOnly = false)
@@ -475,7 +478,10 @@ public class MdnService extends BaseSevcie {
 	}
 
 	public MdnLiveItem getMdnLiveItem(Integer id) {
-		return mdnLiveItemDao.findOne(id);
+		if (id != null) {
+			return mdnLiveItemDao.findOne(id);
+		}
+		return null;
 	}
 
 	@Transactional(readOnly = false)

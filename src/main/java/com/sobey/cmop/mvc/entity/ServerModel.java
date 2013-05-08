@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * ServerModel entity. @author MyEclipse Persistence Tools
  */
@@ -136,6 +138,7 @@ public class ServerModel implements java.io.Serializable {
 		this.port = port;
 	}
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "serverModel")
 	public Set<HostServer> getHostServers() {
 		return hostServers;

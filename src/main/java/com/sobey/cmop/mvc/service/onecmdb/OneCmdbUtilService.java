@@ -28,6 +28,7 @@ import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
+import com.sobey.cmop.mvc.entity.Nic;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.Vlan;
@@ -764,6 +765,9 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			OneCmdbService.update(ciList);
 
+			// hostServer中的网卡写入ServerPort
+			this.saveServerPortByHostServerToOneCMDB(hostServer);
+
 			// ServerPort
 			this.saveServerPortToOneCMDB(hostServer);
 
@@ -788,7 +792,11 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			List<CiBean> ciBeanList = new ArrayList<CiBean>();
 			CiBean router = new CiBean("Server", "Server" + hostServer.getAlias(), false);
+			CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
+
 			ciBeanList.add(router);
+			ciBeanList.add(ci);
+
 			OneCmdbService.delete(ciBeanList);
 
 			// ServerPort
@@ -808,27 +816,53 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 
-		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
-		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
-		ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
-		ci.addAttributeValue(new ValueBean("Sit", hostServer.getNicSite(), false));
-		ci.addAttributeValue(new ValueBean("MacAddress", hostServer.getMac(), false));
-		ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
-		ciBeanList.add(ci);
+		List<Nic> nics = comm.hostServerService.getNicByhostServerId(hostServer.getId());
+
+		for (Nic nic : nics) {
+			CiBean ci = new CiBean("ServerPort", "ServerPort" + nic.getAlias(), false);
+			ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + nic.getIpAddress(), true));
+			ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
+			ci.addAttributeValue(new ValueBean("Sit", nic.getSite(), false));
+			ci.addAttributeValue(new ValueBean("MacAddress", nic.getMac(), false));
+			ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
+			ciBeanList.add(ci);
+		}
+
+		return OneCmdbService.update(ciBeanList);
+	}
+
+	public boolean saveServerPortByHostServerToOneCMDB(HostServer hostServer) {
+
+		List<CiBean> ciBeanList = new ArrayList<CiBean>();
+
+		List<Nic> nics = comm.hostServerService.getNicByhostServerId(hostServer.getId());
+
+		for (Nic nic : nics) {
+			CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
+			ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
+			ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
+			// ci.addAttributeValue(new ValueBean("Sit", nic.getSite(), false));
+			ci.addAttributeValue(new ValueBean("MacAddress", hostServer.getManagementMac(), false));
+			ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
+			ciBeanList.add(ci);
+		}
 
 		return OneCmdbService.update(ciBeanList);
 	}
 
 	/**
-	 * 删除oneCMDB中的ServerPort
+	 * 删除oneCMDB中HostServer的ServerPort
 	 * 
 	 * @param hostServer
 	 */
 	public void deleteServerPortToOneCMDB(HostServer hostServer) {
 		if (hostServer != null) {
 			List<CiBean> ciBeanList = new ArrayList<CiBean>();
-			CiBean router = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
-			ciBeanList.add(router);
+			List<Nic> nics = comm.hostServerService.getNicByhostServerId(hostServer.getId());
+			for (Nic nic : nics) {
+				CiBean ci = new CiBean("ServerPort", "ServerPort" + nic.getAlias(), false);
+				ciBeanList.add(ci);
+			}
 			OneCmdbService.delete(ciBeanList);
 		}
 	}

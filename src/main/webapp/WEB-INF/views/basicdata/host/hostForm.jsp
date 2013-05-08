@@ -10,8 +10,64 @@
 			
 			$("ul#navbar li#basicdata").addClass("active");
 			
-			changeLocation();
+			 
+			 $("#serverModelId").on("change",function(){
+				 getServerModel();
+			 });
+			 
+			 if($("#hostServerId").val() == ""){
+				getServerModel();
+		 		changeLocation();
+			 }
 		});
+		
+		$(document).on("change","select.vlan",function(){
+			changeVlan($(this));
+		});
+		
+
+		//根据服务器规格生成网卡信息.
+		function getServerModel() {
+			$.ajax({
+				type: "GET",
+				url: "${ctx}/ajax/getServerModel?id=" + $('#serverModelId').val(),
+				dataType: "json",
+				success: function(data) {
+					var count = data.port;
+					$("#NICDIV").empty();
+					if(count > 0 ){
+						var html = "";
+						for ( var i = 0; i < count; i++) {
+							html += '<hr>';
+							html += '<div class="control-group">';
+							html += '<label class="control-label">网卡号</label>';
+							html += '<div class="controls">';
+							html += '<input type="text" name="nicSite" class="required" maxlength="45" placeholder="..网卡号">';
+							html += '</div>';
+							html += '</div>';
+							
+							html += '<div class="control-group">';
+							html += '<label class="control-label">Mac</label>';
+							html += '<div class="controls">';
+							html += '<input type="text" name="nicMac" class="required" maxlength="45" placeholder="..Mac地址">';
+							html += '</div>';
+							html += '</div>';
+							
+							html += '<div class="control-group">';
+							html += '<label class="control-label">网卡IP</label>';
+							html += '<div class="controls">';
+							html += '<select class="span2 vlan"><option>...Choose IDC</option></select>';
+							html += '<select name="nicIpAddress" class="required span2 ipAddress"></select>';
+							html += '</select>';
+							html += '</div>';
+							html += '</div> ';
+						}
+				
+						$("#NICDIV").append(html);
+					}
+				}
+			});
+		}
 		
 		function changeLocation() {
 			$.ajax({
@@ -19,35 +75,40 @@
 				url: "${ctx}/ajax/getVlanByLocationAlias?locationAlias=" + $('#locationAlias').val(),
 				dataType: "json",
 				success: function(data) {
-					$("#vlan").empty();
+					var $vlan = $(".vlan");
+					$vlan.empty();
 					var html = "";
 					for (var key in data) {
 						html += ("<option value='" + key + "'>" + data[key] + "</option>");
 					}
-					$("#vlan").append(html);
-					changeVlan();
+					$vlan.append(html);
+					changeVlan($vlan);
 				}
 			});
 		}
 		
-		function changeVlan() {
+		function changeVlan(obj) {
 			$.ajax({
 				type: "GET",
-				url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + $("#vlan").val(),
+				url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + obj.val(),
 				dataType: "json",
 				success: function(data) {
-					$("#ipAddress").empty();
+					
+					var $ipAddress = obj.next(".ipAddress");
+					
+					$ipAddress.empty();
+					
 					var html = "<option value=''></option>";
-					var ip = $("#hostIpAddress").val();
 					for (var i = 0; i < data.length; i++) {
 						html += "<option value='" + data[i].ipAddress + "'>" + data[i].ipAddress + "</option>";
 					}
 					
 					//如果ip不为"",插入hostServer本身的ip.
-					if (ip != "") {
+					var ip = $("#hostIpAddress").val();
+					if (ip != "" && $ipAddress.attr("id") == "ipAddress" ) {
 						html += "<option selected='selected' value='" + ip + "'>" + ip + "</option>";
 					}
-					$("#ipAddress").append(html);
+					$ipAddress.append(html);
 				}
 			});
 		}
@@ -61,7 +122,7 @@
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
-		<input type="hidden" name="id" value="${hostServer.id}">
+		<input type="hidden" id="hostServerId" name="id" value="${hostServer.id}">
 		<input type="hidden" id="hostIpAddress" value="${hostServer.ipAddress}">
 		
 		<fieldset>
@@ -88,7 +149,7 @@
 					<select name="serverModelId" id="serverModelId" class="required">
 						<c:forEach var="item" items="${serverModelList }">
 							<option value="${item.id}" <c:if test="${item.id == hostServer.serverModel.id }"> selected="selected"</c:if>
-							>${item.name }</option>
+							>${item.name } || ${item.port }</option>
 						</c:forEach>
 					</select>
 				</div>
@@ -133,20 +194,6 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="nicSite">网卡号</label>
-				<div class="controls">
-					<input type="text" id="nicSite" name="nicSite" value="${hostServer.nicSite}" class="required" maxlength="45" placeholder="..网卡号">
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="mac">Mac</label>
-				<div class="controls">
-					<input type="text" id="mac" name="mac" value="${hostServer.mac}"  class="required" maxlength="45" placeholder="..Mac地址">
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="height">高度</label>
 				<div class="controls">
 					<input type="text" id="height" name="height" value="${hostServer.height}"  class="required" maxlength="45" placeholder="..格式如:1U,2U">
@@ -166,16 +213,10 @@
 			</div>	
 			
 			<div class="control-group">
-				<label class="control-label" for="vlan">Vlan</label>
-				<div class="controls">
-					<select id="vlan" class="required" onchange="changeVlan()"></select>
-				</div>
-			</div>	
-			
-			<div class="control-group">
 				<label class="control-label" for="ipAddress">IP地址</label>
 				<div class="controls">
-					<select id="ipAddress" name="ipAddress" class="required">
+					<select class="span2 vlan"></select>
+					<select id="ipAddress" name="ipAddress" class="required span2 ipAddress">
 						<option value="${hostServer.ipAddress }">${hostServer.ipAddress }</option>
 					</select>
 				</div>
@@ -188,7 +229,51 @@
 						maxlength="100" class="required ">${hostServer.description }</textarea>
 				</div>
 			</div>	
-					
+			
+			<div class="control-group">
+				<label class="control-label" for="managementMac">Mac</label>
+				<div class="controls">
+					<input type="text" id="managementMac" name="managementMac" value="${hostServer.managementMac}"  class="required" maxlength="45" placeholder="..Mac地址">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="managementIp">管理口IP</label>
+				<div class="controls">
+					<select class="span2 vlan"></select>
+					<select id="managementIp" name="managementIp" class="required span2 ipAddress">
+						<option selected="selected" value="${hostServer.managementIp }">${hostServer.managementIp }</option>
+					</select>
+				</div>
+			</div>
+			
+			<div id="NICDIV">
+				<c:forEach var="nic" items="${hostServer.nics }">
+					<hr>
+					<div class="control-group">
+						<label class="control-label">网卡号</label>
+						<div class="controls">
+							<input type="text" placeholder="..网卡号" maxlength="45" value="${nic.site }" class="required" name="nicSite">
+						</div>
+					</div> 
+					<div class="control-group">
+						<label class="control-label">Mac</label>
+						<div class="controls">
+							<input type="text" placeholder="..Mac地址" maxlength="45" value="${nic.mac }" class="required" name="nicMac">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">网卡IP</label>
+						<div class="controls">
+							<select class="span2 vlan"></select>
+							<select	class="required span2 ipAddress" name="nicIpAddress">
+								<option selected="selected" value="${nic.ipAddress }">${nic.ipAddress }</option>
+							</select>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+			 
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

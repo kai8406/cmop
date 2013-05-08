@@ -1,6 +1,7 @@
 package com.sobey.cmop.mvc.service.basicdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +21,13 @@ import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.dao.HostServerDao;
+import com.sobey.cmop.mvc.dao.NicDao;
 import com.sobey.cmop.mvc.dao.custom.HostServerDaoCustom;
 import com.sobey.cmop.mvc.dao.custom.IpPoolDaoCustom;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.HostServer;
 import com.sobey.cmop.mvc.entity.IpPool;
+import com.sobey.cmop.mvc.entity.Nic;
 import com.sobey.cmop.mvc.entity.ServerModel;
 import com.sobey.cmop.mvc.service.vm.HostTree;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -49,12 +52,40 @@ public class HostServerService extends BaseSevcie {
 	private HostServerDaoCustom hostServerDaoCustom;
 
 	@Resource
+	private NicDao nicDao;
+
+	@Resource
 	private IpPoolDaoCustom ipPoolDaoCustom;
 
 	/**
 	 * 1/0/: 模板
 	 */
 	private static final String SWITCH_FORMAT = " 1/0/";
+
+	// ========== nicDao =============/
+
+	@Transactional(readOnly = false)
+	public Nic saveOrUpdate(Nic nic) {
+		return nicDao.save(nic);
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteNic(Collection<Nic> nics) {
+		nicDao.delete(nics);
+	}
+
+	/**
+	 * 获得指定服务器的网卡列表.
+	 * 
+	 * @param hostServerId
+	 * @return
+	 */
+	public List<Nic> getNicByhostServerId(Integer hostServerId) {
+		return nicDao.findByHostServerId(hostServerId);
+
+	}
+
+	// ========== HostServer =============/
 
 	/**
 	 * 新增,保存HostServer
@@ -84,6 +115,12 @@ public class HostServerService extends BaseSevcie {
 
 		// 初始化IP.
 		comm.ipPoolService.initIpPool(hostServer.getIpAddress());
+		comm.ipPoolService.initIpPool(hostServer.getManagementIp());
+
+		List<Nic> nics = this.getNicByhostServerId(id);
+		for (Nic nic : nics) {
+			comm.ipPoolService.initIpPool(nic.getIpAddress());
+		}
 
 		// 删除oneCMDB中的数据
 		comm.oneCmdbUtilService.deleteHostServerToOneCMDB(hostServer);
@@ -97,7 +134,7 @@ public class HostServerService extends BaseSevcie {
 	 * 新增,更新HostServer
 	 * 
 	 * <pre>
-	 * 1.保存服务器.
+	 * 1.保存服务器和网卡信息.
 	 * 2.将分配的IP状态设置为已使用状态.
 	 * 3.同步数据至oneCMDB.
 	 * </pre>
@@ -131,8 +168,8 @@ public class HostServerService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	private boolean saveOrUpdateHostServer(HostServer hostServer, Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac,
-			String height, String locationAlias, String ipAddress, String description) {
+	private boolean saveOrUpdateHostServer(HostServer hostServer, Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height,
+			String locationAlias, String ipAddress, String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		boolean flag = false;
 
@@ -173,6 +210,8 @@ public class HostServerService extends BaseSevcie {
 
 			IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
 
+			IpPool managementIpPool = comm.ipPoolService.findIpPoolByIpAddress(managementIp);
+
 			hostServer.setDisplayName(displayName);
 			hostServer.setIpAddress(ipAddress);
 			hostServer.setLocationAlias(locationAlias);
@@ -184,18 +223,24 @@ public class HostServerService extends BaseSevcie {
 			hostServer.setDescription(description);
 			hostServer.setRack(rackName);
 			hostServer.setRackAlias(rackAlias);
-			hostServer.setMac(mac);
 			hostServer.setSwitchAlias(switchAlias);
 			hostServer.setSwitchName(switchName);
-			hostServer.setNicSite(nicSite);
 			hostServer.setSwitchSite(switchSite);
+			hostServer.setManagementMac(managementMac);
+			hostServer.setManagementIp(managementIp);
 
 			// step.2 更改IP状态为 已使用
 			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-
 			comm.ipPoolService.saveOrUpdate(ipPool);
 
+			managementIpPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+			comm.ipPoolService.saveOrUpdate(managementIpPool);
+
 			this.saveOrUpdate(hostServer);
+
+			// 保存网卡信息
+
+			this.saveNic(hostServer, nicSites, nicMacs, nicIpAddress);
 
 			// step.3 同步oneCMDB
 			comm.oneCmdbUtilService.saveHostServerToOneCMDB(hostServer);
@@ -204,6 +249,49 @@ public class HostServerService extends BaseSevcie {
 		}
 
 		return flag;
+	}
+
+	/**
+	 * 保存Nics
+	 * 
+	 * @param hostServer
+	 * @param nicSites
+	 * @param nicMacs
+	 * @param nicIpAddress
+	 */
+	@Transactional(readOnly = false)
+	private void saveNic(HostServer hostServer, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
+
+		List<Nic> nics = this.getNicByhostServerId(hostServer.getId());
+
+		if (!nics.isEmpty()) {
+
+			// 删除oneCMDB中网卡数据.
+			comm.oneCmdbUtilService.deleteServerPortToOneCMDB(hostServer);
+
+			for (Nic nic : nics) {
+				// 初始化修改前的IP.
+				comm.ipPoolService.initIpPool(nic.getIpAddress());
+			}
+
+			this.deleteNic(nics);
+		}
+
+		if (nicSites != null) {
+			int count = nicSites.length;
+			for (int i = 0; i < count; i++) {
+
+				// 更改IP状态为 已使用
+				IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(nicIpAddress[i]);
+				ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
+				comm.ipPoolService.saveOrUpdate(ipPool);
+
+				String alias = "Nic" + Identities.uuid2();
+				Nic nic = new Nic(hostServer, nicMacs[i], nicIpAddress[i], alias, nicSites[i]);
+				this.saveOrUpdate(nic);
+			}
+		}
+
 	}
 
 	/**
@@ -236,8 +324,8 @@ public class HostServerService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean addHostServer(Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac, String height,
-			String locationAlias, String ipAddress, String description) {
+	public boolean addHostServer(Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height, String locationAlias, String ipAddress,
+			String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		String alias = "Host" + Identities.uuid2();
 
@@ -245,7 +333,8 @@ public class HostServerService extends BaseSevcie {
 		hostServer.setAlias(alias);
 		hostServer.setCreateTime(new Date());
 
-		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
+				nicSites, nicMacs, nicIpAddress);
 	}
 
 	/**
@@ -267,8 +356,10 @@ public class HostServerService extends BaseSevcie {
 	 *            交换机(alias+name)
 	 * @param switchSite
 	 *            交换机口
-	 * @param mac
-	 *            mac
+	 * @param managementMac
+	 *            管理口Mac
+	 * @param managementIp
+	 *            管理口IP
 	 * @param height
 	 *            高度
 	 * @param locationAlias
@@ -280,12 +371,13 @@ public class HostServerService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean updateHostServer(Integer id, Integer serverType, Integer serverModelId, String rack, String site, String nicSite, String switchs, String switchSite, String mac, String height,
-			String locationAlias, String ipAddress, String description) {
+	public boolean updateHostServer(Integer id, Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height, String locationAlias,
+			String ipAddress, String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		HostServer hostServer = this.getHostServer(id);
 
-		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
+				nicSites, nicMacs, nicIpAddress);
 	}
 
 	/**

@@ -458,8 +458,10 @@ public class OperateService extends BaseSevcie {
 
 					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(serviceId);
 
-					// 初始化IPAddress
-					comm.ipPoolService.initIpPool(networkEipItem.getIpAddress());
+					if (networkEipItem != null) {
+						// 初始化IPAddress
+						comm.ipPoolService.initIpPool(networkEipItem.getIpAddress());
+					}
 
 					// EIP
 					comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
@@ -481,6 +483,15 @@ public class OperateService extends BaseSevcie {
 					// monitorElb
 					comm.monitorElbServcie.deleteMonitorElb(serviceId);
 
+				} else if (ResourcesConstant.ServiceType.MDN.toInteger().equals(serviceType)) {
+
+					// MDN
+					comm.mdnService.deleteMdnItem(serviceId);
+
+				} else if (ResourcesConstant.ServiceType.CP.toInteger().equals(serviceType)) {
+
+					// CP
+					comm.cpService.delete(serviceId);
 				}
 
 				comm.resourcesService.deleteResources(resources.getId());

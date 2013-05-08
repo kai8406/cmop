@@ -7,7 +7,15 @@
 	
 <script>
 $(document).ready(function() {
+	
 	$("ul#navbar li#operate").addClass("active");
+	
+	$("#dueDate").val(getDatePlusMonthNum(0));
+	
+	$("#dueDate").datepicker({
+		minDate: 'D',
+		changeMonth: true
+	});
 	
 	$("#inputForm").validate({
 		errorClass: "help-inline",
@@ -19,8 +27,6 @@ $(document).ready(function() {
 			$(element).closest('.control-group').removeClass('error');
 		}
 	});
-	
-	$('.datepicker').datepicker();
 
 	//IP改变事件
     $("select[name=ipPool]").change(function(){
@@ -58,31 +64,6 @@ function checkValid() {
         $('#note').focus();
         return false;
     }	
-	//if ($('#estimatedHours').val()<${issue.estimatedHours}) {
-	//	alert("估计耗时不能小于当前值！");
-    //    return false;
-	//}
-	//alert('${issue.startDate}'+","+$('#dueDate').val());
-	var startDate=Date.parse($('#startDate').val().replace(/-/g,"/"));
-	var dueDate=Date.parse($('#dueDate').val().replace(/-/g,"/"));
-	//alert(startDate+","+dueDate);
-	var today = new Date();
-	var year = today.getFullYear(); 
-    var month = today.getMonth() + 1;   
-    if(month<10) month = "0"+month;
-    var day = today.getDate(); 
-	if(day<10) day = "0"+day; 
-    var dateNow=Date.parse((year+"-"+month+"-"+day).replace(/-/g,"/"));
-    if(dateNow>dueDate) {
-		alert("Due date不能小于当前日期！");
-		$('#dueDate').focus();
-		return false;
-	}
-	if(startDate>dueDate) {
-		alert("Due date不能小于Start date！");
-		$('#dueDate').focus();
-		return false;
-	}
 
 	//增加只有余波才能选择100%完成的限制
 	//alert('${user.redmineUserId}');

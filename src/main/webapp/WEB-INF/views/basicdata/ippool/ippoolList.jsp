@@ -92,6 +92,7 @@
 				<th>IP状态</th>
 				<th>Vlan</th>
 				<th>IDC</th>
+				<th>创建时间</th>
 				<th>操作</th>
 			</tr>
 		</thead>
@@ -121,7 +122,7 @@
 					<td>
 						<c:forEach var="location" items="${locationList }"><c:if test="${location.id == item.vlan.location.id}">${location.name }</c:if></c:forEach>
 					</td>
-						
+					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
 						<a	href="update/${item.id}">修改</a>
 						

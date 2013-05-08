@@ -79,4 +79,12 @@ public interface IBasicUnitService {
 	 */
 	public List<MonitorElb> getMonitorElbListByResources(Integer userId);
 
+	/**
+	 * 将SQL查询出的对象,封装成ComputeItem.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	ComputeItem wrapComputeItem(Object[] object);
+
 }

@@ -37,14 +37,15 @@ public class HostServer implements java.io.Serializable {
 	private String alias;
 	private String locationAlias;
 	private String ipAddress;
-	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
 	private Date createTime;
 	private String description;
-	private String nicSite;
 	private String switchName;
 	private String switchAlias;
 	private String switchSite;
-	private String mac;
+	private String managementMac;
+	private String managementIp;
+	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
+	private Set<Nic> nics = new HashSet<Nic>(0);
 
 	// Constructors
 	/** default constructor */
@@ -61,11 +62,13 @@ public class HostServer implements java.io.Serializable {
 
 	/** full constructor */
 	public HostServer(Integer serverType, Integer poolType, String displayName, String rack, String rackAlias, String site, String height, String alias, String locationAlias, Set<IpPool> ipPools,
-			String ipAddress, Date createTime, String description, ServerModel serverModel) {
+			Set<Nic> nics, String ipAddress, Date createTime, String description, String managementMac, String managementIp, ServerModel serverModel) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;
 		this.rack = rack;
+		this.managementIp = managementIp;
+		this.managementMac = managementMac;
 		this.rackAlias = rackAlias;
 		this.site = site;
 		this.height = height;
@@ -73,6 +76,7 @@ public class HostServer implements java.io.Serializable {
 		this.locationAlias = locationAlias;
 		this.ipAddress = ipAddress;
 		this.ipPools = ipPools;
+		this.nics = nics;
 		this.createTime = createTime;
 		this.description = description;
 		this.serverModel = serverModel;
@@ -207,15 +211,6 @@ public class HostServer implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "nic_site", length = 45)
-	public String getNicSite() {
-		return nicSite;
-	}
-
-	public void setNicSite(String nicSite) {
-		this.nicSite = nicSite;
-	}
-
 	@Column(name = "switch_name", length = 45)
 	public String getSwitchName() {
 		return switchName;
@@ -243,13 +238,31 @@ public class HostServer implements java.io.Serializable {
 		this.switchAlias = switchAlias;
 	}
 
-	@Column(name = "mac", length = 45)
-	public String getMac() {
-		return mac;
+	@Column(name = "management_mac", length = 45)
+	public String getManagementMac() {
+		return managementMac;
 	}
 
-	public void setMac(String mac) {
-		this.mac = mac;
+	public void setManagementMac(String managementMac) {
+		this.managementMac = managementMac;
+	}
+
+	@Column(name = "management_ip", length = 45)
+	public String getManagementIp() {
+		return managementIp;
+	}
+
+	public void setManagementIp(String managementIp) {
+		this.managementIp = managementIp;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "hostServer")
+	public Set<Nic> getNics() {
+		return nics;
+	}
+
+	public void setNics(Set<Nic> nics) {
+		this.nics = nics;
 	}
 
 	@JsonBackReference

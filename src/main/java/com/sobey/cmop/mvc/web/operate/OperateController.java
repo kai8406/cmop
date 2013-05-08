@@ -103,13 +103,11 @@ public class OperateController extends BaseController {
 			String oldIp = "";
 			for (ComputeItem computeItem : computeList) {
 				oldIp = transDot(computeItem.getOldIp());
-				System.out.println(oldIp);
-				desc = desc.replaceAll(computeItem.getIdentifier() + oldIp, computeItem.getIdentifier() + "(" + computeItem.getInnerIp() + ")");
+				desc = desc.replaceAll(computeItem.getIdentifier() + oldIp, computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getInnerIp() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
 			for (NetworkEipItem eipItem : networkEipList) {
 				oldIp = transDot(eipItem.getOldIp());
-				System.out.println(oldIp);
 				desc = desc.replaceAll(eipItem.getIdentifier() + oldIp, eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（ELB）..." + networkElbList.size());

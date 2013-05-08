@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,18 +19,12 @@ public class HostServerDaoCustomImp implements HostServerDaoCustom {
 	@PersistenceContext
 	private EntityManager em;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
-	public List<String> getEcsByHost(Integer id) {
-		String sql = "SELECT ip_address FROM ip_pool where host_server_id='" + id + "'";
-		return em.createNativeQuery(sql).getResultList();
-	}
-
-	@Override
-	public int deleteHostByServerType(int type) {
-		String sql = "delete FROM host_server where server_type=" + type;
-		Query query = em.createNativeQuery(sql);
-		return query.executeUpdate();
+	public List getEcsByHost(Integer id) {
+		String sqlString = "SELECT t2.* FROM ip_pool t1 LEFT JOIN compute_item t2 ON t1.ip_address = t2.inner_ip WHERE t1.host_server_id= ?";
+		// logger.info(sqlString);
+		return em.createNativeQuery(sqlString).setParameter(1, id).getResultList();
 	}
 
 }

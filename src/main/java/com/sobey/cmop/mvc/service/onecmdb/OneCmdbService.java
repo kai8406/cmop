@@ -107,7 +107,6 @@ public class OneCmdbService extends BaseSevcie {
 		try {
 			CiBean[] ciBeanArray = service.search(token, qc);
 			List<CiBean> ciBeans = Arrays.asList(ciBeanArray);
-			System.out.println("--->size:" + ciBeans.size());
 			return ciBeans;
 		} catch (Exception e) {
 			logger.error("--->OneCMDB search error：" + e.getMessage());
@@ -126,7 +125,7 @@ public class OneCmdbService extends BaseSevcie {
 	 */
 	public static void findAttributesValue(CiBean ci) {
 		List<ValueBean> values = ci.getAttributeValues();
-		System.out.println("--->attributeValues:" + values.size());
+		// System.out.println("--->attributeValues:" + values.size());
 		for (ValueBean valueBean : values) {
 			System.out.println("    " + valueBean.getAlias() + "," + valueBean.getValue());
 		}
@@ -148,7 +147,7 @@ public class OneCmdbService extends BaseSevcie {
 				break;
 			}
 		}
-		System.out.println("--->" + attributeName + ":" + value);
+		// System.out.println("--->" + attributeName + ":" + value);
 		return value;
 	}
 
@@ -161,7 +160,8 @@ public class OneCmdbService extends BaseSevcie {
 		List<AttributeBean> attributes = ci.getAttributes();
 		System.out.println("--->attributes:" + attributes.size());
 		for (AttributeBean attributeBean : attributes) {
-			System.out.println("    " + attributeBean.getAlias() + "," + attributeBean.getType());
+			// System.out.println("    " + attributeBean.getAlias() + "," +
+			// attributeBean.getType());
 		}
 	}
 

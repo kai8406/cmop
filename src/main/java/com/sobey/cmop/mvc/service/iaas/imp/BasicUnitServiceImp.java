@@ -56,7 +56,8 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 	 * @param object
 	 * @return
 	 */
-	private ComputeItem wrapComputeItem(Object[] object) {
+	@Override
+	public ComputeItem wrapComputeItem(Object[] object) {
 
 		ComputeItem computeItem = new ComputeItem();
 

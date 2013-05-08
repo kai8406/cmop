@@ -49,7 +49,7 @@ public class ImportService extends BaseSevcie {
 						hostServer = saveHostServer(hostServerList, serverInfo, 1);
 						// 更新宿主机对应IP状态为：已使用
 						if (comm.ipPoolService.findIpPoolByIpAddress(hostServer.getIpAddress()) != null) {
-							System.out.println("已存在的宿主机IP：" + hostServer.getIpAddress());
+							logger.info("已存在的宿主机IP：" + hostServer.getIpAddress());
 						} else {
 							comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1),
 									null); // 默认西安虚拟机内网VLAN
@@ -61,7 +61,7 @@ public class ImportService extends BaseSevcie {
 				if (!serverInfo.getInnerIp().equals("")) {
 					ecsCount++;
 					if (comm.ipPoolService.findIpPoolByIpAddress(serverInfo.getInnerIp()) != null) {
-						System.out.println("已存在的虚拟机IP：" + serverInfo.getInnerIp());
+						logger.info("已存在的虚拟机IP：" + serverInfo.getInnerIp());
 						comm.ipPoolService.updateIpPoolByIpAddress(serverInfo.getInnerIp(), IpPoolConstant.IpStatus.已使用.toInteger(), hostServer);
 					} else {
 						comm.ipPoolService.saveIpPool(serverInfo.getInnerIp(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1),
@@ -88,7 +88,6 @@ public class ImportService extends BaseSevcie {
 			 * serverInfo = (ServerBean) serverPortMap.get(key);
 			 * serverInfo.setDisplayName((String)
 			 * serverMap2.get(serverInfo.getHardware()));
-			 * System.out.println("--->" + key + ":" + serverInfo.toString());
 			 * 
 			 * hostServer = saveHostServer(hostServerList, serverInfo, 2);
 			 * 
@@ -128,7 +127,7 @@ public class ImportService extends BaseSevcie {
 			hostServer = comm.hostServerService.saveOrUpdate(hostServer);
 			hostServerList.add(hostServer);
 		} else {
-			System.out.println("已存在的宿主机：" + serverInfo.getDisplayName());
+			logger.info("已存在的宿主机：" + serverInfo.getDisplayName());
 		}
 		return hostServer;
 	}

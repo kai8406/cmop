@@ -15,6 +15,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.ServerModel;
 import com.sobey.cmop.mvc.entity.Vlan;
 
 /**
@@ -116,6 +117,18 @@ public class AjaxController extends BaseController {
 	@ResponseBody
 	public String checkVlan(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
 		return name.equals(oldName) || comm.vlanService.findVlanByName(name) == null ? "true" : "false";
+	}
+
+	/**
+	 * Ajax请求获得服务器规格信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getServerModel")
+	@ResponseBody
+	public ServerModel getServerModel(@RequestParam("id") Integer id) {
+		return comm.serverModelService.getServerModel(id);
 	}
 
 	/**

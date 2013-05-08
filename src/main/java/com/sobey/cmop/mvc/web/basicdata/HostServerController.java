@@ -83,12 +83,18 @@ public class HostServerController extends BaseController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "serverModelId") Integer serverModelId, @RequestParam(value = "rack") String rack, @RequestParam(value = "site") String site,
-			@RequestParam(value = "nicSite") String nicSite, @RequestParam(value = "switchs") String switchs, @RequestParam(value = "switchSite") String switchSite,
-			@RequestParam(value = "mac") String mac, @RequestParam(value = "height") String height, @RequestParam(value = "locationAlias") String locationAlias,
-			@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "description") String description,
+			@RequestParam(value = "switchs") String switchs, @RequestParam(value = "switchSite") String switchSite, @RequestParam(value = "height") String height,
+			@RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "serverType") Integer serverType,
+			@RequestParam(value = "description") String description, @RequestParam(value = "managementMac") String managementMac, @RequestParam(value = "managementIp") String managementIp,
+
+			// 网卡
+			@RequestParam(value = "nicSite", required = false) String[] nicSites, @RequestParam(value = "nicMac", required = false) String[] nicMacs,
+			@RequestParam(value = "nicIpAddress", required = false) String[] nicIpAddress,
+
 			RedirectAttributes redirectAttributes) {
 
-		boolean flag = comm.hostServerService.addHostServer(serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+		boolean flag = comm.hostServerService.addHostServer(serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
+				nicSites, nicMacs, nicIpAddress);
 
 		redirectAttributes.addFlashAttribute("message", flag ? "创建服务器成功！" : "服务器名称已存在,请按照格式 Company Model Rack-Site 正确输入.");
 
@@ -142,12 +148,17 @@ public class HostServerController extends BaseController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "serverModelId") Integer serverModelId, @RequestParam(value = "rack") String rack,
-			@RequestParam(value = "site") String site, @RequestParam(value = "nicSite") String nicSite, @RequestParam(value = "switchs") String switchs,
-			@RequestParam(value = "switchSite") String switchSite, @RequestParam(value = "mac") String mac, @RequestParam(value = "height") String height,
-			@RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "serverType") Integer serverType,
-			@RequestParam(value = "description") String description, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "site") String site, @RequestParam(value = "switchs") String switchs, @RequestParam(value = "switchSite") String switchSite,
+			@RequestParam(value = "height") String height, @RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "ipAddress") String ipAddress,
+			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "description") String description, @RequestParam(value = "managementMac") String managementMac,
+			@RequestParam(value = "managementIp") String managementIp,
 
-		boolean flag = comm.hostServerService.updateHostServer(id, serverType, serverModelId, rack, site, nicSite, switchs, switchSite, mac, height, locationAlias, ipAddress, description);
+			// 网卡
+			@RequestParam(value = "nicSite", required = false) String[] nicSites, @RequestParam(value = "nicMac", required = false) String[] nicMacs,
+			@RequestParam(value = "nicIpAddress", required = false) String[] nicIpAddress, RedirectAttributes redirectAttributes) {
+
+		boolean flag = comm.hostServerService.updateHostServer(id, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac,
+				managementIp, nicSites, nicMacs, nicIpAddress);
 		redirectAttributes.addFlashAttribute("message", flag ? "修改服务器成功！" : "服务器名称已存在,请按照格式 Company Model Rack-Site 正确输入.");
 
 		return REDIRECT_SUCCESS_URL;
@@ -181,11 +192,43 @@ public class HostServerController extends BaseController {
 		return "basicdata/host/hostDetail";
 	}
 
-	@RequestMapping(value = { "ecs/{id}" })
-	public String ecs(@PathVariable("id") Integer id, Model model) {
+	/**
+	 * 跳转至查看hostServer下虚拟机的查看页面.
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = { "hostTree/{id}" })
+	public String hostTree(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("hostServer", comm.hostServerService.getHostServer(id));
 		model.addAttribute("ecsList", comm.hostServerService.getEcsByHost(id));
-		return "basicdata/host/ecsList";
+
+		model.addAttribute("server", comm.operateService.findHostMapByServerType(2)); // 物理机
+		model.addAttribute("vm", comm.operateService.findHostMapByServerType(1)); // 宿主机
+
+		return "basicdata/host/hostTree";
+	}
+
+	/**
+	 * 重新保存hostServer和PCS,ECS的关系.
+	 * 
+	 * @param id
+	 *            hostServerId
+	 * @param computeIds
+	 *            实例的IP数组
+	 * @param serverAlias
+	 *            实例关联的hostServer alias 数组
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@RequestMapping(value = "/hostTree", method = RequestMethod.POST)
+	public String updateHostTree(@RequestParam(value = "computeIds", required = false) String[] computeIds, @RequestParam(value = "serverAlias", required = false) String[] serverAlias,
+			RedirectAttributes redirectAttributes) {
+
+		comm.hostServerService.updateHostServerTree(computeIds, serverAlias);
+		redirectAttributes.addFlashAttribute("message", "更新宿主机/服务器挂载的实例");
+		return REDIRECT_SUCCESS_URL;
 	}
 
 	@RequestMapping(value = { "syn" })

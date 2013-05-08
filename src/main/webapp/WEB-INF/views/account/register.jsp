@@ -99,7 +99,7 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="leaderId">所属领导</label>
+				<label class="control-label" for="leaderId">预算审批领导</label>
 				<div class="controls">
 					<select id="leaderId" name="leaderId" class="required">
 						<c:forEach var="item" items="${leaders}">

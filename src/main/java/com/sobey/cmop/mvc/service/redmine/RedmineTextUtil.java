@@ -377,7 +377,10 @@ public class RedmineTextUtil {
 						content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":").append(BLANK).append(mdnLiveItem.getName()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.频道GUID + ":").append(BLANK).append(mdnLiveItem.getGuid()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播流输出模式 + ":").append(BLANK).append(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode())).append(NEWLINE);
-						content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":").append(BLANK).append(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode())).append(NEWLINE);
+
+						if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {
+							content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":").append(BLANK).append(MdnConstant.EncoderMode.get(mdnLiveItem.getEncoderMode())).append(NEWLINE);
+						}
 
 						if (MdnConstant.OutputMode.Encoder模式.toInteger().equals(mdnLiveItem.getStreamOutMode())) {
 

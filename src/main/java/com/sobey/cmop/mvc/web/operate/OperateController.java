@@ -102,8 +102,6 @@ public class OperateController extends BaseController {
 			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
 			String oldIp = "";
 			for (ComputeItem computeItem : computeList) {
-				oldIp = transDot(computeItem.getOldIp());
-				
 				desc = desc.replace(computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getOldIp() + ")", computeItem.getIdentifier() + "(" + computeItem.getRemark()
 						+ " - " + computeItem.getInnerIp() + ")");
 			}

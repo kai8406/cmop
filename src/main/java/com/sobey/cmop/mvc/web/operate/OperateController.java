@@ -103,7 +103,9 @@ public class OperateController extends BaseController {
 			String oldIp = "";
 			for (ComputeItem computeItem : computeList) {
 				oldIp = transDot(computeItem.getOldIp());
-				desc = desc.replaceAll(computeItem.getIdentifier() + oldIp, computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getInnerIp() + ")");
+				
+				desc = desc.replace(computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getOldIp() + ")", computeItem.getIdentifier() + "(" + computeItem.getRemark()
+						+ " - " + computeItem.getInnerIp() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
 			for (NetworkEipItem eipItem : networkEipList) {

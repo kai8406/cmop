@@ -55,7 +55,7 @@ public class RedmineTextUtil {
 
 			content.append("<pre>").append(NEWLINE);
 			for (ComputeItem compute : computeItems) {
-				content.append("标识符(私网IP):").append(BLANK).append(compute.getIdentifier()).append("(").append(compute.getInnerIp()).append(")").append(NEWLINE);
+				content.append("标识符(私网IP):").append(BLANK).append(compute.getIdentifier()).append("(").append(compute.getRemark() + " - ").append(compute.getInnerIp()).append(")").append(NEWLINE);
 				content.append("用途信息:").append(BLANK).append(compute.getRemark()).append(NEWLINE);
 				content.append("配置信息:").append(BLANK).append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(BLANK).append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit()))
 						.append(BLANK);

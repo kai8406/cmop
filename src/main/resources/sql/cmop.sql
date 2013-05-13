@@ -530,7 +530,6 @@ CREATE  TABLE IF NOT EXISTS `cmop`.`host_server` (
   `management_mac` VARCHAR(45) NULL COMMENT 'Mac地址' ,
   `create_time` DATETIME NOT NULL COMMENT '创建时间' ,
   `description` VARCHAR(100) NULL ,
-  `management_ip` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_host_server_server_model1_idx` (`server_model_id` ASC) ,
   CONSTRAINT `fk_host_server_server_model1`

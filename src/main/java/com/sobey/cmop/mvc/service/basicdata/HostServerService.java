@@ -115,7 +115,6 @@ public class HostServerService extends BaseSevcie {
 
 		// 初始化IP.
 		comm.ipPoolService.initIpPool(hostServer.getIpAddress());
-		comm.ipPoolService.initIpPool(hostServer.getManagementIp());
 
 		List<Nic> nics = this.getNicByhostServerId(id);
 		for (Nic nic : nics) {
@@ -169,7 +168,7 @@ public class HostServerService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	private boolean saveOrUpdateHostServer(HostServer hostServer, Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height,
-			String locationAlias, String ipAddress, String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
+			String locationAlias, String ipAddress, String description, String managementMac, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		boolean flag = false;
 
@@ -210,8 +209,6 @@ public class HostServerService extends BaseSevcie {
 
 			IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(ipAddress);
 
-			IpPool managementIpPool = comm.ipPoolService.findIpPoolByIpAddress(managementIp);
-
 			hostServer.setDisplayName(displayName);
 			hostServer.setIpAddress(ipAddress);
 			hostServer.setLocationAlias(locationAlias);
@@ -227,14 +224,10 @@ public class HostServerService extends BaseSevcie {
 			hostServer.setSwitchName(switchName);
 			hostServer.setSwitchSite(switchSite);
 			hostServer.setManagementMac(managementMac);
-			hostServer.setManagementIp(managementIp);
 
 			// step.2 更改IP状态为 已使用
 			ipPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
 			comm.ipPoolService.saveOrUpdate(ipPool);
-
-			managementIpPool.setStatus(IpPoolConstant.IpStatus.已使用.toInteger());
-			comm.ipPoolService.saveOrUpdate(managementIpPool);
 
 			this.saveOrUpdate(hostServer);
 
@@ -325,7 +318,7 @@ public class HostServerService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean addHostServer(Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height, String locationAlias, String ipAddress,
-			String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
+			String description, String managementMac, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		String alias = "Host" + Identities.uuid2();
 
@@ -333,8 +326,8 @@ public class HostServerService extends BaseSevcie {
 		hostServer.setAlias(alias);
 		hostServer.setCreateTime(new Date());
 
-		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
-				nicSites, nicMacs, nicIpAddress);
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, nicSites, nicMacs,
+				nicIpAddress);
 	}
 
 	/**
@@ -358,8 +351,6 @@ public class HostServerService extends BaseSevcie {
 	 *            交换机口
 	 * @param managementMac
 	 *            管理口Mac
-	 * @param managementIp
-	 *            管理口IP
 	 * @param height
 	 *            高度
 	 * @param locationAlias
@@ -372,12 +363,12 @@ public class HostServerService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean updateHostServer(Integer id, Integer serverType, Integer serverModelId, String rack, String site, String switchs, String switchSite, String height, String locationAlias,
-			String ipAddress, String description, String managementMac, String managementIp, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
+			String ipAddress, String description, String managementMac, String[] nicSites, String[] nicMacs, String[] nicIpAddress) {
 
 		HostServer hostServer = this.getHostServer(id);
 
-		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
-				nicSites, nicMacs, nicIpAddress);
+		return this.saveOrUpdateHostServer(hostServer, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, nicSites, nicMacs,
+				nicIpAddress);
 	}
 
 	/**
@@ -386,13 +377,12 @@ public class HostServerService extends BaseSevcie {
 	 * <pre>
 	 * 1.根据computeId获得compute对象,并将根据实例对象的资源类型computeType更新serverAlias或hostServerAlias.
 	 * 2.根据compute对象里的innerIp获得IpPool对象,并将由serverAlias获得的hostServer对象更新至IpPool中.
-	 * 
-	 * <pre>
+	 * </pre>
 	 * 
 	 * @param computeIds
 	 *            实例ID数组
 	 * @param serverAlias
-	 * hostServer(宿主机 & 物理机) Alias 数组
+	 *            hostServer(宿主机 & 物理机) Alias 数组
 	 */
 	@Transactional(readOnly = false)
 	public void updateHostServerTree(String[] computeIds, String[] serverAlias) {

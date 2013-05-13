@@ -85,16 +85,13 @@ public class HostServerController extends BaseController {
 	public String save(@RequestParam(value = "serverModelId") Integer serverModelId, @RequestParam(value = "rack") String rack, @RequestParam(value = "site") String site,
 			@RequestParam(value = "switchs") String switchs, @RequestParam(value = "switchSite") String switchSite, @RequestParam(value = "height") String height,
 			@RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "serverType") Integer serverType,
-			@RequestParam(value = "description") String description, @RequestParam(value = "managementMac") String managementMac, @RequestParam(value = "managementIp") String managementIp,
-
+			@RequestParam(value = "description") String description, @RequestParam(value = "managementMac") String managementMac,
 			// 网卡
 			@RequestParam(value = "nicSite", required = false) String[] nicSites, @RequestParam(value = "nicMac", required = false) String[] nicMacs,
-			@RequestParam(value = "nicIpAddress", required = false) String[] nicIpAddress,
+			@RequestParam(value = "nicIpAddress", required = false) String[] nicIpAddress, RedirectAttributes redirectAttributes) {
 
-			RedirectAttributes redirectAttributes) {
-
-		boolean flag = comm.hostServerService.addHostServer(serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, managementIp,
-				nicSites, nicMacs, nicIpAddress);
+		boolean flag = comm.hostServerService.addHostServer(serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, nicSites,
+				nicMacs, nicIpAddress);
 
 		redirectAttributes.addFlashAttribute("message", flag ? "创建服务器成功！" : "服务器名称已存在,请按照格式 Company Model Rack-Site 正确输入.");
 
@@ -151,14 +148,13 @@ public class HostServerController extends BaseController {
 			@RequestParam(value = "site") String site, @RequestParam(value = "switchs") String switchs, @RequestParam(value = "switchSite") String switchSite,
 			@RequestParam(value = "height") String height, @RequestParam(value = "locationAlias") String locationAlias, @RequestParam(value = "ipAddress") String ipAddress,
 			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "description") String description, @RequestParam(value = "managementMac") String managementMac,
-			@RequestParam(value = "managementIp") String managementIp,
-
 			// 网卡
 			@RequestParam(value = "nicSite", required = false) String[] nicSites, @RequestParam(value = "nicMac", required = false) String[] nicMacs,
 			@RequestParam(value = "nicIpAddress", required = false) String[] nicIpAddress, RedirectAttributes redirectAttributes) {
 
-		boolean flag = comm.hostServerService.updateHostServer(id, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac,
-				managementIp, nicSites, nicMacs, nicIpAddress);
+		boolean flag = comm.hostServerService.updateHostServer(id, serverType, serverModelId, rack, site, switchs, switchSite, height, locationAlias, ipAddress, description, managementMac, nicSites,
+				nicMacs, nicIpAddress);
+
 		redirectAttributes.addFlashAttribute("message", flag ? "修改服务器成功！" : "服务器名称已存在,请按照格式 Company Model Rack-Site 正确输入.");
 
 		return REDIRECT_SUCCESS_URL;

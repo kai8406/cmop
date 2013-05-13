@@ -51,21 +51,20 @@
 				<dt>IDC</dt>
 				<dd><c:forEach var="location" items="${locationList}"><c:if test="${location.alias == hostServer.locationAlias }">${location.name }</c:if></c:forEach>&nbsp;</dd>
 				
-				<dt>IP地址</dt>
+				<dt>管理口IP</dt>
 				<dd>${hostServer.ipAddress}&nbsp;</dd>
 				
 				<dt>Mac</dt>
 				<dd>${hostServer.managementMac}&nbsp;</dd>
 				
-				<dt>管理口IP</dt>
-				<dd>${hostServer.managementIp}&nbsp;</dd>
+				<dt>用途描述</dt>
+				<dd>${hostServer.description}&nbsp;</dd>
 				
 				<dt>创建时间</dt>
 				<dd><fmt:formatDate value="${hostServer.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />&nbsp;</dd>
 				
 				<c:forEach var="nic" items="${hostServer.nics }">
 					<hr>
-					
 					<dt>网卡号</dt>
 					<dd>${nic.site}&nbsp;</dd>
 					
@@ -74,9 +73,7 @@
 					
 					<dt>网卡IP</dt>
 					<dd>${nic.ipAddress}&nbsp;</dd>
-					
 				</c:forEach>
-				
 				 
 			</dl>
 			 

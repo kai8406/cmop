@@ -208,7 +208,8 @@ function changeServer(obj){
 
 <body>
 	
-	<form id="inputForm" action="." method="post" class="form-horizontal input-form" style="max-width: 800px">
+	<form id="inputForm" action="." method="post" class="form-horizontal input-form" style="max-width: 960px">
+	
 		<input type="hidden" id="issueId" name="issueId" value="${issue.id}"/>
 		<input type="hidden" id="authorId" name="authorId" value="${redmineIssue.assignee}"/>
 		<input type="hidden" id="startDate" value='<fmt:formatDate value="${issue.startDate}" pattern="yyyy-MM-dd"/>'/>
@@ -381,14 +382,14 @@ function changeServer(obj){
 					    	<div class="row-fluid" style="padding-bottom: 5px; padding-top: 5px;">
 								<div class="span2">IDC和VLAN</div>
 								<div class="span10" id="locationDiv">
-									<select id="location" name="location" style="width:104px" onchange="changeLocation()">
+									<select id="location" name="location" onchange="changeLocation()">
 										<c:forEach var="map" items="${location}">
 											<option value="<c:out value='${map.key}' />" 
 												<c:if test="${map.key=='Location-2'}">selected="selected"</c:if>><c:out value="${map.value}" />
 											</option>
 										</c:forEach>
 									</select>
-									<select id="vlan" name="vlan" class="input-small" onchange="changeVlan()">
+									<select id="vlan" name="vlan"  onchange="changeVlan()">
 										<option value=""></option>
 										<c:forEach var="map" items="${vlan}">
 											<option value="<c:out value='${map.key}' />"><c:out value="${map.value}" /></option>
@@ -399,39 +400,48 @@ function changeServer(obj){
 						</c:if>	
 						
 						<c:forEach var="compute" items="${computeList}">
-							<div class="row-fluid" style="padding-bottom: 5px;">					
+							<div class="row-fluid" style="padding-bottom: 15px;">	
+											
 								<div class="span2">${compute.identifier}</div>
+								
 								<div class="span5" id="computeDiv">
-									<input type="hidden" id="computeId" name="computeId" value="${compute.id}"/>
-									<input type="text" id="hostName" name="hostName" value="${compute.hostName}" class="input-small" placeholder="Host Name">
+								
+									<input type="hidden" id="computeId" name="computeId" value="${compute.id}">
+									
+									<input type="text" id="hostName" name="hostName" value="${compute.hostName}" class="input-large" placeholder="Host Name">
+									
 									<c:if test="${compute.computeType==1}">
-										<select id="server" name="server" class="input-small" onchange="changeServer(this)">
+										<select id="server" name="server" class="input-xlarge" onchange="changeServer(this)">
 											<c:forEach var="map" items="${server}">
 												<option value="<c:out value='${map.key}' />" 
 													<c:if test="${compute.serverAlias==map.key}">selected="selected"</c:if>><c:out value="${map.value}" />
 												</option>
 											</c:forEach>
-										</select> &nbsp;Server    
+										</select>
 									</c:if>
+									
 									<c:if test="${compute.computeType==2}">
-										<select id="server" name="server" class="input-small">
+										<select id="server" name="server" class="input-xlarge ">
 											<c:forEach var="map" items="${hostServer}">
 												<option value="<c:out value='${map.key}' />" 
 													<c:if test="${compute.hostServerAlias==map.key}">selected="selected"</c:if>><c:out value="${map.value}" />
 												</option>
 											</c:forEach>
-										</select> &nbsp;Host Server
+										</select>
 									</c:if>
 								</div>
-								<div class="span5" id="osStorageDiv">
+								
+								<div id="osStorageDiv">
 									<input type="text" id="innerIp" name="innerIp" readonly="readonly" value="${compute.innerIp}" class="input-small" placeholder="内网IP">
-									<select id="ipPool" name="ipPool" class="input-small">
-									</select>
+									
+									<select id="ipPool" name="ipPool" class="input-small"></select>
+									
 									<c:if test="${compute.computeType==1}">
 								    	<input type="hidden" id="osStorage" name="osStorage"/>
 								    </c:if>
+								    
 								    <c:if test="${compute.computeType==2}">
-										<select id="osStorage" name="osStorage" class="input-small" >
+										<select id="osStorage" name="osStorage" class="" >
 											<c:forEach var="map" items="${osStorage}">
 												<option value="<c:out value='${map.key}' />" 
 													<c:if test="${compute.osStorageAlias==map.key}">selected="selected"</c:if>><c:out value="${map.value}" />
@@ -445,11 +455,13 @@ function changeServer(obj){
 							
 						<c:forEach var="storage" items="${storageList}">
 							<div class="row-fluid" style="padding-bottom: 5px;" id="storageDiv">
+							
 								<div class="span2">${storage.identifier}</div>
+								
 								<div class="span5">
 							    	<input type="hidden" id="storageId" name="storageId" value="${storage.id}"/>
 							    	<c:if test="${storage.storageType==1}">
-										<select id="controller" name="controller" style="width: 197px;">
+										<select id="controller" name="controller">
 											<c:forEach var="map" items="${fimasController}">
 												<option value="<c:out value='${map.key}' />" 
 													<c:if test="${storage.controllerAlias==map.key}">selected="selected"</c:if>><c:out value="${map.value}" />
@@ -458,7 +470,7 @@ function changeServer(obj){
 										</select> &nbsp;Fimas
 									</c:if>					 
 									<c:if test="${storage.storageType==2}"> 
-										<select id="controller" name="controller" style="width: 197px;">
+										<select id="controller" name="controller">
 											<c:forEach var="map" items="${netappController}">
 												<option value="<c:out value='${map.key}' />" 
 													<c:if test="${storage.controllerAlias==map.key}">selected="selected"</c:if>><c:out value="${map.value}" />
@@ -467,8 +479,9 @@ function changeServer(obj){
 										</select> &nbsp;Netapp
 									</c:if>	  
 								</div>
+								
 								<div class="span5">
-									<input type="text" id="volume" name="volume" value="${storage.volume}" style="width: 185px;" placeholder="Volume">					    
+									<input type="text" id="volume" name="volume" value="${storage.volume}"  placeholder="Volume">					    
 								</div>
 							</div>
 						</c:forEach>
@@ -478,7 +491,7 @@ function changeServer(obj){
 								<div class="span2">${eip.identifier}</div>
 								<div class="span10" id="eipDiv">
 							    	<input type="hidden" id="eipId" name="eipId" value="${eip.id}"/>
-									<select id="eipAddress" name="eipAddress" style="width:104px">
+									<select id="eipAddress" name="eipAddress">
 										<c:forEach var="map" items="${telecomIpPool}">
 											<option value="<c:out value='${map.ipAddress}' />"
 												<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
@@ -499,8 +512,8 @@ function changeServer(obj){
 								<div class="span2">${elb.identifier}</div>
 								<div class="span10" id="elbDiv">
 							    	<input type="hidden" id="elbId" name="elbId" value="${elb.id}"/>
-							    	<input type="text" id="innerIp" name="innerIp" readonly="readonly" value="${elb.virtualIp}" class="input-small" placeholder="虚拟负载IP">
-									<select id="ipPool" name="ipPool" class="input-small">
+							    	<input type="text" id="innerIp" name="innerIp" readonly="readonly" value="${elb.virtualIp}"  placeholder="虚拟负载IP">
+									<select id="ipPool" name="ipPool" class="span2">
 									</select>
 								</div>
 							</div>

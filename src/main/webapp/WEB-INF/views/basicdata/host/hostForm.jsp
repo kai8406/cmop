@@ -6,112 +6,122 @@
 	<title>服务器管理</title>
 
 	<script>
-		$(document).ready(function() {
-			
-			$("ul#navbar li#basicdata").addClass("active");
-			
-			 
-			 $("#serverModelId").on("change",function(){
-				 getServerModel();
-			 });
-			 
-			 if($("#hostServerId").val() == ""){
-				getServerModel();
-		 		changeLocation();
-			 }
+	$(document).ready(function() {
+		
+		$("ul#navbar li#basicdata").addClass("active");
+		
+		$("#serverModelId").on("change", function() {
+			getServerModel();
 		});
 		
-		$(document).on("change","select.vlan",function(){
-			changeVlan($(this));
-		});
-		
-
-		//根据服务器规格生成网卡信息.
-		function getServerModel() {
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getServerModel?id=" + $('#serverModelId').val(),
-				dataType: "json",
-				success: function(data) {
-					var count = data.port;
-					$("#NICDIV").empty();
-					if(count > 0 ){
-						var html = "";
-						for ( var i = 0; i < count; i++) {
-							html += '<hr>';
-							html += '<div class="control-group">';
-							html += '<label class="control-label">网卡号</label>';
-							html += '<div class="controls">';
-							html += '<input type="text" name="nicSite" class="required" maxlength="45" placeholder="..网卡号">';
-							html += '</div>';
-							html += '</div>';
-							
-							html += '<div class="control-group">';
-							html += '<label class="control-label">Mac</label>';
-							html += '<div class="controls">';
-							html += '<input type="text" name="nicMac" class="required" maxlength="45" placeholder="..Mac地址">';
-							html += '</div>';
-							html += '</div>';
-							
-							html += '<div class="control-group">';
-							html += '<label class="control-label">网卡IP</label>';
-							html += '<div class="controls">';
-							html += '<select class="span2 vlan"><option>...Choose IDC</option></select>';
-							html += '<select name="nicIpAddress" class="required span2 ipAddress"></select>';
-							html += '</select>';
-							html += '</div>';
-							html += '</div> ';
-						}
-				
-						$("#NICDIV").append(html);
-					}
-				}
-			});
+		if ($("#hostServerId").val() == "") {
+			getServerModel();
+			changeLocation();
 		}
 		
-		function changeLocation() {
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getVlanByLocationAlias?locationAlias=" + $('#locationAlias').val(),
-				dataType: "json",
-				success: function(data) {
-					var $vlan = $(".vlan");
-					$vlan.empty();
+	});
+	
+	$(document).on("change", "select.vlan", function() {
+		changeVlan($(this));
+	});
+	
+	$(document).on("change", "select.ipAddress", function() {
+		changeIP($(this));
+	});
+	
+	//根据服务器规格生成网卡信息.
+	function getServerModel() {
+		$.ajax({
+			type: "GET",
+			url: "${ctx}/ajax/getServerModel?id=" + $('#serverModelId').val(),
+			dataType: "json",
+			success: function(data) {
+				var count = data.port;
+				$("#NICDIV").empty();
+				if (count > 0) {
 					var html = "";
-					for (var key in data) {
-						html += ("<option value='" + key + "'>" + data[key] + "</option>");
+					for (var i = 0; i < count; i++) {
+						html += '<hr>';
+						html += '<div class="control-group">';
+						html += '<label class="control-label">网卡号</label>';
+						html += '<div class="controls">';
+						html += '<input type="text" name="nicSite" class="required" maxlength="45" placeholder="..网卡号">';
+						html += '</div>';
+						html += '</div>';
+						html += '<div class="control-group">';
+						html += '<label class="control-label">Mac</label>';
+						html += '<div class="controls">';
+						html += '<input type="text" name="nicMac" class="required" maxlength="45" placeholder="..Mac地址">';
+						html += '</div>';
+						html += '</div>';
+						html += '<div class="control-group">';
+						html += '<label class="control-label">网卡IP</label>';
+						html += '<div class="controls">';
+						html += '<select class="span1 vlan"></select>';
+						html += '<select class="span1 ipAddress"></select>';
+						html += '<input type="text" id="nicIpAddress' + i + '" readonly="readonly" name="nicIpAddress" class="required span2 ipAddress">';
+						html += '</div>';
+						html += '</div> ';
 					}
-					$vlan.append(html);
-					changeVlan($vlan);
+					$("#NICDIV").append(html);
 				}
-			});
-		}
-		
-		function changeVlan(obj) {
-			$.ajax({
-				type: "GET",
-				url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + obj.val(),
-				dataType: "json",
-				success: function(data) {
-					
-					var $ipAddress = obj.next(".ipAddress");
-					
-					$ipAddress.empty();
-					
-					var html = "<option value=''></option>";
-					for (var i = 0; i < data.length; i++) {
-						html += "<option value='" + data[i].ipAddress + "'>" + data[i].ipAddress + "</option>";
-					}
-					
-					//如果ip不为"",插入hostServer本身的ip.
-					var ip = $("#hostIpAddress").val();
-					if (ip != "" && $ipAddress.attr("id") == "ipAddress" ) {
-						html += "<option selected='selected' value='" + ip + "'>" + ip + "</option>";
-					}
-					$ipAddress.append(html);
+			}
+		});
+	}
+
+	function changeLocation() {
+		$.ajax({
+			type: "GET",
+			url: "${ctx}/ajax/getVlanByLocationAlias?locationAlias=" + $('#locationAlias').val(),
+			dataType: "json",
+			success: function(data) {
+				var $vlan = $("select.vlan");
+				$vlan.empty();
+				var html = "";
+				for (var key in data) {
+					html += ("<option value='" + key + "'>" + data[key] + "</option>");
 				}
-			});
+				$vlan.append(html);
+				changeVlan($vlan);
+			}
+		});
+	}
+
+	function changeVlan(obj) {
+		$.ajax({
+			type: "GET",
+			url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + obj.val(),
+			dataType: "json",
+			success: function(data) {
+				var $ipAddress = obj.next("select.ipAddress");
+				var html = "";
+				$ipAddress.empty();
+				for (var i = 0; i < data.length; i++) {
+					html += "<option value='" + data[i].ipAddress + "'>" + data[i].ipAddress + "</option>";
+				}
+				$ipAddress.append(html);
+			}
+		});
+	}
+
+	function changeIP(obj) {
+		var $inputIp = obj.next("input.ipAddress");
+		var selectedArray = [];
+		$("input.ipAddress").each(function() {
+			var $this = $(this);
+			var $ip = $this.val();
+			if ($ip != "") {
+				selectedArray.push($ip);
+			}
+		});
+		$inputIp.val(obj.val());
+		//IP只能被使用一次.
+		if ($.inArray($inputIp.val(), selectedArray) > -1) {
+			alert("该IP已使用,请选择其他IP.");
+			$inputIp.val("");
 		}
+		selectedArray = [];
+	}
 	</script>
 	
 </head>
@@ -123,7 +133,6 @@
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" id="hostServerId" name="id" value="${hostServer.id}">
-		<input type="hidden" id="hostIpAddress" value="${hostServer.ipAddress}">
 		
 		<fieldset>
 		
@@ -215,10 +224,9 @@
 			<div class="control-group">
 				<label class="control-label" for="ipAddress">IP地址</label>
 				<div class="controls">
-					<select class="span2 vlan"></select>
-					<select id="ipAddress" name="ipAddress" class="required span2 ipAddress">
-						<option value="${hostServer.ipAddress }">${hostServer.ipAddress }</option>
-					</select>
+					<select class="span1 vlan"></select>
+					<select class="span1 ipAddress"></select>
+					<input type="text" readonly="readonly" name="ipAddress" value="${hostServer.ipAddress }" class="required span2 ipAddress" >
 				</div>
 			</div>
 			
@@ -240,10 +248,9 @@
 			<div class="control-group">
 				<label class="control-label" for="managementIp">管理口IP</label>
 				<div class="controls">
-					<select class="span2 vlan"></select>
-					<select id="managementIp" name="managementIp" class="required span2 ipAddress">
-						<option selected="selected" value="${hostServer.managementIp }">${hostServer.managementIp }</option>
-					</select>
+					<select class="span1 vlan"></select>
+					<select class="span1 ipAddress"></select>
+					<input type="text" readonly="readonly" name="managementIp" value="${hostServer.managementIp }" class="required span2 ipAddress" >
 				</div>
 			</div>
 			
@@ -265,15 +272,15 @@
 					<div class="control-group">
 						<label class="control-label">网卡IP</label>
 						<div class="controls">
-							<select class="span2 vlan"></select>
-							<select	class="required span2 ipAddress" name="nicIpAddress">
-								<option selected="selected" value="${nic.ipAddress }">${nic.ipAddress }</option>
-							</select>
+							<select class="span1 vlan"></select>
+							<select	class="span1 ipAddress"></select>
+							<input type="text" readonly="readonly" name="nicIpAddress" value="${nic.ipAddress }" class="required span2 ipAddress" >
 						</div>
 					</div>
 				</c:forEach>
 			</div>
-			 
+
+
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
 				<input class="btn btn-primary" type="submit" value="提交">

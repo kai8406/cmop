@@ -13,7 +13,6 @@
 	<script>
 		$(document).ready(function() {
 			
-			
 			$("ul#navbar li#apply").addClass("active");
 		
 			$("input[name=osBit2]:first").attr('disabled','');	//Windows2008R2 没有32bit,只有64bit		
@@ -41,7 +40,7 @@
 				var osId = $parent.find("#osId").val(); //操作系统ID
 				var osNAME = $parent.find("span.osName").text(); //操作系统名
 				var osBitId = $parent.find("input[name='osBit" + osId + "']:checked").val(); //选中的位数Id
-				var osBitText = $.trim($parent.find("input[name='osBit" + osId + "']:checked").parent().parent().parent().find("span.radioText").text()); //选中的位数文本.
+				var osBitText = $.trim($parent.find("input[name='osBit" + osId + "']:checked").parent().find("span.radioText").text()); //选中的位数文本.
 				//装入临时隐藏域
 				$("#osIdTmp").val(osId);
 				$("#osNameTmp").val(osNAME);

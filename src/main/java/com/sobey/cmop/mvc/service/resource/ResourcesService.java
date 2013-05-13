@@ -181,6 +181,25 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 汇总资源的分页
+	 * 
+	 * @param searchParams
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Resources> getSummaryPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
+
+		return resourcesDao.findAll(spec, pageRequest);
+	}
+
+	/**
 	 * 根据条件获得当前用户的资源Resources List
 	 * 
 	 * @param serviceType

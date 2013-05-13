@@ -158,7 +158,7 @@
 					<select name="serverModelId" id="serverModelId" class="required">
 						<c:forEach var="item" items="${serverModelList }">
 							<option value="${item.id}" <c:if test="${item.id == hostServer.serverModel.id }"> selected="selected"</c:if>
-							>${item.name } || ${item.port }</option>
+							>${item.name }</option>
 						</c:forEach>
 					</select>
 				</div>

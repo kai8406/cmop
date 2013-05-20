@@ -14,9 +14,9 @@ import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
-import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServerModel;
 import com.sobey.cmop.mvc.entity.Vlan;
+import com.sobey.cmop.mvc.entity.ToJson.ResourcesJson;
 
 /**
  * 页面AJAX操作相关的 Controller
@@ -146,10 +146,10 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
 	@ResponseBody
-	public List<Resources> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
+	public List<ResourcesJson> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
 			@RequestParam(value = "serviceTagName", required = false) String serviceTagName, @RequestParam(value = "ipAddress", required = false) String ipAddress,
 			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
-		return comm.resourcesService.getResourcesListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
+		return comm.resourcesService.getResourcesJsonListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
 	}
 
 	/**

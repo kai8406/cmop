@@ -101,9 +101,9 @@ public class ApplyAuditController extends BaseController {
 			// 页面进来userId为0,这个时候取当前UserId. 邮件进来的UserId就不为0.
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
 			model.addAttribute("apply", apply);
-			
+
 			// TODO 成本核算
-//			model.addAttribute("sumCost", comm.costService.costPrice(apply));
+			// model.addAttribute("sumCost", comm.costService.costPrice(apply));
 			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(applyId));
 
 			returnUrl = "audit/apply/auditApplyForm";

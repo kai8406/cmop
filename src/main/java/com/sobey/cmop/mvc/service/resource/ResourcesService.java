@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
@@ -33,6 +34,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
@@ -49,6 +51,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.entity.ToJson.ResourcesJson;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Collections3;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -212,13 +215,34 @@ public class ResourcesService extends BaseSevcie {
 	 *            资源标识符
 	 * @return
 	 */
-	public List<Resources> getResourcesListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
+	public List<ResourcesJson> getResourcesJsonListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
 
 		Map<String, SearchFilter> filters = Maps.newHashMap();
 
 		// 组装参数,写入filters.适用于多条件查询的情况.
 
-		filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+		User user = comm.accountService.getCurrentUser();
+
+		List<Integer> groups = new ArrayList<Integer>();
+
+		boolean flag = true;
+
+		// 设置指定的权限角色.该权限角色可查看所有的资源.
+
+		groups.add(AccountConstant.DefaultGroups.om_a.toInteger());
+		groups.add(AccountConstant.DefaultGroups.om_b.toInteger());
+
+		// 如果包含有指定权限角色,则设置flag为false并break Loop.
+		for (Group group : user.getGroupList()) {
+			if (groups.contains(group.getId())) {
+				flag = false;
+				break;
+			}
+		}
+
+		if (flag) {
+			filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+		}
 
 		if (serviceType != null) {
 			filters.put("resources.serviceType", new SearchFilter("serviceType", Operator.EQ, serviceType));
@@ -238,7 +262,14 @@ public class ResourcesService extends BaseSevcie {
 
 		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
 
-		return resourcesDao.findAll(spec);
+		List<ResourcesJson> jsonList = new ArrayList<ResourcesJson>();
+
+		// 将Resources转成ResourcesJson
+		for (Resources resources : resourcesDao.findAll(spec)) {
+			jsonList.add(comm.resourcesJsonService.convertResourcesJsonToResourcesJson(resources));
+		}
+
+		return jsonList;
 	}
 
 	/**

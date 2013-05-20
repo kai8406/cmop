@@ -21,6 +21,7 @@
 			
 			$("#serviceStart").datepicker({
 				changeMonth: true,
+				minDate: 'D',
 				onClose: function(selectedDate) {
 					$("#serviceEnd").datepicker("option", "minDate", selectedDate);
 				}

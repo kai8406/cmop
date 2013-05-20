@@ -156,6 +156,8 @@ public class TemplateMailService extends BaseSevcie {
 		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续;
 		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
 
+		// TODO 成本核算
+		// map.put("sumCost", comm.costService.costPrice(apply));
 		map.put("passUrl", passUrl);
 		map.put("disagreeContinueUrl", disagreeContinueUrl);
 		map.put("disagreeReturnUrl", disagreeReturnUrl);

@@ -441,8 +441,17 @@
 				</#list>
 				
 			</#if><!--  CP云生产 End -->
-			
 		</li>
+		
+		<!-- 成本核算 -->
+		<#if sumCost?exists>
+			<li>
+				<strong>资源服务费用</strong>
+				<ul>
+					<li>${sumCost}</li>
+				</ul>
+			</li>
+		</#if><!-- 成本核算 End -->
 		
 		<#if passUrl?exists>
 			<li>

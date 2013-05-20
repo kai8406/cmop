@@ -412,12 +412,17 @@ function setResult(result) {
 					</c:forEach>
 				</c:if>
 				
+				<c:if test="${not empty sumCost}">
+					<hr>
+					<dt>资源服务费用</dt>
+					<dd>${sumCost }</dd>
+				</c:if>
+				
 			</dl>
 			
 			<hr>
 			
 			<!-- 审批意见 -->
-			
 			<c:if test="${not empty audits  }">
 				<table class="table">
 					<thead>

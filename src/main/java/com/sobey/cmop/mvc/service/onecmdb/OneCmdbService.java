@@ -15,6 +15,7 @@ import org.onecmdb.core.utils.wsdl.OneCMDBServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.service.basicdata.imports.ServerBean;
 
@@ -171,11 +172,11 @@ public class OneCmdbService extends BaseSevcie {
 	 * @param ci
 	 * @return [displayname,alias]
 	 */
-	public static Map findCiAlias(String ci) {
+	public static Map<String, String> findCiAlias(String ci) {
 		QueryCriteria qc = new QueryCriteria();
 		qc.setOffspringOfAlias(ci);
 		List<CiBean> ciBeans = search(qc);
-		Map temp = new HashMap();
+		Map<String, String> temp = Maps.newHashMap();
 		if (ciBeans != null) {
 			for (CiBean ciBean : ciBeans) {
 				temp.put(ciBean.getDisplayName(), ciBean.getAlias());
@@ -191,11 +192,11 @@ public class OneCmdbService extends BaseSevcie {
 	 * @param ci
 	 * @return [alias,displayname]
 	 */
-	public static Map findCiByText(String ci) {
+	public static Map<String, String> findCiByText(String ci) {
 		QueryCriteria qc = new QueryCriteria();
 		qc.setOffspringOfAlias(ci);
 		List<CiBean> ciBeans = search(qc);
-		Map temp = new HashMap();
+		Map<String, String> temp = Maps.newHashMap();
 		if (ciBeans != null) {
 			for (CiBean ciBean : ciBeans) {
 				temp.put(ciBean.getAlias(), ci.equals("Vlans") ? (ciBean.getDisplayName() + "(" + ciBean.getDescription() + ")") : ciBean.getDisplayName());
@@ -212,13 +213,13 @@ public class OneCmdbService extends BaseSevcie {
 	 * @param text
 	 * @return
 	 */
-	public static Map findCiByText(String ci, String text) {
+	public static Map<String, String> findCiByText(String ci, String text) {
 		QueryCriteria qc = new QueryCriteria();
 		qc.setOffspringOfAlias(ci);
 		qc.setTextMatchValue(true);
 		qc.setText(text);
 		List<CiBean> ciBeans = search(qc);
-		Map temp = new HashMap();
+		Map<String, String> temp = Maps.newHashMap();
 		if (ciBeans != null) {
 			for (CiBean ciBean : ciBeans) {
 				temp.put(ciBean.getAlias(), ciBean.getDisplayName());
@@ -259,13 +260,13 @@ public class OneCmdbService extends BaseSevcie {
 	 * @param text2
 	 * @return
 	 */
-	public static Map findCiByText(String ci, String text, String ci2, String text2) {
+	public static Map<String, String> findCiByText(String ci, String text, String ci2, String text2) {
 		QueryCriteria qc = new QueryCriteria();
 		qc.setOffspringOfAlias(ci);
 		qc.setTextMatchValue(true);
 		qc.setText(text);
 		List<CiBean> ciBeans = search(qc);
-		Map temp = new HashMap();
+		Map temp = Maps.newHashMap();
 		if (ciBeans != null) {
 			for (CiBean ciBean : ciBeans) {
 				List<ValueBean> values = ciBean.getAttributeValues();

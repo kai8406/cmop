@@ -194,9 +194,9 @@ public class AjaxController extends BaseController {
 
 	@RequestMapping(value = "getVlanByLocationAlias")
 	@ResponseBody
-	public Map getVlanByLocationAlias(@RequestParam("locationAlias") String locationAlias) {
+	public Map<String, String> getVlanByLocationAlias(@RequestParam("locationAlias") String locationAlias) {
 		Set<Vlan> vlans = comm.locationService.findLocationByAlias(locationAlias).getVlans();
-		Map map = Maps.newHashMap();
+		Map<String, String> map = Maps.newHashMap();
 		for (Vlan vlan : vlans) {
 			map.put(vlan.getAlias(), "Vlan" + vlan.getName() + "(" + vlan.getDescription() + ")");
 		}

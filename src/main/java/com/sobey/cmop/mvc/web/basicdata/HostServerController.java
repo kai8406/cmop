@@ -252,7 +252,7 @@ public class HostServerController extends BaseController {
 	 * @return
 	 */
 	@ModelAttribute("rackMap")
-	public Map getRackFromOnecmdb() {
+	public Map<String, String> getRackFromOnecmdb() {
 		return OneCmdbService.findCiByText("Rack");
 	}
 
@@ -262,7 +262,7 @@ public class HostServerController extends BaseController {
 	 * @return
 	 */
 	@ModelAttribute("switchMap")
-	public Map getSwitchFromOnecmdb() {
+	public Map<String, String> getSwitchFromOnecmdb() {
 		return OneCmdbService.findCiByText("Switch");
 	}
 

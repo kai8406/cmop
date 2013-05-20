@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.account;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -325,6 +326,8 @@ public class AccountService extends BaseSevcie {
 	 * 1.admin 
 	 * 2.apply
 	 * 3.audit
+	 * 4.om_a
+	 * 5.om_b
 	 * </pre>
 	 * 
 	 * @param id
@@ -332,7 +335,16 @@ public class AccountService extends BaseSevcie {
 	 * @return
 	 */
 	private boolean isDefeatGroup(Integer id) {
-		return id.equals(AccountConstant.DefaultGroups.admin.toInteger()) || id.equals(AccountConstant.DefaultGroups.apply.toInteger()) || id.equals(AccountConstant.DefaultGroups.audit.toInteger());
+
+		List<Integer> list = new ArrayList<Integer>();
+
+		list.add(AccountConstant.DefaultGroups.admin.toInteger());
+		list.add(AccountConstant.DefaultGroups.apply.toInteger());
+		list.add(AccountConstant.DefaultGroups.audit.toInteger());
+		list.add(AccountConstant.DefaultGroups.om_a.toInteger());
+		list.add(AccountConstant.DefaultGroups.om_b.toInteger());
+
+		return list.contains(id);
 	}
 
 	// -- Department Manager --//

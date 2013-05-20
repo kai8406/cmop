@@ -309,7 +309,7 @@ public class AccountService extends BaseSevcie {
 
 	@Transactional(readOnly = false)
 	public boolean deleteGroup(Integer id) {
-		if (this.isDefeatGroup(id)) {
+		if (this.isDefautlGroup(id)) {
 			logger.warn("操作员{}尝试删除默认权限组", SecurityUtils.getSubject().getPrincipal());
 			return false;
 		} else {
@@ -334,7 +334,7 @@ public class AccountService extends BaseSevcie {
 	 *            groupId
 	 * @return
 	 */
-	private boolean isDefeatGroup(Integer id) {
+	private boolean isDefautlGroup(Integer id) {
 
 		List<Integer> list = new ArrayList<Integer>();
 

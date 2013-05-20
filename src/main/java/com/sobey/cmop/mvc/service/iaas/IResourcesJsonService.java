@@ -8,6 +8,7 @@ import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.CpJson;
@@ -17,6 +18,7 @@ import com.sobey.cmop.mvc.entity.ToJson.ElbJson;
 import com.sobey.cmop.mvc.entity.ToJson.MdnJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.ResourcesJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 
 /**
@@ -29,6 +31,13 @@ import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
  * 
  */
 public interface IResourcesJsonService {
+
+	/**
+	 * 将Resources转化成ResourcesJson格式.
+	 * 
+	 * @return
+	 */
+	public ResourcesJson convertResourcesJsonToResourcesJson(Resources resources);
 
 	/**
 	 * 将ComputeItem转化成ComputeJson格式.

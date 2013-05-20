@@ -13,6 +13,7 @@ import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.MdnConstant;
 import com.sobey.cmop.mvc.constant.MonitorConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
+import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
@@ -24,6 +25,7 @@ import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
+import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.ToJson.ComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.CpJson;
@@ -35,6 +37,7 @@ import com.sobey.cmop.mvc.entity.ToJson.MdnLiveJson;
 import com.sobey.cmop.mvc.entity.ToJson.MdnVodJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorComputeJson;
 import com.sobey.cmop.mvc.entity.ToJson.MonitorElbJson;
+import com.sobey.cmop.mvc.entity.ToJson.ResourcesJson;
 import com.sobey.cmop.mvc.entity.ToJson.StorageJson;
 import com.sobey.cmop.mvc.service.iaas.IResourcesJsonService;
 import com.sobey.framework.utils.StringCommonUtils;
@@ -42,6 +45,25 @@ import com.sobey.framework.utils.StringCommonUtils;
 @Service
 @Transactional(readOnly = true)
 public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJsonService {
+
+	@Override
+	public ResourcesJson convertResourcesJsonToResourcesJson(Resources resources) {
+
+		ResourcesJson json = new ResourcesJson();
+
+		json.setId(resources.getId());
+		json.setUser(resources.getUser().getName());
+		json.setServiceType(resources.getServiceType());
+		json.setServiceTag(resources.getServiceTag().getName());
+		json.setServiceId(resources.getServiceId());
+		json.setServiceIdentifier(resources.getServiceIdentifier());
+		json.setCreateTime(resources.getCreateTime());
+		json.setStatus(ResourcesConstant.Status.get(resources.getStatus()));
+		json.setOldIp(resources.getOldIp());
+		json.setIpAddress(resources.getIpAddress());
+
+		return json;
+	}
 
 	@Override
 	public ComputeJson convertComputeJsonToComputeItem(ComputeItem computeItem) {

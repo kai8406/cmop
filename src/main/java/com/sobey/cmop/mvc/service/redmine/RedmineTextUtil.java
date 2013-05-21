@@ -171,8 +171,8 @@ public class RedmineTextUtil {
 				if (eipItem.getComputeItem() != null) {
 
 					// 关联实例
-					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(").append(eipItem.getComputeItem().getInnerIp())
-							.append(")").append(NEWLINE);
+					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(").append(eipItem.getComputeItem().getRemark())
+							.append(" - ").append(eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
 
 				} else {
 

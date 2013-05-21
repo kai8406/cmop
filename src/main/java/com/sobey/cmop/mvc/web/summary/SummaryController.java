@@ -49,9 +49,7 @@ public class SummaryController extends BaseController {
 		 * 页面的参数名和链接后的查询参数也需要修改.
 		 */
 		for (Entry<Integer, String> entry : ResourcesConstant.ServiceType.map.entrySet()) {
-
-			model.addAttribute(entry.getValue() + "COUNT", comm.resourcesService.getResourcesStatistics(entry.getKey()));
-
+			model.addAttribute(entry.getValue() + "COUNT", comm.resourcesService.getResourcesSummaryStatistics(entry.getKey()));
 		}
 
 		return "summary/summaryList";

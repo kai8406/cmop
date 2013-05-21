@@ -18,7 +18,7 @@
 
 	<!-- 资源汇总 -->
 	<div class="widget-box">
-		<div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Resources Statistics</h5></div>
+		<div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Summary</h5></div>
 		<div class="widget-content">
 			<div class="row">
 			

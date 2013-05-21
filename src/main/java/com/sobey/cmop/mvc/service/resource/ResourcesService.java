@@ -273,7 +273,7 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据服务类型serviceType 获得资源的个数
+	 * 根据服务类型serviceType 获得资源的个数(Resources)
 	 * 
 	 * @param serviceType
 	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
@@ -282,6 +282,18 @@ public class ResourcesService extends BaseSevcie {
 	 */
 	public Long getResourcesStatistics(Integer serviceType) {
 		return (long) resourcesDao.findByServiceTypeAndUserId(serviceType, getCurrentUserId()).size();
+	}
+
+	/**
+	 * 根据服务类型serviceType 获得资源的个数(Summary)
+	 * 
+	 * @param serviceType
+	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
+	 *            ServiceType
+	 * @return
+	 */
+	public Long getResourcesSummaryStatistics(Integer serviceType) {
+		return (long) resourcesDao.findByServiceType(serviceType).size();
 	}
 
 	/**

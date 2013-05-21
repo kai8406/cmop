@@ -21,8 +21,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -173,7 +171,6 @@ public class NetworkElbItem implements java.io.Serializable {
 	// 集合按id排序.
 	@OrderBy("id")
 	// 集合中对象id的缓存.
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@NotFound(action = NotFoundAction.IGNORE)
 	public List<ComputeItem> getComputeItemList() {
 		return computeItemList;

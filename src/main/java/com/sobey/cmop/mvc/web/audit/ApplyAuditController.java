@@ -103,7 +103,7 @@ public class ApplyAuditController extends BaseController {
 			model.addAttribute("apply", apply);
 
 			// TODO 成本核算
-			// model.addAttribute("sumCost", comm.costService.costPrice(apply));
+			model.addAttribute("sumCost", comm.costService.costPrice(apply));
 			model.addAttribute("audits", comm.auditService.getAuditListByApplyId(applyId));
 
 			returnUrl = "audit/apply/auditApplyForm";

@@ -228,7 +228,7 @@
 					<div id="elbSelectDiv" class="hidden">
 						<select id="elbSelect" class="required">
 							<c:forEach var="item" items="${allElbs }">
-								<option value="${item.id }">${item.identifier}(${item.virtualIp })</option>
+								<option value="${item.id }">${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>
 						</select>			
 					</div>		

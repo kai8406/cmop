@@ -125,6 +125,10 @@
 		</div>
 
 	</form>
+	
+	<div class="row">
+		<div class="pull-right"><tags:singlePage page="${page}" /></div>
+	</div>
 
 	<div class="singlePage">
 	<table class="table table-striped table-bordered table-condensed">

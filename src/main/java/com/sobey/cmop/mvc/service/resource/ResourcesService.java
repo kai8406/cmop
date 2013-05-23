@@ -971,6 +971,10 @@ public class ResourcesService extends BaseSevcie {
 						cpItem.setRecordTime(changeItem.getOldValue());
 					}
 
+					if (FieldNameConstant.CpItem.收录时长.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordDuration(Integer.valueOf(changeItem.getOldValue()));
+					}
+
 					if (FieldNameConstant.CpItem.发布接口地址.toString().equals(changeItem.getFieldName())) {
 						cpItem.setPublishUrl(changeItem.getOldValue());
 					}

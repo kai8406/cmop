@@ -1634,9 +1634,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 	@Override
 	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
-			String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
-			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
-			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
+			Integer recordDuration, String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath,
+			String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
+			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
 
 		boolean isChange = false;
 
@@ -1694,6 +1694,15 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldString = cpItem.getRecordTime();
 			String newValue = recordTime;
 			String newString = recordTime;
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
+		}
+
+		if (!cpItem.getRecordDuration().equals(recordDuration)) {
+			String fieldName = FieldNameConstant.CpItem.收录时长.toString();
+			String oldValue = cpItem.getRecordDuration().toString();
+			String oldString = cpItem.getRecordDuration().toString();
+			String newValue = recordDuration.toString();
+			String newString = recordDuration.toString();
 			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.CostingConstant;
 import com.sobey.cmop.mvc.constant.NetworkConstant;
@@ -13,6 +14,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -95,8 +97,96 @@ public class CostService extends BaseSevcie {
 	}
 
 	private double cpCost(Apply apply, double workTime) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		double price = 0;
+		if (!apply.getCpItems().isEmpty()) {
+
+			for (CpItem cpItem : apply.getCpItems()) {
+
+				// CP核算成本公式:每月服务成本 = 收录时长 × 收录服务器硬件单位成本 + 拆条时长 ×（转码服务器硬件单位成本 +
+				// 拆条人工单位成本） +
+				// 收录码率 × 收录时长 × 25200 × 云平台各项服务成本 ÷ 8388608 - ES3
+
+				double recordBitrate = getRecordBitrateForK(cpItem);
+				double recordTime = getRecordTimeForHours(cpItem);
+				double recordServerCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.收录服务器硬件单位成本.toString()).getDescription());
+				double partitionTime = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.拆条时长.toString()).getDescription());
+				double transcodingCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.转码服务器硬件单位成本.toString()).getDescription());
+				double humanCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.拆条人工单位成本.toString()).getDescription());
+				double platformCostring = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+				double es3Costing = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.ES3.toString()).getDescription());
+
+				// 收录
+				double record = MathsUtil.mul(recordTime, recordServerCosting);
+
+				// 拆条
+				double partition = MathsUtil.mul(partitionTime, MathsUtil.add(transcodingCosting, humanCosting));
+
+				double other1 = MathsUtil.mul(recordBitrate, recordTime);
+				other1 = MathsUtil.mul(other1, 25200); // 合并 3600 ×七天
+				other1 = MathsUtil.mul(other1, platformCostring);
+				other1 = MathsUtil.div(other1, 8388608); // 合并 1024 ÷ 1024 ÷ 8
+
+				price = MathsUtil.add(price, record);
+				price = MathsUtil.add(price, partition);
+				price = MathsUtil.add(price, other1);
+				price = MathsUtil.sub(price, es3Costing);
+
+			}
+
+			price = MathsUtil.mul(price, workTime);
+		}
+
+		return price;
+
+	}
+
+	/**
+	 * 获得收录码率 , 码率是硬编码,注意以后维护.
+	 * 
+	 * @param cpItem
+	 * @return
+	 */
+	private double getRecordBitrateForK(CpItem cpItem) {
+
+		double bitrate = 0;
+		if (cpItem.getRecordBitrate().equals("1")) {
+			bitrate = 800;
+		} else if (cpItem.getRecordBitrate().equals("2")) {
+			bitrate = 1024;
+		} else if (cpItem.getRecordBitrate().equals("3")) {
+			bitrate = 2048;
+		} else if (cpItem.getRecordBitrate().equals("4")) {
+			bitrate = 4816;
+		} else {
+			// 默认 800K
+			bitrate = 800;
+		}
+
+		return bitrate;
+	}
+
+	/**
+	 * 获得收录时间. 每天默认为收录时间. 每周和每月分别乘以 7 和 198 得到总的收录时间.
+	 * 
+	 * @param cpItem
+	 * @return
+	 */
+	private double getRecordTimeForHours(CpItem cpItem) {
+		double time = 0;
+		if (CPConstant.RecordType.每天.toInteger().equals(cpItem.getRecordType())) {
+
+			time = Double.valueOf(cpItem.getRecordDuration());
+
+		} else if (CPConstant.RecordType.每周.toInteger().equals(cpItem.getRecordType())) {
+
+			time = MathsUtil.mul(7, Double.valueOf(cpItem.getRecordTime()));
+
+		} else {
+			// 每月
+			time = MathsUtil.mul(168, Double.valueOf(cpItem.getRecordTime()));
+		}
+		return time;
 	}
 
 	private double mdnCost(Apply apply, double workTime) {
@@ -125,10 +215,7 @@ public class CostService extends BaseSevcie {
 
 		double price = 0;
 
-		/*
-		 * TODO 接入速率.页面没有接入速率的输入,暂时在后台默认为4M.
-		 */
-		double accessRate = 4;
+		double accessRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.CostingParameter.接入速率.toString()).getDescription());
 
 		if (!apply.getNetworkEipItems().isEmpty()) {
 
@@ -138,22 +225,19 @@ public class CostService extends BaseSevcie {
 				// 电信带宽单价 + 联通IP数量 × 联通带宽单价)
 				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
 
-					double ISPPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.电信带宽单价.toString()).getDescription());
-					ISPPrice = MathsUtil.mul(ISPPrice, 2);
-					ISPPrice = MathsUtil.mul(ISPPrice, accessRate);
-					price = MathsUtil.add(price, ISPPrice);
+					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.电信带宽单价.toString()).getDescription());
 
 				} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
 
-					double ISPPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.联通带宽单价.toString()).getDescription());
-					ISPPrice = MathsUtil.mul(ISPPrice, 2);
-					ISPPrice = MathsUtil.mul(ISPPrice, accessRate);
-					price = MathsUtil.add(price, ISPPrice);
+					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.联通带宽单价.toString()).getDescription());
+
 				} else {
 					// TODO 中国移动
 				}
 			}
 
+			price = MathsUtil.mul(price, 2);
+			price = MathsUtil.mul(price, accessRate);
 			price = MathsUtil.mul(price, workTime);
 		}
 

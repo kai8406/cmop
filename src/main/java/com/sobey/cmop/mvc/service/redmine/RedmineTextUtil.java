@@ -442,6 +442,7 @@ public class RedmineTextUtil {
 
 				content.append("收录类型:").append(BLANK).append(CPConstant.RecordType.get(cpItem.getRecordType())).append(NEWLINE);
 				content.append("收录时段:").append(BLANK).append(cpItem.getRecordTime()).append(NEWLINE);
+				content.append("收录时长(小时):").append(BLANK).append(cpItem.getRecordDuration()).append(NEWLINE);
 				if (StringUtils.isNotBlank(cpItem.getPublishUrl())) {
 					content.append("发布接口地址:").append(BLANK).append(cpItem.getPublishUrl()).append(NEWLINE);
 				}

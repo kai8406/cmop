@@ -59,6 +59,7 @@ public class CPController extends BaseController {
 			@RequestParam(value = "exportEncode") String exportEncode,
 			@RequestParam(value = "recordType") Integer recordType,
 			@RequestParam(value = "recordTime") String recordTime,
+			@RequestParam(value = "recordDuration") Integer recordDuration,
 			@RequestParam(value = "publishUrl", required = false) String publishUrl,
 			@RequestParam(value = "isPushCtp") String isPushCtp,
 			// video
@@ -85,9 +86,9 @@ public class CPController extends BaseController {
 		apply.setServiceEnd(serviceEnd);
 		apply.setDescription(description);
 
-		comm.cpService.saveCPToApply(apply, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword,
-				videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath,
-				pictrueOutputGroup, pictrueOutputMedia, fileNames, fileSizes);
+		comm.cpService.saveCPToApply(apply, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
+				videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath,
+				pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia, fileNames, fileSizes);
 		redirectAttributes.addFlashAttribute("message", "创建云生产成功.");
 
 		return REDIRECT_SUCCESS_URL;
@@ -126,6 +127,7 @@ public class CPController extends BaseController {
 			@RequestParam(value = "exportEncode") String exportEncode,
 			@RequestParam(value = "recordType") Integer recordType,
 			@RequestParam(value = "recordTime") String recordTime,
+			@RequestParam(value = "recordDuration") Integer recordDuration,
 			@RequestParam(value = "publishUrl", required = false) String publishUrl,
 			@RequestParam(value = "isPushCtp", required = false) String isPushCtp,
 			// video
@@ -145,7 +147,7 @@ public class CPController extends BaseController {
 
 		CpItem cpItem = comm.cpService.getCpItem(id);
 
-		comm.cpService.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
+		comm.cpService.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
 				videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath,
 				pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
 

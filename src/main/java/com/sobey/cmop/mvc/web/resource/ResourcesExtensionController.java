@@ -285,6 +285,7 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "exportEncode") String exportEncode,
 			@RequestParam(value = "recordType") Integer recordType,
 			@RequestParam(value = "recordTime") String recordTime,
+			@RequestParam(value = "recordDuration") Integer recordDuration,
 			@RequestParam(value = "publishUrl", required = false) String publishUrl,
 			@RequestParam(value = "isPushCtp", required = false) String isPushCtp,
 			// video
@@ -305,8 +306,8 @@ public class ResourcesExtensionController extends BaseController {
 		Resources resources = comm.resourcesService.getResources(id);
 		resources.setUsedby(usedby);
 
-		comm.cpService.saveResourcesByCP(resources, serviceTagId, changeDescription, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, publishUrl, isPushCtp, videoFtpIp,
-				videoFtpPort, videoFtpUsername, videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername,
+		comm.cpService.saveResourcesByCP(resources, serviceTagId, changeDescription, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp,
+				videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername,
 				pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
 
 		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);

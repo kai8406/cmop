@@ -28,9 +28,9 @@ public class CostingConstant {
 
 		云平台各项服务成本("Costing7"),
 
-		收录服务器硬件单位成本("Costing8"), 转码服务器硬件单位成本("Costing9"),
+		收录服务器硬件单位成本("Costing8"), 转码服务器硬件单位成本("Costing9"), 拆条人工单位成本("Costing10"), 拆条时长("Costing11"),
 
-		EFW("Costing10"), DNS("Costing11"), ES3("Costing12"), ;
+		EFW("Costing12"), DNS("Costing13"), ES3("Costing14");
 
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 
@@ -43,6 +43,30 @@ public class CostingConstant {
 		private String code;
 
 		private Costing(String code) {
+			this.code = code;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.code);
+		}
+	}
+
+	public enum CostingParameter {
+
+		接入速率("Parameter1");
+
+		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
+
+		static {
+			for (CostingParameter e : CostingParameter.values()) {
+				mapKeyStr.put(e.code, e.name());
+			}
+		}
+
+		private String code;
+
+		private CostingParameter(String code) {
 			this.code = code;
 		}
 

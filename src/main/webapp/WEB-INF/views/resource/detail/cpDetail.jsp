@@ -90,6 +90,13 @@
 				</div>
 			</div>
 			
+			<div class="control-group">
+				<label class="control-label" for="recordDuration">收录时长(小时)</label>
+				<div class="controls">
+					<p class="help-inline plain-text">${cp.recordDuration}</p>
+				</div>
+			</div>
+			
 			<c:if test="${not empty cp.publishUrl }">
 				<div class="control-group">
 					<label class="control-label" for="publishUrl">发布接口地址</label>

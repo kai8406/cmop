@@ -35,7 +35,6 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getCompute")
 	public @ResponseBody
 	ComputeJson getCompute(@RequestParam(value = "id") Integer id) {
-
 		return comm.resourcesJsonService.convertComputeJsonToComputeItem(comm.computeService.getComputeItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 

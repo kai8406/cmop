@@ -109,8 +109,9 @@
 						html += '<tr>';
 						html += '<td><input type="checkbox" value="' + responseText[i].id + '"></td>';
 						html += '<td>' + responseText[i].serviceIdentifier + '</td>';
-						html += '<td>' + responseText[i].serviceTag.name + '</td>';
+					 	html += '<td>' + responseText[i].serviceTag + '</td>';
 						html += '<td>' + (responseText[i].ipAddress == null ? "" : responseText[i].ipAddress) + '</td>';
+					 	html += '<td>' + responseText[i].user + '</td>';
 						html += "<td id='resources-serviceType' class='hide'>" + responseText[i].serviceType + "</td>";
 						html += '</tr>';
 					}
@@ -512,6 +513,7 @@
 					<th>标识符</th>
 					<th>服务标签</th>
 					<th>IP地址</th>
+					<th>申请人</th>
 				</tr>
 			</thead>
 			<tbody id="resources-tbody"></tbody>

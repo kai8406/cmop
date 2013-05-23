@@ -26,6 +26,7 @@
 			
 			$("#serviceStart").datepicker({
 				changeMonth: true,
+				minDate: 'D',
 				onClose: function(selectedDate) {
 					$("#serviceEnd").datepicker("option", "minDate", selectedDate);
 				}
@@ -196,6 +197,13 @@
 					<label class="control-label" for="recordTime">收录时段</label>
 					<div class="controls">
 						<input type="text" id="recordTime" name="recordTime" class="required" maxlength="45" placeholder="...收录时段">
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="recordDuration">收录时长(小时)</label>
+					<div class="controls">
+						<input type="text" id="recordDuration" name="recordDuration" class="required digits" maxlength="45" placeholder="...收录时长">
 					</div>
 				</div>
 				

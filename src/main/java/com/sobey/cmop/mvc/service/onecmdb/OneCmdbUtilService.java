@@ -807,12 +807,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 	// =========== ServerPort ===========//
 
 	/**
-	 * 新增或更新ServerPort至oneCMDB
+	 * 将服务器关联的网卡信息同步至oneCMDB的ServerPort.
 	 * 
 	 * @param hostServer
 	 * @return
 	 */
-	public boolean saveServerPortToOneCMDB(HostServer hostServer) {
+	private boolean saveServerPortToOneCMDB(HostServer hostServer) {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 
@@ -831,21 +831,28 @@ public class OneCmdbUtilService extends BaseSevcie {
 		return OneCmdbService.update(ciBeanList);
 	}
 
-	public boolean saveServerPortByHostServerToOneCMDB(HostServer hostServer) {
+	/**
+	 * 将服务器本身的管理网卡信息同步至oneCMDB的ServerPort.
+	 * 
+	 * @param hostServer
+	 * @return
+	 */
+	private boolean saveServerPortByHostServerToOneCMDB(HostServer hostServer) {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 
-		List<Nic> nics = comm.hostServerService.getNicByhostServerId(hostServer.getId());
+		/**
+		 * 管理口网卡默认的网卡号: 111
+		 */
+		String managerSite = "111";
 
-		for (Nic nic : nics) {
-			CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
-			ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
-			ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
-			// ci.addAttributeValue(new ValueBean("Sit", nic.getSite(), false));
-			ci.addAttributeValue(new ValueBean("MacAddress", hostServer.getManagementMac(), false));
-			ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
-			ciBeanList.add(ci);
-		}
+		CiBean ci = new CiBean("ServerPort", "ServerPort" + hostServer.getAlias(), false);
+		ci.addAttributeValue(new ValueBean("IPAddress", "IPAddress-" + hostServer.getIpAddress(), true));
+		ci.addAttributeValue(new ValueBean("Server", "Server" + hostServer.getAlias(), true));
+		ci.addAttributeValue(new ValueBean("Sit", managerSite, false));
+		ci.addAttributeValue(new ValueBean("MacAddress", hostServer.getManagementMac(), false));
+		ci.addAttributeValue(new ValueBean("ConnectedTo", hostServer.getSwitchName(), false));
+		ciBeanList.add(ci);
 
 		return OneCmdbService.update(ciBeanList);
 	}

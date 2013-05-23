@@ -50,6 +50,8 @@ public class AccountConstant {
 	 * 1.admin 超级管理员
 	 * 2.apply 申请人 
 	 * 3.audit 审批人
+	 * 4.om_a 运维人A
+	 * 5.om_B 运维人B
 	 * </pre>
 	 * 
 	 * @author liukai
@@ -57,7 +59,7 @@ public class AccountConstant {
 	 */
 	public enum DefaultGroups implements ICommonEnum {
 
-		admin(1), apply(2), audit(3);
+		admin(1), apply(2), audit(3), om_a(4), om_b(5);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

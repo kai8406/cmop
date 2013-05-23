@@ -13,6 +13,7 @@ import com.sobey.cmop.mvc.service.basicdata.LocationService;
 import com.sobey.cmop.mvc.service.basicdata.ServerModelService;
 import com.sobey.cmop.mvc.service.basicdata.VlanService;
 import com.sobey.cmop.mvc.service.basicdata.imports.ImportService;
+import com.sobey.cmop.mvc.service.cost.CostService;
 import com.sobey.cmop.mvc.service.department.DepartmentService;
 import com.sobey.cmop.mvc.service.email.SimpleMailService;
 import com.sobey.cmop.mvc.service.email.TemplateMailService;
@@ -74,6 +75,9 @@ public class CommonService {
 
 	@Resource
 	public ComputeService computeService;
+
+	@Resource
+	public CostService costService;
 
 	@Resource
 	public CPService cpService;

@@ -158,7 +158,7 @@
 					<select name="serverModelId" id="serverModelId" class="required">
 						<c:forEach var="item" items="${serverModelList }">
 							<option value="${item.id}" <c:if test="${item.id == hostServer.serverModel.id }"> selected="selected"</c:if>
-							>${item.name } || ${item.port }</option>
+							>${item.name }</option>
 						</c:forEach>
 					</select>
 				</div>
@@ -221,12 +221,20 @@
 				</div>
 			</div>	
 			
+			
 			<div class="control-group">
-				<label class="control-label" for="ipAddress">IP地址</label>
+				<label class="control-label" for="ipAddress">管理口IP</label>
 				<div class="controls">
 					<select class="span1 vlan"></select>
 					<select class="span1 ipAddress"></select>
 					<input type="text" readonly="readonly" name="ipAddress" value="${hostServer.ipAddress }" class="required span2 ipAddress" >
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="managementMac">Mac</label>
+				<div class="controls">
+					<input type="text" id="managementMac" name="managementMac" value="${hostServer.managementMac}"  class="required" maxlength="45" placeholder="..Mac地址">
 				</div>
 			</div>
 			
@@ -237,22 +245,6 @@
 						maxlength="100" class="required ">${hostServer.description }</textarea>
 				</div>
 			</div>	
-			
-			<div class="control-group">
-				<label class="control-label" for="managementMac">Mac</label>
-				<div class="controls">
-					<input type="text" id="managementMac" name="managementMac" value="${hostServer.managementMac}"  class="required" maxlength="45" placeholder="..Mac地址">
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="managementIp">管理口IP</label>
-				<div class="controls">
-					<select class="span1 vlan"></select>
-					<select class="span1 ipAddress"></select>
-					<input type="text" readonly="readonly" name="managementIp" value="${hostServer.managementIp }" class="required span2 ipAddress" >
-				</div>
-			</div>
 			
 			<div id="NICDIV">
 				<c:forEach var="nic" items="${hostServer.nics }">

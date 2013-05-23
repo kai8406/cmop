@@ -43,7 +43,6 @@ public class HostServer implements java.io.Serializable {
 	private String switchAlias;
 	private String switchSite;
 	private String managementMac;
-	private String managementIp;
 	private Set<IpPool> ipPools = new HashSet<IpPool>(0);
 	private Set<Nic> nics = new HashSet<Nic>(0);
 
@@ -62,12 +61,11 @@ public class HostServer implements java.io.Serializable {
 
 	/** full constructor */
 	public HostServer(Integer serverType, Integer poolType, String displayName, String rack, String rackAlias, String site, String height, String alias, String locationAlias, Set<IpPool> ipPools,
-			Set<Nic> nics, String ipAddress, Date createTime, String description, String managementMac, String managementIp, ServerModel serverModel) {
+			Set<Nic> nics, String ipAddress, Date createTime, String description, String managementMac, ServerModel serverModel) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;
 		this.rack = rack;
-		this.managementIp = managementIp;
 		this.managementMac = managementMac;
 		this.rackAlias = rackAlias;
 		this.site = site;
@@ -245,15 +243,6 @@ public class HostServer implements java.io.Serializable {
 
 	public void setManagementMac(String managementMac) {
 		this.managementMac = managementMac;
-	}
-
-	@Column(name = "management_ip", length = 45)
-	public String getManagementIp() {
-		return managementIp;
-	}
-
-	public void setManagementIp(String managementIp) {
-		this.managementIp = managementIp;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "hostServer")

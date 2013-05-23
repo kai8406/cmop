@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.bytecode.buildtime.spi.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -121,6 +122,7 @@ public class RedmineService extends BaseSevcie {
 				result = createIssue(issue, projectId, mgr);
 			} else {
 				logger.info("--->创建Issue失败！");
+				throw new ExecutionException("创建Issue失败！");
 			}
 		}
 		COUNT = 0; // 重置次数

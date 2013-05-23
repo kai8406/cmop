@@ -55,7 +55,7 @@ public class RedmineTextUtil {
 
 			content.append("<pre>").append(NEWLINE);
 			for (ComputeItem compute : computeItems) {
-				content.append("标识符(私网IP):").append(BLANK).append(compute.getIdentifier()).append("(").append(compute.getInnerIp()).append(")").append(NEWLINE);
+				content.append("标识符(私网IP):").append(BLANK).append(compute.getIdentifier()).append("(").append(compute.getRemark() + " - ").append(compute.getInnerIp()).append(")").append(NEWLINE);
 				content.append("用途信息:").append(BLANK).append(compute.getRemark()).append(NEWLINE);
 				content.append("配置信息:").append(BLANK).append(ComputeConstant.OS_TYPE_MAP.get(compute.getOsType())).append(BLANK).append(ComputeConstant.OS_BIT_MAP.get(compute.getOsBit()))
 						.append(BLANK);
@@ -171,8 +171,8 @@ public class RedmineTextUtil {
 				if (eipItem.getComputeItem() != null) {
 
 					// 关联实例
-					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(").append(eipItem.getComputeItem().getInnerIp())
-							.append(")").append(NEWLINE);
+					content.append(FieldNameConstant.Eip.关联实例 + ":").append(BLANK).append(eipItem.getComputeItem().getIdentifier()).append("(").append(eipItem.getComputeItem().getRemark())
+							.append(" - ").append(eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
 
 				} else {
 
@@ -442,6 +442,7 @@ public class RedmineTextUtil {
 
 				content.append("收录类型:").append(BLANK).append(CPConstant.RecordType.get(cpItem.getRecordType())).append(NEWLINE);
 				content.append("收录时段:").append(BLANK).append(cpItem.getRecordTime()).append(NEWLINE);
+				content.append("收录时长(小时):").append(BLANK).append(cpItem.getRecordDuration()).append(NEWLINE);
 				if (StringUtils.isNotBlank(cpItem.getPublishUrl())) {
 					content.append("发布接口地址:").append(BLANK).append(cpItem.getPublishUrl()).append(NEWLINE);
 				}

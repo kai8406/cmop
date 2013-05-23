@@ -46,6 +46,7 @@ import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.web.failure.UploadedFile;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.SearchFilter;
+import com.sobey.framework.utils.SearchFilter.Operator;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Tracker;
@@ -229,6 +230,8 @@ public class FailureService extends BaseSevcie {
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
 
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		filters.put("Failure.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
 
 		Specification<Failure> spec = DynamicSpecifications.bySearchFilter(filters.values(), Failure.class);
 

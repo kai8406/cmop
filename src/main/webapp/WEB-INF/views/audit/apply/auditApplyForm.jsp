@@ -385,6 +385,7 @@ function setResult(result) {
 					 	</dd>
 						<dd><em>收录类型</em>&nbsp;&nbsp;<c:forEach var="map" items="${recordTypeMap}"><c:if test="${map.key == item.recordType }">${map.value }</c:if></c:forEach></dd>
 						<dd><em>收录时段</em>&nbsp;&nbsp;${item.recordTime}</dd>
+						<dd><em>收录时长(小时)</em>&nbsp;&nbsp;${item.recordDuration}</dd>
 						<c:if test="${not empty item.publishUrl }">
 							<dd><em>发布接口地址</em>&nbsp;&nbsp;${item.publishUrl}</dd>
 						</c:if>
@@ -412,12 +413,17 @@ function setResult(result) {
 					</c:forEach>
 				</c:if>
 				
+				<c:if test="${not empty sumCost}">
+					<hr>
+					<dt>资源服务费用</dt>
+					<dd>${sumCost }</dd>
+				</c:if>
+				
 			</dl>
 			
 			<hr>
 			
 			<!-- 审批意见 -->
-			
 			<c:if test="${not empty audits  }">
 				<table class="table">
 					<thead>

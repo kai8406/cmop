@@ -11,6 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.Compate;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.Dns;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.Eip;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.Elb;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.MdnLiveItem;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.MdnVodItem;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.Storage;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.monitorCompute;
+import com.sobey.cmop.mvc.constant.FieldNameConstant.monitorElb;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -206,6 +215,34 @@ public class RedmineUtilService extends BaseSevcie {
 	}
 
 	/**
+	 * 将变更前和变更后的值拼装成StringBuilder content
+	 * 
+	 * @param fieldName
+	 *            变更项
+	 * @param content
+	 *            redmine 文本
+	 * @param changeItem
+	 *            changeItem对象
+	 */
+	private void saveChangeText(String fieldName, StringBuilder content, ChangeItem changeItem) {
+		content.append(fieldName + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+	}
+
+	/**
+	 * 将变更前和变更后的值拼装成StringBuilder content(包括换行)
+	 * 
+	 * @param fieldName
+	 *            变更项
+	 * @param content
+	 *            redmine 文本
+	 * @param changeItem
+	 *            changeItem对象
+	 */
+	private void saveChangeTextAndNEWLINE(String fieldName, StringBuilder content, ChangeItem changeItem) {
+		content.append(fieldName + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE).append(changeItem.getNewString()).append(NEWLINE);
+	}
+
+	/**
 	 * 生成满足redmine显示的资源变更Resources文本.
 	 */
 	public String resourcesRedmineDesc(ServiceTag serviceTag) {
@@ -245,11 +282,10 @@ public class RedmineUtilService extends BaseSevcie {
 					}
 
 					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
+					content.append(NEWLINE).append("变更项:");
 
 					if (change.getSubResourcesId() != null) {
-						content.append(NEWLINE).append("变更项:(服务子项ID:" + change.getSubResourcesId() + ")");
-					} else {
-						content.append(NEWLINE).append("变更项:");
+						content.append("(服务子项ID:" + change.getSubResourcesId() + ")");
 					}
 
 					content.append(BLANK + "旧值").append(RARR).append("新值").append(NEWLINE);
@@ -262,349 +298,145 @@ public class RedmineUtilService extends BaseSevcie {
 
 							// 计算资源Compute信息
 
-							if (FieldNameConstant.Compate.操作系统.toString().equals(fieldName)) {
+							for (Compate enumField : FieldNameConstant.Compate.values()) {
+								if (enumField.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Compate.操作系统 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
 
-							} else if (FieldNameConstant.Compate.操作位数.toString().equals(fieldName)) {
+										this.saveChangeTextAndNEWLINE(fieldName, content, changeItem);
 
-								content.append(FieldNameConstant.Compate.操作位数 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-							} else if (FieldNameConstant.Compate.规格.toString().equals(fieldName)) {
+										this.saveChangeText(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
 
-								content.append(FieldNameConstant.Compate.规格 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									} else {
 
-							} else if (FieldNameConstant.Compate.用途信息.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Compate.用途信息 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.Compate.应用信息.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Compate.应用信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
-										.append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Compate.ESG + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
-										.append(changeItem.getNewString()).append(NEWLINE);
+										this.saveChangeText(fieldName, content, changeItem);
+									}
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
 
 							// 存储空间Storage信息
 
-							if (FieldNameConstant.Storage.存储类型.toString().equals(fieldName)) {
+							for (Storage enumField : FieldNameConstant.Storage.values()) {
+								if (enumField.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Storage.存储类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									if (FieldNameConstant.Storage.容量空间.toString().equals(fieldName)) {
 
-							} else if (FieldNameConstant.Storage.容量空间.toString().equals(fieldName)) {
+										this.saveChangeText(fieldName + "(GB)", content, changeItem);
 
-								content.append(FieldNameConstant.Storage.容量空间 + ":" + BLANK).append(changeItem.getOldString()).append("GB").append(RARR).append(changeItem.getNewString()).append("GB")
-										.append(NEWLINE);
+									} else {
 
-							} else if (FieldNameConstant.Storage.挂载实例.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Storage.挂载实例 + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
-										.append(changeItem.getNewString()).append(NEWLINE);
+										this.saveChangeText(fieldName, content, changeItem);
+									}
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
 
 							// 变更负载均衡器ELB
 
-							if (FieldNameConstant.Elb.是否保持会话.toString().equals(fieldName)) {
+							for (Elb enumField : FieldNameConstant.Elb.values()) {
+								if (enumField.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Elb.是否保持会话 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName)) {
 
-							} else if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName)) {
+										this.saveChangeTextAndNEWLINE(fieldName, content, changeItem);
 
-								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
-										.append(changeItem.getNewString()).append(NEWLINE);
+									} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
+										
+										this.saveChangeTextAndNEWLINE(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
+										
+									} else {
 
-							} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Elb.关联实例 + CHANGE_ONECMDB_NOTIFICATION + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
-										.append(changeItem.getNewString()).append(NEWLINE);
+										this.saveChangeText(fieldName, content, changeItem);
+									}
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
 							// EIP
 
-							if (FieldNameConstant.Eip.关联实例.toString().equals(fieldName)) {
+							for (Eip enumField : FieldNameConstant.Eip.values()) {
+								if (enumField.toString().equals(fieldName)) {
 
-								content.append(FieldNameConstant.Eip.关联实例 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									if (FieldNameConstant.Eip.端口信息.toString().equals(fieldName)) {
 
-							} else if (FieldNameConstant.Eip.关联ELB.toString().equals(fieldName)) {
+										this.saveChangeTextAndNEWLINE(fieldName, content, changeItem);
 
-								content.append(FieldNameConstant.Eip.关联ELB + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+									} else {
 
-							} else if (FieldNameConstant.Eip.端口信息.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Elb.端口信息 + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE)
-										.append(changeItem.getNewString()).append(NEWLINE);
-
+										this.saveChangeText(fieldName, content, changeItem);
+									}
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
 
 							// 拼装DNS信息
 
-							if (FieldNameConstant.Dns.域名类型.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Dns.域名类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.Dns.域名.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Dns.域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.Dns.CNAME域名.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Dns.CNAME域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.Dns.目标IP.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.Dns.目标IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
+							for (Dns enumField : FieldNameConstant.Dns.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
 
 							// monitorCompute
 
-							if (FieldNameConstant.monitorCompute.监控实例.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.监控实例 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.监控端口.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.监控端口 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.监控进程.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.监控进程 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.挂载路径.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.挂载路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.CPU占用率报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.CPU占用率报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK)
-										.append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.CPU占用率警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.CPU占用率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK)
-										.append(changeItem.getNewString()).append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.内存占用率报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.内存占用率报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.内存占用率警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.内存占用率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.网络丢包率报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网络丢包率报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.网络丢包率警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网络丢包率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.硬盘可用率报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网络丢包率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.硬盘可用率警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.硬盘可用率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.网络延时率报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网络延时率报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.网络延时率警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.网络延时率警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.最大进程数报警阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.最大进程数报警阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
-							} else if (FieldNameConstant.monitorCompute.最大进程数警告阀值.toString().equals(fieldName)) {
-
-								content.append(FieldNameConstant.monitorCompute.最大进程数警告阀值 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(BLANK).append(changeItem.getNewString())
-										.append(NEWLINE);
-
+							for (monitorCompute enumField : FieldNameConstant.monitorCompute.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
 
 							// monitorElb
 
-							if (FieldNameConstant.monitorElb.监控ELB.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.monitorElb.监控ELB + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							for (monitorElb enumField : FieldNameConstant.monitorElb.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
 
 							// MDN
-							if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnItem.重点覆盖地域 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnItem.重点覆盖ISP.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnItem.重点覆盖ISP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							for (com.sobey.cmop.mvc.constant.FieldNameConstant.MdnItem enumField : FieldNameConstant.MdnItem.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 							// MDNVod
-							if (FieldNameConstant.MdnVodItem.点播服务域名.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnVodItem.点播服务域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+
+							for (MdnVodItem enumField : FieldNameConstant.MdnVodItem.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
-							if (FieldNameConstant.MdnVodItem.点播播放协议选择.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnVodItem.点播播放协议选择 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnVodItem.点播加速服务带宽.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnVodItem.点播加速服务带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnVodItem.点播出口带宽.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnVodItem.点播出口带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnVodItem.Streamer地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnVodItem.Streamer地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
+
 							// MDNLive
-							if (FieldNameConstant.MdnLiveItem.直播服务域名.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.直播服务域名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.直播播放协议选择.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.直播播放协议选择 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.直播加速服务带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.直播出口带宽.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.直播出口带宽 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.频道名称.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.频道GUID.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.频道GUID + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.直播流输出模式.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.直播流输出模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.编码器模式.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.编码器模式 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.拉流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.拉流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.拉流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.拉流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.推流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.推流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.推流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.推流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.HTTP流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.HTTP流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.HSL流地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.HSL流地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.MdnLiveItem.HSL流混合码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+
+							for (MdnLiveItem enumField : FieldNameConstant.MdnLiveItem.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
 
-							if (FieldNameConstant.CpItem.收录流URL.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.收录流URL + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.收录码率.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.收录码率 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.输出编码.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.输出编码 + ":" + NEWLINE);
-								content.append(changeItem.getOldString()).append(NEWLINE + RARR + NEWLINE).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.收录类型.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.收录类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.收录时段.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.收录时段 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.发布接口地址.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.发布接口地址 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.是否推送内容交易平台 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频FTP上传IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频端口.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频端口 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频FTP用户名.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频FTP用户名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频FTP密码.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频FTP密码 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频FTP根路径.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频FTP根路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频FTP上传路径.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频FTP上传路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.视频输出组类型.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.视频输出组类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.输出方式配置.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.输出方式配置 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片FTP上传IP.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片FTP上传IP + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片端口.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片端口 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片FTP用户名.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片FTP用户名 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片FTP密码.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片FTP密码 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片FTP根路径.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片FTP根路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片FTP上传路径.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片FTP上传路径 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.图片输出组类型.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.图片输出组类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
-							}
-							if (FieldNameConstant.CpItem.输出媒体类型.toString().equals(fieldName)) {
-								content.append(FieldNameConstant.CpItem.输出媒体类型 + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+							// 云生产CP
+
+							for (com.sobey.cmop.mvc.constant.FieldNameConstant.CpItem enumField : FieldNameConstant.CpItem.values()) {
+								if (enumField.toString().equals(fieldName)) {
+									this.saveChangeText(fieldName, content, changeItem);
+								}
 							}
 
 						}
@@ -614,7 +446,6 @@ public class RedmineUtilService extends BaseSevcie {
 				}
 
 				content.append(NEWLINE);
-
 			}
 
 			content.append("</pre>").append(NEWLINE);
@@ -628,7 +459,6 @@ public class RedmineUtilService extends BaseSevcie {
 			logger.error("--->拼装Redmine内容出错：" + e.getMessage());
 
 			return null;
-
 		}
 	}
 

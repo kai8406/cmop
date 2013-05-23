@@ -143,6 +143,13 @@
 			</div>
 			
 			<div class="control-group">
+				<label class="control-label" for="recordDuration">收录时长(小时)</label>
+				<div class="controls">
+					<input type="text" id="recordDuration" name="recordDuration" value="${cp.recordDuration }" class="required digits" maxlength="45" placeholder="...收录时长">
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<label class="control-label" for="publishUrl">发布接口地址</label>
 				<div class="controls">
 					<input type="text" id="publishUrl" name="publishUrl" value="${cp.publishUrl }" maxlength="100" placeholder="...发布接口地址">

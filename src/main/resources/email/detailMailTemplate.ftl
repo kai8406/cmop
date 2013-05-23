@@ -414,6 +414,7 @@
 						</li>
 						<li><em>收录类型</em>&nbsp;:<#list recordTypeMap?keys as k ><#if cp.recordType?string == k>${recordTypeMap[k]}</#if></#list></li>
 						<li><em>收录时段</em>&nbsp;:${cp.recordTime}</li>
+						<li><em>收录时长(小时)</em>&nbsp;:${cp.recordDuration}</li>
 						<#if cp.publishUrl?exists><li><em>发布接口地址</em>&nbsp;:${cp.publishUrl}</li></#if>
 						<li><em>是否推送内容交易平台</em>&nbsp;:<#list isPushCtpMap?keys as k ><#if cp.isPushCtp?string == k>${isPushCtpMap[k]}</#if></#list></li>
 						<br>
@@ -441,8 +442,17 @@
 				</#list>
 				
 			</#if><!--  CP云生产 End -->
-			
 		</li>
+		
+		<!-- 成本核算 -->
+		<#if sumCost?exists>
+			<li>
+				<strong>资源服务费用</strong>
+				<ul>
+					<li>${sumCost}</li>
+				</ul>
+			</li>
+		</#if><!-- 成本核算 End -->
 		
 		<#if passUrl?exists>
 			<li>

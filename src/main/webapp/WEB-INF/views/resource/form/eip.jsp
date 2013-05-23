@@ -154,7 +154,7 @@
 					>
 						<select id="elbSelect" class="required">
 							<c:forEach var="item" items="${elbResources }">
-								<option value="${item.id }" <c:if test="${not empty eip.networkElbItem && item.id == eip.networkElbItem.id }">selected="selected"</c:if>>${item.identifier}(${item.virtualIp })</option>
+								<option value="${item.id }" <c:if test="${not empty eip.networkElbItem && item.id == eip.networkElbItem.id }">selected="selected"</c:if>>${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>
 						</select>			
 					</div>		

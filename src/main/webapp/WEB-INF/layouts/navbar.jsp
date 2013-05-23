@@ -53,6 +53,10 @@
 							<li id="esg" class="tip-bottom" title=安全组ESG管理><a href="${ctx}/esg/">ESG管理</a></li>
 						</shiro:hasPermission>
 						
+						<shiro:hasPermission name="summary:view">
+							<li id="summary" class="tip-bottom" title=资源汇总><a href="${ctx}/summary/">资源汇总</a></li>
+						</shiro:hasPermission>
+						
 					</ul>
 
 					<ul class="nav pull-right" >

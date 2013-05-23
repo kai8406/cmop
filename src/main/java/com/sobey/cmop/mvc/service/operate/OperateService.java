@@ -1,7 +1,6 @@
 package com.sobey.cmop.mvc.service.operate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
@@ -771,9 +771,9 @@ public class OperateService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
-	public Map findHostMapByServerType(int serverType) {
+	public Map<String, String> findHostMapByServerType(int serverType) {
 		List<HostServer> list = comm.hostServerService.findByServerType(serverType);
-		Map map = new HashMap();
+		Map<String, String> map = Maps.newHashMap();
 		for (HostServer hostServer : list) {
 			int size = hostServer.getIpPools().size();
 			// 过滤掉已经关联的物理机
@@ -798,9 +798,9 @@ public class OperateService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
-	public Map getLocationFromOnecmdb() {
+	public Map<String, String> getLocationFromOnecmdb() {
 		List<Location> list = comm.locationService.getLocationList();
-		Map map = new HashMap();
+		Map<String, String> map = Maps.newHashMap();
 		for (Location location : list) {
 			map.put(location.getAlias(), location.getName());
 		}
@@ -812,9 +812,9 @@ public class OperateService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
-	public Map getVlanFromOnecmdb() {
+	public Map<String, String> getVlanFromOnecmdb() {
 		List<Vlan> list = comm.vlanService.getVlanList();
-		Map map = new HashMap();
+		Map<String, String> map = Maps.newHashMap();
 		for (Vlan vlan : list) {
 			map.put(vlan.getAlias(), "Vlan" + vlan.getName() + "(" + vlan.getDescription() + ")");
 		}

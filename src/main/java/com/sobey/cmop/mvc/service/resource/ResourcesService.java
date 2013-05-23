@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
+import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.FieldNameConstant;
@@ -33,6 +34,7 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.EipPortItem;
 import com.sobey.cmop.mvc.entity.ElbPortItem;
+import com.sobey.cmop.mvc.entity.Group;
 import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.MdnLiveItem;
 import com.sobey.cmop.mvc.entity.MdnVodItem;
@@ -49,6 +51,7 @@ import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.entity.ToJson.ResourcesJson;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Collections3;
 import com.sobey.framework.utils.DynamicSpecifications;
@@ -181,6 +184,25 @@ public class ResourcesService extends BaseSevcie {
 	}
 
 	/**
+	 * 汇总资源的分页
+	 * 
+	 * @param searchParams
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Resources> getSummaryPageable(Map<String, Object> searchParams, int pageNumber, int pageSize) {
+
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
+		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+
+		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
+
+		return resourcesDao.findAll(spec, pageRequest);
+	}
+
+	/**
 	 * 根据条件获得当前用户的资源Resources List
 	 * 
 	 * @param serviceType
@@ -193,13 +215,34 @@ public class ResourcesService extends BaseSevcie {
 	 *            资源标识符
 	 * @return
 	 */
-	public List<Resources> getResourcesListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
+	public List<ResourcesJson> getResourcesJsonListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
 
 		Map<String, SearchFilter> filters = Maps.newHashMap();
 
 		// 组装参数,写入filters.适用于多条件查询的情况.
 
-		filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+		User user = comm.accountService.getCurrentUser();
+
+		List<Integer> groups = new ArrayList<Integer>();
+
+		boolean flag = true;
+
+		// 设置指定的权限角色.该权限角色可查看所有的资源.
+
+		groups.add(AccountConstant.DefaultGroups.om_a.toInteger());
+		groups.add(AccountConstant.DefaultGroups.om_b.toInteger());
+
+		// 如果包含有指定权限角色,则设置flag为false并break Loop.
+		for (Group group : user.getGroupList()) {
+			if (groups.contains(group.getId())) {
+				flag = false;
+				break;
+			}
+		}
+
+		if (flag) {
+			filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
+		}
 
 		if (serviceType != null) {
 			filters.put("resources.serviceType", new SearchFilter("serviceType", Operator.EQ, serviceType));
@@ -219,11 +262,18 @@ public class ResourcesService extends BaseSevcie {
 
 		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
 
-		return resourcesDao.findAll(spec);
+		List<ResourcesJson> jsonList = new ArrayList<ResourcesJson>();
+
+		// 将Resources转成ResourcesJson
+		for (Resources resources : resourcesDao.findAll(spec)) {
+			jsonList.add(comm.resourcesJsonService.convertResourcesJsonToResourcesJson(resources));
+		}
+
+		return jsonList;
 	}
 
 	/**
-	 * 根据服务类型serviceType 获得资源的个数
+	 * 根据服务类型serviceType 获得资源的个数(Resources)
 	 * 
 	 * @param serviceType
 	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
@@ -232,6 +282,18 @@ public class ResourcesService extends BaseSevcie {
 	 */
 	public Long getResourcesStatistics(Integer serviceType) {
 		return (long) resourcesDao.findByServiceTypeAndUserId(serviceType, getCurrentUserId()).size();
+	}
+
+	/**
+	 * 根据服务类型serviceType 获得资源的个数(Summary)
+	 * 
+	 * @param serviceType
+	 *            服务类型 1.PCS;2.ECS;3.ES3 ... 用ResourcesConstant中的Enum :
+	 *            ServiceType
+	 * @return
+	 */
+	public Long getResourcesSummaryStatistics(Integer serviceType) {
+		return (long) resourcesDao.findByServiceType(serviceType).size();
 	}
 
 	/**
@@ -907,6 +969,10 @@ public class ResourcesService extends BaseSevcie {
 
 					if (FieldNameConstant.CpItem.收录时段.toString().equals(changeItem.getFieldName())) {
 						cpItem.setRecordTime(changeItem.getOldValue());
+					}
+
+					if (FieldNameConstant.CpItem.收录时长.toString().equals(changeItem.getFieldName())) {
+						cpItem.setRecordDuration(Integer.valueOf(changeItem.getOldValue()));
 					}
 
 					if (FieldNameConstant.CpItem.发布接口地址.toString().equals(changeItem.getFieldName())) {

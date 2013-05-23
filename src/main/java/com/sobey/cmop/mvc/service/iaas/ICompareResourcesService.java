@@ -250,6 +250,7 @@ public interface ICompareResourcesService {
 	 * @param exportEncode
 	 * @param recordType
 	 * @param recordTime
+	 * @param recordDuration
 	 * @param publishUrl
 	 * @param isPushCtp
 	 * @param videoFtpIp
@@ -271,8 +272,8 @@ public interface ICompareResourcesService {
 	 * @return
 	 */
 	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
-			String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
-			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
-			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia);
+			Integer recordDuration, String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath,
+			String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
+			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia);
 
 }

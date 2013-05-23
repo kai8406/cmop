@@ -124,7 +124,7 @@ public class ServerModelController extends BaseController {
 	 * @return
 	 */
 	@ModelAttribute("companyMap")
-	public Map getCompanyFromOnecmdb() {
+	public Map<String, String> getCompanyFromOnecmdb() {
 		return OneCmdbService.findCiByText("Company", "");
 	}
 }

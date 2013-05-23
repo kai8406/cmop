@@ -22,4 +22,6 @@ public interface ResourcesDao extends PagingAndSortingRepository<Resources, Inte
 
 	List<Resources> findByServiceTypeAndUserId(Integer serviceType, Integer userId);
 
+	List<Resources> findByServiceType(Integer serviceType);
+
 }

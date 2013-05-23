@@ -341,10 +341,14 @@ public class RedmineUtilService extends BaseSevcie {
 							for (Elb enumField : FieldNameConstant.Elb.values()) {
 								if (enumField.toString().equals(fieldName)) {
 
-									if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName) || FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
+									if (FieldNameConstant.Elb.端口信息.toString().equals(fieldName)) {
 
 										this.saveChangeTextAndNEWLINE(fieldName, content, changeItem);
 
+									} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
+										
+										this.saveChangeTextAndNEWLINE(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
+										
 									} else {
 
 										this.saveChangeText(fieldName, content, changeItem);

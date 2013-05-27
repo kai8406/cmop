@@ -311,7 +311,7 @@ public class CostService extends BaseSevcie {
 	 */
 	private double humanCost(Apply apply, double workTime) {
 
-		double price = MathsUtil.mul(workTime, 15000);
+		double price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.服务人力成本.toString()).getDescription());
 
 		Integer priority = apply.getPriority();
 

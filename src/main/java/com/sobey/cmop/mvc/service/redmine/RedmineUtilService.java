@@ -346,9 +346,9 @@ public class RedmineUtilService extends BaseSevcie {
 										this.saveChangeTextAndNEWLINE(fieldName, content, changeItem);
 
 									} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
-										
+
 										this.saveChangeTextAndNEWLINE(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
-										
+
 									} else {
 
 										this.saveChangeText(fieldName, content, changeItem);

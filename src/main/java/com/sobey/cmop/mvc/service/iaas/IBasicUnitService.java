@@ -21,6 +21,14 @@ import com.sobey.cmop.mvc.entity.StorageItem;
  */
 public interface IBasicUnitService {
 
+	/**
+	 * 获得elb下所有关联的实例
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	public List<ComputeItem> getComputeListByElb(Integer elbId);
+
 	// ======== Iaas ========
 
 	/**

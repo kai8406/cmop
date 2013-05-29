@@ -11,6 +11,15 @@ import java.util.List;
 public interface BasicUnitDaoCustom {
 
 	/**
+	 * 获得elb下所有关联的实例（根据compute_elb_item链接查询）
+	 * 
+	 * @param elbId
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List getComputeListByElb(Integer elbId);
+
+	/**
 	 * Compute
 	 * 
 	 * @param userId

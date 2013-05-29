@@ -22,6 +22,14 @@ public class BasicUnitDaoCustomImp implements BasicUnitDaoCustom {
 
 	@SuppressWarnings("rawtypes")
 	@Override
+	public List getComputeListByElb(Integer elbId) {
+		String sqlString = "SELECT t1.* FROM compute_item t1 INNER JOIN compute_elb_item t2 ON t1.id = t2.compute_item_id WHERE t2.elb_item_id =  ?";
+		// logger.info(sqlString);
+		return em.createNativeQuery(sqlString).setParameter(1, elbId).getResultList();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
 	public List getComputeItemListByResources(Integer userId) {
 		String sqlString = "select t2.* from resources t1 inner join compute_item t2 on t1.service_id = t2.id" + " where t1.service_type = " + ResourcesConstant.ServiceType.PCS
 				+ " or t1.service_type = " + ResourcesConstant.ServiceType.ECS + " and t1.user_id = ?";

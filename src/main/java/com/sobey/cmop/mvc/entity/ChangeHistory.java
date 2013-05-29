@@ -48,7 +48,8 @@ public class ChangeHistory implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ChangeHistory(Audit audit, String resourcesInfo, Integer subResourcesId, Date changeTime, String description, Set<ChangeItemHistory> changeItemHistories) {
+	public ChangeHistory(Audit audit, String resourcesInfo, Integer subResourcesId, Date changeTime,
+			String description, Set<ChangeItemHistory> changeItemHistories) {
 		this.audit = audit;
 		this.resourcesInfo = resourcesInfo;
 		this.subResourcesId = subResourcesId;

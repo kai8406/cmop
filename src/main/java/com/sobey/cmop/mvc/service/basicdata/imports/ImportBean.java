@@ -181,9 +181,11 @@ public class ImportBean {
 	}
 
 	public String toString() {
-		return "ImportBean [" + this.osType + "," + this.osBit + "," + this.innerIp + "," + this.remark + "," + this.userName + "," + this.email + "," + this.department + "," + this.serverType + ","
-				+ this.storageType + "," + this.storageSize + "," + this.telecomIp + "," + this.unicomIp + "," + this.resourceType + "," + this.serviceStart + "," + this.serviceEnd + ","
-				+ this.usedBy + "," + this.isMerged;
+		return "ImportBean [" + this.osType + "," + this.osBit + "," + this.innerIp + "," + this.remark + ","
+				+ this.userName + "," + this.email + "," + this.department + "," + this.serverType + ","
+				+ this.storageType + "," + this.storageSize + "," + this.telecomIp + "," + this.unicomIp + ","
+				+ this.resourceType + "," + this.serviceStart + "," + this.serviceEnd + "," + this.usedBy + ","
+				+ this.isMerged;
 	}
 
 	public void setComputeType(int computeType) {

@@ -57,7 +57,8 @@ public class Apply implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description,
+			String serviceStart, String serviceEnd, Date createTime, Integer status) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;
@@ -71,10 +72,12 @@ public class Apply implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status,
-			Integer redmineIssueId, AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems, Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems,
-			Set<NetworkDnsItem> networkDnsItems, Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits, Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones,
-			Set<MdnItem> mdnItems, Set<CpItem> cpItems) {
+	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description,
+			String serviceStart, String serviceEnd, Date createTime, Integer status, Integer redmineIssueId,
+			AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems,
+			Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems, Set<NetworkDnsItem> networkDnsItems,
+			Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits,
+			Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones, Set<MdnItem> mdnItems, Set<CpItem> cpItems) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;

@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.ComputeItem;
  * @author liukai
  * 
  */
-public interface ComputeItemDao extends PagingAndSortingRepository<ComputeItem, Integer>, JpaSpecificationExecutor<ComputeItem> {
+public interface ComputeItemDao extends PagingAndSortingRepository<ComputeItem, Integer>,
+		JpaSpecificationExecutor<ComputeItem> {
 
 	List<ComputeItem> findByApplyId(Integer applyId);
 

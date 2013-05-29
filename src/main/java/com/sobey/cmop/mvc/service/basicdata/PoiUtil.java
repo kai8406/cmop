@@ -33,7 +33,8 @@ public class PoiUtil {
 	public static void main(String[] args) throws Exception {
 		// 1. 同步所有宿主机及其虚拟机
 		List list = HostTree.call();
-		writeExcel("C:/Users/Jason/Desktop/Host_Vm.xls", "宿主机及其虚拟机关系表", new String[] { "宿主机IP", "DisplayName", "虚拟机IP" }, list);
+		writeExcel("C:/Users/Jason/Desktop/Host_Vm.xls", "宿主机及其虚拟机关系表",
+				new String[] { "宿主机IP", "DisplayName", "虚拟机IP" }, list);
 	}
 
 	/**
@@ -60,7 +61,8 @@ public class PoiUtil {
 				Set<IpPool> vms = host.getIpPools();
 				countHost++;
 				if (vms.size() > 1) {
-					sheet.addMergedRegion(new CellRangeAddress(countVm + countHostNoVm + 1, countVm + countHostNoVm + vms.size(), 0, 0));
+					sheet.addMergedRegion(new CellRangeAddress(countVm + countHostNoVm + 1, countVm + countHostNoVm
+							+ vms.size(), 0, 0));
 				}
 
 				if (vms.size() > 0) {
@@ -150,7 +152,8 @@ public class PoiUtil {
 								server.setCompany(cellValue.split(" ")[0]);
 								server.setModel(cellValue.split(" ")[1]);
 								server.setRack(cellValue.split(" ")[2].split("-")[0]);
-								server.setSite(cellValue.substring(cellValue.split("-")[0].length() + 1, cellValue.length()));
+								server.setSite(cellValue.substring(cellValue.split("-")[0].length() + 1,
+										cellValue.length()));
 							}
 						} else if (cell.getColumnIndex() == 2) {
 							server.setInnerIp(cellValue);

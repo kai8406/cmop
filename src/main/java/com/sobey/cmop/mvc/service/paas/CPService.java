@@ -88,10 +88,13 @@ public class CPService extends BaseSevcie {
 	 * @param computeIds
 	 */
 	@Transactional(readOnly = false)
-	public void saveCPToApply(Apply apply, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, Integer recordDuration, String publishUrl,
-			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
-			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia, String[] fileNames, String[] fileSizes) {
+	public void saveCPToApply(Apply apply, String recordStreamUrl, String recordBitrate, String exportEncode,
+			Integer recordType, String recordTime, Integer recordDuration, String publishUrl, String isPushCtp,
+			String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword,
+			String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay,
+			String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
+			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup,
+			String pictrueOutputMedia, String[] fileNames, String[] fileSizes) {
 
 		// Step1. 创建一个服务申请Apply
 
@@ -148,10 +151,12 @@ public class CPService extends BaseSevcie {
 	 * 修改CP云生产(Apply)
 	 */
 	@Transactional(readOnly = false)
-	public void updateCPToApply(CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, Integer recordDuration, String publishUrl,
-			String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
-			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia) {
+	public void updateCPToApply(CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode,
+			Integer recordType, String recordTime, Integer recordDuration, String publishUrl, String isPushCtp,
+			String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword,
+			String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay,
+			String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
+			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
 
 		cpItem.setRecordStreamUrl(recordStreamUrl);
 		cpItem.setRecordBitrate(recordBitrate);
@@ -190,10 +195,13 @@ public class CPService extends BaseSevcie {
 	 * 变更CP云生产(Resources)
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByCP(Resources resources, Integer serviceTagId, String changeDescription, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType,
-			String recordTime, Integer recordDuration, String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword,
-			String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername,
-			String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
+	public void saveResourcesByCP(Resources resources, Integer serviceTagId, String changeDescription,
+			String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
+			Integer recordDuration, String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort,
+			String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
+			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort,
+			String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
+			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -203,9 +211,11 @@ public class CPService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareCP(resources, change, cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl,
-				isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort,
-				pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
+		boolean isChange = comm.compareResourcesService.compareCP(resources, change, cpItem, recordStreamUrl,
+				recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp,
+				videoFtpPort, videoFtpUsername, videoFtpPassword, videoFtpRootpath, videoFtpUploadpath,
+				videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword,
+				pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
@@ -217,9 +227,11 @@ public class CPService extends BaseSevcie {
 		resources.setServiceTag(serviceTag);
 		comm.serviceTagService.saveOrUpdate(serviceTag);
 
-		this.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
-				videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath,
-				pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
+		this.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime,
+				recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword,
+				videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort,
+				pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup,
+				pictrueOutputMedia);
 
 		// 更新resources
 

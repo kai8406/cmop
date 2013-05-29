@@ -35,7 +35,8 @@ public class MonitorPhoneController extends BaseController {
 	 * 修改手机监控列表.完成后跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/update/applyId", method = RequestMethod.POST)
-	public String update(@RequestParam("applyId") Integer applyId, @RequestParam(value = "monitorPhones") String[] monitorPhones, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "monitorPhones") String[] monitorPhones, RedirectAttributes redirectAttributes) {
 
 		comm.monitorPhoneService.updateMonitorPhoneToApply(applyId, monitorPhones);
 

@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.StorageItem;
  * @author liukai
  * 
  */
-public interface StorageItemDao extends PagingAndSortingRepository<StorageItem, Integer>, JpaSpecificationExecutor<StorageItem> {
+public interface StorageItemDao extends PagingAndSortingRepository<StorageItem, Integer>,
+		JpaSpecificationExecutor<StorageItem> {
 
 	List<StorageItem> findByApplyId(Integer applyId);
 

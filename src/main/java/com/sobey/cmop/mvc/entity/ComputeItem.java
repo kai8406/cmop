@@ -66,7 +66,8 @@ public class ComputeItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit, Integer serverType, String remark, String innerIp, String oldIp) {
+	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit,
+			Integer serverType, String remark, String innerIp, String oldIp) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.computeType = computeType;
@@ -79,8 +80,10 @@ public class ComputeItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit, Integer serverType, String remark, String innerIp, String oldIp, String hostName,
-			String serverAlias, String hostServerAlias, String osStorageAlias, Set<Application> applications, Set<NetworkEipItem> networkEipItems) {
+	public ComputeItem(Apply apply, String identifier, Integer computeType, Integer osType, Integer osBit,
+			Integer serverType, String remark, String innerIp, String oldIp, String hostName, String serverAlias,
+			String hostServerAlias, String osStorageAlias, Set<Application> applications,
+			Set<NetworkEipItem> networkEipItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.computeType = computeType;
@@ -319,7 +322,8 @@ public class ComputeItem implements java.io.Serializable {
 	public static String extractToString(final List<NetworkEsgItem> networkEsgItems) {
 		StringBuilder sb = new StringBuilder();
 		for (NetworkEsgItem networkEsgItem : networkEsgItems) {
-			sb.append(networkEsgItem.getIdentifier()).append("(").append(networkEsgItem.getDescription()).append(")").append(",");
+			sb.append(networkEsgItem.getIdentifier()).append("(").append(networkEsgItem.getDescription()).append(")")
+					.append(",");
 		}
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";

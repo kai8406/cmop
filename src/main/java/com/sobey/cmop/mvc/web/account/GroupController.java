@@ -37,7 +37,9 @@ public class GroupController extends BaseController {
 	 * 显示所有的group list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -60,7 +62,8 @@ public class GroupController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Group group, @RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
+	public String save(Group group, @RequestParam("permissionArray") String[] permissionArray,
+			RedirectAttributes redirectAttributes) {
 
 		group.setPermissionList(getPermissionList(permissionArray));
 
@@ -88,7 +91,8 @@ public class GroupController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam("id") Integer id, @RequestParam("name") String name, @RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam("id") Integer id, @RequestParam("name") String name,
+			@RequestParam("permissionArray") String[] permissionArray, RedirectAttributes redirectAttributes) {
 
 		Group group = comm.accountService.getGroup(id);
 
@@ -105,8 +109,7 @@ public class GroupController extends BaseController {
 	/**
 	 * 接收页面传递到后台类似:{"user:view","group:view"}的String[]数组. 将其转换成List类型的集合返回.
 	 * 
-	 * 不能直接将asList转换成集合放入对象中,要将转换为ArrayList. 否则会报
-	 * {@link UnsupportedOperationException}的错误
+	 * 不能直接将asList转换成集合放入对象中,要将转换为ArrayList. 否则会报 {@link UnsupportedOperationException}的错误
 	 * 
 	 * @param permissionArray
 	 * @return

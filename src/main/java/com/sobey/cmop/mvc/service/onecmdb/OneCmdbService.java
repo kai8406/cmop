@@ -145,7 +145,10 @@ public class OneCmdbService extends BaseSevcie {
 		Map<String, String> temp = Maps.newHashMap();
 		if (ciBeans != null) {
 			for (CiBean ciBean : ciBeans) {
-				temp.put(ciBean.getAlias(), ci.equals("Vlans") ? (ciBean.getDisplayName() + "(" + ciBean.getDescription() + ")") : ciBean.getDisplayName());
+				temp.put(
+						ciBean.getAlias(),
+						ci.equals("Vlans") ? (ciBean.getDisplayName() + "(" + ciBean.getDescription() + ")") : ciBean
+								.getDisplayName());
 			}
 		}
 		logger.info("find results(" + ci + ")：" + temp.size());

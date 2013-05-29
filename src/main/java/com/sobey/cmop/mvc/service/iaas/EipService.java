@@ -126,7 +126,8 @@ public class EipService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveEIPToApply(Integer applyId, String[] ispTypes, String[] linkTypes, String[] linkIds, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	public void saveEIPToApply(Integer applyId, String[] ispTypes, String[] linkTypes, String[] linkIds,
+			String[] protocols, String[] sourcePorts, String[] targetPorts) {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
@@ -146,7 +147,8 @@ public class EipService extends BaseSevcie {
 
 			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], Integer.valueOf(linkIds[i]));
+			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i],
+					Integer.valueOf(linkIds[i]));
 
 			this.saveOrUpdate(networkEipItem);
 
@@ -157,7 +159,8 @@ public class EipService extends BaseSevcie {
 			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
 
 			for (int j = 0; j < protocolArray.length; j++) {
-				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j], targetPortArray[j]);
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],
+						targetPortArray[j]);
 				this.saveOrUpdateEipPortItem(eipPortItem);
 			}
 
@@ -188,7 +191,8 @@ public class EipService extends BaseSevcie {
 	 *            目标端口数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts) {
+	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols,
+			String[] sourcePorts, String[] targetPorts) {
 
 		// Step.1
 
@@ -234,9 +238,10 @@ public class EipService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, Integer linkId, String[] protocols, String[] sourcePorts, String[] targetPorts,
+	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, Integer linkId,
+			String[] protocols, String[] sourcePorts, String[] targetPorts,
 
-	String changeDescription) {
+			String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -248,7 +253,8 @@ public class EipService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareEip(resources, change, networkEipItem, eipPortItems, linkType, linkId, protocols, sourcePorts, targetPorts);
+		boolean isChange = comm.compareResourcesService.compareEip(resources, change, networkEipItem, eipPortItems,
+				linkType, linkId, protocols, sourcePorts, targetPorts);
 
 		// 删除变更前的端口映射
 
@@ -287,7 +293,8 @@ public class EipService extends BaseSevcie {
 	 * 
 	 * @return
 	 */
-	private NetworkEipItem fillComputeOrElbToNetworkEipItem(NetworkEipItem networkEipItem, String linkType, Integer linkId) {
+	private NetworkEipItem fillComputeOrElbToNetworkEipItem(NetworkEipItem networkEipItem, String linkType,
+			Integer linkId) {
 
 		if (NetworkConstant.LinkType.关联实例.toString().equals(linkType)) {
 

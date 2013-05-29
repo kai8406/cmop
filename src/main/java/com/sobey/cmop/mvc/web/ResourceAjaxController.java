@@ -35,7 +35,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getCompute")
 	public @ResponseBody
 	ComputeJson getCompute(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertComputeJsonToComputeItem(comm.computeService.getComputeItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertComputeJsonToComputeItem(comm.computeService
+				.getComputeItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -47,7 +48,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getStorage")
 	public @ResponseBody
 	StorageJson getStorage(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertStorageJsonToComputeItem(comm.es3Service.getStorageItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertStorageJsonToComputeItem(comm.es3Service
+				.getStorageItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -59,7 +61,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getElb")
 	public @ResponseBody
 	ElbJson getElb(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertElbJsonToNetworkElbItem(comm.elbService.getNetworkElbItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertElbJsonToNetworkElbItem(comm.elbService
+				.getNetworkElbItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -71,7 +74,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getEip")
 	public @ResponseBody
 	EipJson getEip(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertEipJsonToNetworkEipItem(comm.eipService.getNetworkEipItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertEipJsonToNetworkEipItem(comm.eipService
+				.getNetworkEipItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -83,7 +87,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getDns")
 	public @ResponseBody
 	DnsJson getDns(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertDnsJsonToNetworkDnsItem(comm.dnsService.getNetworkDnsItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertDnsJsonToNetworkDnsItem(comm.dnsService
+				.getNetworkDnsItem(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -95,7 +100,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getmonitorElb")
 	public @ResponseBody
 	MonitorElbJson getmonitorElb(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertMonitorElbJsonToMonitorElb(comm.monitorElbServcie.getMonitorElb(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertMonitorElbJsonToMonitorElb(comm.monitorElbServcie
+				.getMonitorElb(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -107,7 +113,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getmonitorCompute")
 	public @ResponseBody
 	MonitorComputeJson getmonitorCompute(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertMonitorComputeJsonToMonitorCompute(comm.monitorComputeServcie.getMonitorCompute(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertMonitorComputeJsonToMonitorCompute(comm.monitorComputeServcie
+				.getMonitorCompute(comm.resourcesService.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -119,7 +126,8 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getMdn")
 	public @ResponseBody
 	MdnJson getMdn(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertMdnJsonToMdn(comm.mdnService.getMdnItem(comm.resourcesService.getResources(id).getServiceId()));
+		return comm.resourcesJsonService.convertMdnJsonToMdn(comm.mdnService.getMdnItem(comm.resourcesService
+				.getResources(id).getServiceId()));
 	}
 
 	/**
@@ -131,6 +139,7 @@ public class ResourceAjaxController extends BaseController {
 	@RequestMapping(value = "getCP")
 	public @ResponseBody
 	CpJson getCP(@RequestParam(value = "id") Integer id) {
-		return comm.resourcesJsonService.convertCpJsonToCpItem(comm.cpService.getCpItem((comm.resourcesService.getResources(id).getServiceId())));
+		return comm.resourcesJsonService.convertCpJsonToCpItem(comm.cpService.getCpItem((comm.resourcesService
+				.getResources(id).getServiceId())));
 	}
 }

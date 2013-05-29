@@ -90,7 +90,8 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("申请标题: ").append(apply.getTitle()).append(NEWLINE);
 			content.append("服务标签: ").append(apply.getServiceTag()).append(NEWLINE);
 			content.append("优先级: ").append(RedmineConstant.Priority.get(apply.getPriority())).append(NEWLINE);
-			content.append("服务起止日期: ").append(apply.getServiceStart()).append(" 至 ").append(apply.getServiceEnd()).append(NEWLINE);
+			content.append("服务起止日期: ").append(apply.getServiceStart()).append(" 至 ").append(apply.getServiceEnd())
+					.append(NEWLINE);
 			content.append("用途描述: ").append(apply.getDescription()).append(NEWLINE);
 			content.append("申请人: ").append(apply.getUser().getName()).append(NEWLINE);
 			content.append("申请时间: ").append(DateUtil.formatDate(apply.getCreateTime())).append(NEWLINE);
@@ -99,10 +100,16 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装计算资源Compute信息
 
-			this.generateContentByLists(apply.getUser(), content, new ArrayList<ComputeItem>(apply.getComputeItems()), new ArrayList<StorageItem>(apply.getStorageItems()),
-					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()), new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()), new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()),
-					new ArrayList<MonitorMail>(apply.getMonitorMails()), new ArrayList<MonitorPhone>(apply.getMonitorPhones()), new ArrayList<MonitorCompute>(apply.getMonitorComputes()),
-					new ArrayList<MonitorElb>(apply.getMonitorElbs()), new ArrayList<MdnItem>(apply.getMdnItems()), new ArrayList<CpItem>(apply.getCpItems()));
+			this.generateContentByLists(apply.getUser(), content, new ArrayList<ComputeItem>(apply.getComputeItems()),
+					new ArrayList<StorageItem>(apply.getStorageItems()),
+					new ArrayList<NetworkElbItem>(apply.getNetworkElbItems()),
+					new ArrayList<NetworkEipItem>(apply.getNetworkEipItems()),
+					new ArrayList<NetworkDnsItem>(apply.getNetworkDnsItems()),
+					new ArrayList<MonitorMail>(apply.getMonitorMails()),
+					new ArrayList<MonitorPhone>(apply.getMonitorPhones()),
+					new ArrayList<MonitorCompute>(apply.getMonitorComputes()),
+					new ArrayList<MonitorElb>(apply.getMonitorElbs()), new ArrayList<MdnItem>(apply.getMdnItems()),
+					new ArrayList<CpItem>(apply.getCpItems()));
 
 			return content.toString();
 
@@ -118,9 +125,11 @@ public class RedmineUtilService extends BaseSevcie {
 	/**
 	 * 生成满足redmine显示的资源回收Resources文本.
 	 */
-	public String recycleResourcesRedmineDesc(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
-			List<MdnItem> mdnItems, List<CpItem> cpItems) {
+	public String recycleResourcesRedmineDesc(User user, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones,
+			List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems,
+			List<CpItem> cpItems) {
 
 		try {
 
@@ -128,7 +137,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 			// 拼装资源信息
 
-			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
+			this.generateContentByLists(user, content, computeItems, storageItems, elbItems, eipItems, dnsItems,
+					monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			return content.toString();
 
@@ -144,9 +154,11 @@ public class RedmineUtilService extends BaseSevcie {
 	/**
 	 * 生成满足redmine显示的故障申报Failure文本.
 	 */
-	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
-			List<MdnItem> mdnItems, List<CpItem> cpItems) {
+	public String failureResourcesRedmineDesc(Failure failure, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones,
+			List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems,
+			List<CpItem> cpItems) {
 
 		try {
 
@@ -163,8 +175,8 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("故障现象及描述：").append(failure.getDescription()).append(NEWLINE);
 			content.append("</pre>");
 
-			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems,
-					cpItems);
+			this.generateContentByLists(failure.getUser(), content, computeItems, storageItems, elbItems, eipItems,
+					dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			return content.toString();
 
@@ -196,9 +208,11 @@ public class RedmineUtilService extends BaseSevcie {
 	 * @param mdnItems
 	 * @param cpItems
 	 */
-	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
-			List<MdnItem> mdnItems, List<CpItem> cpItems) {
+	private void generateContentByLists(User user, StringBuilder content, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorMail> monitorMails, List<MonitorPhone> monitorPhones,
+			List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems,
+			List<CpItem> cpItems) {
 
 		RedmineTextUtil.generateCompute(content, computeItems);
 		RedmineTextUtil.generateStorage(content, storageItems);
@@ -225,7 +239,8 @@ public class RedmineUtilService extends BaseSevcie {
 	 *            changeItem对象
 	 */
 	private void saveChangeText(String fieldName, StringBuilder content, ChangeItem changeItem) {
-		content.append(fieldName + ":" + BLANK).append(changeItem.getOldString()).append(RARR).append(changeItem.getNewString()).append(NEWLINE);
+		content.append(fieldName + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
+				.append(changeItem.getNewString()).append(NEWLINE);
 	}
 
 	/**
@@ -239,7 +254,8 @@ public class RedmineUtilService extends BaseSevcie {
 	 *            changeItem对象
 	 */
 	private void saveChangeTextAndNEWLINE(String fieldName, StringBuilder content, ChangeItem changeItem) {
-		content.append(fieldName + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR).append(NEWLINE).append(changeItem.getNewString()).append(NEWLINE);
+		content.append(fieldName + ":" + BLANK).append(NEWLINE).append(changeItem.getOldString()).append(RARR)
+				.append(NEWLINE).append(changeItem.getNewString()).append(NEWLINE);
 	}
 
 	/**
@@ -255,7 +271,8 @@ public class RedmineUtilService extends BaseSevcie {
 			content.append("<pre>").append(NEWLINE);
 			content.append("标签名: ").append(serviceTag.getName()).append(NEWLINE);
 			content.append("优先级: ").append(RedmineConstant.Priority.get(serviceTag.getPriority())).append(NEWLINE);
-			content.append("服务起止日期: ").append(serviceTag.getServiceStart()).append(" 至 ").append(serviceTag.getServiceEnd()).append(NEWLINE);
+			content.append("服务起止日期: ").append(serviceTag.getServiceStart()).append(" 至 ")
+					.append(serviceTag.getServiceEnd()).append(NEWLINE);
 			content.append("用途描述: ").append(serviceTag.getDescription()).append(NEWLINE);
 			content.append("申请人: ").append(serviceTag.getUser().getName()).append(NEWLINE);
 			content.append("</pre>");
@@ -264,7 +281,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 			content.append("<pre>").append(NEWLINE);
 
-			List<Resources> resourcesList = comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId());
+			List<Resources> resourcesList = comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag
+					.getId());
 
 			for (Resources resources : resourcesList) {
 
@@ -281,7 +299,8 @@ public class RedmineUtilService extends BaseSevcie {
 						content.append("(" + resources.getIpAddress() + ")");
 					}
 
-					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription()).append(NEWLINE);
+					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription())
+							.append(NEWLINE);
 					content.append(NEWLINE).append("变更项:");
 
 					if (change.getSubResourcesId() != null) {
@@ -294,7 +313,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 						String fieldName = changeItem.getFieldName();
 
-						if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+						if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())
+								|| serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 							// 计算资源Compute信息
 
@@ -307,7 +327,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 									} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-										this.saveChangeText(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
+										this.saveChangeText(fieldName + CHANGE_ONECMDB_NOTIFICATION, content,
+												changeItem);
 
 									} else {
 
@@ -347,7 +368,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 									} else if (FieldNameConstant.Elb.关联实例.toString().equals(fieldName)) {
 
-										this.saveChangeTextAndNEWLINE(fieldName + CHANGE_ONECMDB_NOTIFICATION, content, changeItem);
+										this.saveChangeTextAndNEWLINE(fieldName + CHANGE_ONECMDB_NOTIFICATION, content,
+												changeItem);
 
 									} else {
 
@@ -407,7 +429,8 @@ public class RedmineUtilService extends BaseSevcie {
 						} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
 
 							// MDN
-							for (com.sobey.cmop.mvc.constant.FieldNameConstant.MdnItem enumField : FieldNameConstant.MdnItem.values()) {
+							for (com.sobey.cmop.mvc.constant.FieldNameConstant.MdnItem enumField : FieldNameConstant.MdnItem
+									.values()) {
 								if (enumField.toString().equals(fieldName)) {
 									this.saveChangeText(fieldName, content, changeItem);
 								}
@@ -433,7 +456,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 							// 云生产CP
 
-							for (com.sobey.cmop.mvc.constant.FieldNameConstant.CpItem enumField : FieldNameConstant.CpItem.values()) {
+							for (com.sobey.cmop.mvc.constant.FieldNameConstant.CpItem enumField : FieldNameConstant.CpItem
+									.values()) {
 								if (enumField.toString().equals(fieldName)) {
 									this.saveChangeText(fieldName, content, changeItem);
 								}

@@ -95,9 +95,11 @@ public class MonitorComputeServcie extends BaseSevcie {
 	 *            挂载路径数组
 	 */
 	@Transactional(readOnly = false)
-	public void saveMonitorComputeToApply(Apply apply, String[] computeIds, String[] cpuWarns, String[] cpuCriticals, String[] memoryWarns, String[] memoryCriticals, String[] pingLossWarns,
-			String[] pingLossCriticals, String[] diskWarns, String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals, String[] maxProcessWarns, String[] maxProcessCriticals,
-			String[] ports, String[] processes, String[] mountPoints) {
+	public void saveMonitorComputeToApply(Apply apply, String[] computeIds, String[] cpuWarns, String[] cpuCriticals,
+			String[] memoryWarns, String[] memoryCriticals, String[] pingLossWarns, String[] pingLossCriticals,
+			String[] diskWarns, String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals,
+			String[] maxProcessWarns, String[] maxProcessCriticals, String[] ports, String[] processes,
+			String[] mountPoints) {
 
 		if (computeIds != null) {
 
@@ -105,8 +107,10 @@ public class MonitorComputeServcie extends BaseSevcie {
 
 				MonitorCompute monitorCompute = new MonitorCompute();
 				monitorCompute.setApply(apply);
-				monitorCompute.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger()));
-				monitorCompute.setIpAddress(comm.computeService.getComputeItem(Integer.valueOf(computeIds[i])).getInnerIp());
+				monitorCompute.setIdentifier(comm.applyService
+						.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger()));
+				monitorCompute.setIpAddress(comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]))
+						.getInnerIp());
 
 				monitorCompute.setCpuWarn(cpuWarns[i]);
 				monitorCompute.setCpuCritical(cpuCriticals[i]);
@@ -179,9 +183,10 @@ public class MonitorComputeServcie extends BaseSevcie {
 	 *            挂载路径
 	 */
 	@Transactional(readOnly = false)
-	public void updateMonitorComputeToApply(MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical, String pingLossWarn,
-			String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String port,
-			String process, String mountPoint) {
+	public void updateMonitorComputeToApply(MonitorCompute monitorCompute, String ipAddress, String cpuWarn,
+			String cpuCritical, String memoryWarn, String memoryCritical, String pingLossWarn, String pingLossCritical,
+			String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical,
+			String maxProcessWarn, String maxProcessCritical, String port, String process, String mountPoint) {
 
 		monitorCompute.setCpuWarn(cpuWarn);
 		monitorCompute.setCpuCritical(cpuCritical);
@@ -205,9 +210,11 @@ public class MonitorComputeServcie extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveResourcesByMonitorCompute(Resources resources, Integer serviceTagId, String changeDescription, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
-			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
-			String maxProcessCritical, String port, String process, String mountPoint) {
+	public void saveResourcesByMonitorCompute(Resources resources, Integer serviceTagId, String changeDescription,
+			String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
+			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn,
+			String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String port, String process,
+			String mountPoint) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -217,8 +224,10 @@ public class MonitorComputeServcie extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareMonitorCompute(resources, change, monitorCompute, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn,
-				pingLossCritical, diskWarn, diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
+		boolean isChange = comm.compareResourcesService.compareMonitorCompute(resources, change, monitorCompute,
+				ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn, pingLossCritical, diskWarn,
+				diskCritical, pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process,
+				mountPoint);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

@@ -52,10 +52,13 @@ public class EIPController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "ispTypes") String[] ispTypes, @RequestParam(value = "linkTypes") String[] linkTypes,
+	public String save(@RequestParam(value = "applyId") Integer applyId,
+			@RequestParam(value = "ispTypes") String[] ispTypes, @RequestParam(value = "linkTypes") String[] linkTypes,
 			@RequestParam(value = "linkIds") String[] linkIds,
 
-			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts,
+			@RequestParam(value = "targetPorts") String[] targetPorts,
 
 			RedirectAttributes redirectAttributes) {
 
@@ -95,9 +98,11 @@ public class EIPController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") Integer linkId,
-			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
-			RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") Integer linkId,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts,
+			@RequestParam(value = "targetPorts") String[] targetPorts, RedirectAttributes redirectAttributes) {
 
 		NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(id);
 
@@ -112,7 +117,8 @@ public class EIPController extends BaseController {
 	 * 删除EIP后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.eipService.deleteNetworkEipItem(id);
 

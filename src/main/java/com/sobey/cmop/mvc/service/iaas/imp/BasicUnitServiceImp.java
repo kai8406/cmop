@@ -221,8 +221,10 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 		networkEipItem.setIspType(Integer.valueOf(object[3].toString()));
 		networkEipItem.setIpAddress(object[4] != null ? object[4].toString() : null);
 		networkEipItem.setOldIp(object[5] != null ? object[5].toString() : null);
-		networkEipItem.setNetworkElbItem(object[6] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[6].toString())) : null);
-		networkEipItem.setComputeItem(object[7] != null ? comm.computeService.getComputeItem(Integer.valueOf(object[7].toString())) : null);
+		networkEipItem.setNetworkElbItem(object[6] != null ? comm.elbService.getNetworkElbItem(Integer
+				.valueOf(object[6].toString())) : null);
+		networkEipItem.setComputeItem(object[7] != null ? comm.computeService.getComputeItem(Integer.valueOf(object[7]
+				.toString())) : null);
 
 		return networkEipItem;
 
@@ -352,7 +354,8 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 
 		monitorElb.setId(Integer.valueOf(object[0].toString()));
 		monitorElb.setApply(comm.applyService.getApply(Integer.valueOf(object[1].toString())));
-		monitorElb.setNetworkElbItem(object[2] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[2].toString())) : null);
+		monitorElb.setNetworkElbItem(object[2] != null ? comm.elbService.getNetworkElbItem(Integer.valueOf(object[2]
+				.toString())) : null);
 		monitorElb.setIdentifier(object[3].toString());
 
 		return monitorElb;

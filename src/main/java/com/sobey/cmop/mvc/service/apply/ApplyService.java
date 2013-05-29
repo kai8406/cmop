@@ -75,7 +75,8 @@ public class ApplyService extends BaseSevcie {
 
 		DateTime dateTime = new DateTime();
 
-		return comm.accountService.getCurrentUser().getLoginName() + "-" + serviceType + "-" + dateTime.toString("yyyyMMddHHmmss");
+		return comm.accountService.getCurrentUser().getLoginName() + "-" + serviceType + "-"
+				+ dateTime.toString("yyyyMMddHHmmss");
 
 	}
 

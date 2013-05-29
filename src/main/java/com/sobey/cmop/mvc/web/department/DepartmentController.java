@@ -30,7 +30,9 @@ public class DepartmentController extends BaseController {
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/department/";
 
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 

@@ -152,9 +152,12 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 申请 审批Audit
 
-		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
-		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续;
-		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
+		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
 
 		// TODO 成本核算
 		map.put("sumCost", comm.costService.costPrice(apply));
@@ -196,7 +199,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理URL
 
-		String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		String operateUrl = "你有新的服务申请处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL")
+				+ "\">&#8594点击进行处理</a><br>";
 
 		map.put("operateUrl", operateUrl);
 
@@ -233,7 +237,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理完成提示文字
 
-		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\""
+				+ CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
 
 		map.put("operateDoneStr", operateDoneStr);
 
@@ -265,13 +270,16 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 变更 审批Audit
 
-		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId() + "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId()
+				+ "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
 
-		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result="
-				+ AuditConstant.Result.不同意但继续 + "&auditId=" + audit.getId();
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId()
+				+ "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续 + "&auditId="
+				+ audit.getId();
 
-		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId() + "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回
-				+ "&auditId=" + audit.getId();
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId()
+				+ "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回 + "&auditId="
+				+ audit.getId();
 		;
 
 		map.put("passUrl", passUrl);
@@ -302,7 +310,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理URL
 
-		String operateUrl = "你有新的资源变更处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		String operateUrl = "你有新的资源变更处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL")
+				+ "\">&#8594点击进行处理</a><br>";
 
 		map.put("operateUrl", operateUrl);
 
@@ -330,7 +339,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理完成提示文字
 
-		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\""
+				+ CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
 
 		map.put("operateDoneStr", operateDoneStr);
 
@@ -348,8 +358,10 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送工单处理邮件(资源回收)
 	 */
-	public void sendRecycleResourcesOperateNotificationMail(User user, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
+	public void sendRecycleResourcesOperateNotificationMail(User user, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -367,7 +379,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理URL
 
-		String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		String operateUrl = "你有新的资源回收工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL")
+				+ "\">&#8594点击进行处理</a><br>";
 
 		map.put("operateUrl", operateUrl);
 
@@ -392,7 +405,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理完成提示文字
 
-		String operateDoneStr = "资源回收工单处理流程已完成.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+		String operateDoneStr = "资源回收工单处理流程已完成.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL")
+				+ "\">&#8594点击查看</a><br>";
 
 		map.put("operateDoneStr", operateDoneStr);
 
@@ -410,8 +424,10 @@ public class TemplateMailService extends BaseSevcie {
 	/**
 	 * 发送MIME格式的工单处理邮件(故障申报Failure).
 	 */
-	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
-			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
+	public void sendFailureResourcesNotificationMail(Failure failure, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems, User assigneeUser) {
 
 		// 初始化数据,并将其放入一个HashMap中.
 
@@ -430,7 +446,8 @@ public class TemplateMailService extends BaseSevcie {
 
 		// 工单处理URL
 
-		String operateUrl = "你有新的故障处理工单工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+		String operateUrl = "你有新的故障处理工单工单处理. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL")
+				+ "\">&#8594点击进行处理</a><br>";
 
 		map.put("operateUrl", operateUrl);
 

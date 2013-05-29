@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.MonitorMail;
  * @author liukai
  * 
  */
-public interface MonitorMailDao extends PagingAndSortingRepository<MonitorMail, Integer>, JpaSpecificationExecutor<MonitorMail> {
+public interface MonitorMailDao extends PagingAndSortingRepository<MonitorMail, Integer>,
+		JpaSpecificationExecutor<MonitorMail> {
 
 	List<MonitorMail> findByApplyId(Integer applyId);
 }

@@ -36,7 +36,9 @@ public class ApplyAuditController extends BaseController {
 	 * 显示所有的apply list
 	 */
 	@RequestMapping(value = "apply")
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.auditService.getAuditApplyPageable(searchParams, pageNumber, pageSize));
 		// 将搜索条件编码成字符串,分页的URL
@@ -59,7 +61,8 @@ public class ApplyAuditController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "apply/auditOk")
-	public String auditOk(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
+	public String auditOk(@RequestParam(value = "applyId") Integer applyId,
+			@RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
 		String message;
 		if (comm.auditService.isAudited(comm.applyService.getApply(applyId), userId)) { // 该服务申请已审批过.
@@ -88,8 +91,10 @@ public class ApplyAuditController extends BaseController {
 	 * 
 	 */
 	@RequestMapping(value = "/apply/{id}", method = RequestMethod.GET)
-	public String apply(@PathVariable("id") Integer applyId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
-			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
+	public String apply(@PathVariable("id") Integer applyId,
+			@RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
+			@RequestParam(value = "result", required = false, defaultValue = "") String result,
+			@RequestParam(value = "view", required = false, defaultValue = "") String view, Model model) {
 		Apply apply = comm.applyService.getApply(applyId);
 		String returnUrl = "";
 		if (StringUtils.isEmpty(view) && comm.auditService.isAudited(apply, userId)) { // 判断该服务申请已审批过.
@@ -126,7 +131,8 @@ public class ApplyAuditController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/apply/{applyId}", method = RequestMethod.POST)
-	public String saveApply(@PathVariable(value = "applyId") Integer applyId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
+	public String saveApply(@PathVariable(value = "applyId") Integer applyId,
+			@RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
 
 		// 获得指定apply当前审批记录

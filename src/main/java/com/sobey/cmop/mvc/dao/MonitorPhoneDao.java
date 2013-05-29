@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.MonitorPhone;
  * @author liukai
  * 
  */
-public interface MonitorPhoneDao extends PagingAndSortingRepository<MonitorPhone, Integer>, JpaSpecificationExecutor<MonitorPhone> {
+public interface MonitorPhoneDao extends PagingAndSortingRepository<MonitorPhone, Integer>,
+		JpaSpecificationExecutor<MonitorPhone> {
 
 	List<MonitorPhone> findByApplyId(Integer applyId);
 

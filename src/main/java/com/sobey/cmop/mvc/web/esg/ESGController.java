@@ -38,7 +38,9 @@ public class ESGController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -72,10 +74,14 @@ public class ESGController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "description") String description, @RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "portRanges") String[] portRanges,
-			@RequestParam(value = "visitSources") String[] visitSources, @RequestParam(value = "visitTargets") String[] visitTargets, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam(value = "description") String description,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "portRanges") String[] portRanges,
+			@RequestParam(value = "visitSources") String[] visitSources,
+			@RequestParam(value = "visitTargets") String[] visitTargets, RedirectAttributes redirectAttributes) {
 
-		NetworkEsgItem networkEsgItem = comm.esgService.saveESG(description, protocols, portRanges, visitSources, visitTargets);
+		NetworkEsgItem networkEsgItem = comm.esgService.saveESG(description, protocols, portRanges, visitSources,
+				visitTargets);
 
 		redirectAttributes.addFlashAttribute("message", "创建 " + networkEsgItem.getIdentifier() + " 成功.");
 
@@ -110,11 +116,15 @@ public class ESGController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "description") String description, @RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "portRanges") String[] portRanges, @RequestParam(value = "visitSources") String[] visitSources, @RequestParam(value = "visitTargets") String[] visitTargets,
-			RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(value = "id") Integer id,
+			@RequestParam(value = "description") String description,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "portRanges") String[] portRanges,
+			@RequestParam(value = "visitSources") String[] visitSources,
+			@RequestParam(value = "visitTargets") String[] visitTargets, RedirectAttributes redirectAttributes) {
 
-		NetworkEsgItem networkEsgItem = comm.esgService.updateESG(id, description, protocols, portRanges, visitSources, visitTargets);
+		NetworkEsgItem networkEsgItem = comm.esgService.updateESG(id, description, protocols, portRanges, visitSources,
+				visitTargets);
 
 		redirectAttributes.addFlashAttribute("message", "修改 " + networkEsgItem.getIdentifier() + " 成功.");
 		return REDIRECT_SUCCESS_URL;

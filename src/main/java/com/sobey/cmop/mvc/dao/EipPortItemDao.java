@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.EipPortItem;
  * @author liukai
  * 
  */
-public interface EipPortItemDao extends PagingAndSortingRepository<EipPortItem, Integer>, JpaSpecificationExecutor<EipPortItem> {
+public interface EipPortItemDao extends PagingAndSortingRepository<EipPortItem, Integer>,
+		JpaSpecificationExecutor<EipPortItem> {
 
 	/**
 	 * 获得指定eip下所有的映射端口信息list

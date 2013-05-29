@@ -62,10 +62,12 @@ public class CpItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public CpItem(Apply apply, String identifier, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, Integer recordDuration, String videoFtpIp,
-			String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay,
-			String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup,
-			String pictrueOutputMedia) {
+	public CpItem(Apply apply, String identifier, String recordStreamUrl, String recordBitrate, String exportEncode,
+			Integer recordType, String recordTime, Integer recordDuration, String videoFtpIp, String videoFtpPort,
+			String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath,
+			String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort,
+			String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath,
+			String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia) {
 		this.apply = apply;
 		this.recordDuration = recordDuration;
 		this.identifier = identifier;
@@ -93,10 +95,13 @@ public class CpItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public CpItem(Apply apply, String identifier, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime, Integer recordDuration, String publishUrl,
-			Boolean isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
-			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
-			String pictrueOutputGroup, String pictrueOutputMedia, Set<CpProgramItem> cpProgramItems) {
+	public CpItem(Apply apply, String identifier, String recordStreamUrl, String recordBitrate, String exportEncode,
+			Integer recordType, String recordTime, Integer recordDuration, String publishUrl, Boolean isPushCtp,
+			String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword,
+			String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay,
+			String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
+			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup,
+			String pictrueOutputMedia, Set<CpProgramItem> cpProgramItems) {
 		this.apply = apply;
 		this.recordDuration = recordDuration;
 		this.identifier = identifier;

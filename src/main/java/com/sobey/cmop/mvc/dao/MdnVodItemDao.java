@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.MdnVodItem;
  * @author liukai
  * 
  */
-public interface MdnVodItemDao extends PagingAndSortingRepository<MdnVodItem, Integer>, JpaSpecificationExecutor<MdnVodItem> {
+public interface MdnVodItemDao extends PagingAndSortingRepository<MdnVodItem, Integer>,
+		JpaSpecificationExecutor<MdnVodItem> {
 
 	List<MdnVodItem> findByMdnItemId(Integer mdnId);
 }

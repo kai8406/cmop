@@ -14,7 +14,8 @@ import com.sobey.cmop.mvc.entity.Resources;
  * @author liukai
  * 
  */
-public interface ResourcesDao extends PagingAndSortingRepository<Resources, Integer>, JpaSpecificationExecutor<Resources> {
+public interface ResourcesDao extends PagingAndSortingRepository<Resources, Integer>,
+		JpaSpecificationExecutor<Resources> {
 
 	List<Resources> findByServiceTagIdAndStatusInOrderByIdDesc(Integer serviceTagId, Collection<Integer> status);
 

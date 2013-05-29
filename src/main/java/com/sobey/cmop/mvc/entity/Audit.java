@@ -50,7 +50,8 @@ public class Audit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Audit(Apply apply, ServiceTag serviceTag, AuditFlow auditFlow, Date createTime, String result, String opinion, Integer status) {
+	public Audit(Apply apply, ServiceTag serviceTag, AuditFlow auditFlow, Date createTime, String result,
+			String opinion, Integer status) {
 		this.apply = apply;
 		this.serviceTag = serviceTag;
 		this.auditFlow = auditFlow;

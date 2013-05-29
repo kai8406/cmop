@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.ChangeItem;
  * @author liukai
  * 
  */
-public interface ChangeItemDao extends PagingAndSortingRepository<ChangeItem, Integer>, JpaSpecificationExecutor<ChangeItem> {
+public interface ChangeItemDao extends PagingAndSortingRepository<ChangeItem, Integer>,
+		JpaSpecificationExecutor<ChangeItem> {
 
 	List<ChangeItem> findByChangeId(Integer changeId);
 

@@ -46,7 +46,8 @@ public class MdnItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MdnItem(Apply apply, String identifier, String coverArea, String coverIsp, Set<MdnVodItem> mdnVodItems, Set<MdnLiveItem> mdnLiveItems) {
+	public MdnItem(Apply apply, String identifier, String coverArea, String coverIsp, Set<MdnVodItem> mdnVodItems,
+			Set<MdnLiveItem> mdnLiveItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.coverArea = coverArea;

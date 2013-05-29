@@ -223,7 +223,8 @@ public class ServiceTagService extends BaseSevcie {
 
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
 
-		filters.put("serviceTag.status", new SearchFilter("status", Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
+		filters.put("serviceTag.status",
+				new SearchFilter("status", Operator.EQ, ResourcesConstant.Status.已变更.toInteger()));
 		filters.put("serviceTag.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
 
 		Specification<ServiceTag> spec = DynamicSpecifications.bySearchFilter(filters.values(), ServiceTag.class);
@@ -269,7 +270,8 @@ public class ServiceTagService extends BaseSevcie {
 
 		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
 
-		List<Resources> resourcesList = comm.resourcesService.getCommitingResourcesListByServiceTagId(serviceTag.getId());
+		List<Resources> resourcesList = comm.resourcesService.getCommitingResourcesListByServiceTagId(serviceTag
+				.getId());
 
 		if (user.getLeaderId() != null) {
 

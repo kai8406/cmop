@@ -63,19 +63,26 @@ public class CPController extends BaseController {
 			@RequestParam(value = "publishUrl", required = false) String publishUrl,
 			@RequestParam(value = "isPushCtp") String isPushCtp,
 			// video
-			@RequestParam(value = "videoFtpIp") String videoFtpIp, @RequestParam(value = "videoFtpPort") String videoFtpPort, @RequestParam(value = "videoFtpUsername") String videoFtpUsername,
+			@RequestParam(value = "videoFtpIp") String videoFtpIp,
+			@RequestParam(value = "videoFtpPort") String videoFtpPort,
+			@RequestParam(value = "videoFtpUsername") String videoFtpUsername,
 			@RequestParam(value = "videoFtpPassword") String videoFtpPassword,
 			@RequestParam(value = "videoFtpRootpath") String videoFtpRootpath,
 			@RequestParam(value = "videoFtpUploadpath") String videoFtpUploadpath,
 			@RequestParam(value = "videoOutputGroup") String videoOutputGroup,
 			@RequestParam(value = "videoOutputWay") String videoOutputWay,
 			// pictrue
-			@RequestParam(value = "pictrueFtpIp") String pictrueFtpIp, @RequestParam(value = "pictrueFtpPort") String pictrueFtpPort,
-			@RequestParam(value = "pictrueFtpUsername") String pictrueFtpUsername, @RequestParam(value = "pictrueFtpPassword") String pictrueFtpPassword,
-			@RequestParam(value = "pictrueFtpRootpath") String pictrueFtpRootpath, @RequestParam(value = "pictrueFtpUploadpath") String pictrueFtpUploadpath,
-			@RequestParam(value = "pictrueOutputGroup") String pictrueOutputGroup, @RequestParam(value = "pictrueOutputMedia") String pictrueOutputMedia,
+			@RequestParam(value = "pictrueFtpIp") String pictrueFtpIp,
+			@RequestParam(value = "pictrueFtpPort") String pictrueFtpPort,
+			@RequestParam(value = "pictrueFtpUsername") String pictrueFtpUsername,
+			@RequestParam(value = "pictrueFtpPassword") String pictrueFtpPassword,
+			@RequestParam(value = "pictrueFtpRootpath") String pictrueFtpRootpath,
+			@RequestParam(value = "pictrueFtpUploadpath") String pictrueFtpUploadpath,
+			@RequestParam(value = "pictrueOutputGroup") String pictrueOutputGroup,
+			@RequestParam(value = "pictrueOutputMedia") String pictrueOutputMedia,
 			// upload
-			@RequestParam(value = "fileName", required = false) String[] fileNames, @RequestParam(value = "fileSize", required = false) String[] fileSizes,
+			@RequestParam(value = "fileName", required = false) String[] fileNames,
+			@RequestParam(value = "fileSize", required = false) String[] fileSizes,
 
 			RedirectAttributes redirectAttributes) {
 
@@ -86,9 +93,11 @@ public class CPController extends BaseController {
 		apply.setServiceEnd(serviceEnd);
 		apply.setDescription(description);
 
-		comm.cpService.saveCPToApply(apply, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
-				videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath,
-				pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia, fileNames, fileSizes);
+		comm.cpService.saveCPToApply(apply, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime,
+				recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword,
+				videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort,
+				pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup,
+				pictrueOutputMedia, fileNames, fileSizes);
 		redirectAttributes.addFlashAttribute("message", "创建云生产成功.");
 
 		return REDIRECT_SUCCESS_URL;
@@ -131,25 +140,33 @@ public class CPController extends BaseController {
 			@RequestParam(value = "publishUrl", required = false) String publishUrl,
 			@RequestParam(value = "isPushCtp", required = false) String isPushCtp,
 			// video
-			@RequestParam(value = "videoFtpIp") String videoFtpIp, @RequestParam(value = "videoFtpPort") String videoFtpPort, @RequestParam(value = "videoFtpUsername") String videoFtpUsername,
+			@RequestParam(value = "videoFtpIp") String videoFtpIp,
+			@RequestParam(value = "videoFtpPort") String videoFtpPort,
+			@RequestParam(value = "videoFtpUsername") String videoFtpUsername,
 			@RequestParam(value = "videoFtpPassword") String videoFtpPassword,
 			@RequestParam(value = "videoFtpRootpath") String videoFtpRootpath,
 			@RequestParam(value = "videoFtpUploadpath") String videoFtpUploadpath,
 			@RequestParam(value = "videoOutputGroup") String videoOutputGroup,
 			@RequestParam(value = "videoOutputWay") String videoOutputWay,
 			// pictrue
-			@RequestParam(value = "pictrueFtpIp") String pictrueFtpIp, @RequestParam(value = "pictrueFtpPort") String pictrueFtpPort,
-			@RequestParam(value = "pictrueFtpUsername") String pictrueFtpUsername, @RequestParam(value = "pictrueFtpPassword") String pictrueFtpPassword,
-			@RequestParam(value = "pictrueFtpRootpath") String pictrueFtpRootpath, @RequestParam(value = "pictrueFtpUploadpath") String pictrueFtpUploadpath,
-			@RequestParam(value = "pictrueOutputGroup") String pictrueOutputGroup, @RequestParam(value = "pictrueOutputMedia") String pictrueOutputMedia,
+			@RequestParam(value = "pictrueFtpIp") String pictrueFtpIp,
+			@RequestParam(value = "pictrueFtpPort") String pictrueFtpPort,
+			@RequestParam(value = "pictrueFtpUsername") String pictrueFtpUsername,
+			@RequestParam(value = "pictrueFtpPassword") String pictrueFtpPassword,
+			@RequestParam(value = "pictrueFtpRootpath") String pictrueFtpRootpath,
+			@RequestParam(value = "pictrueFtpUploadpath") String pictrueFtpUploadpath,
+			@RequestParam(value = "pictrueOutputGroup") String pictrueOutputGroup,
+			@RequestParam(value = "pictrueOutputMedia") String pictrueOutputMedia,
 
 			RedirectAttributes redirectAttributes) {
 
 		CpItem cpItem = comm.cpService.getCpItem(id);
 
-		comm.cpService.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername,
-				videoFtpPassword, videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort, pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath,
-				pictrueFtpUploadpath, pictrueOutputGroup, pictrueOutputMedia);
+		comm.cpService.updateCPToApply(cpItem, recordStreamUrl, recordBitrate, exportEncode, recordType, recordTime,
+				recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort, videoFtpUsername, videoFtpPassword,
+				videoFtpRootpath, videoFtpUploadpath, videoOutputGroup, videoOutputWay, pictrueFtpIp, pictrueFtpPort,
+				pictrueFtpUsername, pictrueFtpPassword, pictrueFtpRootpath, pictrueFtpUploadpath, pictrueOutputGroup,
+				pictrueOutputMedia);
 
 		redirectAttributes.addFlashAttribute("message", "修改云生产 " + cpItem.getIdentifier() + " 成功");
 
@@ -160,7 +177,8 @@ public class CPController extends BaseController {
 	 * 删除实例后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.cpService.delete(id);
 

@@ -46,8 +46,10 @@ public class DNSController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "domainNames") String[] domainNames, @RequestParam(value = "domainTypes") String[] domainTypes,
-			@RequestParam(value = "eipIds") String[] eipIds, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam(value = "applyId") Integer applyId,
+			@RequestParam(value = "domainNames") String[] domainNames,
+			@RequestParam(value = "domainTypes") String[] domainTypes, @RequestParam(value = "eipIds") String[] eipIds,
+			RedirectAttributes redirectAttributes) {
 
 		comm.dnsService.saveDNSToApply(applyId, domainNames, domainTypes, eipIds);
 
@@ -78,8 +80,10 @@ public class DNSController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "domainName") String domainName,
-			@RequestParam(value = "domainType") Integer domainType, @RequestParam(value = "cnameDomain", required = false) String cnameDomain,
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "domainName") String domainName,
+			@RequestParam(value = "domainType") Integer domainType,
+			@RequestParam(value = "cnameDomain", required = false) String cnameDomain,
 			@RequestParam(value = "eipIds", required = false) String[] eipIds,
 
 			RedirectAttributes redirectAttributes) {
@@ -97,7 +101,8 @@ public class DNSController extends BaseController {
 	 * 删除DNS后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.dnsService.deleteNetworkDnsItem(id);
 

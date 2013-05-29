@@ -76,9 +76,11 @@ public class MonitorServcie extends BaseSevcie {
 	 *            挂载路径数组
 	 */
 	@Transactional(readOnly = false)
-	public void saveMonitorToApply(Apply apply, String[] monitorMails, String[] monitorPhones, String[] elbIds, String[] computeIds, String[] cpuWarns, String[] cpuCriticals, String[] memoryWarns,
-			String[] memoryCriticals, String[] pingLossWarns, String[] pingLossCriticals, String[] diskWarns, String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals,
-			String[] maxProcessWarns, String[] maxProcessCriticals, String[] ports, String[] processes, String[] mountPoints) {
+	public void saveMonitorToApply(Apply apply, String[] monitorMails, String[] monitorPhones, String[] elbIds,
+			String[] computeIds, String[] cpuWarns, String[] cpuCriticals, String[] memoryWarns,
+			String[] memoryCriticals, String[] pingLossWarns, String[] pingLossCriticals, String[] diskWarns,
+			String[] diskCriticals, String[] pingDelayWarns, String[] pingDelayCriticals, String[] maxProcessWarns,
+			String[] maxProcessCriticals, String[] ports, String[] processes, String[] mountPoints) {
 
 		// Step1. 创建一个服务申请Apply
 
@@ -111,8 +113,9 @@ public class MonitorServcie extends BaseSevcie {
 		comm.monitorElbServcie.saveMonitorElbToApply(apply, elbIds);
 
 		// 创建实例Compute监控
-		comm.monitorComputeServcie.saveMonitorComputeToApply(apply, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals, diskWarns, diskCriticals,
-				pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, ports, processes, mountPoints);
+		comm.monitorComputeServcie.saveMonitorComputeToApply(apply, computeIds, cpuWarns, cpuCriticals, memoryWarns,
+				memoryCriticals, pingLossWarns, pingLossCriticals, diskWarns, diskCriticals, pingDelayWarns,
+				pingDelayCriticals, maxProcessWarns, maxProcessCriticals, ports, processes, mountPoints);
 
 	}
 }

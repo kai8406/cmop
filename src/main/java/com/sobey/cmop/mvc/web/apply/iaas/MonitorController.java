@@ -105,14 +105,23 @@ public class MonitorController extends BaseController {
 			// monitor_Elb
 			@RequestParam(value = "elbIds", required = false) String[] elbIds,
 			// monitor_Compute
-			@RequestParam(value = "computeIds", required = false) String[] computeIds, @RequestParam(value = "cpuWarns", required = false) String[] cpuWarns,
-			@RequestParam(value = "cpuCriticals", required = false) String[] cpuCriticals, @RequestParam(value = "memoryWarns", required = false) String[] memoryWarns,
-			@RequestParam(value = "memoryCriticals", required = false) String[] memoryCriticals, @RequestParam(value = "pingLossWarns", required = false) String[] pingLossWarns,
-			@RequestParam(value = "pingLossCriticals", required = false) String[] pingLossCriticals, @RequestParam(value = "diskWarns", required = false) String[] diskWarns,
-			@RequestParam(value = "diskCriticals", required = false) String[] diskCriticals, @RequestParam(value = "pingDelayWarns", required = false) String[] pingDelayWarns,
-			@RequestParam(value = "pingDelayCriticals", required = false) String[] pingDelayCriticals, @RequestParam(value = "maxProcessWarns", required = false) String[] maxProcessWarns,
-			@RequestParam(value = "maxProcessCriticals", required = false) String[] maxProcessCriticals, @RequestParam(value = "ports", required = false) String[] ports,
-			@RequestParam(value = "processes", required = false) String[] processes, @RequestParam(value = "mountPoints", required = false) String[] mountPoints, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			@RequestParam(value = "cpuWarns", required = false) String[] cpuWarns,
+			@RequestParam(value = "cpuCriticals", required = false) String[] cpuCriticals,
+			@RequestParam(value = "memoryWarns", required = false) String[] memoryWarns,
+			@RequestParam(value = "memoryCriticals", required = false) String[] memoryCriticals,
+			@RequestParam(value = "pingLossWarns", required = false) String[] pingLossWarns,
+			@RequestParam(value = "pingLossCriticals", required = false) String[] pingLossCriticals,
+			@RequestParam(value = "diskWarns", required = false) String[] diskWarns,
+			@RequestParam(value = "diskCriticals", required = false) String[] diskCriticals,
+			@RequestParam(value = "pingDelayWarns", required = false) String[] pingDelayWarns,
+			@RequestParam(value = "pingDelayCriticals", required = false) String[] pingDelayCriticals,
+			@RequestParam(value = "maxProcessWarns", required = false) String[] maxProcessWarns,
+			@RequestParam(value = "maxProcessCriticals", required = false) String[] maxProcessCriticals,
+			@RequestParam(value = "ports", required = false) String[] ports,
+			@RequestParam(value = "processes", required = false) String[] processes,
+			@RequestParam(value = "mountPoints", required = false) String[] mountPoints,
+			RedirectAttributes redirectAttributes) {
 
 		Apply apply = new Apply();
 
@@ -122,8 +131,11 @@ public class MonitorController extends BaseController {
 		apply.setServiceEnd(serviceEnd);
 		apply.setDescription(description);
 
-		comm.monitorServcie.saveMonitorToApply(apply, monitorMails, monitorPhones, elbIds, computeIds, cpuWarns, cpuCriticals, memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals,
-				diskWarns, diskCriticals, pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, ports, processes, mountPoints);
+		comm.monitorServcie
+				.saveMonitorToApply(apply, monitorMails, monitorPhones, elbIds, computeIds, cpuWarns, cpuCriticals,
+						memoryWarns, memoryCriticals, pingLossWarns, pingLossCriticals, diskWarns, diskCriticals,
+						pingDelayWarns, pingDelayCriticals, maxProcessWarns, maxProcessCriticals, ports, processes,
+						mountPoints);
 
 		redirectAttributes.addFlashAttribute("message", "创建监控成功.");
 
@@ -157,7 +169,8 @@ public class MonitorController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/elb/update/{id}/applyId", method = RequestMethod.POST)
-	public String updateElb(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "elbId") Integer elbId, RedirectAttributes redirectAttributes) {
+	public String updateElb(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "elbId") Integer elbId, RedirectAttributes redirectAttributes) {
 
 		MonitorElb monitorElb = comm.monitorElbServcie.getMonitorElb(id);
 
@@ -172,7 +185,8 @@ public class MonitorController extends BaseController {
 	 * 删除ELB监控后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/elb/delete/{id}/applyId/{applyId}")
-	public String deleteElb(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String deleteElb(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.monitorElbServcie.deleteMonitorElb(id);
 
@@ -187,14 +201,18 @@ public class MonitorController extends BaseController {
 	 * 从服务申请表页面跳转到Compute监控的修改页面.
 	 */
 	@RequestMapping(value = "/compute/update/{id}/applyId/{applyId}", method = RequestMethod.GET)
-	public String updateComputeForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, Model model) {
+	public String updateComputeForm(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			Model model) {
 
 		MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(id);
 
 		model.addAttribute("monitorCompute", monitorCompute);
-		model.addAttribute("ports", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
-		model.addAttribute("processes", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
-		model.addAttribute("mountPoints", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
+		model.addAttribute("ports",
+				comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
+		model.addAttribute("processes",
+				comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
+		model.addAttribute("mountPoints",
+				comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
 		model.addAttribute("monitorMails", comm.monitorMailService.getMonitorMailByApplyList(applyId));
 		model.addAttribute("monitorPhones", comm.monitorPhoneService.getMonitorPhoneByApplyList(applyId));
 
@@ -245,19 +263,29 @@ public class MonitorController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/compute/update/{id}/applyId", method = RequestMethod.POST)
-	public String updateCompute(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "ipAddress") String ipAddress,
-			@RequestParam(value = "cpuWarn") String cpuWarn, @RequestParam(value = "cpuCritical") String cpuCritical, @RequestParam(value = "memoryWarn") String memoryWarn,
-			@RequestParam(value = "memoryCritical") String memoryCritical, @RequestParam(value = "pingLossWarn") String pingLossWarn,
-			@RequestParam(value = "pingLossCritical") String pingLossCritical, @RequestParam(value = "diskWarn") String diskWarn, @RequestParam(value = "diskCritical") String diskCritical,
-			@RequestParam(value = "pingDelayWarn") String pingDelayWarn, @RequestParam(value = "pingDelayCritical") String pingDelayCritical,
-			@RequestParam(value = "maxProcessWarn") String maxProcessWarn, @RequestParam(value = "maxProcessCritical") String maxProcessCritical,
-			@RequestParam(value = "port", required = false) String port, @RequestParam(value = "process", required = false) String process,
-			@RequestParam(value = "mountPoint", required = false) String mountPoint, RedirectAttributes redirectAttributes) {
+	public String updateCompute(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "cpuWarn") String cpuWarn,
+			@RequestParam(value = "cpuCritical") String cpuCritical,
+			@RequestParam(value = "memoryWarn") String memoryWarn,
+			@RequestParam(value = "memoryCritical") String memoryCritical,
+			@RequestParam(value = "pingLossWarn") String pingLossWarn,
+			@RequestParam(value = "pingLossCritical") String pingLossCritical,
+			@RequestParam(value = "diskWarn") String diskWarn,
+			@RequestParam(value = "diskCritical") String diskCritical,
+			@RequestParam(value = "pingDelayWarn") String pingDelayWarn,
+			@RequestParam(value = "pingDelayCritical") String pingDelayCritical,
+			@RequestParam(value = "maxProcessWarn") String maxProcessWarn,
+			@RequestParam(value = "maxProcessCritical") String maxProcessCritical,
+			@RequestParam(value = "port", required = false) String port,
+			@RequestParam(value = "process", required = false) String process,
+			@RequestParam(value = "mountPoint", required = false) String mountPoint,
+			RedirectAttributes redirectAttributes) {
 
 		MonitorCompute monitorCompute = comm.monitorComputeServcie.getMonitorCompute(id);
 
-		comm.monitorComputeServcie.updateMonitorComputeToApply(monitorCompute, ipAddress, cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn, pingLossCritical, diskWarn, diskCritical,
-				pingDelayWarn, pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
+		comm.monitorComputeServcie.updateMonitorComputeToApply(monitorCompute, ipAddress, cpuWarn, cpuCritical,
+				memoryWarn, memoryCritical, pingLossWarn, pingLossCritical, diskWarn, diskCritical, pingDelayWarn,
+				pingDelayCritical, maxProcessWarn, maxProcessCritical, port, process, mountPoint);
 
 		redirectAttributes.addFlashAttribute("message", "修改实例监控 " + monitorCompute.getIdentifier() + " 成功");
 
@@ -268,7 +296,8 @@ public class MonitorController extends BaseController {
 	 * 删除Compute监控后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/compute/delete/{id}/applyId/{applyId}")
-	public String deleteCompute(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String deleteCompute(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.monitorComputeServcie.deleteMonitorCompute(id);
 

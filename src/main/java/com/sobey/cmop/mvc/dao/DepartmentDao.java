@@ -11,7 +11,8 @@ import com.sobey.cmop.mvc.entity.Department;
  * @author liukai
  * 
  */
-public interface DepartmentDao extends PagingAndSortingRepository<Department, Integer>, JpaSpecificationExecutor<Department> {
+public interface DepartmentDao extends PagingAndSortingRepository<Department, Integer>,
+		JpaSpecificationExecutor<Department> {
 
 	Department findByName(String name);
 

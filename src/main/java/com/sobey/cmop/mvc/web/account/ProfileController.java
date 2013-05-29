@@ -44,9 +44,12 @@ public class ProfileController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "plainPassword") String plainPassword,
-			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId,
-			@RequestParam(value = "departmentId") Integer departmentId, @RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+	public String profile(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email,
+			@RequestParam(value = "plainPassword") String plainPassword,
+			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name,
+			@RequestParam(value = "leaderId") Integer leaderId,
+			@RequestParam(value = "departmentId") Integer departmentId,
+			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		List<Group> groupList = Lists.newArrayList();
 

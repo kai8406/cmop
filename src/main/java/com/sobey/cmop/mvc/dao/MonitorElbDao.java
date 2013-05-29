@@ -11,6 +11,7 @@ import com.sobey.cmop.mvc.entity.MonitorElb;
  * @author liukai
  * 
  */
-public interface MonitorElbDao extends PagingAndSortingRepository<MonitorElb, Integer>, JpaSpecificationExecutor<MonitorElb> {
+public interface MonitorElbDao extends PagingAndSortingRepository<MonitorElb, Integer>,
+		JpaSpecificationExecutor<MonitorElb> {
 
 }

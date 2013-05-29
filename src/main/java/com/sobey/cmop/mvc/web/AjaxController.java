@@ -63,7 +63,8 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "checkEmail")
 	@ResponseBody
-	public String checkEmail(@RequestParam(value = "oldEmail", required = false) String oldEmail, @RequestParam("email") String email) {
+	public String checkEmail(@RequestParam(value = "oldEmail", required = false) String oldEmail,
+			@RequestParam("email") String email) {
 		return email.equals(oldEmail) || comm.accountService.findUserByEmail(email) == null ? "true" : "false";
 	}
 
@@ -89,8 +90,10 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "checkLoginName")
 	@ResponseBody
-	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName, @RequestParam("loginName") String loginName) {
-		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true" : "false";
+	public String checkLoginName(@RequestParam(value = "oldLoginName", required = false) String oldLoginName,
+			@RequestParam("loginName") String loginName) {
+		return loginName.equals(oldLoginName) || comm.accountService.findUserByLoginName(loginName) == null ? "true"
+				: "false";
 	}
 
 	/**
@@ -146,10 +149,13 @@ public class AjaxController extends BaseController {
 	 */
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResourcesJson> getResourcesList(@RequestParam(value = "serviceType", required = false) Integer serviceType,
-			@RequestParam(value = "serviceTagName", required = false) String serviceTagName, @RequestParam(value = "ipAddress", required = false) String ipAddress,
+	public List<ResourcesJson> getResourcesList(
+			@RequestParam(value = "serviceType", required = false) Integer serviceType,
+			@RequestParam(value = "serviceTagName", required = false) String serviceTagName,
+			@RequestParam(value = "ipAddress", required = false) String ipAddress,
 			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {
-		return comm.resourcesService.getResourcesJsonListByParamers(serviceType, serviceTagName, ipAddress, serviceIdentifier);
+		return comm.resourcesService.getResourcesJsonListByParamers(serviceType, serviceTagName, ipAddress,
+				serviceIdentifier);
 	}
 
 	/**
@@ -162,7 +168,9 @@ public class AjaxController extends BaseController {
 	@RequestMapping(value = "checkServiceTagName")
 	@ResponseBody
 	public String checkServiceTagName(@RequestParam("oldName") String oldName, @RequestParam("name") String name) {
-		return name.equals(oldName) || comm.serviceTagService.findServiceTagByNameAndUserId(name, getCurrentUserId()) == null ? "true" : "false";
+		return name.equals(oldName)
+				|| comm.serviceTagService.findServiceTagByNameAndUserId(name, getCurrentUserId()) == null ? "true"
+				: "false";
 	}
 
 	/**

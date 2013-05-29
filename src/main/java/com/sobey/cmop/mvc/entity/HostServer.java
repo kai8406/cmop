@@ -60,8 +60,9 @@ public class HostServer implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public HostServer(Integer serverType, Integer poolType, String displayName, String rack, String rackAlias, String site, String height, String alias, String locationAlias, Set<IpPool> ipPools,
-			Set<Nic> nics, String ipAddress, Date createTime, String description, String managementMac, ServerModel serverModel) {
+	public HostServer(Integer serverType, Integer poolType, String displayName, String rack, String rackAlias,
+			String site, String height, String alias, String locationAlias, Set<IpPool> ipPools, Set<Nic> nics,
+			String ipAddress, Date createTime, String description, String managementMac, ServerModel serverModel) {
 		this.serverType = serverType;
 		this.poolType = poolType;
 		this.displayName = displayName;

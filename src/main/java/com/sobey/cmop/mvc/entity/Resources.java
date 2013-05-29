@@ -47,7 +47,8 @@ public class Resources implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, Date createTime, Integer status) {
+	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId,
+			String serviceIdentifier, Date createTime, Integer status) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.serviceTag = serviceTag;
@@ -58,8 +59,9 @@ public class Resources implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, Date createTime, Integer status, String ipAddress, Integer usedby,
-			String oldIp, Set<Change> changes) {
+	public Resources(User user, Integer serviceType, ServiceTag serviceTag, Integer serviceId,
+			String serviceIdentifier, Date createTime, Integer status, String ipAddress, Integer usedby, String oldIp,
+			Set<Change> changes) {
 		this.user = user;
 		this.serviceType = serviceType;
 		this.serviceTag = serviceTag;

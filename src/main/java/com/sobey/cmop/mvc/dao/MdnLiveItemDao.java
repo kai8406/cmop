@@ -14,7 +14,8 @@ import com.sobey.cmop.mvc.entity.MdnLiveItem;
  * @author liukai
  * 
  */
-public interface MdnLiveItemDao extends PagingAndSortingRepository<MdnLiveItem, Integer>, JpaSpecificationExecutor<MdnLiveItem> {
+public interface MdnLiveItemDao extends PagingAndSortingRepository<MdnLiveItem, Integer>,
+		JpaSpecificationExecutor<MdnLiveItem> {
 
 	List<MdnLiveItem> findByMdnItemId(Integer mdnId);
 }

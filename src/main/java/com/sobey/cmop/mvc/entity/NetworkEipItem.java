@@ -63,7 +63,8 @@ public class NetworkEipItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public NetworkEipItem(Apply apply, String identifier, Integer ispType, String ipAddress, String oldIp, NetworkElbItem networkElbItem, ComputeItem computeItem, Set<EipPortItem> eipPortItems) {
+	public NetworkEipItem(Apply apply, String identifier, Integer ispType, String ipAddress, String oldIp,
+			NetworkElbItem networkElbItem, ComputeItem computeItem, Set<EipPortItem> eipPortItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.ispType = ispType;

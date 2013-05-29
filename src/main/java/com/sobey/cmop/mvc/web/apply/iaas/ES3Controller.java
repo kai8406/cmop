@@ -45,7 +45,9 @@ public class ES3Controller extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "spaces") String[] spaces, @RequestParam(value = "storageTypes") String[] storageTypes,
+	public String save(@RequestParam(value = "applyId") Integer applyId,
+			@RequestParam(value = "spaces") String[] spaces,
+			@RequestParam(value = "storageTypes") String[] storageTypes,
 			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
 		comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes, computeIds);
@@ -80,8 +82,9 @@ public class ES3Controller extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "space") Integer space, @RequestParam(value = "storageType") Integer storageType,
+			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
 		StorageItem storageItem = comm.es3Service.getStorageItem(id);
 
@@ -96,7 +99,8 @@ public class ES3Controller extends BaseController {
 	 * 删除ES3后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.es3Service.deleteStorageItem(id);
 

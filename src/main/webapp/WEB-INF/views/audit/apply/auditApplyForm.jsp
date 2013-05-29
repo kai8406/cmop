@@ -416,7 +416,7 @@ function setResult(result) {
 				<c:if test="${not empty sumCost}">
 					<hr>
 					<dt>资源服务费用</dt>
-					<dd>${sumCost }</dd>
+					<dd>${sumCost}</dd>
 				</c:if>
 				
 			</dl>

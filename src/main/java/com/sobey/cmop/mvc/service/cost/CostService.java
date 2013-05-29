@@ -90,7 +90,7 @@ public class CostService extends BaseSevcie {
 			sb.append("云生产成本&nbsp;:").append(cpCost).append("&nbsp;元").append("<br>");
 		}
 
-		sb.append("总成本&nbsp;:<strong>").append(totalPrice).append("</strong>&nbsp;元").append("<br>");
+		sb.append("总成本&nbsp;:<strong class='text-error'>").append(totalPrice).append("</strong>&nbsp;元").append("<br>");
 
 		return sb.toString();
 

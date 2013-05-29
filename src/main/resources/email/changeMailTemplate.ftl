@@ -1,7 +1,7 @@
 <html>
 <head>
-
 <style type="text/css">
+.text-error{color:#b94a48;}
 /* td 背景色 */
 td.is-visible {
 	color: #468847;

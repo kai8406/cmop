@@ -1,5 +1,8 @@
 <html>
 <head>
+<style type="text/css">
+.text-error{color:#b94a48;}
+</style>
 </head>
 <body>
 

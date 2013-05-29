@@ -172,9 +172,6 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 
 		Integer elbId = Integer.valueOf(object[0].toString());
 
-		System.out.println("elbId:" + elbId);
-		System.out.println(this.getComputeListByElb(elbId).size());
-
 		networkElbItem.setId(elbId);
 		networkElbItem.setApply(comm.applyService.getApply(Integer.valueOf(object[1].toString())));
 		networkElbItem.setIdentifier(object[2].toString());
@@ -182,7 +179,7 @@ public class BasicUnitServiceImp extends BaseSevcie implements IBasicUnitService
 		networkElbItem.setOldIp(object[4] != null ? object[4].toString() : null);
 		Boolean keepSession = NetworkConstant.KeepSession.保持.toString().equals(object[5].toString()) ? true : false;
 		networkElbItem.setKeepSession(keepSession);
-//		networkElbItem.setComputeItemList(this.getComputeListByElb(elbId));
+		networkElbItem.setComputeItemList(this.getComputeListByElb(elbId));
 
 		return networkElbItem;
 

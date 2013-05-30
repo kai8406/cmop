@@ -64,7 +64,8 @@ public class MonitorElbServcie extends BaseSevcie {
 				MonitorElb monitorElb = new MonitorElb();
 
 				monitorElb.setApply(apply);
-				monitorElb.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger()));
+				monitorElb.setIdentifier(comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.MONITOR_ELB
+						.toInteger()));
 				monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(elbIds[i])));
 
 				this.saveOrUpdate(monitorElb);
@@ -89,7 +90,8 @@ public class MonitorElbServcie extends BaseSevcie {
 	}
 
 	@Transactional(readOnly = false)
-	public void saveResourcesByMonitorElb(Resources resources, Integer serviceTagId, Integer elbId, String changeDescription) {
+	public void saveResourcesByMonitorElb(Resources resources, Integer serviceTagId, Integer elbId,
+			String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 

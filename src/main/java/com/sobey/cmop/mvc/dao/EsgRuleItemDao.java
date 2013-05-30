@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.EsgRuleItem;
  * @author liukai
  * 
  */
-public interface EsgRuleItemDao extends PagingAndSortingRepository<EsgRuleItem, Integer>, JpaSpecificationExecutor<EsgRuleItem> {
+public interface EsgRuleItemDao extends PagingAndSortingRepository<EsgRuleItem, Integer>,
+		JpaSpecificationExecutor<EsgRuleItem> {
 
 	List<EsgRuleItem> findByNetworkEsgItemId(Integer esgId);
 

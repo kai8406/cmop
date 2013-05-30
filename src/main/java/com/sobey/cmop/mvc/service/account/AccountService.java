@@ -91,7 +91,8 @@ public class AccountService extends BaseSevcie {
 
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
 
-		filters.put("user.status", new SearchFilter("status", Operator.EQ, AccountConstant.UserStatus.ENABLED.toInteger()));
+		filters.put("user.status",
+				new SearchFilter("status", Operator.EQ, AccountConstant.UserStatus.ENABLED.toInteger()));
 		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
 
 		return userDao.findAll(spec, pageRequest);
@@ -255,7 +256,8 @@ public class AccountService extends BaseSevcie {
 
 		List list = accountDao.getUserGroupByUserId(userId);
 
-		return list.isEmpty() ? getGroup(AccountConstant.DefaultGroups.apply.toInteger()) : getGroup((Integer) list.get(0));
+		return list.isEmpty() ? getGroup(AccountConstant.DefaultGroups.apply.toInteger()) : getGroup((Integer) list
+				.get(0));
 
 	}
 

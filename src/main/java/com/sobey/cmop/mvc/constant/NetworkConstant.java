@@ -280,7 +280,7 @@ public class NetworkConstant {
 	 */
 	public enum Protocol {
 
-		ALL, HTTP, HTTPS, SSL, TCP;
+		ALL, HTTP, HTTPS, SSL, TCP, UDP;
 
 		public static final Map<String, String> map = Maps.newLinkedHashMap();
 		static {

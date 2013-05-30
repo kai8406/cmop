@@ -58,7 +58,8 @@ public class StorageItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StorageItem(Apply apply, String identifier, Integer space, Integer storageType, String controllerAlias, String volume, String mountPoint) {
+	public StorageItem(Apply apply, String identifier, Integer space, Integer storageType, String controllerAlias,
+			String volume, String mountPoint) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.space = space;
@@ -179,7 +180,8 @@ public class StorageItem implements java.io.Serializable {
 	public static String extractToString(final List<ComputeItem> computeItems) {
 		StringBuilder sb = new StringBuilder();
 		for (ComputeItem computeItem : computeItems) {
-			sb.append(computeItem.getIdentifier()).append("(").append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(",");
+			sb.append(computeItem.getIdentifier()).append("(")
+					.append(computeItem.getRemark() + " - " + computeItem.getInnerIp()).append(")").append(",");
 		}
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";

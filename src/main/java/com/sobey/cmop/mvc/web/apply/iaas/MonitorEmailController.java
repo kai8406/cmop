@@ -35,7 +35,8 @@ public class MonitorEmailController extends BaseController {
 	 * 修改邮件监控列表.完成后跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/update/applyId", method = RequestMethod.POST)
-	public String update(@RequestParam("applyId") Integer applyId, @RequestParam(value = "monitorMails") String[] monitorMails, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "monitorMails") String[] monitorMails, RedirectAttributes redirectAttributes) {
 
 		comm.monitorMailService.updateMonitorEmailToApply(applyId, monitorMails);
 

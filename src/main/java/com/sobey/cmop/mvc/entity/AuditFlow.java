@@ -48,7 +48,8 @@ public class AuditFlow implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AuditFlow(User user, Integer flowType, Integer auditOrder, Boolean isFinal, Set<Audit> audits, Set<Apply> applys, Set<ServiceTag> serviceTags) {
+	public AuditFlow(User user, Integer flowType, Integer auditOrder, Boolean isFinal, Set<Audit> audits,
+			Set<Apply> applys, Set<ServiceTag> serviceTags) {
 		this.user = user;
 		this.flowType = flowType;
 		this.auditOrder = auditOrder;

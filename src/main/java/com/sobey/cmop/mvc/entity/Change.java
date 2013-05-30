@@ -50,7 +50,8 @@ public class Change implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Change(Resources resources, Integer subResourcesId, User user, Date changeTime, String description, Set<ChangeItem> changeItems) {
+	public Change(Resources resources, Integer subResourcesId, User user, Date changeTime, String description,
+			Set<ChangeItem> changeItems) {
 		this.resources = resources;
 		this.subResourcesId = subResourcesId;
 		this.user = user;

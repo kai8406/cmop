@@ -68,7 +68,8 @@ public class User implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public User(String name, String loginName, String password, String salt, String email, String phonenum, Department department, Integer type, Date createTime, Integer status) {
+	public User(String name, String loginName, String password, String salt, String email, String phonenum,
+			Department department, Integer type, Date createTime, Integer status) {
 		this.name = name;
 		this.loginName = loginName;
 		this.password = password;
@@ -82,8 +83,10 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(String name, String loginName, String password, String salt, String email, String phonenum, Department department, Integer leaderId, Integer type, Date createTime, Date loginTime,
-			Integer status, Integer redmineUserId, Set<AuditFlow> auditFlows, Set<Failure> failures, Set<Apply> applies, Set<NetworkEsgItem> networkEsgItems) {
+	public User(String name, String loginName, String password, String salt, String email, String phonenum,
+			Department department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
+			Integer redmineUserId, Set<AuditFlow> auditFlows, Set<Failure> failures, Set<Apply> applies,
+			Set<NetworkEsgItem> networkEsgItems) {
 		this.name = name;
 		this.loginName = loginName;
 		this.password = password;

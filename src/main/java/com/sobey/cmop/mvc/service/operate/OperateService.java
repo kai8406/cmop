@@ -119,7 +119,8 @@ public class OperateService extends BaseSevcie {
 		// 和redmine中的UserId关联的Id.
 		Integer assignee = user.getRedmineUserId();
 		filters.put("redmineIssue.assignee", new SearchFilter("assignee", Operator.EQ, assignee));
-		filters.put("redmineIssue.status", new SearchFilter("status", Operator.NOT, RedmineConstant.Status.关闭.toInteger()));
+		filters.put("redmineIssue.status",
+				new SearchFilter("status", Operator.NOT, RedmineConstant.Status.关闭.toInteger()));
 		Specification<RedmineIssue> spec = DynamicSpecifications.bySearchFilter(filters.values(), RedmineIssue.class);
 
 		return redmineIssueDao.findAll(spec, pageRequest);
@@ -142,8 +143,9 @@ public class OperateService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes,
-			String innerIps, String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
+	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames,
+			String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
+			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
 		long start = System.currentTimeMillis();
 
 		logger.info("--->工单处理...");
@@ -151,14 +153,15 @@ public class OperateService extends BaseSevcie {
 		try {
 			/* Step.1 更新redmine的数据 */
 			User user = comm.accountService.getCurrentUser();
-			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(user.getRedmineUserId()));
+			RedmineManager mgr = new RedmineManager(RedmineService.HOST,
+					RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(user.getRedmineUserId()));
 			boolean isChanged = RedmineService.changeIssue(issue, mgr);
 			logger.info("---> Redmine isChanged?" + isChanged);
 			if (isChanged) {
 
 				// 更新写入OneCMDB时需要人工选择填入的关联项
-				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps,
-						issue);
+				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias,
+						controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps, issue);
 				if (!saveOk) {
 					return false;
 				}
@@ -200,7 +203,8 @@ public class OperateService extends BaseSevcie {
 				}
 
 				/* Step.3 更新RedmineIssue状态 */
-				Integer status = RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio()) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
+				Integer status = RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio()) ? RedmineConstant.Status.关闭
+						.toInteger() : RedmineConstant.Status.处理中.toInteger();
 				redmineIssue.setStatus(status);
 				this.saveOrUpdate(redmineIssue);
 				logger.info("--->工单处理结束！");
@@ -290,7 +294,8 @@ public class OperateService extends BaseSevcie {
 
 				/* resource变更审批通过时,同步数据到oneCMDB. */
 
-				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType)
+						|| ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
 					ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
 
@@ -412,10 +417,12 @@ public class OperateService extends BaseSevcie {
 				Integer serviceType = resources.getServiceType();
 				Integer serviceId = resources.getServiceId();
 
-				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType)
+						|| ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
 					// 删除compute下关联eip在oneCMDB中的数据.
-					List<NetworkEipItem> networkEipItems = comm.eipService.getNetworkEipItemListByComputeItemId(serviceId);
+					List<NetworkEipItem> networkEipItems = comm.eipService
+							.getNetworkEipItemListByComputeItemId(serviceId);
 					for (NetworkEipItem networkEipItem : networkEipItems) {
 						comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
 					}
@@ -520,11 +527,13 @@ public class OperateService extends BaseSevcie {
 			List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 			List<CpItem> cpItems = new ArrayList<CpItem>();
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems,
+					eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			// 发送邮件通知下个指派人
 			User assigneeUser = comm.accountService.findUserByRedmineUserId(issue.getAssignee().getId());
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(sendToUser, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems,
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(sendToUser, computeItems,
+					storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems,
 					assigneeUser);
 		}
 	}
@@ -543,10 +552,12 @@ public class OperateService extends BaseSevcie {
 			String loginName = issue.getSubject().substring(0, issue.getSubject().indexOf("-"));
 			User user = comm.accountService.findUserByLoginName(loginName);
 			// 工单处理完成，给申请人发送邮件
-			comm.simpleMailService.sendNotificationMail(user.getEmail(), issue.getSubject() + " 故障处理流程已完成", "故障处理流程已完成");
+			comm.simpleMailService
+					.sendNotificationMail(user.getEmail(), issue.getSubject() + " 故障处理流程已完成", "故障处理流程已完成");
 		} else {
 			logger.info("---> 完成度 < 100%的工单处理...");
-			String contentText = "你有新的故障处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL") + "\">&#8594点击进行处理</a><br>";
+			String contentText = "你有新的故障处理工单. <a href=\"" + CONFIG_LOADER.getProperty("OPERATE_URL")
+					+ "\">&#8594点击进行处理</a><br>";
 			User assigneeUser = comm.accountService.getUser(issue.getAssignee().getId());
 
 			// 工单处理完成，给申请人发送邮件
@@ -647,8 +658,9 @@ public class OperateService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
-			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps, Issue issue) {
+	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias,
+			String osStorageAlias, String controllerAlias, String volumes, String innerIps, String eipIds,
+			String eipAddresss, String location, String elbIds, String virtualIps, Issue issue) {
 		try {
 			String sep = ",";
 			if (computeIds.length() > 0) {
@@ -728,7 +740,8 @@ public class OperateService extends BaseSevcie {
 					}
 					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
 					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(), IpPoolConstant.IpStatus.未使用.toInteger());
+					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(),
+							IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
 					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
@@ -747,7 +760,8 @@ public class OperateService extends BaseSevcie {
 				for (int i = 0; i < elbId.length; i++) {
 					elbItem = comm.elbService.getNetworkElbItem(Integer.parseInt(elbId[i]));
 					// 释放原来的IP
-					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(), IpPoolConstant.IpStatus.未使用.toInteger());
+					comm.ipPoolService.updateIpPoolByIpAddress(elbItem.getVirtualIp(),
+							IpPoolConstant.IpStatus.未使用.toInteger());
 					// 更新新的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(virtualIp[i], IpPoolConstant.IpStatus.已使用.toInteger());
 					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {

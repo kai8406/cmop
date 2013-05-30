@@ -106,7 +106,8 @@ public class ServerModelService extends BaseSevcie {
 	 *            网卡口数
 	 */
 	@Transactional(readOnly = false)
-	public void saveServerModel(String company, String name, Integer cpu, Integer memory, Integer disk, Integer pci, Integer port) {
+	public void saveServerModel(String company, String name, Integer cpu, Integer memory, Integer disk, Integer pci,
+			Integer port) {
 
 		String[] companys = StringUtils.split(company, "&");
 		String companyAlias = companys[0];
@@ -146,7 +147,8 @@ public class ServerModelService extends BaseSevcie {
 	 *            网卡口数
 	 */
 	@Transactional(readOnly = false)
-	public void updateServerModel(Integer id, String company, String name, Integer cpu, Integer memory, Integer disk, Integer pci, Integer port) {
+	public void updateServerModel(Integer id, String company, String name, Integer cpu, Integer memory, Integer disk,
+			Integer pci, Integer port) {
 
 		String[] companys = StringUtils.split(company, "&");
 		String companyAlias = companys[0];

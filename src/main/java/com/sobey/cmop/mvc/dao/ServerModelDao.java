@@ -11,7 +11,8 @@ import com.sobey.cmop.mvc.entity.ServerModel;
  * @author liukai
  * 
  */
-public interface ServerModelDao extends PagingAndSortingRepository<ServerModel, Integer>, JpaSpecificationExecutor<ServerModel> {
+public interface ServerModelDao extends PagingAndSortingRepository<ServerModel, Integer>,
+		JpaSpecificationExecutor<ServerModel> {
 
 	ServerModel findByName(String name);
 

@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.NetworkElbItem;
  * @author liukai
  * 
  */
-public interface NetworkElbItemDao extends PagingAndSortingRepository<NetworkElbItem, Integer>, JpaSpecificationExecutor<NetworkElbItem> {
+public interface NetworkElbItemDao extends PagingAndSortingRepository<NetworkElbItem, Integer>,
+		JpaSpecificationExecutor<NetworkElbItem> {
 
 	List<NetworkElbItem> findByApplyUserId(Integer userId);
 

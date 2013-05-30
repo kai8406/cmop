@@ -215,7 +215,8 @@ public class ResourcesService extends BaseSevcie {
 	 *            资源标识符
 	 * @return
 	 */
-	public List<ResourcesJson> getResourcesJsonListByParamers(Integer serviceType, String serviceTagName, String ipAddress, String serviceIdentifier) {
+	public List<ResourcesJson> getResourcesJsonListByParamers(Integer serviceType, String serviceTagName,
+			String ipAddress, String serviceIdentifier) {
 
 		Map<String, SearchFilter> filters = Maps.newHashMap();
 
@@ -257,7 +258,8 @@ public class ResourcesService extends BaseSevcie {
 		}
 
 		if (StringUtils.isNotBlank(serviceIdentifier)) {
-			filters.put("resources.serviceIdentifier", new SearchFilter("serviceIdentifier", Operator.LIKE, serviceIdentifier));
+			filters.put("resources.serviceIdentifier", new SearchFilter("serviceIdentifier", Operator.LIKE,
+					serviceIdentifier));
 		}
 
 		Specification<Resources> spec = DynamicSpecifications.bySearchFilter(filters.values(), Resources.class);
@@ -321,51 +323,59 @@ public class ResourcesService extends BaseSevcie {
 		for (ComputeItem compute : apply.getComputeItems()) {
 
 			// 区分 PCS 和 ECS
-			serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType()) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
+			serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(compute.getComputeType()) ? ResourcesConstant.ServiceType.PCS
+					.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
 
-			this.saveAndWrapResources(apply, serviceType, serviceTag, compute.getId(), compute.getIdentifier(), compute.getInnerIp());
+			this.saveAndWrapResources(apply, serviceType, serviceTag, compute.getId(), compute.getIdentifier(),
+					compute.getInnerIp());
 		}
 
 		// StorageItem
 		for (StorageItem storageItem : apply.getStorageItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ES3.toInteger(), serviceTag, storageItem.getId(), storageItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ES3.toInteger(), serviceTag,
+					storageItem.getId(), storageItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
 		// ELB
 		for (NetworkElbItem networkElbItem : apply.getNetworkElbItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ELB.toInteger(), serviceTag, networkElbItem.getId(), networkElbItem.getIdentifier(), networkElbItem.getVirtualIp());
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.ELB.toInteger(), serviceTag,
+					networkElbItem.getId(), networkElbItem.getIdentifier(), networkElbItem.getVirtualIp());
 		}
 
 		// EIP
 		for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.EIP.toInteger(), serviceTag, networkEipItem.getId(), networkEipItem.getIdentifier(), networkEipItem.getIpAddress());
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.EIP.toInteger(), serviceTag,
+					networkEipItem.getId(), networkEipItem.getIdentifier(), networkEipItem.getIpAddress());
 		}
 
 		// DNS
 		for (NetworkDnsItem networkDnsItem : apply.getNetworkDnsItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.DNS.toInteger(), serviceTag, networkDnsItem.getId(), networkDnsItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.DNS.toInteger(), serviceTag,
+					networkDnsItem.getId(), networkDnsItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
 		// 实例监控
 		for (MonitorCompute monitorCompute : apply.getMonitorComputes()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger(), serviceTag, monitorCompute.getId(), monitorCompute.getIdentifier(),
-					monitorCompute.getIpAddress());
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger(), serviceTag,
+					monitorCompute.getId(), monitorCompute.getIdentifier(), monitorCompute.getIpAddress());
 		}
 
 		// Elb监控
 		for (MonitorElb monitorElb : apply.getMonitorElbs()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag, monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem()
-					.getVirtualIp());
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MONITOR_ELB.toInteger(), serviceTag,
+					monitorElb.getId(), monitorElb.getIdentifier(), monitorElb.getNetworkElbItem().getVirtualIp());
 		}
 
 		// MDN
 		for (MdnItem mdnItem : apply.getMdnItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MDN.toInteger(), serviceTag, mdnItem.getId(), mdnItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.MDN.toInteger(), serviceTag,
+					mdnItem.getId(), mdnItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
 		// CP
 		for (CpItem cpItem : apply.getCpItems()) {
-			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.CP.toInteger(), serviceTag, cpItem.getId(), cpItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
+			this.saveAndWrapResources(apply, ResourcesConstant.ServiceType.CP.toInteger(), serviceTag, cpItem.getId(),
+					cpItem.getIdentifier(), IpPoolConstant.DEFAULT_IPADDRESS);
 		}
 
 	}
@@ -417,10 +427,12 @@ public class ResourcesService extends BaseSevcie {
 		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 		List<CpItem> cpItems = new ArrayList<CpItem>();
 
-		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+		this.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems,
+				monitorComputes, monitorElbs, mdnItems, cpItems);
 
-		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails,
-				monitorPhones, monitorComputes, monitorElbs, mdnItems, cpItems);
+		String description = comm.redmineUtilService.recycleResourcesRedmineDesc(comm.accountService.getCurrentUser(),
+				computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
+				monitorElbs, mdnItems, cpItems);
 
 		// 写入工单Issue到Redmine
 
@@ -471,8 +483,9 @@ public class ResourcesService extends BaseSevcie {
 
 			// 发送工单处理邮件
 
-			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(comm.accountService.getCurrentUser(), computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes,
-					monitorElbs, mdnItems, cpItems, assigneeUser);
+			comm.templateMailService.sendRecycleResourcesOperateNotificationMail(comm.accountService.getCurrentUser(),
+					computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems,
+					cpItems, assigneeUser);
 
 		}
 
@@ -493,7 +506,8 @@ public class ResourcesService extends BaseSevcie {
 	private void restoreApplication(ComputeItem computeItem, String oldChangeValue) {
 
 		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
-		String[] applications = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+		String[] applications = StringUtils.splitByWholeSeparator(
+				StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
 
 		String[] applicationNames = new String[applications.length];
 		String[] applicationVersions = new String[applications.length];
@@ -512,7 +526,8 @@ public class ResourcesService extends BaseSevcie {
 				}
 			}
 		}
-		comm.computeService.updateApplication(computeItem, applicationNames, applicationVersions, applicationDeployPaths);
+		comm.computeService.updateApplication(computeItem, applicationNames, applicationVersions,
+				applicationDeployPaths);
 	}
 
 	/**
@@ -545,7 +560,8 @@ public class ResourcesService extends BaseSevcie {
 	private void restorePort(NetworkElbItem networkElbItem, NetworkEipItem networkEipItem, String oldChangeValue) {
 
 		// 去处字符串里最后一个<br>,并根据<br>分割成字符串数组.
-		String[] portItems = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"), "<br>");
+		String[] portItems = StringUtils.splitByWholeSeparator(StringUtils.substringBeforeLast(oldChangeValue, "<br>"),
+				"<br>");
 
 		String[] protocols = new String[portItems.length];
 		String[] sourcePorts = new String[portItems.length];
@@ -609,7 +625,8 @@ public class ResourcesService extends BaseSevcie {
 
 			List<ChangeItem> changeItems = comm.changeServcie.getChangeItemListByChangeId(change.getId());
 
-			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType)
+					|| ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
 				ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
 
@@ -676,7 +693,8 @@ public class ResourcesService extends BaseSevcie {
 						if (computeIds != null) {
 							List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 							for (int i = 0; i < computeIds.length; i++) {
-								ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+								ComputeItem computeItem = comm.computeService.getComputeItem(Integer
+										.valueOf(computeIds[i]));
 								computeItemList.add(computeItem);
 							}
 
@@ -697,7 +715,8 @@ public class ResourcesService extends BaseSevcie {
 
 					if (FieldNameConstant.Elb.是否保持会话.toString().equals(changeItem.getFieldName())) {
 
-						networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(changeItem.getOldValue()) ? true : false);
+						networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(
+								changeItem.getOldValue()) ? true : false);
 
 					} else if (FieldNameConstant.Elb.端口信息.toString().equals(changeItem.getFieldName())) {
 
@@ -711,7 +730,8 @@ public class ResourcesService extends BaseSevcie {
 						if (computeIds != null) {
 							List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 							for (int i = 0; i < computeIds.length; i++) {
-								ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+								ComputeItem computeItem = comm.computeService.getComputeItem(Integer
+										.valueOf(computeIds[i]));
 								computeItemList.add(computeItem);
 							}
 
@@ -740,11 +760,13 @@ public class ResourcesService extends BaseSevcie {
 
 					} else if (FieldNameConstant.Eip.关联ELB.toString().equals(changeItem.getFieldName())) {
 
-						networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
+						networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem
+								.getOldValue())));
 
 					} else if (FieldNameConstant.Eip.关联实例.toString().equals(changeItem.getFieldName())) {
 
-						networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(changeItem.getOldValue())));
+						networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(changeItem
+								.getOldValue())));
 
 					}
 
@@ -778,7 +800,8 @@ public class ResourcesService extends BaseSevcie {
 							if (eipIds != null) {
 								List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
 								for (String eipId : eipIds) {
-									NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipId));
+									NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer
+											.valueOf(eipId));
 									networkEipItemList.add(networkEipItem);
 								}
 
@@ -844,7 +867,8 @@ public class ResourcesService extends BaseSevcie {
 				for (ChangeItem changeItem : changeItems) {
 
 					if (FieldNameConstant.monitorElb.监控ELB.toString().equals(changeItem.getFieldName())) {
-						monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem.getOldValue())));
+						monitorElb.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(changeItem
+								.getOldValue())));
 					}
 				}
 				comm.monitorElbServcie.saveOrUpdate(monitorElb);
@@ -917,19 +941,23 @@ public class ResourcesService extends BaseSevcie {
 						mdnLiveItem.setEncoderMode(Integer.valueOf(changeItem.getOldValue()));
 					}
 
-					if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.拉流地址.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnLiveItem.HTTP流地址.toString().equals(changeItem.getFieldName())
+							|| FieldNameConstant.MdnLiveItem.拉流地址.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setHttpUrl(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
 					}
 
-					if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.拉流混合码率.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnLiveItem.HTTP流混合码率.toString().equals(changeItem.getFieldName())
+							|| FieldNameConstant.MdnLiveItem.拉流混合码率.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setHttpBitrate(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
 					}
 
-					if (FieldNameConstant.MdnLiveItem.HSL流地址.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.推流地址.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnLiveItem.HSL流地址.toString().equals(changeItem.getFieldName())
+							|| FieldNameConstant.MdnLiveItem.推流地址.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setHlsUrl(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
 					}
 
-					if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(changeItem.getFieldName()) || FieldNameConstant.MdnLiveItem.推流混合码率.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnLiveItem.HSL流混合码率.toString().equals(changeItem.getFieldName())
+							|| FieldNameConstant.MdnLiveItem.推流混合码率.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setHlsBitrate(StringUtils.defaultIfBlank(changeItem.getOldValue(), null));
 					}
 
@@ -980,7 +1008,8 @@ public class ResourcesService extends BaseSevcie {
 					}
 
 					if (FieldNameConstant.CpItem.是否推送内容交易平台.toString().equals(changeItem.getFieldName())) {
-						cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true : false);
+						cpItem.setIsPushCtp(CPConstant.IsPushCtp.推送.toString().equals(changeItem.getOldValue()) ? true
+								: false);
 					}
 
 					if (FieldNameConstant.CpItem.视频FTP上传IP.toString().equals(changeItem.getFieldName())) {
@@ -1050,7 +1079,8 @@ public class ResourcesService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	private Resources saveAndWrapResources(Apply apply, Integer serviceType, ServiceTag serviceTag, Integer serviceId, String serviceIdentifier, String ipAddress) {
+	private Resources saveAndWrapResources(Apply apply, Integer serviceType, ServiceTag serviceTag, Integer serviceId,
+			String serviceIdentifier, String ipAddress) {
 
 		Resources resources = new Resources();
 
@@ -1089,15 +1119,18 @@ public class ResourcesService extends BaseSevcie {
 	 * 
 	 * 注意此方法是void类型,所以注意传递的参数名和方法外面的调用必须一致.
 	 */
-	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems, List<StorageItem> storageItems, List<NetworkElbItem> elbItems,
-			List<NetworkEipItem> eipItems, List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs, List<MdnItem> mdnItems, List<CpItem> cpItems) {
+	public void wrapBasicUntilListByResources(List<Resources> resourcesList, List<ComputeItem> computeItems,
+			List<StorageItem> storageItems, List<NetworkElbItem> elbItems, List<NetworkEipItem> eipItems,
+			List<NetworkDnsItem> dnsItems, List<MonitorCompute> monitorComputes, List<MonitorElb> monitorElbs,
+			List<MdnItem> mdnItems, List<CpItem> cpItems) {
 
 		for (Resources resources : resourcesList) {
 
 			Integer serviceType = resources.getServiceType();
 			Integer serviceId = resources.getServiceId();
 
-			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType) || ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+			if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType)
+					|| ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
 				// PCS & ECS
 				computeItems.add(comm.computeService.getComputeItem(serviceId));

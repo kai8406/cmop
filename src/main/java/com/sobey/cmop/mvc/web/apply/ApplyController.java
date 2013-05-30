@@ -34,7 +34,9 @@ public class ApplyController extends BaseController {
 	 * 显示所有的apply list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -81,9 +83,10 @@ public class ApplyController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTag") String serviceTag, @RequestParam(value = "serviceStart") String serviceStart,
-			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "priority") Integer priority, @RequestParam(value = "description") String description,
-			RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "serviceTag") String serviceTag,
+			@RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "priority") Integer priority,
+			@RequestParam(value = "description") String description, RedirectAttributes redirectAttributes) {
 
 		Apply apply = comm.applyService.getApply(id);
 
@@ -122,7 +125,8 @@ public class ApplyController extends BaseController {
 		model.addAttribute("apply", comm.applyService.getApply(id));
 
 		// 根据审批状态获得服务申请的审批记录(只取最新的,当前的审批记录.即audit的状态为1)
-		model.addAttribute("audits", comm.auditService.getAuditListByApplyIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
+		model.addAttribute("audits",
+				comm.auditService.getAuditListByApplyIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
 
 		return "apply/applyDetail";
 	}

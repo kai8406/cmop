@@ -25,7 +25,9 @@ public class LocationCotroller extends BaseController {
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/basicdata/location/";
 
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.locationService.getLocationPageable(searchParams, pageNumber, pageSize));
 		// 将搜索条件编码成字符串,分页的URL

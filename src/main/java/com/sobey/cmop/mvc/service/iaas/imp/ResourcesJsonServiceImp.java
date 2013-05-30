@@ -144,8 +144,9 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 			linkType = NetworkConstant.LinkType.关联ELB.toInteger();
 
-			link += networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")【" + networkEipItem.getNetworkElbItem().getMountComputes()
-					+ "】&nbsp;&nbsp;";
+			link += networkEipItem.getNetworkElbItem().getIdentifier() + "("
+					+ networkEipItem.getNetworkElbItem().getVirtualIp() + ")【"
+					+ networkEipItem.getNetworkElbItem().getMountComputes() + "】&nbsp;&nbsp;";
 
 		}
 
@@ -153,7 +154,8 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 			linkType = NetworkConstant.LinkType.关联实例.toInteger();
 
-			link += networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getInnerIp() + ")&nbsp;&nbsp;";
+			link += networkEipItem.getComputeItem().getIdentifier() + "("
+					+ networkEipItem.getComputeItem().getInnerIp() + ")&nbsp;&nbsp;";
 
 		}
 
@@ -204,7 +206,8 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setId(monitorElb.getId());
 		json.setIdentifier(monitorElb.getIdentifier());
 
-		json.setNetworkElbItem(monitorElb.getNetworkElbItem().getIdentifier() + "(" + monitorElb.getNetworkElbItem().getVirtualIp() + ")");
+		json.setNetworkElbItem(monitorElb.getNetworkElbItem().getIdentifier() + "("
+				+ monitorElb.getNetworkElbItem().getVirtualIp() + ")");
 
 		return json;
 	}

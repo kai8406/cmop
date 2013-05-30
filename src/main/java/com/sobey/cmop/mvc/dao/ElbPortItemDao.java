@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.ElbPortItem;
  * @author liukai
  * 
  */
-public interface ElbPortItemDao extends PagingAndSortingRepository<ElbPortItem, Integer>, JpaSpecificationExecutor<ElbPortItem> {
+public interface ElbPortItemDao extends PagingAndSortingRepository<ElbPortItem, Integer>,
+		JpaSpecificationExecutor<ElbPortItem> {
 
 	/**
 	 * 获得指定ELB下所有的映射端口信息list

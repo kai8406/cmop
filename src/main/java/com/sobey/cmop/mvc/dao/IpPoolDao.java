@@ -22,7 +22,8 @@ public interface IpPoolDao extends PagingAndSortingRepository<IpPool, Integer>, 
 
 	Page<IpPool> findAllByPoolTypeAndIpAddressLike(Integer poolType, String ipAddress, Pageable pageable);
 
-	Page<IpPool> findAllByPoolTypeAndStatusAndIpAddressLike(Integer poolType, Integer status, String ipAddress, Pageable pageable);
+	Page<IpPool> findAllByPoolTypeAndStatusAndIpAddressLike(Integer poolType, Integer status, String ipAddress,
+			Pageable pageable);
 
 	Page<IpPool> findAllByStatusAndIpAddressLike(Integer status, String ipAddress, Pageable pageable);
 

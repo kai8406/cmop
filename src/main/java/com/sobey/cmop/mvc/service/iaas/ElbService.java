@@ -115,7 +115,8 @@ public class ElbService extends BaseSevcie {
 	 *            服务申请单ID
 	 */
 	@Transactional(readOnly = false)
-	public void saveELBToApply(Integer applyId, String[] keepSessions, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+	public void saveELBToApply(Integer applyId, String[] keepSessions, String[] protocols, String[] sourcePorts,
+			String[] targetPorts, String[] computeIds) {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
@@ -131,7 +132,8 @@ public class ElbService extends BaseSevcie {
 			networkElbItem.setIdentifier(identifier);
 			networkElbItem.setVirtualIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			networkElbItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
-			networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSessions[i]) ? true : false);
+			networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSessions[i]) ? true
+					: false);
 
 			// 关联实例
 			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
@@ -151,7 +153,8 @@ public class ElbService extends BaseSevcie {
 			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
 
 			for (int j = 0; j < protocolArray.length; j++) {
-				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j], targetPortArray[j]);
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
+						targetPortArray[j]);
 				this.saveOrUpdateElbPortItem(elbPortItem);
 			}
 
@@ -180,7 +183,8 @@ public class ElbService extends BaseSevcie {
 	 *            关联实例ID数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateELBToApply(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds) {
+	public void updateELBToApply(NetworkElbItem networkElbItem, String[] protocols, String[] sourcePorts,
+			String[] targetPorts, String[] computeIds) {
 
 		// Step.1 将ELB下的所有映射信息删除.
 
@@ -225,8 +229,8 @@ public class ElbService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols, String[] sourcePorts, String[] targetPorts, String[] computeIds,
-			String changeDescription) {
+	public void saveResourcesByElb(Resources resources, Integer serviceTagId, String keepSession, String[] protocols,
+			String[] sourcePorts, String[] targetPorts, String[] computeIds, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -238,7 +242,8 @@ public class ElbService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareElb(resources, change, networkElbItem, elbPortItems, keepSession, protocols, sourcePorts, targetPorts, computeIds);
+		boolean isChange = comm.compareResourcesService.compareElb(resources, change, networkElbItem, elbPortItems,
+				keepSession, protocols, sourcePorts, targetPorts, computeIds);
 
 		// 删除变更前的端口映射
 

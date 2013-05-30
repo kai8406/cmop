@@ -40,7 +40,8 @@ public class ResourcesController extends BaseController {
 	 * 显示资源Resources的List
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
@@ -86,7 +87,8 @@ public class ResourcesController extends BaseController {
 
 		Integer serviceType = resources.getServiceType();
 
-		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())
+				|| serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
 
@@ -109,14 +111,16 @@ public class ResourcesController extends BaseController {
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
 
 			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
-			model.addAttribute("elbResources", comm.basicUnitService.getNetworkElbItemListByResources(getCurrentUserId()));
+			model.addAttribute("elbResources",
+					comm.basicUnitService.getNetworkElbItemListByResources(getCurrentUserId()));
 
 			updateUrl = "resource/form/eip";
 
 		} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
 
 			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
-			model.addAttribute("eipResources", comm.basicUnitService.getNetworkEipItemListByResources(getCurrentUserId()));
+			model.addAttribute("eipResources",
+					comm.basicUnitService.getNetworkEipItemListByResources(getCurrentUserId()));
 
 			updateUrl = "resource/form/dns";
 
@@ -126,9 +130,12 @@ public class ResourcesController extends BaseController {
 
 			model.addAttribute("monitorCompute", monitorCompute);
 
-			model.addAttribute("ports", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
-			model.addAttribute("processes", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
-			model.addAttribute("mountPoints", comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
+			model.addAttribute("ports",
+					comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getPort()));
+			model.addAttribute("processes",
+					comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getProcess()));
+			model.addAttribute("mountPoints",
+					comm.monitorComputeServcie.wrapMonitorComputeParametToList(monitorCompute.getMountPoint()));
 
 			updateUrl = "resource/form/monitorCompute";
 
@@ -201,7 +208,8 @@ public class ResourcesController extends BaseController {
 
 		Integer serviceType = resources.getServiceType();
 
-		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())
+				|| serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
 

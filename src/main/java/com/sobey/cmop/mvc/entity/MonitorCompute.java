@@ -53,9 +53,10 @@ public class MonitorCompute implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MonitorCompute(Apply apply, String identifier, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical, String diskWarn, String diskCritical,
-			String pingLossWarn, String pingLossCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String port, String process,
-			String mountPoint) {
+	public MonitorCompute(Apply apply, String identifier, String ipAddress, String cpuWarn, String cpuCritical,
+			String memoryWarn, String memoryCritical, String diskWarn, String diskCritical, String pingLossWarn,
+			String pingLossCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
+			String maxProcessCritical, String port, String process, String mountPoint) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.ipAddress = ipAddress;

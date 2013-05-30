@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.NetworkEipItem;
  * @author liukai
  * 
  */
-public interface NetworkEipItemDao extends PagingAndSortingRepository<NetworkEipItem, Integer>, JpaSpecificationExecutor<NetworkEipItem> {
+public interface NetworkEipItemDao extends PagingAndSortingRepository<NetworkEipItem, Integer>,
+		JpaSpecificationExecutor<NetworkEipItem> {
 
 	List<NetworkEipItem> findByApplyUserId(Integer userId);
 

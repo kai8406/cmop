@@ -54,9 +54,12 @@ public class ELBController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "keepSessions") String[] keepSessions, @RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts, @RequestParam(value = "computeIds") String[] computeIds,
-			RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam(value = "applyId") Integer applyId,
+			@RequestParam(value = "keepSessions") String[] keepSessions,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts,
+			@RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
 		comm.elbService.saveELBToApply(applyId, keepSessions, protocols, sourcePorts, targetPorts, computeIds);
 
@@ -99,8 +102,11 @@ public class ELBController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
-	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId, @RequestParam(value = "keepSession") String keepSession,
-			@RequestParam(value = "protocols") String[] protocols, @RequestParam(value = "sourcePorts") String[] sourcePorts, @RequestParam(value = "targetPorts") String[] targetPorts,
+	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
+			@RequestParam(value = "keepSession") String keepSession,
+			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "sourcePorts") String[] sourcePorts,
+			@RequestParam(value = "targetPorts") String[] targetPorts,
 			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
 
 		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(id);
@@ -117,7 +123,8 @@ public class ELBController extends BaseController {
 	 * 删除ELB后,跳转到applyId的服务申请修改页面
 	 */
 	@RequestMapping(value = "/delete/{id}/applyId/{applyId}")
-	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId, RedirectAttributes redirectAttributes) {
+	public String delete(@PathVariable("id") Integer id, @PathVariable("applyId") Integer applyId,
+			RedirectAttributes redirectAttributes) {
 
 		comm.elbService.deleteNetworkElbItem(id);
 

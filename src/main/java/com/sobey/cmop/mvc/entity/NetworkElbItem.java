@@ -65,7 +65,8 @@ public class NetworkElbItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, String oldIp, MonitorElb monitorElb, Set<ElbPortItem> elbPortItems, Set<NetworkEipItem> networkEipItems) {
+	public NetworkElbItem(Apply apply, String identifier, Boolean keepSession, String virtualIp, String oldIp,
+			MonitorElb monitorElb, Set<ElbPortItem> elbPortItems, Set<NetworkEipItem> networkEipItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.keepSession = keepSession;

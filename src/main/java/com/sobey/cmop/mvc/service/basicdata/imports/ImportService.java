@@ -51,8 +51,9 @@ public class ImportService extends BaseSevcie {
 						if (comm.ipPoolService.findIpPoolByIpAddress(hostServer.getIpAddress()) != null) {
 							logger.info("已存在的宿主机IP：" + hostServer.getIpAddress());
 						} else {
-							comm.ipPoolService.saveIpPool(hostServer.getIpAddress(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1),
-									null); // 默认西安虚拟机内网VLAN
+							comm.ipPoolService.saveIpPool(hostServer.getIpAddress(),
+									IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(),
+									comm.vlanService.getVlan(1), null); // 默认西安虚拟机内网VLAN
 						}
 					}
 				}
@@ -62,10 +63,12 @@ public class ImportService extends BaseSevcie {
 					ecsCount++;
 					if (comm.ipPoolService.findIpPoolByIpAddress(serverInfo.getInnerIp()) != null) {
 						logger.info("已存在的虚拟机IP：" + serverInfo.getInnerIp());
-						comm.ipPoolService.updateIpPoolByIpAddress(serverInfo.getInnerIp(), IpPoolConstant.IpStatus.已使用.toInteger(), hostServer);
+						comm.ipPoolService.updateIpPoolByIpAddress(serverInfo.getInnerIp(),
+								IpPoolConstant.IpStatus.已使用.toInteger(), hostServer);
 					} else {
-						comm.ipPoolService.saveIpPool(serverInfo.getInnerIp(), IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(), comm.vlanService.getVlan(1),
-								hostServer); // 默认西安虚拟机内网VLAN
+						comm.ipPoolService.saveIpPool(serverInfo.getInnerIp(),
+								IpPoolConstant.PoolType.私网IP池.toInteger(), IpPoolConstant.IpStatus.已使用.toInteger(),
+								comm.vlanService.getVlan(1), hostServer); // 默认西安虚拟机内网VLAN
 					}
 				}
 			}
@@ -120,7 +123,8 @@ public class ImportService extends BaseSevcie {
 	private HostServer saveHostServer(List<HostServer> hostServerList, ServerBean serverInfo, int serverType) {
 		HostServer hostServer = comm.hostServerService.findByDisplayName(serverInfo.getDisplayName());
 		if (hostServer == null) {
-			hostServer = new HostServer(serverType, IpPoolConstant.PoolType.私网IP池.toInteger(), serverInfo.getDisplayName(), new Date()); // IP池默认为私网IP池
+			hostServer = new HostServer(serverType, IpPoolConstant.PoolType.私网IP池.toInteger(),
+					serverInfo.getDisplayName(), new Date()); // IP池默认为私网IP池
 			hostServer.setAlias(Identities.uuid2());
 			hostServer.setIpAddress(serverInfo.getHostIp());
 			hostServer.setLocationAlias(comm.locationService.getLocation(2).getAlias()); // IDC别名默认西安IDC

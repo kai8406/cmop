@@ -11,7 +11,8 @@ import com.sobey.cmop.mvc.entity.AuditFlow;
  * @author liukai
  * 
  */
-public interface AuditFlowDao extends PagingAndSortingRepository<AuditFlow, Integer>, JpaSpecificationExecutor<AuditFlow> {
+public interface AuditFlowDao extends PagingAndSortingRepository<AuditFlow, Integer>,
+		JpaSpecificationExecutor<AuditFlow> {
 
 	/**
 	 * 根据流程类型flowType和审批顺序获得审批流程

@@ -36,7 +36,8 @@ public class MdnVodItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MdnVodItem(MdnItem mdnItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceStreamerUrl, String sourceOutBandwidth) {
+	public MdnVodItem(MdnItem mdnItem, String vodDomain, String vodBandwidth, String vodProtocol,
+			String sourceStreamerUrl, String sourceOutBandwidth) {
 		this.mdnItem = mdnItem;
 		this.vodDomain = vodDomain;
 		this.vodBandwidth = vodBandwidth;

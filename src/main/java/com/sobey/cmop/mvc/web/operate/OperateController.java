@@ -44,7 +44,8 @@ public class OperateController extends BaseController {
 	 * 显示指派给自己的工单operate list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.operateService.getAssignedIssuePageable(searchParams, pageNumber, pageSize));
@@ -60,7 +61,8 @@ public class OperateController extends BaseController {
 	 * 显示所有的工单operate list
 	 */
 	@RequestMapping(value = "reported")
-	public String reported(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+	public String reported(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.operateService.getReportedIssuePageable(searchParams, pageNumber, pageSize));
@@ -102,18 +104,22 @@ public class OperateController extends BaseController {
 			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
 			String oldIp = "";
 			for (ComputeItem computeItem : computeList) {
-				desc = desc.replace(computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getOldIp() + ")", computeItem.getIdentifier() + "(" + computeItem.getRemark()
-						+ " - " + computeItem.getInnerIp() + ")");
+				desc = desc.replace(
+						computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getOldIp()
+								+ ")", computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - "
+								+ computeItem.getInnerIp() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
 			for (NetworkEipItem eipItem : networkEipList) {
 				oldIp = transDot(eipItem.getOldIp());
-				desc = desc.replaceAll(eipItem.getIdentifier() + oldIp, eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
+				desc = desc.replaceAll(eipItem.getIdentifier() + oldIp,
+						eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
 			}
 			logger.info("--->更新写入Redmine的IP（ELB）..." + networkElbList.size());
 			for (NetworkElbItem elbItem : networkElbList) {
 				oldIp = transDot(elbItem.getOldIp());
-				desc = desc.replaceAll(elbItem.getIdentifier() + oldIp, elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
+				desc = desc.replaceAll(elbItem.getIdentifier() + oldIp,
+						elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
 			}
 			model.addAttribute("description", desc);
 
@@ -174,17 +180,26 @@ public class OperateController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "update")
-	public String updateForm(@RequestParam(value = "issueId") int issueId, @RequestParam("projectId") int projectId, @RequestParam("note") String note, @RequestParam("priority") int priority,
-			@RequestParam("authorId") int authorId, @RequestParam("assignTo") int assignTo, @RequestParam("dueDate") String dueDate, @RequestParam("estimatedHours") float estimatedHours,
-			@RequestParam("doneRatio") int doneRatio, @RequestParam("computes") String computes, @RequestParam("storages") String storages, @RequestParam("hostNames") String hostNames,
-			@RequestParam("serverAlias") String serverAlias, @RequestParam("osStorageAlias") String osStorageAlias, @RequestParam("controllerAlias") String controllerAlias,
-			@RequestParam("volumes") String volumes, @RequestParam("innerIps") String innerIps, @RequestParam("eipIds") String eipIds, @RequestParam("eipAddresss") String eipAddresss,
-			@RequestParam("locationAlias") String locationAlias, @RequestParam("elbIds") String elbIds, @RequestParam("virtualIps") String virtualIps, RedirectAttributes redirectAttributes) {
-		logger.info("[issueId,projectId,priority,assignTo,dueDate,estimatedHours,doneRatio,note]：" + issueId + "," + projectId + "," + priority + "," + assignTo + "," + dueDate + "," + estimatedHours
-				+ "," + doneRatio + "," + note);
-		logger.info("[computes,storages,hostNames,serverAlias,osStorageAlias,controllerAlias, volumes]：" + computes + "|" + storages + "|" + hostNames + "|" + serverAlias + "|" + osStorageAlias + "|"
-				+ controllerAlias + "|" + volumes);
-		logger.info("[innerIps,eipIds,eipAddresss,locationAlias,elbIds,virtualIps]：" + innerIps + "|" + eipIds + "|" + eipAddresss + "|" + locationAlias + "|" + elbIds + "|" + virtualIps);
+	public String updateForm(@RequestParam(value = "issueId") int issueId, @RequestParam("projectId") int projectId,
+			@RequestParam("note") String note, @RequestParam("priority") int priority,
+			@RequestParam("authorId") int authorId, @RequestParam("assignTo") int assignTo,
+			@RequestParam("dueDate") String dueDate, @RequestParam("estimatedHours") float estimatedHours,
+			@RequestParam("doneRatio") int doneRatio, @RequestParam("computes") String computes,
+			@RequestParam("storages") String storages, @RequestParam("hostNames") String hostNames,
+			@RequestParam("serverAlias") String serverAlias, @RequestParam("osStorageAlias") String osStorageAlias,
+			@RequestParam("controllerAlias") String controllerAlias, @RequestParam("volumes") String volumes,
+			@RequestParam("innerIps") String innerIps, @RequestParam("eipIds") String eipIds,
+			@RequestParam("eipAddresss") String eipAddresss, @RequestParam("locationAlias") String locationAlias,
+			@RequestParam("elbIds") String elbIds, @RequestParam("virtualIps") String virtualIps,
+			RedirectAttributes redirectAttributes) {
+		logger.info("[issueId,projectId,priority,assignTo,dueDate,estimatedHours,doneRatio,note]：" + issueId + ","
+				+ projectId + "," + priority + "," + assignTo + "," + dueDate + "," + estimatedHours + "," + doneRatio
+				+ "," + note);
+		logger.info("[computes,storages,hostNames,serverAlias,osStorageAlias,controllerAlias, volumes]：" + computes
+				+ "|" + storages + "|" + hostNames + "|" + serverAlias + "|" + osStorageAlias + "|" + controllerAlias
+				+ "|" + volumes);
+		logger.info("[innerIps,eipIds,eipAddresss,locationAlias,elbIds,virtualIps]：" + innerIps + "|" + eipIds + "|"
+				+ eipAddresss + "|" + locationAlias + "|" + elbIds + "|" + virtualIps);
 
 		Issue issue = RedmineService.getIssue(issueId);
 		// 此处的User是redmine中的User对象.
@@ -196,7 +211,8 @@ public class OperateController extends BaseController {
 		project.setId(projectId);
 
 		// 当完成度为100时,设置状态 statusId 为 5.关闭; 其它完成度则为 2.处理中.
-		Integer statusId = RedmineConstant.MAX_DONERATIO.equals(doneRatio) ? RedmineConstant.Status.关闭.toInteger() : RedmineConstant.Status.处理中.toInteger();
+		Integer statusId = RedmineConstant.MAX_DONERATIO.equals(doneRatio) ? RedmineConstant.Status.关闭.toInteger()
+				: RedmineConstant.Status.处理中.toInteger();
 		issue.setAssignee(assignee);// 指派给
 		issue.setDoneRatio(doneRatio);// 完成率
 		issue.setStatusId(statusId); // 设置状态
@@ -208,8 +224,9 @@ public class OperateController extends BaseController {
 		issue.setProject(project); // 所属项目
 		issue.setAuthor(author); // issue作者
 		// TODO 还有IP分配等功能,待以后完成.
-		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias, osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias,
-				elbIds, virtualIps);
+		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias,
+				osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias, elbIds,
+				virtualIps);
 		String message = result ? "工单更新成功！" : "工单更新失败，请稍后重试或联系管理员！";
 		redirectAttributes.addFlashAttribute("message", message);
 

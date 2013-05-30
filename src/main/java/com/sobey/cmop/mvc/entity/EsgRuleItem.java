@@ -41,7 +41,8 @@ public class EsgRuleItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public EsgRuleItem(NetworkEsgItem networkEsgItem, String protocol, String portRange, String visitSource, String visitTarget) {
+	public EsgRuleItem(NetworkEsgItem networkEsgItem, String protocol, String portRange, String visitSource,
+			String visitTarget) {
 		this.networkEsgItem = networkEsgItem;
 		this.protocol = protocol;
 		this.portRange = portRange;

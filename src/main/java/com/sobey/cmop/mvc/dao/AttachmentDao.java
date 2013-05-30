@@ -11,6 +11,7 @@ import com.sobey.cmop.mvc.entity.Attachment;
  * @author liukai
  * 
  */
-public interface AttachmentDao extends PagingAndSortingRepository<Attachment, Integer>, JpaSpecificationExecutor<Attachment> {
+public interface AttachmentDao extends PagingAndSortingRepository<Attachment, Integer>,
+		JpaSpecificationExecutor<Attachment> {
 
 }

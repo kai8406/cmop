@@ -58,10 +58,12 @@ public class ComputeService extends BaseSevcie {
 	 *            部署路径数组
 	 */
 	@Transactional(readOnly = false)
-	public void saveApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
+	public void saveApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions,
+			String[] applicationDeployPaths) {
 		if (applicationNames != null) {
 			for (int i = 0; i < applicationNames.length; i++) {
-				Application application = new Application(computeItem, applicationNames[i], applicationVersions[i], applicationDeployPaths[i]);
+				Application application = new Application(computeItem, applicationNames[i], applicationVersions[i],
+						applicationDeployPaths[i]);
 				applicationDao.save(application);
 			}
 		}
@@ -81,7 +83,8 @@ public class ComputeService extends BaseSevcie {
 	 *            部署路径数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths) {
+	public void updateApplication(ComputeItem computeItem, String[] applicationNames, String[] applicationVersions,
+			String[] applicationDeployPaths) {
 
 		List<Application> applications = this.getApplicationByComputeItemId(computeItem.getId());
 
@@ -138,9 +141,11 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveComputeToApply(Integer computeType, Integer applyId, String[] osTypes, String[] osBits, String[] serverTypes, String[] remarks, String[] esgIds) {
+	public void saveComputeToApply(Integer computeType, Integer applyId, String[] osTypes, String[] osBits,
+			String[] serverTypes, String[] remarks, String[] esgIds) {
 
-		List<ComputeItem> computes = this.wrapComputeItemToList(comm.applyService.getApply(applyId), computeType, osTypes, osBits, serverTypes, remarks, esgIds);
+		List<ComputeItem> computes = this.wrapComputeItemToList(comm.applyService.getApply(applyId), computeType,
+				osTypes, osBits, serverTypes, remarks, esgIds);
 
 		computeItemDao.save(computes);
 	}
@@ -157,7 +162,8 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark) {
+	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType,
+			String[] esgIds, String remark) {
 
 		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
 
@@ -200,7 +206,8 @@ public class ComputeService extends BaseSevcie {
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark, String[] applicationNames,
+	public void saveResourcesByCompute(Resources resources, Integer serviceTagId, Integer osType, Integer osBit,
+			Integer serverType, String[] esgIds, String remark, String[] applicationNames,
 			String[] applicationVersions, String[] applicationDeployPaths, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
@@ -211,8 +218,8 @@ public class ComputeService extends BaseSevcie {
 
 		/* 比较实例资源computeItem 变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit, serverType, esgIds, remark, applicationNames, applicationVersions,
-				applicationDeployPaths);
+		boolean isChange = comm.compareResourcesService.compareCompute(resources, change, computeItem, osType, osBit,
+				serverType, esgIds, remark, applicationNames, applicationVersions, applicationDeployPaths);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 
@@ -269,14 +276,16 @@ public class ComputeService extends BaseSevcie {
 	 *            关联ESG的id
 	 * @return
 	 */
-	private List<ComputeItem> wrapComputeItemToList(Apply apply, Integer computeType, String[] osTypes, String[] osBits, String[] serverTypes, String[] remarks, String[] esgIds) {
+	private List<ComputeItem> wrapComputeItemToList(Apply apply, Integer computeType, String[] osTypes,
+			String[] osBits, String[] serverTypes, String[] remarks, String[] esgIds) {
 
 		List<ComputeItem> computes = new ArrayList<ComputeItem>();
 
 		for (int i = 0; i < osTypes.length; i++) {
 			// 区分PCS和ECS然后生成标识符identifier
 
-			Integer serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(computeType) ? ResourcesConstant.ServiceType.PCS.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
+			Integer serviceType = ComputeConstant.ComputeType.PCS.toInteger().equals(computeType) ? ResourcesConstant.ServiceType.PCS
+					.toInteger() : ResourcesConstant.ServiceType.ECS.toInteger();
 			String identifier = comm.applyService.generateIdentifier(serviceType);
 
 			ComputeItem computeItem = new ComputeItem();

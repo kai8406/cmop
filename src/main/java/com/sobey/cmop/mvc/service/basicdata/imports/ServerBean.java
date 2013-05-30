@@ -89,8 +89,9 @@ public class ServerBean {
 
 	@Override
 	public String toString() {
-		return "ServerBean [hostIp=" + hostIp + ", displayName=" + displayName + ", innerIp=" + innerIp + ", company=" + company + ", model=" + model + ", rack=" + rack + ", site=" + site
-				+ ", location=" + location + ", hardware=" + hardware + "]";
+		return "ServerBean [hostIp=" + hostIp + ", displayName=" + displayName + ", innerIp=" + innerIp + ", company="
+				+ company + ", model=" + model + ", rack=" + rack + ", site=" + site + ", location=" + location
+				+ ", hardware=" + hardware + "]";
 	}
 
 }

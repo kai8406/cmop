@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.HostServer;
  * @author liukai
  * 
  */
-public interface HostServerDao extends PagingAndSortingRepository<HostServer, Integer>, JpaSpecificationExecutor<HostServer> {
+public interface HostServerDao extends PagingAndSortingRepository<HostServer, Integer>,
+		JpaSpecificationExecutor<HostServer> {
 
 	List<HostServer> findByServerType(Integer serverType);
 

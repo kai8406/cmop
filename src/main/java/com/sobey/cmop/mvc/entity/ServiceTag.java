@@ -54,7 +54,8 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ServiceTag(String identifier, User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status) {
+	public ServiceTag(String identifier, User user, String name, Integer priority, String description,
+			String serviceStart, String serviceEnd, Date createTime, Integer status) {
 		this.identifier = identifier;
 		this.user = user;
 		this.name = name;
@@ -67,7 +68,8 @@ public class ServiceTag implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ServiceTag(String identifier, User user, String name, Integer priority, String description, String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow,
+	public ServiceTag(String identifier, User user, String name, Integer priority, String description,
+			String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow,
 			String domain, String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
 		this.identifier = identifier;
 		this.user = user;

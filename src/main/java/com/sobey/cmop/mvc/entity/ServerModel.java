@@ -42,7 +42,8 @@ public class ServerModel implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ServerModel(String company, String companyAlias, String name, Integer cpu, Integer memory, Integer disk, Integer pci, Integer port, Set<HostServer> hostServers) {
+	public ServerModel(String company, String companyAlias, String name, Integer cpu, Integer memory, Integer disk,
+			Integer pci, Integer port, Set<HostServer> hostServers) {
 		this.company = company;
 		this.companyAlias = companyAlias;
 		this.name = name;

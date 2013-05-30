@@ -31,7 +31,8 @@ public class SummaryController extends BaseController {
 	 * 显示资源Resources的List
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+	public String assigned(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
@@ -49,7 +50,8 @@ public class SummaryController extends BaseController {
 		 * 页面的参数名和链接后的查询参数也需要修改.
 		 */
 		for (Entry<Integer, String> entry : ResourcesConstant.ServiceType.map.entrySet()) {
-			model.addAttribute(entry.getValue() + "COUNT", comm.resourcesService.getResourcesSummaryStatistics(entry.getKey()));
+			model.addAttribute(entry.getValue() + "COUNT",
+					comm.resourcesService.getResourcesSummaryStatistics(entry.getKey()));
 		}
 
 		return "summary/summaryList";
@@ -75,7 +77,8 @@ public class SummaryController extends BaseController {
 
 		Integer serviceType = resources.getServiceType();
 
-		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger()) || serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())
+				|| serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
 
 			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
 

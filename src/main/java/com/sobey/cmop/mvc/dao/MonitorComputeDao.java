@@ -11,6 +11,7 @@ import com.sobey.cmop.mvc.entity.MonitorCompute;
  * @author liukai
  * 
  */
-public interface MonitorComputeDao extends PagingAndSortingRepository<MonitorCompute, Integer>, JpaSpecificationExecutor<MonitorCompute> {
+public interface MonitorComputeDao extends PagingAndSortingRepository<MonitorCompute, Integer>,
+		JpaSpecificationExecutor<MonitorCompute> {
 
 }

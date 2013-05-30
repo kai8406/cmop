@@ -28,7 +28,9 @@ public class IpPoolController extends BaseController {
 	 * 显示所有的ipPool list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -56,7 +58,8 @@ public class IpPoolController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "poolType") Integer poolType, @RequestParam(value = "vlanId") Integer vlanId,
+	public String save(@RequestParam(value = "ipAddress") String ipAddress,
+			@RequestParam(value = "poolType") Integer poolType, @RequestParam(value = "vlanId") Integer vlanId,
 			RedirectAttributes redirectAttributes) {
 
 		Vlan vlan = comm.vlanService.getVlan(vlanId);
@@ -80,7 +83,8 @@ public class IpPoolController extends BaseController {
 	 * 修改IP对应的IP池
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("id") Integer id, @RequestParam(value = "status") Integer status, RedirectAttributes redirectAttributes) {
+	public String update(@ModelAttribute("id") Integer id, @RequestParam(value = "status") Integer status,
+			RedirectAttributes redirectAttributes) {
 		IpPool ipPool = comm.ipPoolService.getIpPool(id);
 		ipPool.setStatus(status);
 		comm.ipPoolService.saveIpPool(ipPool);

@@ -157,7 +157,8 @@ public class NetworkDnsItem implements java.io.Serializable {
 	public static String extractToString(final List<NetworkEipItem> networkEipItems) {
 		StringBuilder sb = new StringBuilder();
 		for (NetworkEipItem networkEipItem : networkEipItems) {
-			sb.append(networkEipItem.getIdentifier()).append("(").append(networkEipItem.getIpAddress()).append(")").append(",");
+			sb.append(networkEipItem.getIdentifier()).append("(").append(networkEipItem.getIpAddress()).append(")")
+					.append(",");
 		}
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";

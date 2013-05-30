@@ -39,7 +39,9 @@ public class ServerModelController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.serverModelService.getServerModelPageable(searchParams, pageNumber, pageSize));
 		// 将搜索条件编码成字符串,分页的URL
@@ -68,8 +70,10 @@ public class ServerModelController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(
 
-	@RequestParam(value = "company") String company, @RequestParam(value = "name") String name, @RequestParam(value = "cpu") Integer cpu, @RequestParam(value = "memory") Integer memory,
-			@RequestParam(value = "disk") Integer disk, @RequestParam(value = "pci") Integer pci, @RequestParam(value = "port") Integer port, RedirectAttributes redirectAttributes) {
+	@RequestParam(value = "company") String company, @RequestParam(value = "name") String name,
+			@RequestParam(value = "cpu") Integer cpu, @RequestParam(value = "memory") Integer memory,
+			@RequestParam(value = "disk") Integer disk, @RequestParam(value = "pci") Integer pci,
+			@RequestParam(value = "port") Integer port, RedirectAttributes redirectAttributes) {
 		comm.serverModelService.saveServerModel(company, name, cpu, memory, disk, pci, port);
 		redirectAttributes.addFlashAttribute("message", "创建服务器型号成功");
 		return REDIRECT_SUCCESS_URL;
@@ -96,8 +100,10 @@ public class ServerModelController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "company") String company, @RequestParam(value = "name") String name, @RequestParam(value = "cpu") Integer cpu,
-			@RequestParam(value = "memory") Integer memory, @RequestParam(value = "disk") Integer disk, @RequestParam(value = "pci") Integer pci, @RequestParam(value = "port") Integer port,
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "company") String company,
+			@RequestParam(value = "name") String name, @RequestParam(value = "cpu") Integer cpu,
+			@RequestParam(value = "memory") Integer memory, @RequestParam(value = "disk") Integer disk,
+			@RequestParam(value = "pci") Integer pci, @RequestParam(value = "port") Integer port,
 			RedirectAttributes redirectAttributes) {
 		comm.serverModelService.updateServerModel(id, company, name, cpu, memory, disk, pci, port);
 		redirectAttributes.addFlashAttribute("message", "修改服务器型号成功");

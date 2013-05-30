@@ -26,7 +26,9 @@ public class VlanCotroller extends BaseController {
 	private static final String REDIRECT_SUCCESS_URL = "redirect:/basicdata/vlan/";
 
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.vlanService.getVlanPageable(searchParams, pageNumber, pageSize));
 		// 将搜索条件编码成字符串,分页的URL
@@ -58,7 +60,8 @@ public class VlanCotroller extends BaseController {
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(Vlan vlan, @RequestParam("locationId") Integer locationId, RedirectAttributes redirectAttributes) {
+	public String update(Vlan vlan, @RequestParam("locationId") Integer locationId,
+			RedirectAttributes redirectAttributes) {
 		Location location = comm.locationService.getLocation(locationId);
 		vlan.setLocation(location);
 		vlan.setCreateTime(new Date());

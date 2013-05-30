@@ -47,7 +47,8 @@ public class Location implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Location(Integer id, String name, String alias, String city, String address, String postcode, String telephone, Set<Vlan> vlans, Date createTime) {
+	public Location(Integer id, String name, String alias, String city, String address, String postcode,
+			String telephone, Set<Vlan> vlans, Date createTime) {
 		super();
 		this.id = id;
 		this.name = name;

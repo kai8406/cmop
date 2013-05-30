@@ -14,7 +14,8 @@ import com.sobey.cmop.mvc.entity.ChangeHistory;
  * @author liukai
  * 
  */
-public interface ChangeHistoryDao extends PagingAndSortingRepository<ChangeHistory, Integer>, JpaSpecificationExecutor<ChangeHistory> {
+public interface ChangeHistoryDao extends PagingAndSortingRepository<ChangeHistory, Integer>,
+		JpaSpecificationExecutor<ChangeHistory> {
 
 	List<ChangeHistory> findByAudit(Audit audit);
 }

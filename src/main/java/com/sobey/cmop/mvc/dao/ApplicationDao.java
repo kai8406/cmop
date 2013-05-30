@@ -13,7 +13,8 @@ import com.sobey.cmop.mvc.entity.Application;
  * @author liukai
  * 
  */
-public interface ApplicationDao extends PagingAndSortingRepository<Application, Integer>, JpaSpecificationExecutor<Application> {
+public interface ApplicationDao extends PagingAndSortingRepository<Application, Integer>,
+		JpaSpecificationExecutor<Application> {
 
 	List<Application> findByComputeItemId(Integer computeItemId);
 

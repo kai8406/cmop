@@ -36,7 +36,9 @@ public class ResourcesAuditController extends BaseController {
 	 * 显示所有的serviceTag list
 	 */
 	@RequestMapping(value = "resources")
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 		model.addAttribute("page", comm.auditService.getAuditResourcesPageable(searchParams, pageNumber, pageSize));
 		// 将搜索条件编码成字符串,分页的URL
@@ -59,7 +61,8 @@ public class ResourcesAuditController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "resources/auditOk")
-	public String auditOk(@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
+	public String auditOk(@RequestParam(value = "serviceTagId") Integer serviceTagId,
+			@RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", required = false, defaultValue = "") String opinion, Model model) {
 		String message;
 		if (comm.auditService.isAudited(comm.serviceTagService.getServiceTag(serviceTagId), userId)) { // 该服务申请已审批过.
@@ -99,8 +102,10 @@ public class ResourcesAuditController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/resources/{id}", method = RequestMethod.GET)
-	public String resources(@PathVariable("id") Integer serviceTagId, @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
-			@RequestParam(value = "result", required = false, defaultValue = "") String result, @RequestParam(value = "auditId", required = false, defaultValue = "0") Integer auditId,
+	public String resources(@PathVariable("id") Integer serviceTagId,
+			@RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
+			@RequestParam(value = "result", required = false, defaultValue = "") String result,
+			@RequestParam(value = "auditId", required = false, defaultValue = "0") Integer auditId,
 			@RequestParam(value = "view", required = false) Integer view, Model model) {
 
 		String returnUrl = "";
@@ -114,9 +119,11 @@ public class ResourcesAuditController extends BaseController {
 			model.addAttribute("view", view);
 			model.addAttribute("userId", AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? getCurrentUserId() : userId);
 			model.addAttribute("serviceTag", serviceTag);
-			model.addAttribute("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
+			model.addAttribute("resourcesList",
+					comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTagId));
 			model.addAttribute("audits", comm.auditService.getAuditListByServiceTagId(serviceTagId));
-			model.addAttribute("changes", comm.changeHistoryService.getChangeHistoryListByAudit(comm.auditService.getAudit(auditId)));
+			model.addAttribute("changes",
+					comm.changeHistoryService.getChangeHistoryListByAudit(comm.auditService.getAudit(auditId)));
 			returnUrl = "audit/resource/auditResourcesForm";
 		}
 		return returnUrl;
@@ -137,7 +144,8 @@ public class ResourcesAuditController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/resources/{serviceTagId}", method = RequestMethod.POST)
-	public String saveApply(@PathVariable(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
+	public String saveApply(@PathVariable(value = "serviceTagId") Integer serviceTagId,
+			@RequestParam(value = "userId") Integer userId, @RequestParam(value = "result") String result,
 			@RequestParam(value = "opinion", defaultValue = "") String opinion, RedirectAttributes redirectAttributes) {
 
 		// 获得指定apply当前审批记录

@@ -60,8 +60,9 @@ public interface ICompareResourcesService {
 	 *            部署路径
 	 * @return
 	 */
-	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType, Integer osBit, Integer serverType, String[] esgIds, String remark,
-			String[] applicationNames, String[] applicationVersions, String[] applicationDeployPaths);
+	public boolean compareCompute(Resources resources, Change change, ComputeItem computeItem, Integer osType,
+			Integer osBit, Integer serverType, String[] esgIds, String remark, String[] applicationNames,
+			String[] applicationVersions, String[] applicationDeployPaths);
 
 	/**
 	 * 比较存储空间StorageItem变更前和变更后的值
@@ -80,7 +81,8 @@ public interface ICompareResourcesService {
 	 *            挂载实例Id
 	 * @return
 	 */
-	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType, Integer space, String[] computeIds);
+	public boolean compareStorage(Resources resources, Change change, StorageItem storageItem, Integer storageType,
+			Integer space, String[] computeIds);
 
 	/**
 	 * 比较负载均衡器ELB变更前和变更后的值
@@ -103,7 +105,8 @@ public interface ICompareResourcesService {
 	 *            关联实例Id
 	 * @return
 	 */
-	public boolean compareElb(Resources resources, Change change, NetworkElbItem networkElbItem, List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts,
+	public boolean compareElb(Resources resources, Change change, NetworkElbItem networkElbItem,
+			List<ElbPortItem> elbPortItems, String keepSession, String[] protocols, String[] sourcePorts,
 			String[] targetPorts, String[] computeIds);
 
 	/**
@@ -129,8 +132,9 @@ public interface ICompareResourcesService {
 	 *            目标端口数组
 	 * @return
 	 */
-	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem, List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols,
-			String[] sourcePorts, String[] targetPorts);
+	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem,
+			List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			String[] targetPorts);
 
 	/**
 	 * 比较dns变更前和变更后的值
@@ -151,7 +155,8 @@ public interface ICompareResourcesService {
 	 *            目标IP数组
 	 * @return
 	 */
-	public boolean compareDns(Resources resources, Change change, NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds);
+	public boolean compareDns(Resources resources, Change change, NetworkDnsItem networkDnsItem, String domainName,
+			Integer domainType, String cnameDomain, String[] eipIds);
 
 	/**
 	 * 比较monitorElb变更前后的值
@@ -195,9 +200,11 @@ public interface ICompareResourcesService {
 	 * @param mountPoint
 	 * @return
 	 */
-	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute, String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn,
-			String memoryCritical, String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn, String pingDelayCritical, String maxProcessWarn,
-			String maxProcessCritical, String port, String process, String mountPoint);
+	public boolean compareMonitorCompute(Resources resources, Change change, MonitorCompute monitorCompute,
+			String ipAddress, String cpuWarn, String cpuCritical, String memoryWarn, String memoryCritical,
+			String pingLossWarn, String pingLossCritical, String diskWarn, String diskCritical, String pingDelayWarn,
+			String pingDelayCritical, String maxProcessWarn, String maxProcessCritical, String port, String process,
+			String mountPoint);
 
 	/**
 	 * 比较MdnItem变更前后的值
@@ -231,12 +238,14 @@ public interface ICompareResourcesService {
 	 * @param sourceStreamerUrl
 	 * @return
 	 */
-	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain, String vodBandwidth, String vodProtocol, String sourceOutBandwidth,
-			String sourceStreamerUrl);
+	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain,
+			String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl);
 
-	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth, String name, String guid, String liveDomain, String liveBandwidth,
-			String liveProtocol, Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl,
-			String httpBitrate, String hlsUrl, String hlsBitrate);
+	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth,
+			String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder,
+			String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl,
+			String hlsBitrate);
 
 	/**
 	 * 比较CpItem变更前后的值
@@ -271,9 +280,12 @@ public interface ICompareResourcesService {
 	 * @param pictrueOutputMedia
 	 * @return
 	 */
-	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl, String recordBitrate, String exportEncode, Integer recordType, String recordTime,
-			Integer recordDuration, String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername, String videoFtpPassword, String videoFtpRootpath,
-			String videoFtpUploadpath, String videoOutputGroup, String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername, String pictrueFtpPassword,
-			String pictrueFtpRootpath, String pictrueFtpUploadpath, String pictrueOutputGroup, String pictrueOutputMedia);
+	public boolean compareCP(Resources resources, Change change, CpItem cpItem, String recordStreamUrl,
+			String recordBitrate, String exportEncode, Integer recordType, String recordTime, Integer recordDuration,
+			String publishUrl, String isPushCtp, String videoFtpIp, String videoFtpPort, String videoFtpUsername,
+			String videoFtpPassword, String videoFtpRootpath, String videoFtpUploadpath, String videoOutputGroup,
+			String videoOutputWay, String pictrueFtpIp, String pictrueFtpPort, String pictrueFtpUsername,
+			String pictrueFtpPassword, String pictrueFtpRootpath, String pictrueFtpUploadpath,
+			String pictrueOutputGroup, String pictrueOutputMedia);
 
 }

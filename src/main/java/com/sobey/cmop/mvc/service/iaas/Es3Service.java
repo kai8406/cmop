@@ -145,7 +145,8 @@ public class Es3Service extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByStorage(Resources resources, Integer serviceTagId, Integer storageType, Integer space, String[] computeIds, String changeDescription) {
+	public void saveResourcesByStorage(Resources resources, Integer serviceTagId, Integer storageType, Integer space,
+			String[] computeIds, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -155,7 +156,8 @@ public class Es3Service extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareStorage(resources, change, storageItem, storageType, space, computeIds);
+		boolean isChange = comm.compareResourcesService.compareStorage(resources, change, storageItem, storageType,
+				space, computeIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

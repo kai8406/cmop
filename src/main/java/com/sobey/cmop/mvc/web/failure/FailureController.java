@@ -50,7 +50,9 @@ public class FailureController extends BaseController {
 	 * 显示所有的故障申报 list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -85,8 +87,10 @@ public class FailureController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam("resourcesId") String resourcesId, @RequestParam(value = "fileName", required = false) String fileNames,
-			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam("resourcesId") String resourcesId,
+			@RequestParam(value = "fileName", required = false) String fileNames,
+			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure,
+			RedirectAttributes redirectAttributes) {
 
 		failure.setRelatedId(resourcesId);
 		failure.setCreateTime(new Date());
@@ -142,7 +146,8 @@ public class FailureController extends BaseController {
 
 		/* 封装各个资源对象 */
 
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems,
+				eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		model.addAttribute("issue", issue);
 		model.addAttribute("failure", failure);

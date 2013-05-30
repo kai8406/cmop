@@ -43,7 +43,8 @@ public class MdnLiveItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol, Integer streamOutMode, String name, String guid, String bandwidth) {
+	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, String name, String guid, String bandwidth) {
 		this.mdnItem = mdnItem;
 		this.liveDomain = liveDomain;
 		this.liveBandwidth = liveBandwidth;
@@ -55,8 +56,9 @@ public class MdnLiveItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol, Integer streamOutMode, String name, String guid, String bandwidth, Integer encoderMode,
-			String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate) {
+	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol,
+			Integer streamOutMode, String name, String guid, String bandwidth, Integer encoderMode, String httpUrl,
+			String httpBitrate, String hlsUrl, String hlsBitrate) {
 		this.mdnItem = mdnItem;
 		this.liveDomain = liveDomain;
 		this.liveBandwidth = liveBandwidth;

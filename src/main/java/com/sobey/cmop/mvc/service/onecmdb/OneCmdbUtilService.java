@@ -112,9 +112,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkEsgItem.getUser().getName(), false));
 		ci.addAttributeValue(new ValueBean("Name", networkEsgItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("Type", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("SourceIP", StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("TargetIP", StringCommonUtils.replaceAndSubstringText(visitTarget, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("Port", StringCommonUtils.replaceAndSubstringText(portRange, ",", ","),
+				false));
+		ci.addAttributeValue(new ValueBean("SourceIP",
+				StringCommonUtils.replaceAndSubstringText(visitSource, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("TargetIP",
+				StringCommonUtils.replaceAndSubstringText(visitTarget, ",", ","), false));
 		ci.setDescription(networkEsgItem.getDescription());
 
 		ciList.add(ci);
@@ -158,7 +161,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 			ci = new CiBean("PCS", computeItem.getIdentifier(), false);
 
 			ci.addAttributeValue(new ValueBean("Server", "Server" + computeItem.getServerAlias(), true));
-			ci.addAttributeValue(new ValueBean("Specification", ComputeConstant.PCSServerType.get(computeItem.getServerType()), false));
+			ci.addAttributeValue(new ValueBean("Specification", ComputeConstant.PCSServerType.get(computeItem
+					.getServerType()), false));
 
 		} else {
 
@@ -166,10 +170,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 			String CoreNum = "";
 			String Disk = "20GB";
 
-			if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
+			if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(
+					computeItem.getServerType())) {
 				MemSize = "1G";
 				CoreNum = "1";
-			} else if (ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB.toInteger().equals(computeItem.getServerType())) {
+			} else if (ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB.toInteger().equals(
+					computeItem.getServerType())) {
 				MemSize = "2G";
 				CoreNum = "2";
 			} else {
@@ -199,8 +205,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 		}
 
 		for (StorageItem storageItem : computeItem.getStorageItemList()) {
-			String storageAlias = OneCmdbService.findCiAliasByText(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol",
-					storageItem.getIdentifier());
+			String storageAlias = OneCmdbService.findCiAliasByText(StorageConstant.StorageType.Fimas_高吞吐量.toInteger()
+					.equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier());
 			ci.addAttributeValue(new ValueBean("Storage", storageAlias, true));
 		}
 
@@ -241,7 +247,9 @@ public class OneCmdbUtilService extends BaseSevcie {
 	public void deleteComputeItemToOneCMDB(ComputeItem computeItem) {
 		if (computeItem != null) {
 			List<CiBean> ciList = new ArrayList<CiBean>();
-			CiBean router = new CiBean(ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType()) ? "PCS" : "ECS", computeItem.getIdentifier(), false);
+			CiBean router = new CiBean(
+					ComputeConstant.ComputeType.PCS.toInteger().equals(computeItem.getComputeType()) ? "PCS" : "ECS",
+					computeItem.getIdentifier(), false);
 			ciList.add(router);
 			OneCmdbService.delete(ciList);
 		}
@@ -328,7 +336,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 	public void deleteStorageItemToOneCMDB(StorageItem storageItem) {
 		if (storageItem != null) {
 			List<CiBean> ciList = new ArrayList<CiBean>();
-			CiBean router = new CiBean(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
+			CiBean router = new CiBean(StorageConstant.StorageType.Fimas_高吞吐量.toInteger().equals(
+					storageItem.getStorageType()) ? "FimasVol" : "NFSVol", storageItem.getIdentifier(), false);
 			ciList.add(router);
 			OneCmdbService.delete(ciList);
 		}
@@ -374,9 +383,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 			targetPort += elbPortItem.getTargetPort() + ",";
 		}
 
-		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("InstancePort", StringCommonUtils.replaceAndSubstringText(sourcePort, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("LoadBalancePort", StringCommonUtils.replaceAndSubstringText(targetPort, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","),
+				false));
+		ci.addAttributeValue(new ValueBean("InstancePort", StringCommonUtils.replaceAndSubstringText(sourcePort, ",",
+				","), false));
+		ci.addAttributeValue(new ValueBean("LoadBalancePort", StringCommonUtils.replaceAndSubstringText(targetPort,
+				",", ","), false));
 
 		if (serviceTag != null) {
 			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
@@ -441,14 +453,16 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		if (networkEipItem.getComputeItem() != null) {
 			// AssociateInstance：关联实例
-			ci.addAttributeValue(new ValueBean("AssociateInstance", networkEipItem.getComputeItem().getIdentifier() + "(" + networkEipItem.getComputeItem().getRemark() + ":"
+			ci.addAttributeValue(new ValueBean("AssociateInstance", networkEipItem.getComputeItem().getIdentifier()
+					+ "(" + networkEipItem.getComputeItem().getRemark() + ":"
 					+ networkEipItem.getComputeItem().getInnerIp() + ")", false));
 			ci.addAttributeValue(new ValueBean("AssociateELB", "", false));
 		}
 
 		if (networkEipItem.getNetworkElbItem() != null) {
 			// AssociateELB：关联ELB
-			ci.addAttributeValue(new ValueBean("AssociateELB", networkEipItem.getNetworkElbItem().getIdentifier() + "(" + networkEipItem.getNetworkElbItem().getVirtualIp() + ")", false));
+			ci.addAttributeValue(new ValueBean("AssociateELB", networkEipItem.getNetworkElbItem().getIdentifier() + "("
+					+ networkEipItem.getNetworkElbItem().getVirtualIp() + ")", false));
 			ci.addAttributeValue(new ValueBean("AssociateInstance", "", false));
 		}
 
@@ -465,9 +479,12 @@ public class OneCmdbUtilService extends BaseSevcie {
 			targetPort += eipPortItem.getTargetPort() + ",";
 		}
 
-		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("SourcePort", StringCommonUtils.replaceAndSubstringText(sourcePort, ",", ","), false));
-		ci.addAttributeValue(new ValueBean("TargetPort", StringCommonUtils.replaceAndSubstringText(targetPort, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("Protocol", StringCommonUtils.replaceAndSubstringText(protocol, ",", ","),
+				false));
+		ci.addAttributeValue(new ValueBean("SourcePort", StringCommonUtils
+				.replaceAndSubstringText(sourcePort, ",", ","), false));
+		ci.addAttributeValue(new ValueBean("TargetPort", StringCommonUtils
+				.replaceAndSubstringText(targetPort, ",", ","), false));
 
 		if (serviceTag != null) {
 			ci.addAttributeValue(new ValueBean("UsedBy", serviceTag.getUser().getName(), false));
@@ -529,9 +546,11 @@ public class OneCmdbUtilService extends BaseSevcie {
 		ci.addAttributeValue(new ValueBean("Name", networkDnsItem.getIdentifier(), false));
 		ci.addAttributeValue(new ValueBean("Domain", networkDnsItem.getDomainName(), false));
 		ci.addAttributeValue(new ValueBean("BelongsTo", networkDnsItem.getApply().getUser().getName(), false));
-		ci.addAttributeValue(new ValueBean("Type", NetworkConstant.DomainType.get(networkDnsItem.getDomainType()), false));
+		ci.addAttributeValue(new ValueBean("Type", NetworkConstant.DomainType.get(networkDnsItem.getDomainType()),
+				false));
 
-		if (NetworkConstant.DomainType.GSLB.toInteger().equals(networkDnsItem.getDomainType()) || NetworkConstant.DomainType.A.toInteger().equals(networkDnsItem.getDomainType())) {
+		if (NetworkConstant.DomainType.GSLB.toInteger().equals(networkDnsItem.getDomainType())
+				|| NetworkConstant.DomainType.A.toInteger().equals(networkDnsItem.getDomainType())) {
 
 			for (NetworkEipItem networkEipItem : networkDnsItem.getNetworkEipItemList()) {
 				ci.addAttributeValue(new ValueBean("EIP", networkEipItem.getIdentifier(), true));
@@ -697,7 +716,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 		List<CiBean> ciBeanList = new ArrayList<CiBean>();
 		for (IpPool ipPool : ipPools) {
-			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "IPAddress-" + ipPool.getIpAddress(), false);
+			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(poolType), "IPAddress-"
+					+ ipPool.getIpAddress(), false);
 			router.addAttributeValue(new ValueBean("IPAddress", ipPool.getIpAddress(), false));
 			// router.addAttributeValue(new ValueBean("NetMask",
 			// "255.255.254.1", false));
@@ -722,7 +742,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 	public void deleteIpPoolToOneCMDB(IpPool ipPool) {
 		if (ipPool != null) {
 			List<CiBean> ciBeanList = new ArrayList<CiBean>();
-			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-" + ipPool.getIpAddress(), false);
+			CiBean router = new CiBean(this.getPoolNameFromOneCMDBByPoolType(ipPool.getPoolType()), "IPAddress-"
+					+ ipPool.getIpAddress(), false);
 			ciBeanList.add(router);
 			OneCmdbService.delete(ciBeanList);
 		}
@@ -744,7 +765,8 @@ public class OneCmdbUtilService extends BaseSevcie {
 
 			CiBean router = new CiBean("Server", "Server" + hostServer.getAlias(), false);
 			router.addAttributeValue(new ValueBean("Location", hostServer.getLocationAlias(), true));
-			router.addAttributeValue(new ValueBean("Type", HostServerConstant.HostServerType.map.get(hostServer.getServerType()), false));
+			router.addAttributeValue(new ValueBean("Type", HostServerConstant.HostServerType.map.get(hostServer
+					.getServerType()), false));
 			router.addAttributeValue(new ValueBean("Site", hostServer.getSite(), false));
 			router.addAttributeValue(new ValueBean("HostName", hostServer.getDisplayName(), false));
 			router.addAttributeValue(new ValueBean("Height", hostServer.getHeight(), false));

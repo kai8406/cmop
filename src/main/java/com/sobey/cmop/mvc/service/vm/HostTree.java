@@ -189,7 +189,8 @@ public class HostTree {
 					// 查询每个宿主机下的虚拟机
 					try {
 						List<PropertyFilterSpec> hostFilterSpec = createHostFilterSpec(mor);
-						RetrieveResult vms = methods.retrievePropertiesEx(sContent.getPropertyCollector(), hostFilterSpec, ro);
+						RetrieveResult vms = methods.retrievePropertiesEx(sContent.getPropertyCollector(),
+								hostFilterSpec, ro);
 
 						// 解析虚拟机
 						VirtualMachineConfigInfo vmConfig;
@@ -221,7 +222,8 @@ public class HostTree {
 											if (ecs.length() > 0 && ecs.indexOf("_") > 0) {
 												ecs = ecs.substring(0, ecs.indexOf("_"));
 											}
-											if (ecs.length() > 0 && ecs.length() <= 15 && ecs.split("\\.").length == 4 && ecs.replaceAll("\\.", "").matches("[0-9]+")) {
+											if (ecs.length() > 0 && ecs.length() <= 15 && ecs.split("\\.").length == 4
+													&& ecs.replaceAll("\\.", "").matches("[0-9]+")) {
 												ecsList.add(ecs);
 												System.out.println("-->" + ecs);
 											} else {
@@ -257,7 +259,8 @@ public class HostTree {
 	 * @return
 	 * @throws Exception
 	 */
-	private static List collectClusterProperties(VimPortType methods, ServiceContent sContent, String cluster) throws Exception {
+	private static List collectClusterProperties(VimPortType methods, ServiceContent sContent, String cluster)
+			throws Exception {
 		ManagedObjectReference mor = new ManagedObjectReference();
 		mor.setType("ClusterComputeResource");
 		mor.setValue(cluster);
@@ -283,7 +286,8 @@ public class HostTree {
 				// 查询每个宿主机下的虚拟机
 				try {
 					List<PropertyFilterSpec> vmFilterSpec = createHostFilterSpec(morHost);
-					RetrieveResult vms = methods.retrievePropertiesEx(sContent.getPropertyCollector(), vmFilterSpec, ro);
+					RetrieveResult vms = methods
+							.retrievePropertiesEx(sContent.getPropertyCollector(), vmFilterSpec, ro);
 
 					VirtualMachineConfigInfo vmConfig;
 					VirtualMachineRuntimeInfo vmRuntime;
@@ -314,7 +318,8 @@ public class HostTree {
 										if (ecs.length() > 0 && ecs.indexOf("_") > 0) {
 											ecs = ecs.substring(0, ecs.indexOf("_"));
 										}
-										if (ecs.length() > 0 && ecs.length() <= 15 && ecs.split("\\.").length == 4 && ecs.replaceAll("\\.", "").matches("[0-9]+")) {
+										if (ecs.length() > 0 && ecs.length() <= 15 && ecs.split("\\.").length == 4
+												&& ecs.replaceAll("\\.", "").matches("[0-9]+")) {
 											ecsList.add(ecs);
 											System.out.println("-->" + ecs);
 										} else {
@@ -409,11 +414,13 @@ public class HostTree {
 			return true;
 		}
 
-		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) throws java.security.cert.CertificateException {
+		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
 			return;
 		}
 
-		public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) throws java.security.cert.CertificateException {
+		public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
 			return;
 		}
 	}

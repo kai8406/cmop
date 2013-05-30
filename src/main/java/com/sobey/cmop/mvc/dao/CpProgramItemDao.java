@@ -11,6 +11,7 @@ import com.sobey.cmop.mvc.entity.CpProgramItem;
  * @author liukai
  * 
  */
-public interface CpProgramItemDao extends PagingAndSortingRepository<CpProgramItem, Integer>, JpaSpecificationExecutor<CpProgramItem> {
+public interface CpProgramItemDao extends PagingAndSortingRepository<CpProgramItem, Integer>,
+		JpaSpecificationExecutor<CpProgramItem> {
 
 }

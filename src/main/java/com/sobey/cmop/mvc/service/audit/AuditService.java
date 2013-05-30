@@ -230,7 +230,8 @@ public class AuditService extends BaseSevcie {
 
 		boolean isAudited = false;
 
-		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser()
+				: comm.accountService.getUser(userId);
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
@@ -302,7 +303,8 @@ public class AuditService extends BaseSevcie {
 	public boolean saveAuditToApply(Audit audit, Integer applyId, Integer userId) {
 		Apply apply = comm.applyService.getApply(applyId);
 
-		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser()
+				: comm.accountService.getUser(userId);
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
@@ -318,7 +320,8 @@ public class AuditService extends BaseSevcie {
 
 			apply.setStatus(ApplyConstant.Status.已退回.toInteger());
 
-			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
+			String contentText = "你的服务申请 " + apply.getTitle() + " 已退回！<a href=\""
+					+ CONFIG_LOADER.getProperty("APPLY_URL") + "\">&#8594点击进行处理</a><br>";
 
 			// 发送退回通知邮件
 			comm.simpleMailService.sendNotificationMail(apply.getUser().getEmail(), "服务申请/变更退回邮件", contentText);
@@ -349,9 +352,11 @@ public class AuditService extends BaseSevcie {
 				RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
 				if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
 					mgr = RedmineService.MDN_REDMINE_ASSIGNEE_REDMINEMANAGER;
-				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
+				} else if (apply.getTitle().indexOf(
+						ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
 					mgr = RedmineService.CP_REDMINE_ASSIGNEE_REDMINEMANAGER;
-				} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
+				} else if (apply.getTitle().indexOf(
+						ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
 					mgr = RedmineService.MONITOR_REDMINE_ASSIGNEE_REDMINEMANAGER;
 				}
 
@@ -362,11 +367,14 @@ public class AuditService extends BaseSevcie {
 				if (isCreated) { // 写入Redmine成功
 
 					Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
-					if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
+					if (apply.getTitle().indexOf(
+							ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
 						assignee = RedmineService.MDN_REDMINE_ASSIGNEE;
-					} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
+					} else if (apply.getTitle().indexOf(
+							ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
 						assignee = RedmineService.CP_REDMINE_ASSIGNEE;
-					} else if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
+					} else if (apply.getTitle().indexOf(
+							ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
 						assignee = RedmineService.MONITOR_REDMINE_ASSIGNEE;
 					}
 					issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
@@ -447,7 +455,8 @@ public class AuditService extends BaseSevcie {
 
 		// true:通过页面审批 user为当前用户 ; false:通过邮件直接审批同意 根据传递过来的userId获得ID
 
-		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser() : comm.accountService.getUser(userId);
+		User user = AccountConstant.FROM_PAGE_USER_ID.equals(userId) ? comm.accountService.getCurrentUser()
+				: comm.accountService.getUser(userId);
 
 		Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 		AuditFlow auditFlow = this.findAuditFlowByUserIdAndFlowType(user.getId(), flowType);
@@ -463,7 +472,8 @@ public class AuditService extends BaseSevcie {
 
 			serviceTag.setStatus(ResourcesConstant.Status.已退回.toInteger());
 
-			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
+			String contentText = "你的资源变更 " + serviceTag.getName() + " 已退回！<a href=\""
+					+ CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击进行处理</a><br>";
 
 			// 发送退回通知邮件
 			comm.simpleMailService.sendNotificationMail(serviceTag.getUser().getEmail(), "服务申请/变更退回邮件", contentText);

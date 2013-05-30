@@ -49,8 +49,9 @@ public class RedmineIssue implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public RedmineIssue(Integer issueId, Integer trackerId, Integer projectId, String subject, Integer assignee, Integer status, String resourceId, Integer applyId, Integer serviceTagId,
-			Set<Failure> failures, Set<Attachment> attachments) {
+	public RedmineIssue(Integer issueId, Integer trackerId, Integer projectId, String subject, Integer assignee,
+			Integer status, String resourceId, Integer applyId, Integer serviceTagId, Set<Failure> failures,
+			Set<Attachment> attachments) {
 		this.issueId = issueId;
 		this.trackerId = trackerId;
 		this.projectId = projectId;

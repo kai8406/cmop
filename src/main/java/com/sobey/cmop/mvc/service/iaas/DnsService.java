@@ -119,7 +119,8 @@ public class DnsService extends BaseSevcie {
 	 *            目标IP数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateDNSToApply(NetworkDnsItem networkDnsItem, String domainName, Integer domainType, String cnameDomain, String[] eipIds) {
+	public void updateDNSToApply(NetworkDnsItem networkDnsItem, String domainName, Integer domainType,
+			String cnameDomain, String[] eipIds) {
 
 		networkDnsItem.setDomainType(domainType);
 		networkDnsItem.setDomainName(domainName);
@@ -164,7 +165,8 @@ public class DnsService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByDns(Resources resources, Integer serviceTagId, String domainName, Integer domainType, String cnameDomain, String[] eipIds, String changeDescription) {
+	public void saveResourcesByDns(Resources resources, Integer serviceTagId, String domainName, Integer domainType,
+			String cnameDomain, String[] eipIds, String changeDescription) {
 
 		/* 新增或更新资源Resources的服务变更Change. */
 
@@ -174,7 +176,8 @@ public class DnsService extends BaseSevcie {
 
 		/* 比较资源变更前和变更后的值. */
 
-		boolean isChange = comm.compareResourcesService.compareDns(resources, change, networkDnsItem, domainName, domainType, cnameDomain, eipIds);
+		boolean isChange = comm.compareResourcesService.compareDns(resources, change, networkDnsItem, domainName,
+				domainType, cnameDomain, eipIds);
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(serviceTagId);
 

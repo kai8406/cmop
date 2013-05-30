@@ -48,7 +48,9 @@ public class ServiceTagController extends BaseController {
 	 * 显示资源Resources的List
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
@@ -79,7 +81,8 @@ public class ServiceTagController extends BaseController {
 		List<CpItem> cpItems = new ArrayList<CpItem>();
 
 		/* 封装各个资源对象 */
-		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+		comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems,
+				eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 		model.addAttribute("serviceTag", comm.serviceTagService.getServiceTag(id));
 		model.addAttribute("resourcesList", resourcesList);
@@ -94,7 +97,8 @@ public class ServiceTagController extends BaseController {
 		model.addAttribute("cpItems", cpItems);
 
 		// 根据审批状态获得指定服务标签的审批记录(只取最新的,当前的审批记录.即audit的状态为0)
-		model.addAttribute("audits", comm.auditService.getAuditListByServiceTagIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
+		model.addAttribute("audits",
+				comm.auditService.getAuditListByServiceTagIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
 
 		return "resource/serviceTag/serviceTagDetail";
 
@@ -134,9 +138,10 @@ public class ServiceTagController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "name") String name, @RequestParam(value = "serviceStart") String serviceStart,
-			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "priority") Integer priority, @RequestParam(value = "description") String description,
-			RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "name") String name,
+			@RequestParam(value = "serviceStart") String serviceStart,
+			@RequestParam(value = "serviceEnd") String serviceEnd, @RequestParam(value = "priority") Integer priority,
+			@RequestParam(value = "description") String description, RedirectAttributes redirectAttributes) {
 
 		ServiceTag serviceTag = comm.serviceTagService.getServiceTag(id);
 
@@ -193,12 +198,14 @@ public class ServiceTagController extends BaseController {
 	 * 显示资源Resources的提交变更List
 	 */
 	@RequestMapping(value = "commitResources")
-	public String commitList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+	public String commitList(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
 			ServletRequest request) {
 
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, REQUEST_PREFIX);
 
-		model.addAttribute("page", comm.serviceTagService.getCommitServiceTagPageable(searchParams, pageNumber, pageSize));
+		model.addAttribute("page",
+				comm.serviceTagService.getCommitServiceTagPageable(searchParams, pageNumber, pageSize));
 
 		// 将搜索条件编码成字符串,分页的URL
 

@@ -41,7 +41,8 @@ public class DnsBean {
 
 	@Override
 	public String toString() {
-		return "DnsBean [domainName=" + domainName + ", domainType=" + domainType + ", telecomIp=" + telecomIp + ", unicomIp=" + unicomIp + "]";
+		return "DnsBean [domainName=" + domainName + ", domainType=" + domainType + ", telecomIp=" + telecomIp
+				+ ", unicomIp=" + unicomIp + "]";
 	}
 
 }

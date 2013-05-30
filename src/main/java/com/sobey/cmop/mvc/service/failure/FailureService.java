@@ -125,13 +125,15 @@ public class FailureService extends BaseSevcie {
 
 			/* 封装各个资源对象 */
 
-			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems,
+					eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
 
 			logger.info("--->拼装邮件内容...");
 
 			// 拼装Redmine内容
 
-			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems,
+					storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
 					monitorElbs, mdnItems, cpItems);
 
 			if (StringUtils.isBlank(description)) { // 拼装失败
@@ -153,7 +155,8 @@ public class FailureService extends BaseSevcie {
 
 			// 初始化第一接收人
 
-			RedmineManager mgr = new RedmineManager(RedmineService.HOST, RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(failure.getAssignee()));
+			RedmineManager mgr = new RedmineManager(RedmineService.HOST,
+					RedmineConstant.REDMINE_ASSIGNEE_KEY_MAP.get(failure.getAssignee()));
 
 			boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
 
@@ -191,7 +194,8 @@ public class FailureService extends BaseSevcie {
 					String[] fileNameArray = fileNames.split(",");
 					String[] fileDescArray = fileDescs.split(",");
 					for (int i = 0; i < fileNameArray.length; i++) {
-						Attachment attachment = new Attachment(fileNameArray[i], fileDescArray[i], new Date(), redmineIssue);
+						Attachment attachment = new Attachment(fileNameArray[i], fileDescArray[i], new Date(),
+								redmineIssue);
 						attachmentDao.save(attachment);
 					}
 				}
@@ -202,8 +206,8 @@ public class FailureService extends BaseSevcie {
 
 				// 发送工单处理邮件
 
-				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, storageItems, elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems,
-						assigneeUser);
+				comm.templateMailService.sendFailureResourcesNotificationMail(failure, computeItems, storageItems,
+						elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems, assigneeUser);
 
 			}
 

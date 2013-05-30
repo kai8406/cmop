@@ -39,7 +39,9 @@ public class UserController extends BaseController {
 	 * 显示所有的user list
 	 */
 	@RequestMapping(value = { "list", "" })
-	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model, ServletRequest request) {
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize, Model model,
+			ServletRequest request) {
 
 		// TODO 初始化所有User的密码和LoginName
 		// comm.accountService.initializeUser();
@@ -67,7 +69,8 @@ public class UserController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(User user, @RequestParam("departmentId") Integer departmentId, @RequestParam("groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+	public String save(User user, @RequestParam("departmentId") Integer departmentId,
+			@RequestParam("groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		user.setGroupList(comm.accountService.getGroupListById(groupId));
 		user.setDepartment(comm.accountService.getDepartment(departmentId));
@@ -96,9 +99,11 @@ public class UserController extends BaseController {
 	 * 修改
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email, @RequestParam(value = "phonenum") String phonenum,
-			@RequestParam(value = "name") String name, @RequestParam(value = "leaderId") Integer leaderId, @RequestParam(value = "type") Integer type,
-			@RequestParam(value = "departmentId") Integer departmentId, @RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
+	public String update(@RequestParam(value = "id") Integer id, @RequestParam(value = "email") String email,
+			@RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "name") String name,
+			@RequestParam(value = "leaderId") Integer leaderId, @RequestParam(value = "type") Integer type,
+			@RequestParam(value = "departmentId") Integer departmentId,
+			@RequestParam(value = "groupId") Integer groupId, RedirectAttributes redirectAttributes) {
 
 		User user = comm.accountService.getUser(id);
 		user.setEmail(email);

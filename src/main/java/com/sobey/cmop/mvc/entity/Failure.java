@@ -37,7 +37,8 @@ public class Failure implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Failure(User user, String title, Integer level, String description, Integer assignee, Integer faultType, String relatedId, Date createTime, RedmineIssue redmineIssue) {
+	public Failure(User user, String title, Integer level, String description, Integer assignee, Integer faultType,
+			String relatedId, Date createTime, RedmineIssue redmineIssue) {
 		this.user = user;
 		this.title = title;
 		this.level = level;

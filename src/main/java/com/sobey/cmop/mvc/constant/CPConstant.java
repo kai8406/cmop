@@ -11,6 +11,7 @@ public class CPConstant {
 	 */
 	public static final Map<String, String> RECORDBITRATE_MAP_STRING_KEY = Maps.newLinkedHashMap();
 	static {
+		RECORDBITRATE_MAP_STRING_KEY.put("0", "缺省");
 		RECORDBITRATE_MAP_STRING_KEY.put("1", "800K");
 		RECORDBITRATE_MAP_STRING_KEY.put("2", "1M");
 		RECORDBITRATE_MAP_STRING_KEY.put("3", "2M");

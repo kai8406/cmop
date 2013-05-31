@@ -186,11 +186,11 @@ public class CostService extends BaseSevcie {
 
 		} else if (CPConstant.RecordType.每周.toInteger().equals(cpItem.getRecordType())) {
 
-			time = MathsUtil.mul(7, Double.valueOf(cpItem.getRecordTime()));
+			time = MathsUtil.mul(7, Double.valueOf(cpItem.getRecordDuration()));
 
 		} else {
 			// 每月
-			time = MathsUtil.mul(168, Double.valueOf(cpItem.getRecordTime()));
+			time = MathsUtil.mul(168, Double.valueOf(cpItem.getRecordDuration()));
 		}
 		return time;
 	}
@@ -230,25 +230,35 @@ public class CostService extends BaseSevcie {
 
 			for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
 
-				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 ×
-				// 电信带宽单价 + 联通IP数量 × 联通带宽单价)
+				/**
+				 * 单价
+				 */
+				double singletonPrice = 0;
+
+				double priceTemp = 0;
+
+				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
 				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
 
-					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.电信带宽单价.toString())
-							.getDescription());
+					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+							CostingConstant.Costing.电信带宽单价.toString()).getDescription());
 
 				} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
 
-					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.联通带宽单价.toString())
-							.getDescription());
+					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+							CostingConstant.Costing.联通带宽单价.toString()).getDescription());
 
 				} else {
 					// TODO 中国移动
 				}
+
+				priceTemp = MathsUtil.mul(accessRate, singletonPrice);
+				priceTemp = MathsUtil.add(priceTemp, singletonPrice);
+
+				price = MathsUtil.add(price, priceTemp);
+
 			}
 
-			price = MathsUtil.mul(price, 2);
-			price = MathsUtil.mul(price, accessRate);
 			price = MathsUtil.mul(price, workTime);
 		}
 
@@ -410,7 +420,7 @@ public class CostService extends BaseSevcie {
 		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER);
 
 		// 如果是当天,时间差算成1天.
-		return costTime == 0 ? 0.03 : costTime;
+		return costTime == 0 ? 0.034 : costTime;
 
 	}
 

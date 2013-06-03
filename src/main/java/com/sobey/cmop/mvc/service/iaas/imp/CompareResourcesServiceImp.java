@@ -1354,7 +1354,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		if (!mdnVodItem.getSourceOutBandwidth().equals(sourceOutBandwidth)) {
 
-			String fieldName = FieldNameConstant.MdnVodItem.点播出口带宽.toString();
+			String fieldName = FieldNameConstant.MdnVodItem.点播源站出口带宽.toString();
 
 			String oldValue = mdnVodItem.getSourceOutBandwidth();
 			String oldString = mdnVodItem.getSourceOutBandwidth();
@@ -1436,7 +1436,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		if (!mdnLiveItem.getBandwidth().equals(bandwidth)) {
 
-			String fieldName = FieldNameConstant.MdnLiveItem.直播出口带宽.toString();
+			String fieldName = FieldNameConstant.MdnLiveItem.直播源站出口带宽.toString();
 
 			String oldValue = mdnLiveItem.getBandwidth();
 			String oldString = mdnLiveItem.getBandwidth();

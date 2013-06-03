@@ -904,7 +904,7 @@ public class ResourcesService extends BaseSevcie {
 						mdnVodItem.setSourceStreamerUrl(changeItem.getOldValue());
 					}
 
-					if (FieldNameConstant.MdnVodItem.点播出口带宽.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnVodItem.点播源站出口带宽.toString().equals(changeItem.getFieldName())) {
 						mdnVodItem.setSourceOutBandwidth(changeItem.getOldValue());
 					}
 
@@ -933,7 +933,7 @@ public class ResourcesService extends BaseSevcie {
 						mdnLiveItem.setGuid(changeItem.getOldValue());
 					}
 
-					if (FieldNameConstant.MdnLiveItem.直播出口带宽.toString().equals(changeItem.getFieldName())) {
+					if (FieldNameConstant.MdnLiveItem.直播源站出口带宽.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setBandwidth(changeItem.getOldValue());
 					}
 

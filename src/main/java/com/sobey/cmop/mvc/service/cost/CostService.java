@@ -60,7 +60,9 @@ public class CostService extends BaseSevcie {
 
 		double totalPrice = this.totalCost(intiCost, ecsCost, es3Cost, elbCost, eipCost, dnsCost, mdnCost, cpCost);
 
-		sb.append("人工成本&nbsp;:").append(intiCost).append("&nbsp;元").append("<br>");
+		if (intiCost != 0) {
+			sb.append("人工成本&nbsp;:").append(intiCost).append("&nbsp;元").append("<br>");
+		}
 
 		if (ecsCost != 0) {
 			sb.append("ECS成本&nbsp;:").append(ecsCost).append("&nbsp;元").append("<br>");
@@ -349,6 +351,9 @@ public class CostService extends BaseSevcie {
 		} else if (RedmineConstant.Priority.紧急.toInteger().equals(priority)) {
 
 			price = MathsUtil.mul(price, 3);
+		} else {
+			// 普通人工不收费，其他收费.
+			price = 0;
 		}
 
 		return price;

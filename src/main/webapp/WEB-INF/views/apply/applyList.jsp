@@ -29,7 +29,10 @@
 	
 	<div class="row">
 		<div class="span12 quick-actions">
+			
+			<!-- 
 			<a href="${ctx}/apply/compute/save/1/" class="btn tip-bottom" title="PCS 物理机">PCS &raquo;</a>
+			 -->
 			<a href="${ctx}/apply/compute/save/2/" class="btn tip-bottom" title="ECS 虚拟机">ECS &raquo;</a>
 			<a href="${ctx}/apply/es3/save/" class="btn tip-bottom" title="ES3 存储卷">ES3 &raquo;</a>
 			<a href="${ctx}/apply/elb/save/" class="btn tip-bottom" title="ELB 负载均衡器">ELB &raquo;</a>

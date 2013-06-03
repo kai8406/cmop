@@ -78,7 +78,7 @@
 				<!-- 实例Compute -->
 				<c:if test="${not empty apply.computeItems}">
 					<hr>
-					<dt>PCS & ECS实例</dt>
+					<dt>ECS实例</dt>
 					<c:forEach var="item" items="${apply.computeItems}">
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>

@@ -125,7 +125,7 @@
 				<!-- 实例Compute -->
 				<c:if test="${not empty computeItems}">
 					
-					<dt>PCS & ECS实例</dt>
+					<dt>ECS实例</dt>
 					<c:forEach var="item" items="${computeItems}">
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>

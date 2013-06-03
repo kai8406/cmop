@@ -12,6 +12,15 @@
 			$("ul#navbar li#apply").addClass("active");
 			
 		});
+		
+		function myPrint(obj){
+		    var newWindow=window.open("打印窗口","_blank");
+		    var docStr = obj.innerHTML;
+		    newWindow.document.write(docStr);
+		    newWindow.document.close();
+		    newWindow.print();
+		    //newWindow.close();
+		}
 	</script>
 	
 </head>
@@ -24,7 +33,7 @@
 	
 		<input type="hidden" name="id" value="${apply.id}">
 		
-		<fieldset>
+		<fieldset id="print">
 			<legend><small>服务申请单详情</small></legend>
 			
 			<dl class="dl-horizontal">
@@ -429,13 +438,21 @@
 					</c:forEach>
 				</c:if>
 				
+				<c:if test="${not empty sumCost}">
+					<hr>
+					<dt>资源服务费用</dt>
+					<dd>${sumCost}</dd>
+				</c:if>
+				
 			</dl>
-			 
-			<div class="form-actions">
-				<input class="btn" type="button" value="返回" onclick="history.back()">
-			</div>
 			
 		</fieldset>
+		
+		<div class="form-actions">
+			<input class="btn" type="button" value="返回" onclick="history.back()">
+			<a onclick="myPrint(document.getElementById('print'))" class="btn btn-primary">打印</a>
+		</div>
+			
 		
 	</form>
 	

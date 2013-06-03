@@ -122,11 +122,14 @@ public class ApplyController extends BaseController {
 	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
 	public String detail(@PathVariable("id") Integer id, Model model) {
 
-		model.addAttribute("apply", comm.applyService.getApply(id));
+		Apply apply = comm.applyService.getApply(id);
+		model.addAttribute("apply", apply);
 
 		// 根据审批状态获得服务申请的审批记录(只取最新的,当前的审批记录.即audit的状态为1)
 		model.addAttribute("audits",
 				comm.auditService.getAuditListByApplyIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
+
+		model.addAttribute("sumCost", comm.costService.costPrice(apply));
 
 		return "apply/applyDetail";
 	}

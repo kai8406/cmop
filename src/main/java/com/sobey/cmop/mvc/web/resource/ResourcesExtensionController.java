@@ -45,13 +45,12 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "applicationName") String[] applicationNames,
 			@RequestParam(value = "applicationVersion") String[] applicationVersions,
 			@RequestParam(value = "applicationDeployPath") String[] applicationDeployPaths,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.computeService.saveResourcesByCompute(resources, serviceTagId, osType, osBit, serverType, esgIds, remark,
 				applicationNames, applicationVersions, applicationDeployPaths, changeDescription);
@@ -68,13 +67,12 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateStorage(@RequestParam(value = "id") Integer id,
 			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "space") Integer space,
 			@RequestParam(value = "computeIds") String[] computeIds,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.es3Service.saveResourcesByStorage(resources, serviceTagId, storageType, space, computeIds,
 				changeDescription);
@@ -94,13 +92,13 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
 			@RequestParam(value = "computeIds") String[] computeIds,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
+
 			@RequestParam(value = "changeDescription") String changeDescription,
 
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.elbService.saveResourcesByElb(resources, serviceTagId, keepSession, protocols, sourcePorts, targetPorts,
 				computeIds, changeDescription);
@@ -118,13 +116,12 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "linkId") Integer linkId, @RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.eipService.saveResourcesByEip(resources, serviceTagId, linkType, linkId, protocols, sourcePorts,
 				targetPorts, changeDescription);
@@ -143,11 +140,10 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "domainType") Integer domainType,
 			@RequestParam(value = "cnameDomain", required = false) String cnameDomain,
 			@RequestParam(value = "eipIds", required = false) String[] eipIds,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.dnsService.saveResourcesByDns(resources, serviceTagId, domainName, domainType, cnameDomain, eipIds,
 				changeDescription);
@@ -162,12 +158,11 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/monitorElb", method = RequestMethod.POST)
 	public String updateMonitorElb(@RequestParam(value = "id") Integer id,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "elbId", required = false) Integer elbId,
 			@RequestParam(value = "changeDescription") String changeDescription, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.monitorElbServcie.saveResourcesByMonitorElb(resources, serviceTagId, elbId, changeDescription);
 
@@ -181,7 +176,7 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/monitorCompute", method = RequestMethod.POST)
 	public String updateMonitorCompute(@RequestParam(value = "id") Integer id,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 			@RequestParam(value = "ipAddress") String ipAddress, @RequestParam(value = "cpuWarn") String cpuWarn,
 			@RequestParam(value = "cpuCritical") String cpuCritical,
@@ -201,7 +196,6 @@ public class ResourcesExtensionController extends BaseController {
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.monitorComputeServcie.saveResourcesByMonitorCompute(resources, serviceTagId, changeDescription, ipAddress,
 				cpuWarn, cpuCritical, memoryWarn, memoryCritical, pingLossWarn, pingLossCritical, diskWarn,
@@ -218,13 +212,12 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/mdn", method = RequestMethod.POST)
 	public String updateMdn(@RequestParam(value = "id") Integer id,
-			@RequestParam(value = "serviceTagId") Integer serviceTagId, @RequestParam(value = "usedby") Integer usedby,
+			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 			@RequestParam(value = "coverArea") String coverArea, @RequestParam(value = "coverIsp") String coverIsp,
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.mdnService.saveResourcesByMdn(resources, serviceTagId, changeDescription, coverArea, coverIsp);
 
@@ -328,7 +321,7 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateCP(
 			@RequestParam(value = "id") Integer id,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
-			@RequestParam(value = "usedby") Integer usedby,
+
 			@RequestParam(value = "changeDescription") String changeDescription,
 			// cp
 			@RequestParam(value = "recordStreamUrl") String recordStreamUrl,
@@ -361,7 +354,6 @@ public class ResourcesExtensionController extends BaseController {
 			RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
-		resources.setUsedby(usedby);
 
 		comm.cpService.saveResourcesByCP(resources, serviceTagId, changeDescription, recordStreamUrl, recordBitrate,
 				exportEncode, recordType, recordTime, recordDuration, publishUrl, isPushCtp, videoFtpIp, videoFtpPort,

@@ -66,7 +66,7 @@
 				<div class="controls">
 					<select id="elbId" name="elbId" class="required">
 						<option value="${monitorElb.networkElbItem.id }" selected="selected">${monitorElb.networkElbItem.identifier}(${monitorElb.networkElbItem.virtualIp })</option>
-						<c:forEach var="item" items="${monitorElbs }">
+						<c:forEach var="item" items="${elbResources }">
 							<option value="${item.id }" >${item.identifier}(${item.virtualIp })</option>
 						</c:forEach>
 					</select>

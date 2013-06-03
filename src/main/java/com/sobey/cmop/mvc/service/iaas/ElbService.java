@@ -298,14 +298,4 @@ public class ElbService extends BaseSevcie {
 		return networkElbItemDao.findByApplyId(applyId);
 	}
 
-	/**
-	 * 获得指定用户的所有负载均衡器ELB(用于监控申请中,只列出未被监控的ELB)
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<NetworkElbItem> getNetworkElbItemListByMonitorApply(Integer userId) {
-		return networkElbItemDao.findByApplyUserIdAndMonitorElbIsNull(userId);
-	}
-
 }

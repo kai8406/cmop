@@ -545,7 +545,7 @@
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr><th><input type="checkbox"></th><th>ELB标识符</th><th>负载均衡虚拟IP</th></tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="elb" items="${monitorElbs}">
+						<c:forEach var="elb" items="${elbResources}">
 							<tr>
 								<td><input type="checkbox" value="${elb.id }"></td>
 								<td>${elb.identifier}</td>
@@ -572,7 +572,7 @@
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr><th><input type="checkbox"></th><th>实例标识符</th><th>用途信息</th><th>IP地址</th></tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="compute" items="${allComputes}">
+						<c:forEach var="compute" items="${computeResources}">
 							<tr>
 								<td><input type="checkbox" value="${compute.id }"></td>
 								<td>${compute.identifier}</td>

@@ -243,7 +243,7 @@ public class ComputeItem implements java.io.Serializable {
 	}
 
 	@JsonBackReference
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "computeItem")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "computeItem")
 	public Set<NetworkEipItem> getNetworkEipItems() {
 		return networkEipItems;
 	}

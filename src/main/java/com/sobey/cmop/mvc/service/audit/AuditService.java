@@ -503,7 +503,7 @@ public class AuditService extends BaseSevcie {
 				Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 
 				issue.setTracker(tracker);
-				issue.setSubject(comm.applyService.generateTitle("change"));
+				issue.setSubject(comm.applyService.generateTitle(serviceTag.getUser().getLoginName(), "change"));
 				issue.setPriorityId(serviceTag.getPriority());
 				issue.setDescription(description);
 

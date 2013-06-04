@@ -215,7 +215,7 @@ public class ResourcesService extends BaseSevcie {
 	 *            资源标识符
 	 * @return
 	 */
-	public List<ResourcesJson> getResourcesJsonListByParamers(Integer serviceType, String serviceTagName,
+	public List<ResourcesJson> getResourcesJsonListByParamers(String serviceType, String serviceTagName,
 			String ipAddress, String serviceIdentifier) {
 
 		Map<String, SearchFilter> filters = Maps.newHashMap();
@@ -245,7 +245,7 @@ public class ResourcesService extends BaseSevcie {
 			filters.put("resources.user.id", new SearchFilter("user.id", Operator.EQ, getCurrentUserId()));
 		}
 
-		if (serviceType != null) {
+		if (StringUtils.isNotBlank(serviceType)) {
 			filters.put("resources.serviceType", new SearchFilter("serviceType", Operator.EQ, serviceType));
 		}
 
@@ -442,7 +442,8 @@ public class ResourcesService extends BaseSevcie {
 		Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 
 		issue.setTracker(tracker);
-		issue.setSubject(comm.applyService.generateTitle("recycle"));
+		issue.setSubject(comm.applyService
+				.generateTitle(comm.accountService.getCurrentUser().getLoginName(), "recycle"));
 		issue.setPriorityId(RedmineConstant.Priority.高.toInteger());
 		issue.setDescription(description);
 

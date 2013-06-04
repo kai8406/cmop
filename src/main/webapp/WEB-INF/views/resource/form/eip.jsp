@@ -105,11 +105,11 @@
 			<div class="control-group">
 				<div class="controls">
 					<label class="radio inline">
- 						<input type="radio" name="linkRadio" value="isCompute" 
+ 						<input type="radio" name="linkRadio" value="isCompute" class="required"
  						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
 					</label>
 					<label class="radio inline">
-	 					<input type="radio" name="linkRadio" value="isElb"
+	 					<input type="radio" name="linkRadio" value="isElb" class="required"
 	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
 					</label>
 				</div>

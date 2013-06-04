@@ -706,8 +706,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String fieldName = FieldNameConstant.Eip.关联实例.toString();
 
-			String oldValue = networkEipItem.getComputeItem().getId().toString();
-			String oldString = this.wrapStringByComputeItem(networkEipItem.getComputeItem().getId());
+			String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
+					.toString() : "";
+			String oldString = networkEipItem.getComputeItem() != null ? this.wrapStringByComputeItem(networkEipItem
+					.getComputeItem().getId()) : "";
 
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByComputeItem(linkId);
@@ -723,8 +725,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String fieldName = FieldNameConstant.Eip.关联ELB.toString();
 
-			String oldValue = networkEipItem.getNetworkElbItem().getId().toString();
-			String oldString = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
+			String oldValue = networkEipItem.getNetworkElbItem() != null ? networkEipItem.getNetworkElbItem().getId()
+					.toString() : "";
+			String oldString = networkEipItem.getNetworkElbItem() != null ? this
+					.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByNetworkElbItem(linkId);
@@ -745,8 +749,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				// Old
 				String fieldNameCompute = FieldNameConstant.Eip.关联实例.toString();
 
-				String oldValueCompute = networkEipItem.getComputeItem().getId().toString();
-				String oldStringCompute = this.wrapStringByComputeItem(networkEipItem.getComputeItem().getId());
+				String oldValueCompute = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem()
+						.getId().toString() : "";
+				String oldStringCompute = networkEipItem.getComputeItem() != null ? this
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
 
 				String newValueCompute = UN_SELECTED_STRING;
 				String newStringCompute = "";
@@ -784,8 +790,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				// New
 				String fieldNameElb = FieldNameConstant.Eip.关联ELB.toString();
 
-				String oldValueElb = networkEipItem.getNetworkElbItem().getId().toString();
-				String oldStringElb = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
+				String oldValueElb = networkEipItem.getNetworkElbItem() != null ? networkEipItem.getNetworkElbItem()
+						.getId().toString() : "";
+
+				String oldStringElb = networkEipItem.getNetworkElbItem() != null ? this
+						.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 				String newValueElb = UN_SELECTED_STRING;
 				String newStringElb = "";
@@ -820,8 +829,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			if (NetworkConstant.LinkType.关联ELB.toString().equals(newLinkType)) {
 				String fieldName = FieldNameConstant.Eip.关联ELB.toString();
 
-				String oldValue = networkEipItem.getNetworkElbItem().getId().toString();
-				String oldString = this.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId());
+				String oldValue = networkEipItem.getNetworkElbItem() != null ? networkEipItem.getNetworkElbItem()
+						.getId().toString() : "";
+				String oldString = networkEipItem.getNetworkElbItem() != null ? this
+						.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 				String newValue = linkId.toString();
 				String newString = this.wrapStringByNetworkElbItem(linkId);
@@ -831,8 +842,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 				String fieldName = FieldNameConstant.Eip.关联实例.toString();
 
-				String oldValue = networkEipItem.getComputeItem().getId().toString();
-				String oldString = this.wrapStringByComputeItem(networkEipItem.getComputeItem().getId());
+				String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
+						.toString() : "";
+				String oldString = networkEipItem.getComputeItem() != null ? this
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
 
 				String newValue = linkId.toString();
 				String newString = this.wrapStringByComputeItem(linkId);

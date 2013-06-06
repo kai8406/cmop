@@ -272,7 +272,7 @@ public class NetworkConstant {
 	 * 网络资源的协议类型
 	 * 
 	 * <pre>
-	 * ALL, HTTP, HTTPS, SSL, TCP;
+	 * ALL, TCP, UDP;
 	 * </pre>
 	 * 
 	 * @author liukai
@@ -280,7 +280,7 @@ public class NetworkConstant {
 	 */
 	public enum Protocol {
 
-		ALL, HTTP, HTTPS, SSL, TCP, UDP;
+		TCP_UDP, TCP, UDP;
 
 		public static final Map<String, String> map = Maps.newLinkedHashMap();
 		static {

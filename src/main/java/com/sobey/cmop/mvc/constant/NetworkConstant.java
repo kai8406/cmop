@@ -13,6 +13,11 @@ import com.google.common.collect.Maps;
 public class NetworkConstant {
 
 	/**
+	 * elb,eip的端口分割字符
+	 */
+	public static final String SEPARATE_PORT_SYMBOL = "@";
+
+	/**
 	 * 域名类型
 	 * 
 	 * <pre>

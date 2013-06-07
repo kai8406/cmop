@@ -154,9 +154,9 @@ public class EipService extends BaseSevcie {
 
 			// EIP的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], "-");
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], "-");
-			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
+			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
 
 			for (int j = 0; j < protocolArray.length; j++) {
 				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],

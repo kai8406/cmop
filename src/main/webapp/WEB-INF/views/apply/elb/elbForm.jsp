@@ -97,13 +97,13 @@
 						var protocolText = $tr.find("#protocol>option:selected").text();
 						var sourcePort = $tr.find("#sourcePort").val();
 						var targetPort = $tr.find("#targetPort").val();
-						var portTemp = protocol + "-" + sourcePort + "-" + targetPort;
+						var portTemp = protocol + "@" + sourcePort + "@" + targetPort;
 						//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
 						if (portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1) {
 							portTempArray.push(portTemp);
-							protocolStr += protocol + "-";
-							sourcePortStr += sourcePort + "-";
-							targetPortStr += targetPort + "-";
+							protocolStr += protocol + "@";
+							sourcePortStr += sourcePort + "@";
+							targetPortStr += targetPort + "@";
 							html += '<dd><strong>' + protocolText + '&nbsp;,&nbsp;' + sourcePort + '&nbsp;,&nbsp;' + targetPort + '</strong></dd>';
 						}
 					});

@@ -11,3 +11,10 @@ target
 .mymetadata
 *~
 /.git
+
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/

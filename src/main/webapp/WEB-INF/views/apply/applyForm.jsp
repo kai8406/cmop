@@ -16,8 +16,10 @@
 			$("#inputForm").validate();
 			
 			// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
-			$("#serviceStart").val(getDatePlusMonthNum(0));
-			$("#serviceEnd").val(getDatePlusMonthNum(3));
+			if($("#applyId").val() == ""){
+				$("#serviceStart").val(getDatePlusMonthNum(0));
+				$("#serviceEnd").val(getDatePlusMonthNum(3));
+			}				
 			
 			$("#serviceStart").datepicker({
 				changeMonth: true,
@@ -44,7 +46,7 @@
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
-		<input type="hidden" name="id" value="${apply.id}">
+		<input type="hidden" name="id" id="applyId" value="${apply.id}">
 		
 		<fieldset>
 			<legend><small>

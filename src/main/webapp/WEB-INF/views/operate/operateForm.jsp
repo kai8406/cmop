@@ -478,6 +478,9 @@ function changeServer(obj){
 											</c:forEach>
 										</select> &nbsp;Netapp
 									</c:if>	  
+									
+									&nbsp;&nbsp;<em>挂载实例</em>&nbsp;&nbsp;${storage.mountComputes }
+									
 								</div>
 								
 								<div class="span5">
@@ -524,6 +527,7 @@ function changeServer(obj){
 							    	<input type="text" id="innerIp" name="innerIp" readonly="readonly" value="${elb.virtualIp}"  placeholder="虚拟负载IP">
 									<select id="ipPool" name="ipPool" class="span2">
 									</select>
+									&nbsp;&nbsp;<em>关联实例</em>&nbsp;&nbsp;${elb.mountComputes }
 								</div>
 							</div>
 						</c:forEach>						

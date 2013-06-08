@@ -60,7 +60,9 @@ public class CostService extends BaseSevcie {
 
 		double totalPrice = this.totalCost(intiCost, ecsCost, es3Cost, elbCost, eipCost, dnsCost, mdnCost, cpCost);
 
-		sb.append("人工成本&nbsp;:").append(intiCost).append("&nbsp;元").append("<br>");
+		if (intiCost != 0) {
+			sb.append("人工成本&nbsp;:").append(intiCost).append("&nbsp;元").append("<br>");
+		}
 
 		if (ecsCost != 0) {
 			sb.append("ECS成本&nbsp;:").append(ecsCost).append("&nbsp;元").append("<br>");
@@ -186,11 +188,11 @@ public class CostService extends BaseSevcie {
 
 		} else if (CPConstant.RecordType.每周.toInteger().equals(cpItem.getRecordType())) {
 
-			time = MathsUtil.mul(7, Double.valueOf(cpItem.getRecordTime()));
+			time = MathsUtil.mul(7, Double.valueOf(cpItem.getRecordDuration()));
 
 		} else {
 			// 每月
-			time = MathsUtil.mul(168, Double.valueOf(cpItem.getRecordTime()));
+			time = MathsUtil.mul(168, Double.valueOf(cpItem.getRecordDuration()));
 		}
 		return time;
 	}
@@ -230,25 +232,35 @@ public class CostService extends BaseSevcie {
 
 			for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
 
-				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 ×
-				// 电信带宽单价 + 联通IP数量 × 联通带宽单价)
+				/**
+				 * 单价
+				 */
+				double singletonPrice = 0;
+
+				double priceTemp = 0;
+
+				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
 				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
 
-					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.电信带宽单价.toString())
-							.getDescription());
+					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+							CostingConstant.Costing.电信带宽单价.toString()).getDescription());
 
 				} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
 
-					price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.联通带宽单价.toString())
-							.getDescription());
+					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+							CostingConstant.Costing.联通带宽单价.toString()).getDescription());
 
 				} else {
 					// TODO 中国移动
 				}
+
+				priceTemp = MathsUtil.mul(accessRate, singletonPrice);
+				priceTemp = MathsUtil.add(priceTemp, singletonPrice);
+
+				price = MathsUtil.add(price, priceTemp);
+
 			}
 
-			price = MathsUtil.mul(price, 2);
-			price = MathsUtil.mul(price, accessRate);
 			price = MathsUtil.mul(price, workTime);
 		}
 
@@ -339,6 +351,9 @@ public class CostService extends BaseSevcie {
 		} else if (RedmineConstant.Priority.紧急.toInteger().equals(priority)) {
 
 			price = MathsUtil.mul(price, 3);
+		} else {
+			// 普通人工不收费，其他收费.
+			price = 0;
 		}
 
 		return price;
@@ -410,7 +425,7 @@ public class CostService extends BaseSevcie {
 		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER);
 
 		// 如果是当天,时间差算成1天.
-		return costTime == 0 ? 0.03 : costTime;
+		return costTime == 0 ? 0.034 : costTime;
 
 	}
 

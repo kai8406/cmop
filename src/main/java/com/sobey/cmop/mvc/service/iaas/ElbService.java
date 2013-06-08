@@ -148,9 +148,9 @@ public class ElbService extends BaseSevcie {
 
 			// ELB的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], "-");
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], "-");
-			String[] targetPortArray = StringUtils.split(targetPorts[i], "-");
+			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
 
 			for (int j = 0; j < protocolArray.length; j++) {
 				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
@@ -296,16 +296,6 @@ public class ElbService extends BaseSevcie {
 
 	public List<NetworkElbItem> getElbListByApplyId(Integer applyId) {
 		return networkElbItemDao.findByApplyId(applyId);
-	}
-
-	/**
-	 * 获得指定用户的所有负载均衡器ELB(用于监控申请中,只列出未被监控的ELB)
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<NetworkElbItem> getNetworkElbItemListByMonitorApply(Integer userId) {
-		return networkElbItemDao.findByApplyUserIdAndMonitorElbIsNull(userId);
 	}
 
 }

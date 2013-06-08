@@ -143,21 +143,21 @@ public class FieldNameConstant {
 	 * entity MdnVodItem 里的参数
 	 * 
 	 * <pre>
-	 * 服务域名, 加速服务带宽, 播放协议选择, 出口带宽, Streamer地址;
+	 * 服务域名, 加速服务带宽, 播放协议选择, 点播源站出口带宽, Streamer地址;
 	 * </pre>
 	 * 
 	 * @author liukai
 	 * 
 	 */
 	public enum MdnVodItem {
-		点播服务域名, 点播加速服务带宽, 点播播放协议选择, 点播出口带宽, Streamer地址;
+		点播服务域名, 点播加速服务带宽, 点播播放协议选择, 点播源站出口带宽, Streamer地址;
 	}
 
 	/**
 	 * entity MdnLiveItem 里的参数
 	 * 
 	 * <pre>
-	 * 服务域名, 加速服务带宽, 播放协议选择, 出口带宽,
+	 * 服务域名, 加速服务带宽, 播放协议选择,直播源站出口带宽,
 	 * 直播流输出模式, 频道名称, 频道GUID, 编码器模式,
 	 * 拉流地址, 拉流混合码率, 推流地址, 推流混合码率,
 	 * HTTP流地址, HTTP流混合码率, 
@@ -168,7 +168,7 @@ public class FieldNameConstant {
 	 * 
 	 */
 	public enum MdnLiveItem {
-		直播服务域名, 直播加速服务带宽, 直播播放协议选择, 直播出口带宽, 直播流输出模式, 频道名称, 频道GUID, 编码器模式, 拉流地址, 拉流混合码率, 推流地址, 推流混合码率, HTTP流地址, HTTP流混合码率, HSL流地址, HSL流混合码率;
+		直播服务域名, 直播加速服务带宽, 直播播放协议选择, 直播源站出口带宽, 直播流输出模式, 频道名称, 频道GUID, 编码器模式, 拉流地址, 拉流混合码率, 推流地址, 推流混合码率, HTTP流地址, HTTP流混合码率, HSL流地址, HSL流混合码率;
 	}
 
 	/**

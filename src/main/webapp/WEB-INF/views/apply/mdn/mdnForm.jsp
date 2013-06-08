@@ -101,7 +101,7 @@
 					html += '<dd><em>服务域名</em>&nbsp;&nbsp;<strong>' + domain + '</strong></dd>';
 					html += '<dd><em>加速服务带宽</em>&nbsp;&nbsp;<strong>' + speedBandwidthText + '</strong></dd>';
 					html += '<dd><em>播放协议</em>&nbsp;&nbsp;<strong>' + protocolText + '</strong></dd>';
-					html += '<dd><em>出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
+					html += '<dd><em>源站出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
 					html += '<dd><em>源站Streamer公网地址</em>&nbsp;&nbsp;<strong>' + vodStreamer + '</strong></dd>';
 					html += '</div>';
 				} else {/* live */
@@ -137,7 +137,7 @@
 					html += '<dd><em>服务域名</em>&nbsp;&nbsp;<strong>' + domain + '</strong></dd>';
 					html += '<dd><em>加速服务带宽</em>&nbsp;&nbsp;<strong>' + speedBandwidthText + '</strong></dd>';
 					html += '<dd><em>播放协议</em>&nbsp;&nbsp;<strong>' + protocolText + '</strong></dd>';
-					html += '<dd><em>出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
+					html += '<dd><em>源站出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
 					html += '<dd><em>频道名称</em>&nbsp;&nbsp;<strong>' + channelName + '</strong></dd>';
 					html += '<dd><em>频道GUID</em>&nbsp;&nbsp;<strong>' + channelGUID + '</strong></dd>';
 					html += '<dd><em>直播流输出模式</em>&nbsp;&nbsp;<strong>' + outputModeText + '</strong></dd>';
@@ -303,9 +303,9 @@
 				</div>
 				
 				<div class="control-group">
-					<label class="control-label" for="exportBandwidth">出口带宽</label>
+					<label class="control-label" for="exportBandwidth">源站出口带宽</label>
 					<div class="controls">
-						<input type="text" id="exportBandwidth" class="required" maxlength="45" placeholder="...出口带宽">
+						<input type="text" id="exportBandwidth" class="required" maxlength="45" placeholder="...源站出口带宽">
 					</div>
 				</div>
 				    

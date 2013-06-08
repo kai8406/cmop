@@ -13,6 +13,11 @@ import com.google.common.collect.Maps;
 public class NetworkConstant {
 
 	/**
+	 * elb,eip的端口分割字符
+	 */
+	public static final String SEPARATE_PORT_SYMBOL = "@";
+
+	/**
 	 * 域名类型
 	 * 
 	 * <pre>
@@ -272,7 +277,7 @@ public class NetworkConstant {
 	 * 网络资源的协议类型
 	 * 
 	 * <pre>
-	 * ALL, HTTP, HTTPS, SSL, TCP;
+	 * ALL, TCP, UDP;
 	 * </pre>
 	 * 
 	 * @author liukai
@@ -280,7 +285,7 @@ public class NetworkConstant {
 	 */
 	public enum Protocol {
 
-		ALL, HTTP, HTTPS, SSL, TCP, UDP;
+		TCP_UDP, TCP, UDP;
 
 		public static final Map<String, String> map = Maps.newLinkedHashMap();
 		static {

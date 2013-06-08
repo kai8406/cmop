@@ -109,9 +109,9 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="bandwidth">出口带宽</label>
+				<label class="control-label" for="bandwidth">源站出口带宽</label>
 				<div class="controls">
-					<input type="text" id="bandwidth" name="bandwidth" value="${mdnLive.bandwidth }" class="required" maxlength="45" placeholder="...出口带宽">
+					<input type="text" id="bandwidth" name="bandwidth" value="${mdnLive.bandwidth }" class="required" maxlength="45" placeholder="...源站出口带宽">
 				</div>
 			</div>
 				

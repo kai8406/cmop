@@ -93,15 +93,6 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="usedby">运维人</label>
-				<div class="controls">
-					<p class="help-inline plain-text">
-						<c:forEach var="map" items="${assigneeMap}"><c:if test="${map.key == resources.usedby }">${map.value}</c:if></c:forEach>
-					</p>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="changeDescription">变更描述</label>
 				<div class="controls">
 					<p class="help-inline plain-text">${change.description}</p>

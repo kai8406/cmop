@@ -31,15 +31,17 @@
 			
 				<div class="span3">
 					<ul class="site-stats">
+						<!-- 
 						<a href="${ctx}/resources/?search_EQ_serviceType=1"><li><i class="icon-calendar"></i> <strong>${PCSCOUNT}</strong> <small>PCS 物理机</small></li></a>
+						 -->
 						<a href="${ctx}/resources/?search_EQ_serviceType=2"><li><i class="icon-tasks"></i> <strong>${ECSCOUNT}</strong> <small>ECS 虚拟机(实例)</small></li></a>
 						<a href="${ctx}/resources/?search_EQ_serviceType=3"><li><i class="icon-hdd"></i> <strong>${ES3COUNT}</strong> <small>ES3 存储卷</small></li></a>
+						<a href="${ctx}/resources/?search_EQ_serviceType=4"><li><i class="icon-random"></i> <strong>${ELBCOUNT}</strong> <small>ELB 负载均衡</small></li></a>
 					</ul>
 				</div>
 				
 				<div class="span3">
 					<ul class="site-stats">
-						<a href="${ctx}/resources/?search_EQ_serviceType=4"><li><i class="icon-random"></i> <strong>${ELBCOUNT}</strong> <small>ELB 负载均衡</small></li></a>
 						<a href="${ctx}/resources/?search_EQ_serviceType=5"><li><i class="icon-screenshot"></i> <strong>${EIPCOUNT}</strong> <small>EIP 公网IP及端口映射</small></li></a>
 						<a href="${ctx}/resources/?search_EQ_serviceType=6"><li><i class="icon-list"></i> <strong>${DNSCOUNT}</strong> <small>DNS 域名映射</small></li></a>
 					</ul>

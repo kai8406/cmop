@@ -12,6 +12,15 @@
 			$("ul#navbar li#apply").addClass("active");
 			
 		});
+		
+		function myPrint(obj){
+		    var newWindow=window.open("打印窗口","_blank");
+		    var docStr = obj.innerHTML;
+		    newWindow.document.write(docStr);
+		    newWindow.document.close();
+		    newWindow.print();
+		    //newWindow.close();
+		}
 	</script>
 	
 </head>
@@ -24,7 +33,7 @@
 	
 		<input type="hidden" name="id" value="${apply.id}">
 		
-		<fieldset>
+		<fieldset id="print">
 			<legend><small>服务申请单详情</small></legend>
 			
 			<dl class="dl-horizontal">
@@ -78,7 +87,7 @@
 				<!-- 实例Compute -->
 				<c:if test="${not empty apply.computeItems}">
 					<hr>
-					<dt>PCS & ECS实例</dt>
+					<dt>ECS实例</dt>
 					<c:forEach var="item" items="${apply.computeItems}">
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
@@ -316,7 +325,7 @@
 								<dd><em>服务域名</em>&nbsp;&nbsp;${vod.vodDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == vod.vodBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${vod.vodProtocol}</dd>
-								<dd><em>出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
+								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
 								<dd><em>Streamer地址</em>&nbsp;&nbsp;${vod.sourceStreamerUrl}</dd>
 								<br>
 							</c:forEach>
@@ -330,7 +339,7 @@
 								<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${live.liveProtocol}</dd>
-								<dd><em>出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
+								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
 								<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>
 								<dd><em>频道GUID</em>&nbsp;&nbsp;${live.guid}</dd>
 								<dd><em>直播流输出模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${outputModeMap }"><c:if test="${map.key == live.streamOutMode }">${map.value }</c:if></c:forEach></dd>
@@ -429,13 +438,21 @@
 					</c:forEach>
 				</c:if>
 				
+				<c:if test="${not empty sumCost}">
+					<hr>
+					<dt>资源服务费用</dt>
+					<dd>${sumCost}</dd>
+				</c:if>
+				
 			</dl>
-			 
-			<div class="form-actions">
-				<input class="btn" type="button" value="返回" onclick="history.back()">
-			</div>
 			
 		</fieldset>
+		
+		<div class="form-actions">
+			<input class="btn" type="button" value="返回" onclick="history.back()">
+			<a onclick="myPrint(document.getElementById('print'))" class="btn btn-primary">打印</a>
+		</div>
+			
 		
 	</form>
 	

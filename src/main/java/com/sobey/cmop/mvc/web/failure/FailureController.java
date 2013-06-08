@@ -30,6 +30,7 @@ import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.StorageItem;
+import com.sobey.cmop.mvc.entity.User;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.Servlets;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -92,10 +93,11 @@ public class FailureController extends BaseController {
 			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure,
 			RedirectAttributes redirectAttributes) {
 
+		User user = comm.accountService.getCurrentUser();
 		failure.setRelatedId(resourcesId);
 		failure.setCreateTime(new Date());
-		failure.setUser(comm.accountService.getCurrentUser());
-		failure.setTitle(comm.applyService.generateTitle("bug"));
+		failure.setUser(user);
+		failure.setTitle(comm.applyService.generateTitle(user.getLoginName(), "bug"));
 
 		boolean result = comm.failureService.saveFailure(failure, fileNames, fileDescs);
 

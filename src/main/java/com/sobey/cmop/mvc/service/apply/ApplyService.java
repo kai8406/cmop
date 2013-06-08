@@ -67,17 +67,17 @@ public class ApplyService extends BaseSevcie {
 	 * admin-MDN-20130212102311
 	 * </pre>
 	 * 
+	 * @param loginName
+	 *            登录名
 	 * @param serviceType
 	 *            服务申请的服务类型字符串
 	 * @return
 	 */
-	public String generateTitle(String serviceType) {
+	public String generateTitle(String loginName, String serviceType) {
 
 		DateTime dateTime = new DateTime();
 
-		return comm.accountService.getCurrentUser().getLoginName() + "-" + serviceType + "-"
-				+ dateTime.toString("yyyyMMddHHmmss");
-
+		return loginName + "-" + serviceType + "-" + dateTime.toString("yyyyMMddHHmmss");
 	}
 
 	// -- Apply Manager --//
@@ -118,7 +118,8 @@ public class ApplyService extends BaseSevcie {
 	public Apply saveApplyByServiceType(Apply apply, Integer serviceType) {
 
 		Integer status = ApplyConstant.Status.已申请.toInteger();
-		String title = comm.applyService.generateTitle(ApplyConstant.ServiceType.get(serviceType));
+		String title = comm.applyService.generateTitle(comm.accountService.getCurrentUser().getLoginName(),
+				ApplyConstant.ServiceType.get(serviceType));
 
 		apply.setStatus(status);
 		apply.setServiceType(serviceType);

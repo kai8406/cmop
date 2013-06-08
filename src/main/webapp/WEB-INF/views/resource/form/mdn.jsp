@@ -47,21 +47,6 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="usedby">运维人</label>
-				<div class="controls">
-					<select id="usedby" name="usedby" class="required">
-						<c:forEach var="map" items="${assigneeMap}">
-							<option value="${map.key}" 
-								<c:if test="${map.key == resources.usedby }">
-									selected="selected"
-								</c:if>
-							>${map.value}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="changeDescription">变更描述</label>
 				<div class="controls">
 					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
@@ -118,7 +103,7 @@
 						<dd><em>服务域名</em>&nbsp;&nbsp;${vod.vodDomain}</dd>
 						<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == vod.vodBandwidth }">${map.value }</c:if></c:forEach></dd>
 						<dd><em>播放协议选择</em>&nbsp;&nbsp;${vod.vodProtocol}</dd>
-						<dd><em>出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
+						<dd><em>源站出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
 						<dd><em>Streamer地址</em>&nbsp;&nbsp;${vod.sourceStreamerUrl}
 							<span class="pull-right">
 								<a href="${ctx}/resources/update/${resources.id}/vod/${vod.id}">变更</a>&nbsp;
@@ -136,7 +121,7 @@
 						<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
 						<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
 						<dd><em>播放协议选择</em>&nbsp;&nbsp;${live.liveProtocol}</dd>
-						<dd><em>出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
+						<dd><em>源站出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
 						<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>
 						<dd><em>频道GUID</em>&nbsp;&nbsp;${live.guid}</dd>
 						<dd><em>直播流输出模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${outputModeMap }"><c:if test="${map.key == live.streamOutMode }">${map.value }</c:if></c:forEach></dd>

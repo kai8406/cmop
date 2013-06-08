@@ -16,8 +16,10 @@
 			$("#inputForm").validate();
 			
 			// 初始化服务开始和结束时间,结束时间默认为开始时间3个月后
-			$("#serviceStart").val(getDatePlusMonthNum(0));
-			$("#serviceEnd").val(getDatePlusMonthNum(3));
+			if($("#applyId").val() == ""){
+				$("#serviceStart").val(getDatePlusMonthNum(0));
+				$("#serviceEnd").val(getDatePlusMonthNum(3));
+			}				
 			
 			$("#serviceStart").datepicker({
 				changeMonth: true,
@@ -44,7 +46,7 @@
 
 	<form id="inputForm" action="." method="post" class="form-horizontal input-form">
 	
-		<input type="hidden" name="id" value="${apply.id}">
+		<input type="hidden" name="id" id="applyId" value="${apply.id}">
 		
 		<fieldset>
 			<legend><small>
@@ -132,7 +134,7 @@
 				<!-- 实例Compute -->
 				<c:if test="${not empty apply.computeItems}">
 					<hr>
-					<dt>PCS & ECS实例</dt>
+					<dt>ECS实例</dt>
 					<c:forEach var="item" items="${apply.computeItems}">
 					
 						<dd><em>标识符</em>&nbsp;&nbsp;${item.identifier}</dd>
@@ -478,7 +480,7 @@
 								<dd><em>服务域名</em>&nbsp;&nbsp;${vod.vodDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == vod.vodBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${vod.vodProtocol}</dd>
-								<dd><em>出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
+								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
 								<dd><em>Streamer地址</em>&nbsp;&nbsp;${vod.sourceStreamerUrl}
 									<span class="pull-right">
 										<a href="${ctx}/apply/mdn/mdnVod/update/${vod.id}/applyId/${apply.id}">修改</a>&nbsp;
@@ -505,7 +507,7 @@
 								<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
 								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${live.liveProtocol}</dd>
-								<dd><em>出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
+								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
 								<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>
 								<dd><em>频道GUID</em>&nbsp;&nbsp;${live.guid}</dd>
 								<dd><em>直播流输出模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${outputModeMap }"><c:if test="${map.key == live.streamOutMode }">${map.value }</c:if></c:forEach></dd>

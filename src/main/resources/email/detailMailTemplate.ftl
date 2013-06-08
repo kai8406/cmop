@@ -344,7 +344,7 @@
 									<li><em>服务域名</em>&nbsp;:${vod.vodDomain}</li>
 									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if vod.vodBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${vod.vodProtocol}</li>
-									<li><em>出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
+									<li><em>源站出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
 									<li><em>Streamer地址</em>&nbsp;:${vod.sourceStreamerUrl}</li>
 									<br>
 								</#list>
@@ -360,7 +360,7 @@
 									<li><em>服务域名</em>&nbsp;:${live.liveDomain}</li>
 									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if live.liveBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${live.liveProtocol}</li>
-									<li><em>出口带宽</em>&nbsp;:${live.bandwidth}</li>
+									<li><em>源站出口带宽</em>&nbsp;:${live.bandwidth}</li>
 									<li><em>频道名称</em>&nbsp;:${live.name}</li>
 									<li><em>频道GUID</em>&nbsp;:${live.guid}</li>
 									<li><em>直播流输出模式</em>&nbsp;:<#list outputModeMap?keys as k ><#if live.streamOutMode?string == k>${outputModeMap[k]}</#if></#list></li>

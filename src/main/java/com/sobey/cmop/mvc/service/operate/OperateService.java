@@ -420,13 +420,6 @@ public class OperateService extends BaseSevcie {
 				if (ResourcesConstant.ServiceType.PCS.toInteger().equals(serviceType)
 						|| ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
 
-					// 删除compute下关联eip在oneCMDB中的数据.
-					List<NetworkEipItem> networkEipItems = comm.eipService
-							.getNetworkEipItemListByComputeItemId(serviceId);
-					for (NetworkEipItem networkEipItem : networkEipItems) {
-						comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
-					}
-
 					ComputeItem computeItem = comm.computeService.getComputeItem(serviceId);
 
 					// 初始化IPAddress
@@ -449,15 +442,9 @@ public class OperateService extends BaseSevcie {
 					NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(serviceId);
 
 					// 初始化IPAddress
-					comm.ipPoolService.initIpPool(networkElbItem.getVirtualIp());
-
-					// 删除elb下关联eip在oneCMDB中的数据.
-					if (!networkElbItem.getNetworkEipItems().isEmpty()) {
-						for (NetworkEipItem networkEipItem : networkElbItem.getNetworkEipItems()) {
-							comm.oneCmdbUtilService.deleteEIPToOneCMDB(networkEipItem);
-						}
+					if (networkElbItem != null) {
+						comm.ipPoolService.initIpPool(networkElbItem.getVirtualIp());
 					}
-
 					comm.oneCmdbUtilService.deleteELBToOneCMDB(networkElbItem);
 					comm.elbService.deleteNetworkElbItem(serviceId);
 

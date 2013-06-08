@@ -68,10 +68,12 @@
 			<div class="control-group">
 				<div class="controls">
 					<label class="radio inline">
- 						<input type="radio" name="linkRadio" value="isCompute" checked="checked">关联实例
+ 						<input type="radio" name="linkRadio" value="isCompute" class="required"
+ 						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
 					</label>
 					<label class="radio inline">
-	 					<input type="radio" name="linkRadio" value="isElb">关联Elb
+	 					<input type="radio" name="linkRadio" value="isElb" class="required"
+	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
 					</label>
 				</div>
 			</div>
@@ -79,18 +81,30 @@
 			<div class="control-group">
 				<div class="controls">
 				
-					<div id="computeSelectDiv" class="show">
+					<div id="computeSelectDiv" 
+						<c:choose>
+						<c:when test="${not empty eip.computeItem }">class="show"</c:when>
+						<c:otherwise>class="hidden"</c:otherwise>
+						</c:choose>
+					>
 						<select id="computeSelect" class="required">
 							<c:forEach var="item" items="${allComputes }">
-								<option value="${item.id }">${item.identifier}(${item.remark} - ${item.innerIp})</option>
+								<option value="${item.id }" <c:if test="${item.id == eip.computeItem.id  }">selected="selected"</c:if>			
+								 >${item.identifier}(${item.remark} - ${item.innerIp})</option>
 							</c:forEach>
 						</select>					
 					</div>
 									
-					<div id="elbSelectDiv" class="hidden">
+					<div id="elbSelectDiv" 
+						<c:choose>
+						<c:when test="${not empty eip.networkElbItem }">class="show"</c:when>
+						<c:otherwise>class="hidden"</c:otherwise>
+						</c:choose>
+					>
 						<select id="elbSelect" class="required">
 							<c:forEach var="item" items="${allElbs }">
-								<option value="${item.id }">${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
+								<option value="${item.id }"  <c:if test="${item.id == eip.networkElbItem.id  }">selected="selected"</c:if>
+								>${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>
 						</select>			
 					</div>		

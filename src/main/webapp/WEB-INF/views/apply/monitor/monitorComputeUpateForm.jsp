@@ -255,7 +255,7 @@
 				<table class="table table-striped table-bordered table-condensed">
 					<thead><tr><th></th><th>实例标识符</th><th>用途信息</th><th>IP地址</th></tr></thead>
 					<tbody id="resources-tbody">
-						<c:forEach var="compute" items="${allComputes}">
+						<c:forEach var="compute" items="${computeResources}">
 							<tr>
 								<td>
 									<label><input type="radio" name="computeId" checked="checked" value="${compute.id }"></label>

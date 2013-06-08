@@ -407,7 +407,7 @@ public class RedmineTextUtil {
 								.append(NEWLINE);
 						content.append(FieldNameConstant.MdnVodItem.点播播放协议选择 + ":").append(BLANK)
 								.append(mdnVodItem.getVodProtocol()).append(NEWLINE);
-						content.append(FieldNameConstant.MdnVodItem.点播出口带宽 + ":").append(BLANK)
+						content.append(FieldNameConstant.MdnVodItem.点播源站出口带宽 + ":").append(BLANK)
 								.append(mdnVodItem.getSourceOutBandwidth()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnVodItem.Streamer地址 + ":").append(BLANK)
 								.append(mdnVodItem.getSourceStreamerUrl()).append(NEWLINE + NEWLINE);
@@ -426,7 +426,7 @@ public class RedmineTextUtil {
 								.append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播播放协议选择 + ":").append(BLANK)
 								.append(mdnLiveItem.getLiveProtocol()).append(NEWLINE);
-						content.append(FieldNameConstant.MdnLiveItem.直播出口带宽 + ":").append(BLANK)
+						content.append(FieldNameConstant.MdnLiveItem.直播源站出口带宽 + ":").append(BLANK)
 								.append(mdnLiveItem.getBandwidth()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.频道名称 + ":").append(BLANK)
 								.append(mdnLiveItem.getName()).append(NEWLINE);

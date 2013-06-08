@@ -146,7 +146,7 @@ public class NetworkElbItem implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "networkElbItem")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "networkElbItem")
 	public Set<NetworkEipItem> getNetworkEipItems() {
 		return networkEipItems;
 	}

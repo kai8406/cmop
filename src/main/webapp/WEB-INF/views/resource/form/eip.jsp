@@ -65,21 +65,6 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="usedby">运维人</label>
-				<div class="controls">
-					<select id="usedby" name="usedby" class="required">
-						<c:forEach var="map" items="${assigneeMap}">
-							<option value="${map.key}" 
-								<c:if test="${map.key == resources.usedby }">
-									selected="selected"
-								</c:if>
-							>${map.value}</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="changeDescription">变更描述</label>
 				<div class="controls">
 					<textarea rows="3" id="changeDescription" name="changeDescription" placeholder="...变更描述"
@@ -120,11 +105,11 @@
 			<div class="control-group">
 				<div class="controls">
 					<label class="radio inline">
- 						<input type="radio" name="linkRadio" value="isCompute" 
+ 						<input type="radio" name="linkRadio" value="isCompute" class="required"
  						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
 					</label>
 					<label class="radio inline">
-	 					<input type="radio" name="linkRadio" value="isElb"
+	 					<input type="radio" name="linkRadio" value="isElb" class="required"
 	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
 					</label>
 				</div>

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.MonitorCompute;
 import com.sobey.cmop.mvc.entity.MonitorElb;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
@@ -307,12 +308,23 @@ public class MonitorController extends BaseController {
 	}
 
 	/**
+	 * 用户已有的负载均衡器ELB
 	 * 
-	 * @return 指定用户的所有负载均衡器ELB(用于监控申请中,只列出未被监控的ELB)List
+	 * @return
 	 */
-	@ModelAttribute("monitorElbs")
-	public List<NetworkElbItem> allElbs() {
-		return comm.elbService.getNetworkElbItemListByMonitorApply(getCurrentUserId());
+	@ModelAttribute("elbResources")
+	public List<NetworkElbItem> elbResources() {
+		return comm.basicUnitService.getNetworkElbItemListByResources(getCurrentUserId());
+	}
+
+	/**
+	 * 用户已有的实例compute
+	 * 
+	 * @return
+	 */
+	@ModelAttribute("computeResources")
+	public List<ComputeItem> computeResources() {
+		return comm.basicUnitService.getComputeItemListByResources(getCurrentUserId());
 	}
 
 }

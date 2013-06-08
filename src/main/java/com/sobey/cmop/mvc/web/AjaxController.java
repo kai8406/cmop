@@ -150,7 +150,7 @@ public class AjaxController extends BaseController {
 	@RequestMapping(value = "getResourcesList", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResourcesJson> getResourcesList(
-			@RequestParam(value = "serviceType", required = false) Integer serviceType,
+			@RequestParam(value = "serviceType", required = false) String serviceType,
 			@RequestParam(value = "serviceTagName", required = false) String serviceTagName,
 			@RequestParam(value = "ipAddress", required = false) String ipAddress,
 			@RequestParam(value = "serviceIdentifier", required = false) String serviceIdentifier) {

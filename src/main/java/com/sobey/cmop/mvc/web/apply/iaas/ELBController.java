@@ -36,7 +36,7 @@ public class ELBController extends BaseController {
 	 * 新增N个ELB( N >= 1)
 	 * 
 	 * <pre>
-	 * 同一个ELB下的多个参数用"-"区分.
+	 * 同一个ELB下的多个参数用"@"区分.
 	 * 逗号","用于区分不同的ELB的参数.
 	 * </pre>
 	 * 
@@ -81,7 +81,7 @@ public class ELBController extends BaseController {
 	 * 修改单个ELB信息.
 	 * 
 	 * <pre>
-	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"-".
+	 * 注意:接收的数组和新建的数组格式不同,只有",",没有"@".
 	 * 修改ELB信息后,跳转到applyId的服务申请修改页面
 	 * </pre>
 	 * 

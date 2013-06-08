@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -73,7 +74,12 @@ public class OperateController extends BaseController {
 	}
 
 	/**
-	 * 跳转到更新页面
+	 * 跳转到更新页面,并替换掉redmine文本中的ip.（100%流程后无法替换.）
+	 * 
+	 * @param id
+	 * @param model
+	 * @param redirectAttributes
+	 * @return
 	 */
 	@RequestMapping(value = "update/{id}")
 	public String update(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
@@ -84,11 +90,14 @@ public class OperateController extends BaseController {
 		RedmineIssue redmineIssue = comm.operateService.findByIssueId(id);
 		model.addAttribute("redmineIssue", redmineIssue);
 		if (issue != null) {
+
 			String desc = issue.getDescription();
+
 			desc = desc.replaceAll("\\*服务申请的详细信息\\*", "");
 			desc = desc.replaceAll("\\*服务变更的详细信息\\*", "");
 			desc = desc.replaceAll("\\*", "");
 			desc = desc.replaceAll("\\+", "");
+
 			if (desc.indexOf("# 基本信息") >= 0) {
 				desc = desc.replaceAll("# 基本信息", "<br># 基本信息");
 			} else {
@@ -101,67 +110,133 @@ public class OperateController extends BaseController {
 			List<StorageItem> storageList = (List) list.get(1);
 			List<NetworkElbItem> networkElbList = (List) list.get(2);
 			List<NetworkEipItem> networkEipList = (List) list.get(3);
+
+			// oldIP替换分配的IP.
+
 			logger.info("--->更新写入Redmine的IP（计算资源）..." + computeList.size());
-			String oldIp = "";
-			for (ComputeItem computeItem : computeList) {
-				desc = desc.replace(
-						computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - " + computeItem.getOldIp()
-								+ ")", computeItem.getIdentifier() + "(" + computeItem.getRemark() + " - "
-								+ computeItem.getInnerIp() + ")");
-			}
+			desc = this.replaceComputeTextFromOldIpToInnerIp(desc, computeList);
+
 			logger.info("--->更新写入Redmine的IP（EIP）..." + networkEipList.size());
-			for (NetworkEipItem eipItem : networkEipList) {
-				oldIp = transDot(eipItem.getOldIp());
-				desc = desc.replaceAll(eipItem.getIdentifier() + oldIp,
-						eipItem.getIdentifier() + "(" + eipItem.getIpAddress() + ")");
-			}
+			desc = this.replaceEIPTextFromOldIpToInnerIp(desc, networkEipList);
+
 			logger.info("--->更新写入Redmine的IP（ELB）..." + networkElbList.size());
-			for (NetworkElbItem elbItem : networkElbList) {
-				oldIp = transDot(elbItem.getOldIp());
-				desc = desc.replaceAll(elbItem.getIdentifier() + oldIp,
-						elbItem.getIdentifier() + "(" + elbItem.getVirtualIp() + ")");
-			}
+			desc = this.replaceELBTextFromOldIpToInnerIp(desc, networkElbList);
+
 			model.addAttribute("description", desc);
 
-			if (computeList.size() > 0) {
+			if (!computeList.isEmpty()) {
 				model.addAttribute("computeList", computeList);
 				int poolType = 0;
 				logger.info("--->has compute: " + computeList.size() + ",poolType=" + poolType);
 				model.addAttribute("server", comm.operateService.findHostMapByServerType(2)); // 物理机
 				model.addAttribute("hostServer", comm.operateService.findHostMapByServerType(1));
 				model.addAttribute("osStorage", comm.oneCmdbUtilService.getOsStorageFromOnecmdb());
-
 			}
-			if (storageList.size() > 0) {
+
+			if (!storageList.isEmpty()) {
 				model.addAttribute("storageList", storageList);
 				model.addAttribute("fimasController", comm.oneCmdbUtilService.getFimasHardWareFromOnecmdb());
 				model.addAttribute("netappController", comm.oneCmdbUtilService.getNfsHardWareFromOnecmdb());
 			}
-			if (networkEipList.size() > 0) {
+
+			if (!networkEipList.isEmpty()) {
 				model.addAttribute("eipList", networkEipList);
 				logger.info("--->has eip: " + networkEipList.size());
 				model.addAttribute("telecomIpPool", comm.operateService.getAllIpPoolByPoolType(3));
-				// model.addAttribute("unicomIpPool",comm.operateService.getAllIpPoolByPoolType(2));
 			}
-			if (networkElbList.size() > 0) {
+
+			if (!networkElbList.isEmpty()) {
 				model.addAttribute("elbList", networkElbList);
 				// 暂不处理ELB的虚拟IP池
 			}
 
 			model.addAttribute("location", comm.operateService.getLocationFromOnecmdb());
-			// 默认都是西安IDC，所以去掉另外两个VLAN
-			Map map = comm.operateService.getVlanFromOnecmdb();
-			model.addAttribute("vlan", map);
+
+			model.addAttribute("vlan", comm.operateService.getVlanFromOnecmdb());
 
 			return "operate/operateForm";
-		} else { // 查询Redmine中的Issue信息失败
+
+		} else {
+
+			// 查询Redmine中的Issue信息失败
 			redirectAttributes.addFlashAttribute("message", "查询工单信息失败，请稍后重试！");
 			return "redirect:/operate";
 		}
 	}
 
-	private String transDot(String oldIp) {
-		return "\\(" + oldIp.replaceAll("\\.", "\\\\.") + "\\)";
+	/**
+	 * 将redmine文本中Compute的oldIP替换成已经分配的IP.
+	 * 
+	 * @param desc
+	 * @param computeList
+	 * @return
+	 */
+	private String replaceComputeTextFromOldIpToInnerIp(String desc, List<ComputeItem> computeList) {
+
+		int size = computeList.size();
+
+		String[] searchList = new String[size];
+		String[] replacementList = new String[size];
+
+		for (int i = 0; i < computeList.size(); i++) {
+
+			searchList[i] = computeList.get(i).getIdentifier() + "(" + computeList.get(i).getRemark() + " - "
+					+ computeList.get(i).getOldIp() + ")";
+
+			replacementList[i] = computeList.get(i).getIdentifier() + "(" + computeList.get(i).getRemark() + " - "
+					+ computeList.get(i).getInnerIp() + ")";
+		}
+
+		return StringUtils.replaceEach(desc, searchList, replacementList);
+	}
+
+	/**
+	 * 将redmine文本中EIP的oldIP替换成已经分配的IP.
+	 * 
+	 * @param desc
+	 * @param networkEipList
+	 * @return
+	 */
+	private String replaceEIPTextFromOldIpToInnerIp(String desc, List<NetworkEipItem> networkEipList) {
+
+		int size = networkEipList.size();
+
+		String[] searchList = new String[size];
+		String[] replacementList = new String[size];
+
+		for (int i = 0; i < networkEipList.size(); i++) {
+
+			searchList[i] = networkEipList.get(i).getIdentifier() + "(" + networkEipList.get(i).getOldIp() + ")";
+
+			replacementList[i] = networkEipList.get(i).getIdentifier() + "(" + networkEipList.get(i).getIpAddress()
+					+ ")";
+		}
+
+		return StringUtils.replaceEach(desc, searchList, replacementList);
+	}
+
+	/**
+	 * 将redmine文本中ELB的oldIP替换成已经分配的IP.
+	 * 
+	 * @param desc
+	 * @param networkElbList
+	 * @return
+	 */
+	private String replaceELBTextFromOldIpToInnerIp(String desc, List<NetworkElbItem> networkElbList) {
+		int size = networkElbList.size();
+
+		String[] searchList = new String[size];
+		String[] replacementList = new String[size];
+
+		for (int i = 0; i < networkElbList.size(); i++) {
+
+			searchList[i] = networkElbList.get(i).getIdentifier() + "(" + networkElbList.get(i).getOldIp() + ")";
+
+			replacementList[i] = networkElbList.get(i).getIdentifier() + "(" + networkElbList.get(i).getVirtualIp()
+					+ ")";
+		}
+
+		return StringUtils.replaceEach(desc, searchList, replacementList);
 	}
 
 	/**

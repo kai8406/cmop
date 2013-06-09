@@ -185,7 +185,7 @@ public class RedmineTextUtil {
 							.append(eipItem.getComputeItem().getRemark()).append(" - ")
 							.append(eipItem.getComputeItem().getInnerIp()).append(")").append(NEWLINE);
 
-				} else {
+				} else if (eipItem.getNetworkElbItem() != null) {
 
 					// 关联ELB
 					content.append(FieldNameConstant.Eip.关联ELB + ":").append(BLANK)

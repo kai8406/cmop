@@ -7,201 +7,202 @@
 	
 <script>
 $(document).ready(function() {
-	
-	$("ul#navbar li#operate").addClass("active");
-	
-	$("#dueDate").val(getDatePlusMonthNum(0));
-	
-	$("#dueDate").datepicker({
-		minDate: 'D',
-		changeMonth: true
-	});
-	
-	$("#inputForm").validate({
-		errorClass: "help-inline",
-		errorElement: "span",
-		highlight:function(element, errorClass, validClass) {
-	   		$(element).closest('.control-group').addClass('error');
-		},
-		unhighlight: function(element, errorClass, validClass) {
-			$(element).closest('.control-group').removeClass('error');
+    $("ul#navbar li#operate").addClass("active");
+    $("#dueDate").val(getDatePlusMonthNum(0));
+    $("#dueDate").datepicker({
+        minDate: 'D',
+        changeMonth: true
+    });
+    
+	$("#submitBtn").click(function() {
+		
+		if(!$("#inputForm").valid()){
+			return false;
+		}
+		
+		if ($('#estimatedHours').val() == "" || $('#estimatedHours').val() == "0") {
+	        alert("Estimated time不能为空且应大于0！");
+	        $('#estimatedHours').focus();
+	        return false;
+	    }
+		
+	    if ($('#note').val() == "") {
+	        alert("Description不能为空！");
+	        $('#note').focus();
+	        return false;
+	    }
+	    
+	    //增加只有第一接收才能选择100%完成的限制
+	    if (($('#operator').val() == null && '${user.redmineUserId}' != '${issue.assignee.id}' && $('#doneRatio').val() == 100) || ($('#operator').val() != null && '${user.redmineUserId}' != $('#operator').val() && $('#doneRatio').val() == 100)) {
+	        alert("您不是第一接收人，完成率不能选择100%！");
+	        $('#doneRatio').focus();
+	        return false;
+	    }
+	    
+	    if (parseInt($('#doneRatio').val()) < parseInt('${issue.doneRatio}')) {
+	        alert("完成率不能小于当前值！");
+	        $('#doneRatio').focus();
+	        return false;
+	    }
+	    
+	    //拼装计算和存储资源相关属性
+	    var computes = "",
+	        storages = "",
+	        hostNames = "",
+	        serverAlias = "",
+	        osStorageAlias = "",
+	        controllerAlias = "",
+	        volumes = "",
+	        sep = ",";
+	    var innerIps = "",
+	        eipIds = "",
+	        eipAddresss = "";
+	    var virtualIps = "",
+	        elbIds = "";
+	    var flag = true;
+	    
+	    $("#updateDiv #computeDiv").each(function() {
+	        computes = computes + $(this).find("#computeId").val() + sep;
+	        hostNames = hostNames + $(this).find("#hostName").val() + " " + sep;
+	        serverAlias = serverAlias + $(this).find("#server").val() + sep;
+	    });
+	    
+	    $("#updateDiv #osStorageDiv").each(function() {
+	        osStorageAlias = osStorageAlias + $(this).find("#osStorage").val() + sep;
+	        innerIps = innerIps + $(this).find("#innerIp").val() + sep;
+	        if ($(this).find("#innerIp").val() == "") {
+	            flag = false;
+	        }
+	    });
+		/*
+	    if (!flag) {
+	    	alert("计算资源的内网IP不能为空！");
+	    	return false;
+	    }*/
+	    $("#updateDiv #storageDiv").each(function() {
+	        storages = storages + $(this).find("#storageId").val() + sep;
+	        controllerAlias = controllerAlias + $(this).find("#controller").val() + sep;
+	        volumes = volumes + $(this).find("#volume").val() + " " + sep;
+	    });
+	    $("#updateDiv #eipDiv").each(function() {
+	        eipIds = eipIds + $(this).find("#eipId").val() + sep;
+	        eipAddresss = eipAddresss + $(this).find("#eipAddress").val() + sep;
+	    });
+	    $("#updateDiv #elbDiv").each(function() {
+	        elbIds = elbIds + $(this).find("#elbId").val() + sep;
+	        virtualIps = virtualIps + $(this).find("#innerIp").val() + sep;
+	    });
+	    $('#computes').val(computes);
+	    $('#storages').val(storages);
+	    $('#hostNames').val(hostNames);
+	    $('#serverAlias').val(serverAlias);
+	    $('#osStorageAlias').val(osStorageAlias);
+	    $('#controllerAlias').val(controllerAlias);
+	    $('#volumes').val(volumes);
+	    $('#innerIps').val(innerIps);
+	    $('#eipIds').val(eipIds);
+	    $('#eipAddresss').val(eipAddresss);
+	    if ($('#location').length > 0) {
+	        $('#locationAlias').val($('#location').val());
+	    }
+	    $('#elbIds').val(elbIds);
+	    $('#virtualIps').val(virtualIps);
+	    
+		 
+		//只有flag为true时才提交.
+		if(flag){
+			$("#inputForm").submit();
+			$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
 		}
 	});
-
-	//IP改变事件
-    $("select[name=ipPool]").change(function(){
-    	var ip = $(this).val();
-    	if (ip!="") {
-        	var isUsed = false;
-        	$("#updateDiv #osStorageDiv").each(function () {
-        		if ($(this).find("#innerIp").val()==ip) {
-        			isUsed = true;
-        		}
-        	});
-        	$("#updateDiv #elbDiv").each(function () {
-        		if ($(this).find("#innerIp").val()==ip) {
-        			isUsed = true;
-        		}
-        	});
-        	if (isUsed) {
-        		alert("您选择的IP已被选用，请重新选择！");
-        	} else {
-    	    	$(this).parent().find("#innerIp").val(ip);
-        	}        	
+	
+    
+    //IP改变事件
+    $("select[name=ipPool]").change(function() {
+        var ip = $(this).val();
+        if (ip != "") {
+            var isUsed = false;
+            $("#updateDiv #osStorageDiv").each(function() {
+                if ($(this).find("#innerIp").val() == ip) {
+                    isUsed = true;
+                }
+            });
+            $("#updateDiv #elbDiv").each(function() {
+                if ($(this).find("#innerIp").val() == ip) {
+                    isUsed = true;
+                }
+            });
+            if (isUsed) {
+                alert("您选择的IP已被选用，请重新选择！");
+            } else {
+                $(this).parent().find("#innerIp").val(ip);
+            }
         }
     });
 });
 
 function checkValid() {
-	//alert($('#issueId').val()+","+$('#projectId').val()+","+$('#priority').val()+","+ $('#assignTo').val()+","+ $('#dueDate').val()+","+$('#estimatedHours').val()+","+$('#doneRatio').val()+","+$('#note').val());
-	if ($('#estimatedHours').val()=="" || $('#estimatedHours').val()=="0") { 
-        alert("Estimated time不能为空且应大于0！");
-        $('#estimatedHours').focus();
-        return false;
-    }
-	if ($('#note').val()=="") { 
-        alert("Description不能为空！");
-        $('#note').focus();
-        return false;
-    }	
-
-	//增加只有余波才能选择100%完成的限制
-	//alert('${user.redmineUserId}');
-	if (($('#operator').val()==null && '${user.redmineUserId}'!='${issue.assignee.id}' && $('#doneRatio').val()==100) || 
-		($('#operator').val()!=null && '${user.redmineUserId}'!=$('#operator').val() && $('#doneRatio').val()==100)) {
-		alert("您不是第一接收人，完成率不能选择100%！");
-		$('#doneRatio').focus();
-        return false;
-	}
-	if (parseInt($('#doneRatio').val())<parseInt('${issue.doneRatio}')) {
-		alert("完成率不能小于当前值！");
-		$('#doneRatio').focus();
-        return false;
-	}
-	
-	//拼装计算和存储资源相关属性
-	var computes="",storages="",hostNames="",serverAlias="",osStorageAlias="",controllerAlias="",volumes="",sep=",";
-	var innerIps="",eipIds="",eipAddresss="";
-	var virtualIps="",elbIds="";
-	$("#updateDiv #computeDiv").each(function () {
-		computes = computes+$(this).find("#computeId").val()+sep;
-		hostNames = hostNames+$(this).find("#hostName").val()+" "+sep;
-		serverAlias = serverAlias+$(this).find("#server").val()+sep;
-    });
-    var flag = true;
-	$("#updateDiv #osStorageDiv").each(function () {
-		osStorageAlias = osStorageAlias+$(this).find("#osStorage").val()+sep;
-		innerIps = innerIps+$(this).find("#innerIp").val()+sep;
-		if ($(this).find("#innerIp").val()=="") {
-			flag = false;
-		}
-    });
-	/*
-    if (!flag) {
-    	alert("计算资源的内网IP不能为空！");
-    	return false;
-    }*/
-	$("#updateDiv #storageDiv").each(function () {
-		storages = storages+$(this).find("#storageId").val()+sep;
-		controllerAlias = controllerAlias+$(this).find("#controller").val()+sep;
-		volumes = volumes+$(this).find("#volume").val()+" "+sep;
-    });
-	$("#updateDiv #eipDiv").each(function () {
-		eipIds = eipIds+$(this).find("#eipId").val()+sep;
-		eipAddresss = eipAddresss+$(this).find("#eipAddress").val()+sep;
-    });
-	$("#updateDiv #elbDiv").each(function () {
-		elbIds = elbIds+$(this).find("#elbId").val()+sep;
-		virtualIps = virtualIps+$(this).find("#innerIp").val()+sep;
-    });
-	$('#computes').val(computes);
-	$('#storages').val(storages);
-	$('#hostNames').val(hostNames);
-	$('#serverAlias').val(serverAlias);
-	$('#osStorageAlias').val(osStorageAlias);
-	$('#controllerAlias').val(controllerAlias);
-	$('#volumes').val(volumes);
-	$('#innerIps').val(innerIps);
-	$('#eipIds').val(eipIds);
-	$('#eipAddresss').val(eipAddresss);
-	if ($('#location').length>0) {
-		$('#locationAlias').val($('#location').val());
-	}
-	$('#elbIds').val(elbIds);
-	$('#virtualIps').val(virtualIps);
-	//if (${isShow} && $('#hostNames').val()=="") {
-	//	alert("主机名不能为空！");
-	//	$('#hostNames').focus();
+    //alert($('#issueId').val()+","+$('#projectId').val()+","+$('#priority').val()+","+ $('#assignTo').val()+","+ $('#dueDate').val()+","+$('#estimatedHours').val()+","+$('#doneRatio').val()+","+$('#note').val());
+    
+    //if (${isShow} && $('#hostNames').val()=="") {
+    //	alert("主机名不能为空！");
+    //	$('#hostNames').focus();
     //    return false;
-	//}
-	//alert($('#computes').val());
-	//alert($('#storages').val());
-	//alert($('#hostNames').val());
-	//alert($('#serverAlias').val());
-	//alert($('#osStorageAlias').val());
-	//alert($('#controllerAlias').val());
-	//alert($('#volumes').val());
-	//alert($('#innerIps').val());
-	//alert($('#eipIds').val());
-	//alert($('#eipAddresss').val());
-	//alert($('#locationAlias').val());
-	//alert($('#elbIds').val());
-	//alert($('#virtualIps').val());	
-	//return false;
-
+    //}
+    //return false;
 }
 
-function changeLocation(){
-	$.ajax({
+function changeLocation() {
+    $.ajax({
         type: "GET",
         url: "${ctx}/ajax/getVlanByLocationAlias?locationAlias=" + $('#location').val(),
-       	dataType: "json",
-        success: function (data) {
-        	$("#vlan").empty();
-        	var html = "";
-        	for (var key in data) {  
-        		html += ("<option value='"+key+"'>"+data[key]+"</option>");
-       	    }
-        	 $("#vlan").append(html);
-        	changeVlan();
+        dataType: "json",
+        success: function(data) {
+            $("#vlan").empty();
+            var html = "";
+            for (var key in data) {
+                html += ("<option value='" + key + "'>" + data[key] + "</option>");
+            }
+            $("#vlan").append(html);
+            changeVlan();
         }
     });
 }
 
-function changeVlan(){
-	$.ajax({
+function changeVlan() {
+    $.ajax({
         type: "GET",
-       	url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + $("#vlan").val(),
-       	dataType: "json",
-        success: function (data) {
-        	var html = "<option value=''></option>";
-        	for (var i = 0; i < data.length; i++) {  
-       	        html += "<option value='"+data[i].ipAddress+"'>"+data[i].ipAddress+"</option>";
-       	    }
-        	$("#updateDiv #osStorageDiv").each(function () {
-        		$(this).find("#ipPool").empty();
-        		$(this).find("#ipPool").append(html);
-        	});
-        	$("#updateDiv #elbDiv").each(function () {
-        		$(this).find("#ipPool").empty();
-        		$(this).find("#ipPool").append(html);
-        	});        	
+        url: "${ctx}/ajax/getIpPoolByVlan?vlanAlias=" + $("#vlan").val(),
+        dataType: "json",
+        success: function(data) {
+            var html = "<option value=''></option>";
+            for (var i = 0; i < data.length; i++) {
+                html += "<option value='" + data[i].ipAddress + "'>" + data[i].ipAddress + "</option>";
+            }
+            $("#updateDiv #osStorageDiv").each(function() {
+                $(this).find("#ipPool").empty();
+                $(this).find("#ipPool").append(html);
+            });
+            $("#updateDiv #elbDiv").each(function() {
+                $(this).find("#ipPool").empty();
+                $(this).find("#ipPool").append(html);
+            });
         }
     });
 }
 
-function changeServer(obj){
-	var server = $(obj).val();
-	$.ajax({
+function changeServer(obj) {
+    var server = $(obj).val();
+    $.ajax({
         type: "GET",
-       	url: "${ctx}/ajax/checkServerIsUsed?serverAlias=" + server,
-       	dataType: "text",
-        success: function (data) {
-            if (data.length>0) {
-            	alert("您选择的Server已被选用，请重新选择！");
+        url: "${ctx}/ajax/checkServerIsUsed?serverAlias=" + server,
+        dataType: "text",
+        success: function(data) {
+            if (data.length > 0) {
+                alert("您选择的Server已被选用，请重新选择！");
             }
         }
-    });	
+    });
 }
 </script>
 </head>
@@ -537,7 +538,7 @@ function changeServer(obj){
 						<div class="form-actions">
 							<input id="cancel" class="btn" type="button" value="返回" onclick="history.back()"/>
 							<c:if test="${issue!=null && issue.doneRatio!=100 && issue.assignee.id==user.redmineUserId}">
-								<button class="btn btn-primary loading" onclick="return checkValid();">提交</button>
+								<input id="submitBtn" class="btn btn-primary" type="button" value="提交">
 							</c:if>
 						</div>
 					</div>					

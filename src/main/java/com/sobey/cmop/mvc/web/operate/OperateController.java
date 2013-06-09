@@ -95,8 +95,6 @@ public class OperateController extends BaseController {
 
 			desc = desc.replaceAll("\\*服务申请的详细信息\\*", "");
 			desc = desc.replaceAll("\\*服务变更的详细信息\\*", "");
-			desc = desc.replaceAll("\\*", "");
-			desc = desc.replaceAll("\\+", "");
 
 			if (desc.indexOf("# 基本信息") >= 0) {
 				desc = desc.replaceAll("# 基本信息", "<br># 基本信息");

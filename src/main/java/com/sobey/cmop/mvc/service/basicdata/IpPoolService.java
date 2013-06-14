@@ -303,13 +303,13 @@ public class IpPoolService extends BaseSevcie {
 	}
 
 	/**
-	 * 根据IP池获取所有IP
+	 * 根据IP池类型和ip状态获得ip列表
 	 * 
 	 * @param poolType
 	 * @return
 	 */
-	public List<IpPool> getAllIpPoolByPoolType(Integer poolType) {
-		return ipPoolDao.findByPoolType(poolType);
+	public List<IpPool> getIpPoolByPoolTypeAndStatus(Integer poolType, Integer status) {
+		return ipPoolDao.findByPoolTypeAndStatus(poolType, status);
 	}
 
 	/**

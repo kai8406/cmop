@@ -482,7 +482,7 @@ function changeServer(obj) {
 							    	<input type="hidden" id="eipId" name="eipId" value="${eip.id}"/>
 									<select id="eipAddress" name="eipAddress" class="eipAddress">
 										<option></option>
-										<c:forEach var="map" items="${telecomIpPool}">
+										<c:forEach var="map" items="${internetIpPool}">
 											<option value="<c:out value='${map.ipAddress}' />"
 												<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
 											</option>

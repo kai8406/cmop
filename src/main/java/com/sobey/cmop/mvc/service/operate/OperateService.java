@@ -822,14 +822,4 @@ public class OperateService extends BaseSevcie {
 		return map;
 	}
 
-	/**
-	 * 根据IP池类型查询
-	 * 
-	 * @param poolType
-	 * @return
-	 */
-	public List getAllIpPoolByPoolType(int poolType) {
-		return comm.ipPoolService.getAllIpPoolByPoolType(poolType);
-	}
-
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
@@ -140,7 +141,8 @@ public class OperateController extends BaseController {
 			if (!networkEipList.isEmpty()) {
 				model.addAttribute("eipList", networkEipList);
 				logger.info("--->has eip: " + networkEipList.size());
-				model.addAttribute("telecomIpPool", comm.operateService.getAllIpPoolByPoolType(3));
+				model.addAttribute("internetIpPool", comm.ipPoolService.getIpPoolByPoolTypeAndStatus(
+						IpPoolConstant.PoolType.互联网IP池.toInteger(), IpPoolConstant.IpStatus.未使用.toInteger()));
 			}
 
 			if (!networkElbList.isEmpty()) {

@@ -13,110 +13,106 @@ $(document).ready(function() {
         minDate: 'D',
         changeMonth: true
     });
-    
-	$("#submitBtn").click(function() {
-		
-		if(!$("#inputForm").valid()){
-			return false;
-		}
-		
-		if ($('#estimatedHours').val() == "" || $('#estimatedHours').val() == "0") {
-	        alert("Estimated time不能为空且应大于0！");
-	        $('#estimatedHours').focus();
-	        return false;
-	    }
-		
-	    if ($('#note').val() == "") {
-	        alert("Description不能为空！");
-	        $('#note').focus();
-	        return false;
-	    }
-	    
-	    //增加只有第一接收才能选择100%完成的限制
-	    if (($('#operator').val() == null && '${user.redmineUserId}' != '${issue.assignee.id}' && $('#doneRatio').val() == 100) || ($('#operator').val() != null && '${user.redmineUserId}' != $('#operator').val() && $('#doneRatio').val() == 100)) {
-	        alert("您不是第一接收人，完成率不能选择100%！");
-	        $('#doneRatio').focus();
-	        return false;
-	    }
-	    
-	    if (parseInt($('#doneRatio').val()) < parseInt('${issue.doneRatio}')) {
-	        alert("完成率不能小于当前值！");
-	        $('#doneRatio').focus();
-	        return false;
-	    }
-	    
-	    //拼装计算和存储资源相关属性
-	    var computes = "",
-	        storages = "",
-	        hostNames = "",
-	        serverAlias = "",
-	        osStorageAlias = "",
-	        controllerAlias = "",
-	        volumes = "",
-	        sep = ",";
-	    var innerIps = "",
-	        eipIds = "",
-	        eipAddresss = "";
-	    var virtualIps = "",
-	        elbIds = "";
-	    var flag = true;
-	    
-	    $("#updateDiv #computeDiv").each(function() {
-	        computes = computes + $(this).find("#computeId").val() + sep;
-	        hostNames = hostNames + $(this).find("#hostName").val() + " " + sep;
-	        serverAlias = serverAlias + $(this).find("#server").val() + sep;
-	    });
-	    
-	    $("#updateDiv #osStorageDiv").each(function() {
-	        osStorageAlias = osStorageAlias + $(this).find("#osStorage").val() + sep;
-	        innerIps = innerIps + $(this).find("#innerIp").val() + sep;
-	        if ($(this).find("#innerIp").val() == "") {
-	            flag = false;
-	        }
-	    });
-		/*
-	    if (!flag) {
-	    	alert("计算资源的内网IP不能为空！");
-	    	return false;
-	    }*/
-	    $("#updateDiv #storageDiv").each(function() {
-	        storages = storages + $(this).find("#storageId").val() + sep;
-	        controllerAlias = controllerAlias + $(this).find("#controller").val() + sep;
-	        volumes = volumes + $(this).find("#volume").val() + " " + sep;
-	    });
-	    $("#updateDiv #eipDiv").each(function() {
-	        eipIds = eipIds + $(this).find("#eipId").val() + sep;
-	        eipAddresss = eipAddresss + $(this).find("#eipAddress").val() + sep;
-	    });
-	    $("#updateDiv #elbDiv").each(function() {
-	        elbIds = elbIds + $(this).find("#elbId").val() + sep;
-	        virtualIps = virtualIps + $(this).find("#innerIp").val() + sep;
-	    });
-	    $('#computes').val(computes);
-	    $('#storages').val(storages);
-	    $('#hostNames').val(hostNames);
-	    $('#serverAlias').val(serverAlias);
-	    $('#osStorageAlias').val(osStorageAlias);
-	    $('#controllerAlias').val(controllerAlias);
-	    $('#volumes').val(volumes);
-	    $('#innerIps').val(innerIps);
-	    $('#eipIds').val(eipIds);
-	    $('#eipAddresss').val(eipAddresss);
-	    if ($('#location').length > 0) {
-	        $('#locationAlias').val($('#location').val());
-	    }
-	    $('#elbIds').val(elbIds);
-	    $('#virtualIps').val(virtualIps);
-	    
-		 
-		//只有flag为true时才提交.
-		if(flag){
-			$("#inputForm").submit();
-			$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
-		}
-	});
-	
-    
+    $("#submitBtn").click(function() {
+        var flag = true;
+        if (!$("#inputForm").valid()) {
+            return false;
+        }
+        
+        //约束eip只能关联一个ip
+        var selectedArray = [];
+        $("select.eipAddress").each(function() {
+            var $eip = $(this).val();
+            if ($eip != "") {
+                if ($.inArray($eip, selectedArray) > -1) {
+                    alert("EIP中您选择的IP已被选用，请重新选择！");
+                    flag = false;
+                }
+                selectedArray.push($eip);
+            }
+        });
+        selectedArray = [];
+        if ($('#estimatedHours').val() == "" || $('#estimatedHours').val() == "0") {
+            alert("Estimated time不能为空且应大于0！");
+            $('#estimatedHours').focus();
+            return false;
+        }
+        if ($('#note').val() == "") {
+            alert("Description不能为空！");
+            $('#note').focus();
+            return false;
+        }
+        //增加只有第一接收才能选择100%完成的限制
+        if (($('#operator').val() == null && '${user.redmineUserId}' != '${issue.assignee.id}' && $('#doneRatio').val() == 100) || ($('#operator').val() != null && '${user.redmineUserId}' != $('#operator').val() && $('#doneRatio').val() == 100)) {
+            alert("您不是第一接收人，完成率不能选择100%！");
+            $('#doneRatio').focus();
+            return false;
+        }
+        if (parseInt($('#doneRatio').val()) < parseInt('${issue.doneRatio}')) {
+            alert("完成率不能小于当前值！");
+            $('#doneRatio').focus();
+            return false;
+        }
+        //拼装计算和存储资源相关属性
+        var computes = "",
+            storages = "",
+            hostNames = "",
+            serverAlias = "",
+            osStorageAlias = "",
+            controllerAlias = "",
+            volumes = "",
+            sep = ",";
+        var innerIps = "",
+            eipIds = "",
+            eipAddresss = "";
+        var virtualIps = "",
+            elbIds = "";
+        $("#updateDiv #computeDiv").each(function() {
+            computes = computes + $(this).find("#computeId").val() + sep;
+            hostNames = hostNames + $(this).find("#hostName").val() + " " + sep;
+            serverAlias = serverAlias + $(this).find("#server").val() + sep;
+        });
+        $("#updateDiv #osStorageDiv").each(function() {
+            osStorageAlias = osStorageAlias + $(this).find("#osStorage").val() + sep;
+            innerIps = innerIps + $(this).find("#innerIp").val() + sep;
+            if ($(this).find("#innerIp").val() == "") {
+                flag = false;
+            }
+        });
+        $("#updateDiv #storageDiv").each(function() {
+            storages = storages + $(this).find("#storageId").val() + sep;
+            controllerAlias = controllerAlias + $(this).find("#controller").val() + sep;
+            volumes = volumes + $(this).find("#volume").val() + " " + sep;
+        });
+        $("#updateDiv #eipDiv").each(function() {
+            eipIds = eipIds + $(this).find("#eipId").val() + sep;
+            eipAddresss = eipAddresss + $(this).find("#eipAddress").val() + sep;
+        });
+        $("#updateDiv #elbDiv").each(function() {
+            elbIds = elbIds + $(this).find("#elbId").val() + sep;
+            virtualIps = virtualIps + $(this).find("#innerIp").val() + sep;
+        });
+        $('#computes').val(computes);
+        $('#storages').val(storages);
+        $('#hostNames').val(hostNames);
+        $('#serverAlias').val(serverAlias);
+        $('#osStorageAlias').val(osStorageAlias);
+        $('#controllerAlias').val(controllerAlias);
+        $('#volumes').val(volumes);
+        $('#innerIps').val(innerIps);
+        $('#eipIds').val(eipIds);
+        $('#eipAddresss').val(eipAddresss);
+        if ($('#location').length > 0) {
+            $('#locationAlias').val($('#location').val());
+        }
+        $('#elbIds').val(elbIds);
+        $('#virtualIps').val(virtualIps);
+        //只有flag为true时才提交.
+        if (flag) {
+            $("#inputForm").submit();
+            $(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
+        }
+    });
     //IP改变事件
     $("select[name=ipPool]").change(function() {
         var ip = $(this).val();
@@ -140,17 +136,6 @@ $(document).ready(function() {
         }
     });
 });
-
-function checkValid() {
-    //alert($('#issueId').val()+","+$('#projectId').val()+","+$('#priority').val()+","+ $('#assignTo').val()+","+ $('#dueDate').val()+","+$('#estimatedHours').val()+","+$('#doneRatio').val()+","+$('#note').val());
-    
-    //if (${isShow} && $('#hostNames').val()=="") {
-    //	alert("主机名不能为空！");
-    //	$('#hostNames').focus();
-    //    return false;
-    //}
-    //return false;
-}
 
 function changeLocation() {
     $.ajax({
@@ -495,14 +480,15 @@ function changeServer(obj) {
 								<div class="span2">${eip.identifier}</div>
 								<div class="span10" id="eipDiv">
 							    	<input type="hidden" id="eipId" name="eipId" value="${eip.id}"/>
-									<select id="eipAddress" name="eipAddress">
+									<select id="eipAddress" name="eipAddress" class="eipAddress">
+										<option></option>
 										<c:forEach var="map" items="${telecomIpPool}">
 											<option value="<c:out value='${map.ipAddress}' />"
 												<c:if test="${eip.ipAddress==map.ipAddress}">selected="selected"</c:if>><c:out value="${map.ipAddress}" />
 											</option>
 										</c:forEach>
 									</select>
-									 
+								
 									<c:forEach var="map" items="${ispTypeMap}">
 											<c:if test="${eip.ispType==map.key}"><c:out value="${map.value}" /></c:if>
 									</c:forEach>

@@ -89,15 +89,14 @@
 					linkId = "",
 					str = "";
 				var ispTypText = $this.next("span.checkboxText").text();	//ISP的文本
-				
 				//step.4 判断页面选中的是哪种关联类型( 0:ELB ; 1: 实例),并按不同的关联类型生成不同的HTML代码.
-				if ($elbSelect.val() != undefined) {
+				if ($elbSelect.val() != undefined && $elbSelect.val() != "" ) {
 					//关联ELB
 					linkType = "0";
 					linkId = $elbSelect.val();
 					var elbSelectText = $elbSelect.find("option:selected").text();
 					str += '<dd><em>关联ELB</em>&nbsp;&nbsp;<strong>' + elbSelectText + '</strong></dd>';
-				} else {
+				} else if($computeSelect.val() != undefined && $computeSelect.val() != "") {
 					//关联实例
 					linkType = "1";
 					linkId = $computeSelect.val();
@@ -218,15 +217,17 @@
 				<div class="controls">
 				
 					<div id="computeSelectDiv" class="show">
-						<select id="computeSelect" class="required">
-							<c:forEach var="item" items="${allComputes }">
+						<select id="computeSelect" class="">
+							<option></option>
+							<c:forEach var="item" items="${allComputes }">	
 								<option value="${item.id }">${item.identifier}(${item.remark } - ${item.innerIp })</option>
 							</c:forEach>
 						</select>					
 					</div>
 					
 					<div id="elbSelectDiv" class="hidden">
-						<select id="elbSelect" class="required">
+						<select id="elbSelect" class="">
+							<option></option>
 							<c:forEach var="item" items="${allElbs }">
 								<option value="${item.id }">${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>

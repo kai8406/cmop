@@ -59,7 +59,8 @@ public class ELBController extends BaseController {
 			@RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
-			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			RedirectAttributes redirectAttributes) {
 
 		comm.elbService.saveELBToApply(applyId, keepSessions, protocols, sourcePorts, targetPorts, computeIds);
 
@@ -107,7 +108,8 @@ public class ELBController extends BaseController {
 			@RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
-			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			RedirectAttributes redirectAttributes) {
 
 		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(id);
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);

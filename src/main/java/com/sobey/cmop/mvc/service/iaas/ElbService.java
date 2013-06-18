@@ -120,8 +120,6 @@ public class ElbService extends BaseSevcie {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
-		logger.info("创建ELB的数量:" + keepSessions.length);
-
 		for (int i = 0; i < keepSessions.length; i++) {
 
 			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ELB.toInteger());
@@ -136,13 +134,15 @@ public class ElbService extends BaseSevcie {
 					: false);
 
 			// 关联实例
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-			String[] computeIdArray = StringUtils.split(computeIds[i], "-");
-			for (String computeId : computeIdArray) {
-				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+			if (computeIds != null) {
+				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+				// 通过"-"获得存储空间挂载的实例ID
+				String[] computeIdArray = StringUtils.split(computeIds[i], ",");
+				for (String computeId : computeIdArray) {
+					computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+				}
+				networkElbItem.setComputeItemList(computeItemList);
 			}
-
-			networkElbItem.setComputeItemList(computeItemList);
 
 			this.saveOrUpdate(networkElbItem);
 
@@ -192,9 +192,13 @@ public class ElbService extends BaseSevcie {
 
 		// Step.2 关联实例
 		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-		for (String computeId : computeIds) {
-			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+		if (computeIds != null) {
+
+			for (String computeId : computeIds) {
+				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+			}
 		}
+
 		networkElbItem.setComputeItemList(computeItemList);
 
 		this.saveOrUpdate(networkElbItem);

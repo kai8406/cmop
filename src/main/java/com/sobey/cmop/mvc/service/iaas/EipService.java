@@ -302,7 +302,7 @@ public class EipService extends BaseSevcie {
 			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
 			networkEipItem.setNetworkElbItem(null);
 
-		} else {
+		} else if (NetworkConstant.LinkType.关联ELB.toString().equals(linkType)) {
 
 			// 关联ELB
 			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));

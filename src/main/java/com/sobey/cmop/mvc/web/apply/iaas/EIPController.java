@@ -54,9 +54,7 @@ public class EIPController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "applyId") Integer applyId,
 			@RequestParam(value = "ispTypes") String[] ispTypes, @RequestParam(value = "linkTypes") String[] linkTypes,
-			@RequestParam(value = "linkIds") String[] linkIds,
-
-			@RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "linkIds") String[] linkIds, @RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
 

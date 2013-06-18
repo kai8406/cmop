@@ -26,7 +26,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 
@@ -113,7 +112,7 @@ public class ComputeItem implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "apply_id", nullable = false)
 	public Apply getApply() {
@@ -232,7 +231,7 @@ public class ComputeItem implements java.io.Serializable {
 		this.osStorageAlias = osStorageAlias;
 	}
 
-	@JsonBackReference
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "computeItem")
 	public Set<Application> getApplications() {
 		return this.applications;
@@ -242,7 +241,7 @@ public class ComputeItem implements java.io.Serializable {
 		this.applications = applications;
 	}
 
-	@JsonBackReference
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "computeItem")
 	public Set<NetworkEipItem> getNetworkEipItems() {
 		return networkEipItems;
@@ -261,6 +260,7 @@ public class ComputeItem implements java.io.Serializable {
 	@OrderBy("id")
 	// 集合中对象id的缓存.
 	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
 	public List<StorageItem> getStorageItemList() {
 		return storageItemList;
 	}
@@ -278,6 +278,7 @@ public class ComputeItem implements java.io.Serializable {
 	@OrderBy("id")
 	// 集合中对象id的缓存.
 	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
 	public List<NetworkElbItem> getNetworkElbItemList() {
 		return networkElbItemList;
 	}

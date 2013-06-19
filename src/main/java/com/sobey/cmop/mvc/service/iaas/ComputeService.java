@@ -301,7 +301,7 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
 
 			// 分割关联esg的Id.
-			if (esgIds != null) {
+			if (esgIds != null && esgIds.length > 0) {
 				String[] esgIdArray = StringUtils.split(esgIds[i], ",");
 				List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
 				for (String esgId : esgIdArray) {

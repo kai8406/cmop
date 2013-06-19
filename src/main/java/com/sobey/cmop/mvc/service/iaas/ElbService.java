@@ -134,7 +134,7 @@ public class ElbService extends BaseSevcie {
 					: false);
 
 			// 关联实例
-			if (computeIds != null) {
+			if (computeIds != null && computeIds.length > 0) {
 				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 				// 通过"-"获得存储空间挂载的实例ID
 				String[] computeIdArray = StringUtils.split(computeIds[i], ",");

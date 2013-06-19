@@ -76,7 +76,7 @@ public class Es3Service extends BaseSevcie {
 			storageItem.setApply(apply);
 			storageItem.setStorageType(Integer.parseInt(storageTypes[i]));
 
-			if (computeIds != null) {
+			if (computeIds != null && computeIds.length > 0) {
 				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 				// 通过"-"获得存储空间挂载的实例ID
 				String[] computeIdArray = StringUtils.split(computeIds[i], ",");

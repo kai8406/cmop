@@ -679,7 +679,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 	@Override
 	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem,
-			List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			List<EipPortItem> eipPortItems, String linkType, String linkId, String[] protocols, String[] sourcePorts,
 			String[] targetPorts) {
 
 		/**
@@ -709,7 +709,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
 					.toString() : "";
 			String oldString = networkEipItem.getComputeItem() != null ? this.wrapStringByComputeItem(networkEipItem
-					.getComputeItem().getId()) : "";
+					.getComputeItem().getId().toString()) : "";
 
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByComputeItem(linkId);
@@ -731,7 +731,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 					.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 			String newValue = linkId.toString();
-			String newString = this.wrapStringByNetworkElbItem(linkId);
+			String newString = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 			if (!oldValue.equals(newValue)) {
 				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
@@ -752,7 +752,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldValueCompute = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem()
 						.getId().toString() : "";
 				String oldStringCompute = networkEipItem.getComputeItem() != null ? this
-						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId().toString()) : "";
 
 				String newValueCompute = UN_SELECTED_STRING;
 				String newStringCompute = "";
@@ -767,7 +767,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldStringElb = "";
 
 				String newValueElb = linkId.toString();
-				String newStringElb = this.wrapStringByNetworkElbItem(linkId);
+				String newStringElb = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameElb, oldValueElb, oldStringElb,
 						newValueElb, newStringElb);
@@ -835,7 +835,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 						.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 				String newValue = linkId.toString();
-				String newString = this.wrapStringByNetworkElbItem(linkId);
+				String newString = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 				this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			} else {
@@ -845,7 +845,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
 						.toString() : "";
 				String oldString = networkEipItem.getComputeItem() != null ? this
-						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId().toString()) : "";
 
 				String newValue = linkId.toString();
 				String newString = this.wrapStringByComputeItem(linkId);
@@ -2029,9 +2029,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 * @param elbId
 	 * @return
 	 */
-	private String wrapStringByComputeItem(Integer computeId) {
+	private String wrapStringByComputeItem(String computeId) {
 
-		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
+		ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
 
 		String value = "";
 

@@ -147,8 +147,7 @@ public class EipService extends BaseSevcie {
 
 			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i],
-					Integer.valueOf(linkIds[i]));
+			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], linkIds[i]);
 
 			this.saveOrUpdate(networkEipItem);
 
@@ -191,7 +190,7 @@ public class EipService extends BaseSevcie {
 	 *            目标端口数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols,
+	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, String linkId, String[] protocols,
 			String[] sourcePorts, String[] targetPorts) {
 
 		// Step.1
@@ -238,7 +237,7 @@ public class EipService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, Integer linkId,
+	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, String linkId,
 			String[] protocols, String[] sourcePorts, String[] targetPorts,
 
 			String changeDescription) {
@@ -294,18 +293,26 @@ public class EipService extends BaseSevcie {
 	 * @return
 	 */
 	private NetworkEipItem fillComputeOrElbToNetworkEipItem(NetworkEipItem networkEipItem, String linkType,
-			Integer linkId) {
+			String linkId) {
 
 		if (NetworkConstant.LinkType.关联实例.toString().equals(linkType)) {
 
 			// 关联实例
-			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
+			if (!"".equals(linkId)) {
+				networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(linkId)));
+			} else {
+				networkEipItem.setComputeItem(null);
+			}
 			networkEipItem.setNetworkElbItem(null);
 
-		} else if (NetworkConstant.LinkType.关联ELB.toString().equals(linkType)) {
+		} else if (NetworkConstant.LinkType.关联ELB.toString().equals(linkType) && !"".equals(linkId)) {
 
 			// 关联ELB
-			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
+			if (!"".equals(linkId)) {
+				networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(linkId)));
+			} else {
+				networkEipItem.setNetworkElbItem(null);
+			}
 			networkEipItem.setComputeItem(null);
 
 		}

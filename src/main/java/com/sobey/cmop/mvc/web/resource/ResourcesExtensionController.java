@@ -113,7 +113,7 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/eip", method = RequestMethod.POST)
 	public String updateElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "linkType") String linkType,
-			@RequestParam(value = "linkId") Integer linkId, @RequestParam(value = "protocols") String[] protocols,
+			@RequestParam(value = "linkId") String linkId, @RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,

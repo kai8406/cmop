@@ -97,7 +97,7 @@ public class EIPController extends BaseController {
 	 */
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
-			@RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") Integer linkId,
+			@RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") String linkId,
 			@RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts, RedirectAttributes redirectAttributes) {

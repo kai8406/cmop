@@ -133,7 +133,7 @@ public interface ICompareResourcesService {
 	 * @return
 	 */
 	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem,
-			List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			List<EipPortItem> eipPortItems, String linkType, String linkId, String[] protocols, String[] sourcePorts,
 			String[] targetPorts);
 
 	/**

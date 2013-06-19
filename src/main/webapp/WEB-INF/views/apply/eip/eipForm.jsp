@@ -104,14 +104,6 @@
 					str += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + computeSelectText + '</strong></dd>';
 				}
 				
-				//Step.5
-				var temp = ispType + "-" + linkType + "-" + linkId;
-				if ($.inArray(temp, selectedArray) > -1) {
-					isUnique = false;
-				} else {
-					selectedArray.push(temp);
-				}
-				
 				if (isUnique) {
 					
 					html += '<div class="resources alert alert-block alert-info fade in">';
@@ -163,6 +155,8 @@
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
 			$("input[type=checkbox]").removeAttr('checked');
 			selectedArray = [];
+			
+			$("#elbSelect , #computeSelect").val("");
 			
 		}); 
 		 

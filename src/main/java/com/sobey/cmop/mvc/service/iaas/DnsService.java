@@ -76,22 +76,25 @@ public class DnsService extends BaseSevcie {
 
 			// 区分域名类型. GSLB,A 类型插入 DNS和EIP的中间表. CNAME类型插入文本.
 
-			if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
+			if (eipIds != null && eipIds.length > 0) {
 
-				networkDnsItem.setCnameDomain(eipIds[i]);
+				if (NetworkConstant.DomainType.CNAME.toInteger().equals(domainType)) {
 
-			} else {
+					networkDnsItem.setCnameDomain(eipIds[i]);
 
-				String[] eipIdArray = StringUtils.split(eipIds[i], "-");
+				} else {
 
-				List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
+					String[] eipIdArray = StringUtils.split(eipIds[i], "-");
 
-				for (int j = 0; j < eipIdArray.length; j++) {
-					networkEipItemList.add(comm.eipService.getNetworkEipItem(Integer.valueOf(eipIdArray[j])));
+					List<NetworkEipItem> networkEipItemList = new ArrayList<NetworkEipItem>();
+
+					for (int j = 0; j < eipIdArray.length; j++) {
+						networkEipItemList.add(comm.eipService.getNetworkEipItem(Integer.valueOf(eipIdArray[j])));
+					}
+
+					networkDnsItem.setNetworkEipItemList(networkEipItemList);
+
 				}
-
-				networkDnsItem.setNetworkEipItemList(networkEipItemList);
-
 			}
 
 			networkDnsItem.setIdentifier(identifier);

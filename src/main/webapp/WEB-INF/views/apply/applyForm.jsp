@@ -264,10 +264,8 @@
 						<dd>
 							<c:choose>
 								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-								<c:otherwise>
-									<em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;
-									【${item.networkElbItem.mountComputes}】
-								</c:otherwise>
+								<c:when test="${not empty item.networkElbItem }"><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;【${item.networkElbItem.mountComputes}】</c:when>
+								<c:otherwise></c:otherwise>
 							</c:choose>
 						</dd>
 						
@@ -311,8 +309,9 @@
 						
 						<dd>
 							<c:choose>
-								<c:when test="${item.domainType != 3 }"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
-								<c:otherwise><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:otherwise>
+								<c:when test="${item.domainType != 3 && not empty item.mountElbs}"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
+								<c:when test="${not empty item.cnameDomain }"><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:when>
+								<c:otherwise></c:otherwise>
 							</c:choose>
 							
 							<span class="pull-right">

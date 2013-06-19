@@ -314,6 +314,11 @@ public class ComputeItem implements java.io.Serializable {
 		return extractToString(networkEsgItemList);
 	}
 
+	@Transient
+	public String getMountESGDetail() {
+		return extractDetailToString(networkEsgItemList);
+	}
+
 	/**
 	 * 组装ESG
 	 * 
@@ -326,6 +331,27 @@ public class ComputeItem implements java.io.Serializable {
 			sb.append(networkEsgItem.getIdentifier()).append("(").append(networkEsgItem.getDescription()).append(")")
 					.append(",");
 		}
+		String str = sb.toString();
+		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";
+	}
+
+	public static String extractDetailToString(final List<NetworkEsgItem> networkEsgItems) {
+		StringBuilder sb = new StringBuilder();
+
+		for (NetworkEsgItem networkEsgItem : networkEsgItems) {
+
+			sb.append("\r\n").append(networkEsgItem.getIdentifier()).append("(")
+					.append(networkEsgItem.getDescription()).append(")").append("\r\n");
+
+			for (EsgRuleItem esgRuleItem : networkEsgItem.getEsgRuleItems()) {
+				sb.append("协议: ").append(esgRuleItem.getProtocol()).append("\r\n");
+				sb.append("端口范围: ").append(esgRuleItem.getPortRange()).append("\r\n");
+				sb.append("访问来源IP: ").append(esgRuleItem.getVisitSource()).append("\r\n");
+				sb.append("访问目的IP: ").append(esgRuleItem.getVisitTarget()).append("\r\n\r\n");
+			}
+			sb.append("___________________________________________________________");
+		}
+
 		String str = sb.toString();
 		return str.length() > 0 ? str.substring(0, str.length() - 1) : "";
 	}

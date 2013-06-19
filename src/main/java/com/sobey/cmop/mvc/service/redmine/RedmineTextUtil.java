@@ -67,7 +67,7 @@ public class RedmineTextUtil {
 					content.append(ComputeConstant.ECSServerType.get(compute.getServerType())).append(NEWLINE);
 				}
 
-				content.append("关联ESG:").append(BLANK).append(compute.getMountESG()).append(NEWLINE);
+				content.append("关联ESG:").append(BLANK).append(compute.getMountESGDetail()).append(NEWLINE);
 
 				if (!compute.getApplications().isEmpty()) {
 

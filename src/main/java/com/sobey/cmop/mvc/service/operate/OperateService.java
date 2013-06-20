@@ -729,8 +729,10 @@ public class OperateService extends BaseSevcie {
 					// 释放原来的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(),
 							IpPoolConstant.IpStatus.未使用.toInteger());
+
 					// 更新新的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipAddress[i], IpPoolConstant.IpStatus.已使用.toInteger());
+
 					if (RedmineConstant.MAX_DONERATIO.equals(issue.getDoneRatio())) {
 						eipItem.setOldIp(eipItem.getIpAddress());
 					}

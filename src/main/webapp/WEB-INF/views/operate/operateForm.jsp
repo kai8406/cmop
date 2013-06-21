@@ -87,6 +87,11 @@ $(document).ready(function() {
         $("#updateDiv #eipDiv").each(function() {
             eipIds = eipIds + $(this).find("#eipId").val() + sep;
             eipAddresss = eipAddresss + $(this).find("#eipAddress").val() + sep;
+            var temp = $(this).find("#eipAddress").val();
+            if(temp == ""){
+              temp = 0;
+            }
+           	eipAddresss = eipAddresss + temp + sep; 
         });
         $("#updateDiv #elbDiv").each(function() {
             elbIds = elbIds + $(this).find("#elbId").val() + sep;

@@ -266,14 +266,14 @@ public class ElbService extends BaseSevcie {
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
 		// 关联实例
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 		if (computeIds != null) {
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 			for (int i = 0; i < computeIds.length; i++) {
 				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
 				computeItemList.add(computeItem);
 			}
-			networkElbItem.setComputeItemList(computeItemList);
 		}
+		networkElbItem.setComputeItemList(computeItemList);
 
 		this.saveOrUpdate(networkElbItem);
 

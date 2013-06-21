@@ -105,11 +105,11 @@
 			<div class="control-group">
 				<div class="controls">
 					<label class="radio inline">
- 						<input type="radio" name="linkRadio" value="isCompute" class="required"
+ 						<input type="radio" name="linkRadio" value="isCompute"
  						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
 					</label>
 					<label class="radio inline">
-	 					<input type="radio" name="linkRadio" value="isElb" class="required"
+	 					<input type="radio" name="linkRadio" value="isElb"
 	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
 					</label>
 				</div>
@@ -124,7 +124,8 @@
 						<c:otherwise>class="hidden"</c:otherwise>
 						</c:choose>
 					>
-						<select id="computeSelect" class="required">
+						<select id="computeSelect">
+							<option></option>
 							<c:forEach var="item" items="${computeResources }">
 								<option value="${item.id }" <c:if test="${not empty eip.computeItem && item.id == eip.computeItem.id }">selected="selected"</c:if>>${item.identifier}(${item.remark} - ${item.innerIp})</option>
 							</c:forEach>
@@ -137,7 +138,8 @@
 						<c:otherwise>class="hidden"</c:otherwise>
 						</c:choose>
 					>
-						<select id="elbSelect" class="required">
+						<select id="elbSelect">
+							<option></option>
 							<c:forEach var="item" items="${elbResources }">
 								<option value="${item.id }" <c:if test="${not empty eip.networkElbItem && item.id == eip.networkElbItem.id }">selected="selected"</c:if>>${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>

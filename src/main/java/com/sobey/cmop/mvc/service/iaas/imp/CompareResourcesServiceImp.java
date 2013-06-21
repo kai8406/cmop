@@ -198,8 +198,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-			for (int i = 0; i < esgIds.length; i++) {
-				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+			if (!"".equals(esgIds) && esgIds != null) {
+				for (int i = 0; i < esgIds.length; i++) {
+					networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+				}
 			}
 			String newValue = newId;
 			String newString = ComputeItem.extractToString(networkEsgItemList);
@@ -316,9 +318,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-			for (int i = 0; i < esgIds.length; i++) {
-				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+
+			if (!"".equals(esgIds) && esgIds != null) {
+				for (int i = 0; i < esgIds.length; i++) {
+					networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+				}
 			}
+
 			String newValue = newId;
 			String newString = ComputeItem.extractToString(networkEsgItemList);
 
@@ -425,9 +431,12 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -479,9 +488,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -519,9 +530,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -573,9 +586,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -2031,6 +2046,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 */
 	private String wrapStringByComputeItem(String computeId) {
 
+		if ("".equals(computeId)) {
+			computeId = "0";
+		}
+		
 		ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
 
 		String value = "";

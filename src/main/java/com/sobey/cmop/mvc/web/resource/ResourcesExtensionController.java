@@ -41,7 +41,7 @@ public class ResourcesExtensionController extends BaseController {
 	@RequestMapping(value = "/compute", method = RequestMethod.POST)
 	public String updateCompute(@RequestParam(value = "id") Integer id, @RequestParam(value = "osType") Integer osType,
 			@RequestParam(value = "osBit") Integer osBit, @RequestParam(value = "serverType") Integer serverType,
-			@RequestParam(value = "esgIds") String[] esgIds, @RequestParam(value = "remark") String remark,
+			@RequestParam(value = "esgIds",required = false) String[] esgIds, @RequestParam(value = "remark") String remark,
 			@RequestParam(value = "applicationName") String[] applicationNames,
 			@RequestParam(value = "applicationVersion") String[] applicationVersions,
 			@RequestParam(value = "applicationDeployPath") String[] applicationDeployPaths,
@@ -66,7 +66,7 @@ public class ResourcesExtensionController extends BaseController {
 	@RequestMapping(value = "/storage", method = RequestMethod.POST)
 	public String updateStorage(@RequestParam(value = "id") Integer id,
 			@RequestParam(value = "storageType") Integer storageType, @RequestParam(value = "space") Integer space,
-			@RequestParam(value = "computeIds") String[] computeIds,
+			@RequestParam(value = "computeIds",required = false ) String[] computeIds,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 
@@ -91,7 +91,7 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "protocols") String[] protocols,
 			@RequestParam(value = "sourcePorts") String[] sourcePorts,
 			@RequestParam(value = "targetPorts") String[] targetPorts,
-			@RequestParam(value = "computeIds") String[] computeIds,
+			@RequestParam(value = "computeIds",required =false) String[] computeIds,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 
 			@RequestParam(value = "changeDescription") String changeDescription,

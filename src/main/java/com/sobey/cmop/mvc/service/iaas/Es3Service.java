@@ -164,14 +164,14 @@ public class Es3Service extends BaseSevcie {
 
 		storageItem.setStorageType(storageType);
 		storageItem.setSpace(space);
-		if (computeIds != null) {
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		if (computeIds != null && computeIds.length > 0) {
 			for (int i = 0; i < computeIds.length; i++) {
 				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
 				computeItemList.add(computeItem);
 			}
-			storageItem.setComputeItemList(computeItemList);
 		}
+		storageItem.setComputeItemList(computeItemList);
 		// 更新storageItem
 
 		this.saveOrUpdate(storageItem);

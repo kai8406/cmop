@@ -238,8 +238,10 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setRemark(remark);
 
 		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-		for (String esgId : esgIds) {
-			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		if (esgIds != null && esgIds.length > 0) {
+			for (String esgId : esgIds) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+			}
 		}
 
 		computeItem.setNetworkEsgItemList(networkEsgItemList);

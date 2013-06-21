@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.RedmineIssue;
@@ -141,8 +142,16 @@ public class OperateController extends BaseController {
 			if (!networkEipList.isEmpty()) {
 				model.addAttribute("eipList", networkEipList);
 				logger.info("--->has eip: " + networkEipList.size());
-				model.addAttribute("internetIpPool", comm.ipPoolService.getIpPoolByPoolTypeAndStatus(
-						IpPoolConstant.PoolType.互联网IP池.toInteger(), IpPoolConstant.IpStatus.未使用.toInteger()));
+
+				List<IpPool> ipPools = comm.ipPoolService.getIpPoolByPoolTypeAndStatus(
+						IpPoolConstant.PoolType.互联网IP池.toInteger(), IpPoolConstant.IpStatus.未使用.toInteger());
+
+				for (NetworkEipItem networkEipItem : networkEipList) {
+					IpPool ipPool = comm.ipPoolService.findIpPoolByIpAddress(networkEipItem.getIpAddress());
+					ipPools.add(ipPool);
+				}
+
+				model.addAttribute("internetIpPool", ipPools);
 			}
 
 			if (!networkElbList.isEmpty()) {

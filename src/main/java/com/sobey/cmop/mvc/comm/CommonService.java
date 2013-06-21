@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.sobey.cmop.mvc.service.account.AccountService;
 import com.sobey.cmop.mvc.service.apply.ApplyService;
-import com.sobey.cmop.mvc.service.audit.AuditService;
 import com.sobey.cmop.mvc.service.basicdata.HostServerService;
 import com.sobey.cmop.mvc.service.basicdata.IpPoolService;
 import com.sobey.cmop.mvc.service.basicdata.LocationService;
@@ -38,7 +37,6 @@ import com.sobey.cmop.mvc.service.paas.CPService;
 import com.sobey.cmop.mvc.service.paas.MdnService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
-import com.sobey.cmop.mvc.service.resource.ChangeHistoryService;
 import com.sobey.cmop.mvc.service.resource.ChangeServcie;
 import com.sobey.cmop.mvc.service.resource.ResourcesService;
 import com.sobey.cmop.mvc.service.resource.ServiceTagService;
@@ -59,13 +57,7 @@ public class CommonService {
 	public ApplyService applyService;
 
 	@Resource
-	public AuditService auditService;
-
-	@Resource
 	public IBasicUnitService basicUnitService;
-
-	@Resource
-	public ChangeHistoryService changeHistoryService;
 
 	@Resource
 	public ChangeServcie changeServcie;

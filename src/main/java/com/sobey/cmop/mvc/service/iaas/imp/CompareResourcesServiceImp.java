@@ -2049,7 +2049,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		if ("".equals(computeId)) {
 			computeId = "0";
 		}
-		
+
 		ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
 
 		String value = "";

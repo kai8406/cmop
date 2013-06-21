@@ -3,10 +3,7 @@ package com.sobey.cmop.mvc.entity;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,12 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * ServiceTag entity. @author MyEclipse Persistence Tools
@@ -40,12 +34,10 @@ public class ServiceTag implements java.io.Serializable {
 	private String serviceEnd;
 	private Date createTime;
 	private Integer status;
-	private AuditFlow auditFlow;
 	private String domain;
 	private String contact;
 	private String phonenum;
 	private Integer redmineIssueId;
-	private Set<Audit> audits = new HashSet<Audit>(0);
 
 	// Constructors
 
@@ -69,8 +61,8 @@ public class ServiceTag implements java.io.Serializable {
 
 	/** full constructor */
 	public ServiceTag(String identifier, User user, String name, Integer priority, String description,
-			String serviceStart, String serviceEnd, Date createTime, Integer status, AuditFlow auditFlow,
-			String domain, String contact, String phonenum, Integer redmineIssueId, Set<Audit> audits) {
+			String serviceStart, String serviceEnd, Date createTime, Integer status, String domain, String contact,
+			String phonenum, Integer redmineIssueId) {
 		this.identifier = identifier;
 		this.user = user;
 		this.name = name;
@@ -80,12 +72,10 @@ public class ServiceTag implements java.io.Serializable {
 		this.serviceEnd = serviceEnd;
 		this.createTime = createTime;
 		this.status = status;
-		this.auditFlow = auditFlow;
 		this.domain = domain;
 		this.contact = contact;
 		this.phonenum = phonenum;
 		this.redmineIssueId = redmineIssueId;
-		this.audits = audits;
 	}
 
 	// Property accessors
@@ -183,17 +173,6 @@ public class ServiceTag implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "audit_flow_id")
-	public AuditFlow getAuditFlow() {
-		return this.auditFlow;
-	}
-
-	public void setAuditFlow(AuditFlow auditFlow) {
-		this.auditFlow = auditFlow;
-	}
-
 	@Column(name = "domain")
 	public String getDomain() {
 		return domain;
@@ -228,17 +207,6 @@ public class ServiceTag implements java.io.Serializable {
 
 	public void setRedmineIssueId(Integer redmineIssueId) {
 		this.redmineIssueId = redmineIssueId;
-	}
-
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "serviceTag")
-	@OrderBy("createTime ASC")
-	public Set<Audit> getAudits() {
-		return this.audits;
-	}
-
-	public void setAudits(Set<Audit> audits) {
-		this.audits = audits;
 	}
 
 }

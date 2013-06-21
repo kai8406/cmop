@@ -18,16 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
-import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
 
 /**
  * 服务申请单相关的管理类.
@@ -175,73 +179,93 @@ public class ApplyService extends BaseSevcie {
 	}
 
 	/**
-	 * 向第一位审批人发起审批邮件, 同时向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
-	 * 
-	 * <pre>
-	 * 1.先判断是否有上级领导存在.
-	 * 2.如果存在上级领导.首先获得第一个审批人(上级领导)和审批流程.
-	 * 3.根据资源拼装邮件内容并发送到第一个审批人的邮箱.
-	 * 4.更新Apply状态和Apply的审批流程
-	 * 5.向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
-	 * 6.如果不存在上级领导,判断其是否是终审人,如果不是终审人,则返回一个错误字符串.
-	 * 如果是终审人则直接发送工单
-	 * </pre>
+	 * 根据申请单类型和内容创建工单,并向工单具体接收人分发工单.
 	 * 
 	 * @param apply
 	 * @return
 	 */
 	@Transactional(readOnly = false)
-	public String saveAuditByApply(Apply apply) {
+	public String saveApplyToOperate(Apply apply) {
 
 		String message = "";
-		User user = apply.getUser();
 
-		/* Step.1 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在. */
+		try {
 
-		if (user.getLeaderId() != null) {
+			apply.setStatus(ApplyConstant.Status.已审批.toInteger());
+			comm.applyService.saveOrUpateApply(apply);
 
-			try {
+			// 拼装Redmine内容
+			String description = comm.redmineUtilService.applyRedmineDesc(apply);
 
-				/* Step.2 获得第一个审批人和审批流程 */
+			/* 写入工单Issue到Redmine */
 
-				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
+			Issue issue = new Issue();
 
-				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-				AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
+			Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
+			Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 
-				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
+			issue.setTracker(tracker);
+			issue.setSubject(apply.getTitle());
+			issue.setPriorityId(apply.getPriority());
+			issue.setDescription(description);
 
-				/* Step.3 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
+			Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
 
-				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
-
-				/* Step.4 更新Apply状态和Apply的审批流程. */
-
-				apply.setAuditFlow(auditFlow);
-				apply.setStatus(ApplyConstant.Status.待审批.toInteger());
-				this.saveOrUpateApply(apply);
-
-				message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
-
-				logger.info("--->服务申请邮件发送成功...");
-
-				/* Step.5 初始化所有老审批记录. */
-				comm.auditService.initAuditStatus(apply);
-
-				/* Step.6 插入一条下级审批人所用到的audit. */
-
-				comm.auditService.saveSubAudit(user.getId(), apply);
-
-			} catch (Exception e) {
-
-				message = "服务申请单提交审批失败";
-				e.printStackTrace();
+			// 初始化第一接收人
+			RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+			if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
+				mgr = RedmineService.MDN_REDMINE_ASSIGNEE_REDMINEMANAGER;
+			} else if (apply.getTitle().indexOf(
+					ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
+				mgr = RedmineService.CP_REDMINE_ASSIGNEE_REDMINEMANAGER;
+			} else if (apply.getTitle()
+					.indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
+				mgr = RedmineService.MONITOR_REDMINE_ASSIGNEE_REDMINEMANAGER;
 			}
 
-		} else {
+			boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
 
-			message = "你没有直属领导,请联系管理员添加";
+			logger.info("--->申请Apply Redmine isCreated?" + isCreated);
 
+			if (isCreated) { // 写入Redmine成功
+
+				Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
+				if (apply.getTitle().indexOf(ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.MDN.toInteger())) > 0) {
+					assignee = RedmineService.MDN_REDMINE_ASSIGNEE;
+				} else if (apply.getTitle().indexOf(
+						ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.云生产.toInteger())) > 0) {
+					assignee = RedmineService.CP_REDMINE_ASSIGNEE;
+				} else if (apply.getTitle().indexOf(
+						ApplyConstant.ServiceType.get(ApplyConstant.ServiceType.监控.toInteger())) > 0) {
+					assignee = RedmineService.MONITOR_REDMINE_ASSIGNEE;
+				}
+				issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
+
+				RedmineIssue redmineIssue = new RedmineIssue();
+
+				redmineIssue.setProjectId(projectId);
+				redmineIssue.setTrackerId(issue.getTracker().getId());
+				redmineIssue.setSubject(issue.getSubject());
+				redmineIssue.setAssignee(assignee);
+				redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
+				redmineIssue.setIssueId(issue.getId());
+				redmineIssue.setApplyId(apply.getId());
+
+				comm.operateService.saveOrUpdate(redmineIssue);
+
+				// 指派人的User
+				User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
+
+				// 发送工单处理邮件
+				comm.templateMailService.sendApplyOperateNotificationMail(apply, assigneeUser);
+
+			} else {
+				message = "工单创建失败,请联系系统管理员";
+			}
+
+		} catch (Exception e) {
+			message = "工单创建失败,请联系系统管理员";
+			e.printStackTrace();
 		}
 
 		return message;

@@ -163,7 +163,11 @@
 					</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
+						<a href="${ctx}/applyReport/getpdfReport/${item.id}.pdf" target="_blank">PDF</a>
+						
 						<c:forEach var="allowStatus" items="${allowApplyStatus }">
+						
+						
 							<c:if test="${ item.status == allowStatus }">
 							
 								<a href="update/${item.id}">修改</a>

@@ -37,6 +37,7 @@ import com.sobey.cmop.mvc.service.paas.CPService;
 import com.sobey.cmop.mvc.service.paas.MdnService;
 import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.cmop.mvc.service.redmine.RedmineUtilService;
+import com.sobey.cmop.mvc.service.report.ReportService;
 import com.sobey.cmop.mvc.service.resource.ChangeServcie;
 import com.sobey.cmop.mvc.service.resource.ResourcesService;
 import com.sobey.cmop.mvc.service.resource.ServiceTagService;
@@ -94,6 +95,9 @@ public class CommonService {
 
 	@Resource
 	public FailureService failureService;
+
+	@Resource
+	public ReportService reportService;
 
 	@Resource
 	public HostServerService hostServerService;

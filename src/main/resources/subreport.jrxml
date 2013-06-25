@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="applyReport_subreport1" pageWidth="555" pageHeight="802" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
+	<style name="SubParameter" forecolor="#666666" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
+	<field name="type" class="java.lang.String"/>
+	<field name="remark" class="java.lang.String"/>
+	<field name="number" class="java.lang.Integer"/>
+	<field name="price" class="java.lang.Double"/>
+	<variable name="total" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{price}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="26">
+			<staticText>
+				<reportElement style="Title" x="0" y="6" width="100" height="20"/>
+				<textElement>
+					<font fontName="华文细黑" isBold="true" isItalic="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[资源类型		]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Title" x="124" y="6" width="241" height="20"/>
+				<textElement>
+					<font fontName="华文细黑" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[规格]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Title" x="380" y="6" width="39" height="20"/>
+				<textElement>
+					<font fontName="华文细黑" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[数量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Title" x="442" y="6" width="99" height="20"/>
+				<textElement>
+					<font fontName="华文细黑" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[价格(￥)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement style="SubParameter" mode="Transparent" x="0" y="5" width="100" height="20"/>
+				<textElement>
+					<font pdfFontName="STSong-Light" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="SubParameter" x="124" y="5" width="241" height="20"/>
+				<textElement>
+					<font pdfFontName="STSong-Light" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="SubParameter" x="380" y="5" width="39" height="20"/>
+				<textElement>
+					<font pdfFontName="STSong-Light" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="SubParameter" x="442" y="5" width="99" height="20"/>
+				<textElement>
+					<font pdfFontName="STSong-Light" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="41">
+			<staticText>
+				<reportElement style="Title" x="338" y="12" width="81" height="20"/>
+				<textElement>
+					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[初始化成本:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="Title" x="442" y="12" width="99" height="20" forecolor="#9D3030"/>
+				<textElement>
+					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

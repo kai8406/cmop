@@ -84,7 +84,7 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="96">
+		<band height="77">
 			<staticText>
 				<reportElement style="Title" x="309" y="12" width="110" height="20"/>
 				<textElement textAlignment="Right">
@@ -127,6 +127,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="11" width="555" height="1"/>
+			</line>
 		</band>
 	</columnFooter>
 </jasperReport>

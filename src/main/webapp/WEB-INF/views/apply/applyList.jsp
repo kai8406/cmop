@@ -163,7 +163,7 @@
 					</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>
-						<a href="${ctx}/applyReport/getpdfReport/${item.id}.pdf" target="_blank">PDF</a>
+						
 						
 						<c:forEach var="allowStatus" items="${allowApplyStatus }">
 						
@@ -193,8 +193,8 @@
 								</div>
 							
 							</c:if>
-							
 						</c:forEach>
+						<a href="${ctx}/applyReport/getpdfReport/${item.id}.pdf" target="_blank">打印</a>
 					</td>
 				</tr>
 			</c:forEach>

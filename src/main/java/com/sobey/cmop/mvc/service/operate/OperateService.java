@@ -145,7 +145,7 @@ public class OperateService extends BaseSevcie {
 	@Transactional(readOnly = false)
 	public boolean updateOperate(Issue issue, String computeIds, String storageIds, String hostNames,
 			String serverAlias, String osStorageAlias, String controllerAlias, String volumes, String innerIps,
-			String eipIds, String eipAddresss, String location, String elbIds, String virtualIps) {
+			String[] eipIds, String[] eipAddress, String location, String elbIds, String virtualIps) {
 		long start = System.currentTimeMillis();
 
 		logger.info("--->工单处理...");
@@ -161,7 +161,7 @@ public class OperateService extends BaseSevcie {
 
 				// 更新写入OneCMDB时需要人工选择填入的关联项
 				boolean saveOk = saveNewIpVolume(computeIds, storageIds, hostNames, serverAlias, osStorageAlias,
-						controllerAlias, volumes, innerIps, eipIds, eipAddresss, location, elbIds, virtualIps, issue);
+						controllerAlias, volumes, innerIps, eipIds, eipAddress, location, elbIds, virtualIps, issue);
 				if (!saveOk) {
 					return false;
 				}
@@ -637,7 +637,7 @@ public class OperateService extends BaseSevcie {
 	 * @param volumes
 	 * @param innerIps
 	 * @param eipIds
-	 * @param eipAddresss
+	 * @param eipAddress
 	 * @param location
 	 * @param elbIds
 	 * @param virtualIps
@@ -646,8 +646,8 @@ public class OperateService extends BaseSevcie {
 	 */
 	@Transactional(readOnly = false)
 	public boolean saveNewIpVolume(String computeIds, String storageIds, String hostNames, String serverAlias,
-			String osStorageAlias, String controllerAlias, String volumes, String innerIps, String eipIds,
-			String eipAddresss, String location, String elbIds, String virtualIps, Issue issue) {
+			String osStorageAlias, String controllerAlias, String volumes, String innerIps, String[] eipIds,
+			String[] eipAddress, String location, String elbIds, String virtualIps, Issue issue) {
 		try {
 			String sep = ",";
 			if (computeIds.length() > 0) {
@@ -716,16 +716,15 @@ public class OperateService extends BaseSevcie {
 				}
 			}
 
-			if (eipIds.length() > 0) {
-				String[] eipId = eipIds.split(sep);
-				String[] eipAddress = eipAddresss.split(sep);
-				logger.info("--->更新写入OneCMDB关联项（EIP）..." + eipId.length);
+			if (eipIds != null && eipIds.length > 0) {
+
+				logger.info("--->更新写入OneCMDB关联项（EIP）..." + eipIds.length);
 				NetworkEipItem eipItem;
-				for (int i = 0; i < eipId.length; i++) {
-					if (eipId[i] == null || eipId[i].equals("") || eipId[i].equals("null")) {
+				for (int i = 0; i < eipIds.length; i++) {
+					if (eipIds[i] == null || eipIds[i].equals("") || eipIds[i].equals("null")) {
 						continue;
 					}
-					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipId[i]));
+					eipItem = comm.eipService.getNetworkEipItem(Integer.parseInt(eipIds[i]));
 					// 释放原来的IP
 					comm.ipPoolService.updateIpPoolByIpAddress(eipItem.getIpAddress(),
 							IpPoolConstant.IpStatus.未使用.toInteger());

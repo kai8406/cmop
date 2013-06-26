@@ -47,6 +47,8 @@ public class ReportService extends BaseSevcie {
 
 		DateTime dateTime = new DateTime(apply.getCreateTime());
 
+		double workTime = comm.costService.applyDaysBetween(apply);
+
 		ApplyReport applyReport = new ApplyReport();
 		applyReport.setTitle(apply.getTitle());
 		applyReport.setUserName(apply.getUser().getName());
@@ -55,6 +57,8 @@ public class ReportService extends BaseSevcie {
 		applyReport.setPriority(RedmineConstant.Priority.get(apply.getPriority()));
 		applyReport.setServiceStart(apply.getServiceStart());
 		applyReport.setServiceEnd(apply.getServiceEnd());
+
+		applyReport.setServicesCost(comm.costService.humanCost(apply, workTime));
 
 		return applyReport;
 	}
@@ -70,6 +74,8 @@ public class ReportService extends BaseSevcie {
 		List<DetailReport> reports = new ArrayList<DetailReport>();
 
 		Apply apply = comm.applyService.getApply(applyId);
+
+		double workTime = comm.costService.applyDaysBetween(apply);
 
 		// === ECS === //
 		if (!apply.getComputeItems().isEmpty()) {
@@ -109,7 +115,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Small - 单核,1GB内存,20GB硬盘");
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB, workTime, small));
 				detailReport.setNumber(small);
 				reports.add(detailReport);
 			}
@@ -118,7 +125,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Middle - 双核,2GB内存,20GB硬盘");
-				detailReport.setPrice(200);
+				detailReport.setPrice(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB, workTime, middle));
 				detailReport.setNumber(middle);
 				reports.add(detailReport);
 			}
@@ -128,7 +136,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Large - 四核,4GB内存,20GB硬盘");
-				detailReport.setPrice(400);
+				detailReport.setPrice(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Large_CPUx4_Memoryx4GB_DISKx20GB, workTime, large));
 				detailReport.setNumber(large);
 				reports.add(detailReport);
 			}
@@ -155,7 +164,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Netapp高IOPS存储");
 				detailReport.setRemark(netapp + "GB");
-				detailReport.setPrice(66);
+				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Netapp_高IOPS, workTime, 1));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -165,7 +174,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Fimas高吞吐量存储");
 				detailReport.setRemark(fimas + "GB");
-				detailReport.setPrice(22);
+				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Fimas_高吞吐量, workTime, 1));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -180,7 +189,7 @@ public class ReportService extends BaseSevcie {
 			DetailReport detailReport = new DetailReport();
 			detailReport.setType("负载均衡");
 			detailReport.setRemark("");
-			detailReport.setPrice(3000);
+			detailReport.setPrice(comm.costService.elbCost(workTime, elbSize));
 			detailReport.setNumber(elbSize);
 			reports.add(detailReport);
 
@@ -213,7 +222,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(eipType);
 				detailReport.setRemark("联通线路");
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.eipCost(NetworkConstant.ISPType.中国联通, workTime, unicom));
 				detailReport.setNumber(unicom);
 				reports.add(detailReport);
 			}
@@ -222,7 +231,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(eipType);
 				detailReport.setRemark("电信线路");
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.eipCost(NetworkConstant.ISPType.中国电信, workTime, telecom));
 				detailReport.setNumber(telecom);
 				reports.add(detailReport);
 			}
@@ -256,7 +265,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.GSLB.toInteger()));
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.dnsCost(workTime, gslb));
 				detailReport.setNumber(gslb);
 				reports.add(detailReport);
 			}
@@ -265,7 +274,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.A.toInteger()));
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.dnsCost(workTime, a));
 				detailReport.setNumber(a);
 				reports.add(detailReport);
 			}
@@ -274,7 +283,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.CNAME.toInteger()));
-				detailReport.setPrice(100);
+				detailReport.setPrice(comm.costService.dnsCost(workTime, cname));
 				detailReport.setNumber(cname);
 				reports.add(detailReport);
 			}

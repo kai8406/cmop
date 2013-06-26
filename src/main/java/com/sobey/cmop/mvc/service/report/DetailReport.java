@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.service.report;
 
-
 public class DetailReport implements java.io.Serializable {
 
 	/**

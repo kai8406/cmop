@@ -1,6 +1,5 @@
 package com.sobey.cmop.mvc.service.report;
 
-
 public class ApplyReport implements java.io.Serializable {
 
 	/**

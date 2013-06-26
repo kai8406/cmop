@@ -567,10 +567,10 @@ public class CostService extends BaseSevcie {
 
 		DateTime startTime = new DateTime(apply.getServiceStart());
 		DateTime endTime = new DateTime(apply.getServiceEnd());
-		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER);
+		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER, 2);
 
 		// 如果是当天,时间差算成1天.
-		return costTime == 0 ? 0.034 : costTime;
+		return costTime == 0 ? 0.04 : costTime;
 
 	}
 

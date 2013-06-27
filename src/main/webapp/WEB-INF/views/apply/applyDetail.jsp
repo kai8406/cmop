@@ -435,7 +435,7 @@
 		
 		<div class="form-actions">
 			<input class="btn" type="button" value="返回" onclick="history.back()">
-			<a onclick="myPrint(document.getElementById('print'))" class="btn btn-primary">打印</a>
+			<a href="${ctx}/applyReport/getpdfReport/${apply.id}.pdf" target="_blank" class="btn btn-primary">打印</a>
 		</div>
 			
 		

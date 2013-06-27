@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.framework.utils.Servlets;
 
@@ -123,20 +124,25 @@ public class ApplyController extends BaseController {
 
 		Apply apply = comm.applyService.getApply(id);
 		model.addAttribute("apply", apply);
+
+		// 根据审批状态获得服务申请的审批记录(只取最新的,当前的审批记录.即audit的状态为1)
+		model.addAttribute("audits",
+				comm.auditService.getAuditListByApplyIdAndStatus(id, AuditConstant.AuditStatus.有效.toInteger()));
+
 		model.addAttribute("sumCost", comm.costService.costPrice(apply));
 
 		return "apply/applyDetail";
 	}
 
 	/**
-	 * 服务申请Apply提交工单.
+	 * 服务申请Apply提交审批.
 	 */
 	@RequestMapping(value = "/audit/{id}", method = RequestMethod.GET)
 	public String audit(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 
 		Apply apply = comm.applyService.getApply(id);
 
-		String message = comm.applyService.saveApplyToOperate(apply);
+		String message = comm.applyService.saveAuditByApply(apply);
 
 		redirectAttributes.addFlashAttribute("message", message);
 

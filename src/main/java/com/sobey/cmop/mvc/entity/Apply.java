@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -35,6 +36,7 @@ public class Apply implements java.io.Serializable {
 	private String serviceEnd;
 	private Date createTime;
 	private Integer status;
+	private AuditFlow auditFlow;
 	private Integer redmineIssueId;
 	private Set<ComputeItem> computeItems = new HashSet<ComputeItem>(0);
 	private Set<StorageItem> storageItems = new HashSet<StorageItem>(0);
@@ -43,6 +45,7 @@ public class Apply implements java.io.Serializable {
 	private Set<NetworkDnsItem> networkDnsItems = new HashSet<NetworkDnsItem>(0);
 	private Set<MonitorCompute> monitorComputes = new HashSet<MonitorCompute>(0);
 	private Set<MonitorElb> monitorElbs = new HashSet<MonitorElb>(0);
+	private Set<Audit> audits = new HashSet<Audit>(0);
 	private Set<MonitorMail> monitorMails = new HashSet<MonitorMail>(0);
 	private Set<MonitorPhone> monitorPhones = new HashSet<MonitorPhone>(0);
 	private Set<MdnItem> mdnItems = new HashSet<MdnItem>(0);
@@ -71,10 +74,10 @@ public class Apply implements java.io.Serializable {
 	/** full constructor */
 	public Apply(User user, String title, String serviceTag, Integer serviceType, Integer priority, String description,
 			String serviceStart, String serviceEnd, Date createTime, Integer status, Integer redmineIssueId,
-			Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems, Set<ComputeItem> computeItems,
-			Set<NetworkElbItem> networkElbItems, Set<NetworkDnsItem> networkDnsItems,
-			Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<MonitorMail> monitorMails,
-			Set<MonitorPhone> monitorPhones, Set<MdnItem> mdnItems, Set<CpItem> cpItems) {
+			AuditFlow auditFlow, Set<StorageItem> storageItems, Set<NetworkEipItem> networkEipItems,
+			Set<ComputeItem> computeItems, Set<NetworkElbItem> networkElbItems, Set<NetworkDnsItem> networkDnsItems,
+			Set<MonitorCompute> monitorComputes, Set<MonitorElb> monitorElbs, Set<Audit> audits,
+			Set<MonitorMail> monitorMails, Set<MonitorPhone> monitorPhones, Set<MdnItem> mdnItems, Set<CpItem> cpItems) {
 		this.user = user;
 		this.title = title;
 		this.serviceTag = serviceTag;
@@ -85,6 +88,7 @@ public class Apply implements java.io.Serializable {
 		this.serviceEnd = serviceEnd;
 		this.createTime = createTime;
 		this.status = status;
+		this.auditFlow = auditFlow;
 		this.redmineIssueId = redmineIssueId;
 		this.storageItems = storageItems;
 		this.networkEipItems = networkEipItems;
@@ -93,6 +97,7 @@ public class Apply implements java.io.Serializable {
 		this.networkDnsItems = networkDnsItems;
 		this.monitorComputes = monitorComputes;
 		this.monitorElbs = monitorElbs;
+		this.audits = audits;
 		this.monitorMails = monitorMails;
 		this.monitorPhones = monitorPhones;
 		this.mdnItems = mdnItems;
@@ -202,6 +207,16 @@ public class Apply implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "audit_flow_id")
+	public AuditFlow getAuditFlow() {
+		return this.auditFlow;
+	}
+
+	public void setAuditFlow(AuditFlow auditFlow) {
+		this.auditFlow = auditFlow;
+	}
+
 	@Column(name = "redmine_issue_id")
 	public Integer getRedmineIssueId() {
 		return this.redmineIssueId;
@@ -254,6 +269,16 @@ public class Apply implements java.io.Serializable {
 
 	public void setNetworkDnsItems(Set<NetworkDnsItem> networkDnsItems) {
 		this.networkDnsItems = networkDnsItems;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")
+	@OrderBy("createTime ASC")
+	public Set<Audit> getAudits() {
+		return this.audits;
+	}
+
+	public void setAudits(Set<Audit> audits) {
+		this.audits = audits;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "apply")

@@ -167,11 +167,11 @@
 									</c:when>
 									
 									<c:when test="${item.status == 1 }">
-										<span class="label label-warning">${map.value }</span>
+										<span class="label label-warning tip-right" title="审批人: ${item.serviceTag.auditFlow.user.name }">${map.value }</span>
 									</c:when>
 									
 									<c:when test="${item.status == 2 }">
-										<span class="label label-important">${map.value }</span>
+										<span class="label label-important tip-right" title="审批人: ${item.serviceTag.auditFlow.user.name }">${map.value }</span>
 									</c:when>
 									
 									<c:when test="${item.status == 3 }">

@@ -89,42 +89,42 @@
 	<columnFooter>
 		<band height="77">
 			<staticText>
-				<reportElement style="Title" x="270" y="12" width="149" height="20"/>
+				<reportElement style="Title" x="270" y="17" width="149" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[硬件成本:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Title" x="442" y="12" width="99" height="20" forecolor="#9D3030"/>
+				<reportElement style="Title" x="442" y="17" width="99" height="20" forecolor="#9D3030"/>
 				<textElement>
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{init}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="Title" x="270" y="32" width="149" height="20"/>
+				<reportElement style="Title" x="270" y="37" width="149" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[初始化人工成本:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Title" x="441" y="32" width="100" height="20" forecolor="#9D3030"/>
+				<reportElement style="Title" x="441" y="37" width="100" height="20" forecolor="#9D3030"/>
 				<textElement>
 					<font fontName="华文细黑" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{humCost}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="Title" x="270" y="52" width="149" height="20"/>
+				<reportElement style="Title" x="270" y="57" width="149" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[总成本:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Title" x="441" y="52" width="99" height="20" forecolor="#9D3030"/>
+				<reportElement style="Title" x="441" y="57" width="99" height="20" forecolor="#9D3030"/>
 				<textElement>
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>

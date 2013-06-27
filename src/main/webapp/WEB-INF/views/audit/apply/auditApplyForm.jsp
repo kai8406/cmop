@@ -4,36 +4,35 @@
 <html>
 <head>
 
-	<title>服务申请</title>
-	
-	<script>
-		$(document).ready(function() {
-			
-			$("ul#navbar li#apply").addClass("active");
-			
-		});
-		
-		function myPrint(obj){
-		    var newWindow=window.open("打印窗口","_blank");
-		    var docStr = obj.innerHTML;
-		    newWindow.document.write(docStr);
-		    newWindow.document.close();
-		    newWindow.print();
-		    //newWindow.close();
-		}
-	</script>
-	
+<title>审批管理</title>
+
+<script>
+$(document).ready(function() {
+	$("ul#navbar li#applyAudit").addClass("active");
+});
+
+function setResult(result) {
+	if (result == "1" && $('#opinion').val() == "") {
+		$('#opinion').val("同意");
+	}
+    $('#result').val(result);
+}
+</script>
 </head>
 
 <body>
 	
 	<style>body{background-color: #f5f5f5;}</style>
 
-	<form id="inputForm" action="#" method="post" class="form-horizontal input-form">
+	<form action="#" method="post" class="form-horizontal input-form">
 	
 		<input type="hidden" name="id" value="${apply.id}">
+		<input type="hidden" name="userId" value="${userId}">
+		<c:if test="${empty result}">
+			<input type="hidden" name="result" id="result">
+		</c:if>
 		
-		<fieldset id="print">
+		<fieldset>
 			<legend><small>服务申请单详情</small></legend>
 			
 			<dl class="dl-horizontal">
@@ -69,20 +68,6 @@
 				
 				<dt>用途描述</dt>
 				<dd>${apply.description}&nbsp;</dd>
-				
-				<!-- 审批记录 -->
-				<c:if test="${not empty audits }">
-					<hr>
-					<dt>审批记录</dt>
-					<c:forEach var="item" items="${audits }">
-						<dd><em>审批人</em>&nbsp;&nbsp;${item.auditFlow.user.name}</dd>
-						<dd><em>审批结果</em>&nbsp;&nbsp;
-							<c:forEach var="map" items="${auditResultMap}"><c:if test="${map.key == item.result}">${map.value}</c:if></c:forEach>
-						</dd>
-						<dd><em>审批意见</em>&nbsp;&nbsp;${item.opinion}</dd>
-						<br>
-					</c:forEach>
-				</c:if>
 		
 				<!-- 实例Compute -->
 				<c:if test="${not empty apply.computeItems}">
@@ -145,14 +130,15 @@
 						
 						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
+						
 						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
 						
 						<c:forEach var="port" items="${item.elbPortItems }">
 							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
-							
-						<c:if test="${not empty item.mountComputes }"><dd><em>关联实例</em>&nbsp;&nbsp;${item.mountComputes}</dd></c:if>
 						
+						<c:if test="${not empty item.mountComputes }"><dd><em>关联实例</em>&nbsp;&nbsp;${item.mountComputes}</dd></c:if>
+							
 						<br>
 						
 					</c:forEach>
@@ -346,7 +332,7 @@
 									<dd><em>编码器模式</em>&nbsp;&nbsp;<c:forEach var="map" items="${encoderModeMap }"><c:if test="${map.key == live.encoderMode }">${map.value }</c:if></c:forEach></dd>
 								</c:if>
 								<c:choose>
-									<c:when test="${live.streamOutMode == 1   }">
+									<c:when test="${live.streamOutMode == 1  }">
 										<c:choose>
 											<c:when test="${live.encoderMode == 1 }">
 												<c:if test="${not empty live.httpUrl }">
@@ -425,15 +411,6 @@
 						<dd><em>FTP上传路径</em>&nbsp;&nbsp;${item.pictrueFtpUploadpath}</dd>
 						<dd><em>输出组类型</em>&nbsp;&nbsp;${item.pictrueOutputGroup}</dd>
 						<dd><em>输出媒体类型</em>&nbsp;&nbsp;${item.pictrueOutputMedia}</dd>
-						
-						<c:if test="${not empty item.cpProgramItems }">
-							<br>
-							<dd><strong>拆条节目单</strong></dd>
-							<c:forEach var="program" items="${ item.cpProgramItems}">
-								<dd><a>${program.name }&nbsp;&nbsp;${program.size }K</a></dd>
-							</c:forEach>
-						</c:if>
-						
 					</c:forEach>
 				</c:if>
 				
@@ -445,14 +422,72 @@
 				
 			</dl>
 			
-		</fieldset>
-		
-		<div class="form-actions">
-			<input class="btn" type="button" value="返回" onclick="history.back()">
-			<a href="${ctx}/applyReport/getpdfReport/${apply.id}.pdf" target="_blank" class="btn btn-primary">打印</a>
-		</div>
+			<hr>
 			
+			<!-- 审批意见 -->
+			<c:if test="${not empty audits  }">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>审批人</th>
+							<th>审批决定</th>
+							<th>审批意见</th>
+							<th>审批时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${audits}" var="item">
+							<c:if test="${item.status != 0}">	
+							<tr>
+								<td>${item.auditFlow.user.name}</td>
+								<td>
+									<c:forEach var="map" items="${auditResultMap}">
+										<c:if test="${item.result == map.key}">
+											<span class="label label-success">${map.value }</span>
+										</c:if>
+									</c:forEach>
+								</td>
+								<td>${item.opinion}</td>
+								<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
+							</tr>
+							</c:if>
+						</c:forEach>
+					</tbody>
+				</table>
+			</c:if>
+			
+			<form id="inputForm" action="${ctx}/audit/apply/${apply.id}" method="post">
+				<c:if test="${empty view}">
+					<div class="control-group">
+						<label class="control-label" for="opinion">审批意见</label>
+						<div class="controls">
+							<textarea rows="3" id="opinion" name="opinion" placeholder="...审批意见" maxlength="45" class="required"></textarea>
+						</div>
+					</div>
+				</c:if>
+			
+				<div class="form-actions">
+					<c:if test="${empty result}">
+						<input class="btn" type="button" value="返回" onclick="history.back()">
+						<c:if test="${empty view}">
+							<c:forEach var="map" items="${auditResultMap}">
+								<button class="btn btn-primary loading" onclick="return setResult(${map.key})">${map.value}</button>
+							</c:forEach>
+						</c:if>
+					</c:if>
+
+					<c:if test="${not empty result}">
+						<button class="btn" onclick="window.close();">&nbsp;关&nbsp;闭&nbsp;</button>
+						<c:forEach var="map" items="${auditResultMap}">
+							<c:if test="${result==map.key}">
+								<button class="btn btn-primary loading" onclick="return setResult(${map.key})">${map.value}</button>
+							</c:if>
+						</c:forEach>
+					</c:if>
+				</div>
+			</form>
 		
+		</fieldset>
 	</form>
 	
 </body>

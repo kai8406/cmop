@@ -16,6 +16,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseSevcie;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.IpPoolConstant;
@@ -25,6 +26,8 @@ import com.sobey.cmop.mvc.constant.NetworkConstant;
 import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Audit;
+import com.sobey.cmop.mvc.entity.AuditFlow;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
 import com.sobey.cmop.mvc.entity.Failure;
@@ -123,6 +126,52 @@ public class TemplateMailService extends BaseSevcie {
 	// ==========================//
 
 	/**
+	 * 发送MIME格式的服务申请审批通知邮件.
+	 */
+	public void sendApplyNotificationMail(Apply apply, AuditFlow auditFlow) {
+
+		// 初始化数据,并将其放入一个HashMap中.
+
+		Map<String, Object> map = this.freemarkerParameterMap();
+
+		// 服务申请Apply
+
+		map.put("apply", apply);
+
+		map.put("computes", apply.getComputeItems());
+		map.put("storages", apply.getStorageItems());
+		map.put("elbs", apply.getNetworkElbItems());
+		map.put("eips", apply.getNetworkEipItems());
+		map.put("dnses", apply.getNetworkDnsItems());
+		map.put("monitorComputes", apply.getMonitorComputes());
+		map.put("monitorElbs", apply.getMonitorElbs());
+		map.put("monitorMails", apply.getMonitorMails());
+		map.put("monitorPhones", apply.getMonitorPhones());
+		map.put("mdns", apply.getMdnItems());
+		map.put("cps", apply.getCpItems());
+
+		// 申请 审批Audit
+
+		String passUrl = CONFIG_LOADER.getProperty("APPLY_PASS_URL") + "?applyId=" + apply.getId() + "&userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续;
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("APPLY_DISAGREE_URL") + "/" + apply.getId() + "?userId="
+				+ auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回;
+
+		map.put("sumCost", comm.costService.costPrice(apply));
+		map.put("passUrl", passUrl);
+		map.put("disagreeContinueUrl", disagreeContinueUrl);
+		map.put("disagreeReturnUrl", disagreeReturnUrl);
+
+		// 邮件标题
+		String sendSubject = "资源申请审批邮件";
+
+		this.sendMailConfig(detailTemplate, map, auditFlow.getUser(), sendSubject);
+
+	}
+
+	/**
 	 * 发送工单处理邮件(服务申请Apply)
 	 */
 	public void sendApplyOperateNotificationMail(Apply apply, User assigneeUser) {
@@ -202,6 +251,46 @@ public class TemplateMailService extends BaseSevcie {
 	// ==========================//
 	// ======= Resources ========//
 	// ==========================//
+
+	/**
+	 * 发送MIME格式的资源变更审批通知邮件.
+	 */
+	public void sendResourcesNotificationMail(ServiceTag serviceTag, AuditFlow auditFlow, Audit audit) {
+
+		// 初始化数据,并将其放入一个HashMap中.
+
+		Map<String, Object> map = this.freemarkerParameterMap();
+
+		// 服务标签ServiceTag
+
+		map.put("serviceTag", serviceTag);
+
+		map.put("resourcesList", comm.resourcesService.getCommitedResourcesListByServiceTagId(serviceTag.getId()));
+
+		// 变更 审批Audit
+
+		String passUrl = CONFIG_LOADER.getProperty("RESOURCES_PASS_URL") + "?serviceTagId=" + serviceTag.getId()
+				+ "&userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.同意;
+
+		String disagreeContinueUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId()
+				+ "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意但继续 + "&auditId="
+				+ audit.getId();
+
+		String disagreeReturnUrl = CONFIG_LOADER.getProperty("RESOURCES_DISAGREE_URL") + "/" + serviceTag.getId()
+				+ "?userId=" + auditFlow.getUser().getId() + "&result=" + AuditConstant.Result.不同意且退回 + "&auditId="
+				+ audit.getId();
+		;
+
+		map.put("passUrl", passUrl);
+		map.put("disagreeContinueUrl", disagreeContinueUrl);
+		map.put("disagreeReturnUrl", disagreeReturnUrl);
+
+		// 邮件标题
+		String sendSubject = "资源变更审批邮件";
+
+		this.sendMailConfig(changeTemplate, map, auditFlow.getUser(), sendSubject);
+
+	}
 
 	/**
 	 * 发送工单处理邮件(资源变更Resources)

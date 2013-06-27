@@ -134,11 +134,11 @@
 									</c:when>
 									
 									<c:when test="${item.status == 1 }">
-										<span class="label label-warning">${map.value }</span>
+										<span class="label label-warning tip-right" title="审批人: ${item.auditFlow.user.name }">${map.value }</span>
 									</c:when>
 									
 									<c:when test="${item.status == 2 }">
-										<span class="label label-important">${map.value }</span>
+										<span class="label label-important tip-right" title="审批人: ${item.auditFlow.user.name }">${map.value }</span>
 									</c:when>
 									
 									<c:when test="${item.status == 3 }">
@@ -182,10 +182,10 @@
 									</div>
 								</div>
 							
-								<a href="#auditModal${item.id}" data-toggle="modal">提交</a>
+								<a href="#auditModal${item.id}" data-toggle="modal">提交审批</a>
 								<div id="auditModal${item.id}" class="modal hide fade" tabindex="-1" data-width="250">
 									<div class="modal-header"><button type="button" class="close" data-dismiss="modal">×</button><h3>提示</h3></div>
-									<div class="modal-body">是否提交?</div>
+									<div class="modal-body">是否提交审批?</div>
 									<div class="modal-footer">
 										<button class="btn" data-dismiss="modal">关闭</button>
 										<a href="audit/${item.id}/" class="btn btn-primary loading">确定</a>

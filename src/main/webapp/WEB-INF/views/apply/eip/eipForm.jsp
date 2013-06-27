@@ -102,9 +102,6 @@
 					linkId = $computeSelect.val();
 					var computeSelectText = $computeSelect.find("option:selected").text();
 					str += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + computeSelectText + '</strong></dd>';
-				}else{
-					linkType = "99";
-					linkId = 0;
 				}
 				
 				if (isUnique) {

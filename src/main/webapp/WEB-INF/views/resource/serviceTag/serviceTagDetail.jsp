@@ -56,6 +56,18 @@
 				<dt>创建日期</dt>
 				<dd><fmt:formatDate value="${serviceTag.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" />&nbsp;</dd>
 				
+				<c:if test="${not empty audits }">
+					<div class="page-header"><em>审批记录</em></div>
+					<c:forEach var="item" items="${audits }">
+						<dd><em>审批人</em>&nbsp;&nbsp;${item.auditFlow.user.name}</dd>
+						<dd><em>审批结果</em>&nbsp;&nbsp;
+							<c:forEach var="map" items="${auditResultMap}"><c:if test="${map.key == item.result}">${map.value}</c:if></c:forEach>
+						</dd>
+						<dd><em>审批意见</em>&nbsp;&nbsp;${item.opinion}</dd>
+						<br>
+					</c:forEach>
+				</c:if>
+				
 				<div class="page-header"><em>服务标签下所有资源</em></div>
 			
 				<!-- 实例Compute -->

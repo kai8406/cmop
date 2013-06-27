@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="applyReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.4641000000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="192"/>
+	<property name="ireport.y" value="209"/>
 	<style name="Title" forecolor="#000000" fontName="华文细黑" fontSize="24" isBold="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
 	<style name="Lable" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
 	<style name="Parameter" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
@@ -25,7 +25,7 @@
 	<title>
 		<band height="201" splitType="Stretch">
 			<staticText>
-				<reportElement style="Title" mode="Transparent" x="146" y="0" width="249" height="42" forecolor="#000000"/>
+				<reportElement style="Title" mode="Transparent" x="160" y="0" width="249" height="42" forecolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font size="24" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -133,7 +133,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="140" splitType="Stretch">
+		<band height="124" splitType="Stretch">
 			<subreport>
 				<reportElement x="11" y="15" width="519" height="100"/>
 				<subreportParameter name="humCost">

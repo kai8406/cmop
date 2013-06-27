@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.sobey.cmop.mvc.constant.AccountConstant;
 import com.sobey.cmop.mvc.constant.ApplyConstant;
+import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.CPConstant;
 import com.sobey.cmop.mvc.constant.ComputeConstant;
 import com.sobey.cmop.mvc.constant.HostServerConstant;
@@ -184,6 +185,15 @@ public class BaseController {
 	@ModelAttribute("assigneeMap")
 	public Map<Integer, String> assigneeMap() {
 		return RedmineConstant.Assignee.map;
+	}
+
+	/**
+	 * 
+	 * @return 审批结果Map
+	 */
+	@ModelAttribute("auditResultMap")
+	public Map<Integer, String> auditResultMap() {
+		return AuditConstant.Result.map;
 	}
 
 	/**

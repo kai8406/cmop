@@ -452,7 +452,29 @@
 			</#if><!--  CP云生产 End -->
 		</li>
 		
+		<!-- 成本核算 -->
+		<#if sumCost?exists>
+			<li>
+				<strong>资源服务费用</strong>
+				<ul>
+					<li>${sumCost}</li>
+				</ul>
+			</li>
+		</#if><!-- 成本核算 End -->
+		
+		<#if passUrl?exists>
+			<li>
+				<strong>审批操作</strong>
+				<ul>
+					<li><a href="${passUrl}">1.同意</a></li>
+					<li><a href="${disagreeContinueUrl}">2.不通过但继续</a></li>
+					<li><a href="${disagreeReturnUrl}">3.不通过且退回</a></li>
+				</ul>
+			</li>
+		</#if>
 	</ul>
 
 </body>
 </html>
+
+

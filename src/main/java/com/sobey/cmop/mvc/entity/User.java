@@ -55,6 +55,7 @@ public class User implements java.io.Serializable {
 	private Date loginTime;
 	private Integer status;
 	private Integer redmineUserId;
+	private Set<AuditFlow> auditFlows = new HashSet<AuditFlow>(0);
 	private Set<Failure> failures = new HashSet<Failure>(0);
 	private Set<Apply> applies = new HashSet<Apply>(0);
 	private Set<NetworkEsgItem> networkEsgItems = new HashSet<NetworkEsgItem>(0);
@@ -84,7 +85,8 @@ public class User implements java.io.Serializable {
 	/** full constructor */
 	public User(String name, String loginName, String password, String salt, String email, String phonenum,
 			Department department, Integer leaderId, Integer type, Date createTime, Date loginTime, Integer status,
-			Integer redmineUserId, Set<Failure> failures, Set<Apply> applies, Set<NetworkEsgItem> networkEsgItems) {
+			Integer redmineUserId, Set<AuditFlow> auditFlows, Set<Failure> failures, Set<Apply> applies,
+			Set<NetworkEsgItem> networkEsgItems) {
 		this.name = name;
 		this.loginName = loginName;
 		this.password = password;
@@ -98,6 +100,7 @@ public class User implements java.io.Serializable {
 		this.loginTime = loginTime;
 		this.status = status;
 		this.redmineUserId = redmineUserId;
+		this.auditFlows = auditFlows;
 		this.failures = failures;
 		this.applies = applies;
 		this.networkEsgItems = networkEsgItems;
@@ -243,6 +246,15 @@ public class User implements java.io.Serializable {
 
 	public void setRedmineUserId(Integer redmineUserId) {
 		this.redmineUserId = redmineUserId;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	public Set<AuditFlow> getAuditFlows() {
+		return this.auditFlows;
+	}
+
+	public void setAuditFlows(Set<AuditFlow> auditFlows) {
+		this.auditFlows = auditFlows;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")

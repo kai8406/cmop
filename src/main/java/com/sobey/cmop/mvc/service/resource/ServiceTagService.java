@@ -258,7 +258,7 @@ public class ServiceTagService extends BaseSevcie {
 	}
 
 	/**
-	 * 创建变更工单
+	 * 提交变更,向第一位审批人发起审批邮件
 	 * 
 	 * 
 	 * @param serviceTag

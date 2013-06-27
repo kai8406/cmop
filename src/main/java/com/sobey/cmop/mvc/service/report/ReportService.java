@@ -183,20 +183,6 @@ public class ReportService extends BaseSevcie {
 
 		}
 
-		// === ELB === //
-		if (!apply.getNetworkElbItems().isEmpty()) {
-
-			int elbSize = apply.getNetworkElbItems().size();
-
-			DetailReport detailReport = new DetailReport();
-			detailReport.setType("负载均衡");
-			detailReport.setRemark("");
-			detailReport.setPrice(comm.costService.elbCost(workTime, elbSize));
-			detailReport.setNumber(elbSize);
-			reports.add(detailReport);
-
-		}
-
 		// === EIP === //
 		if (!apply.getNetworkEipItems().isEmpty()) {
 
@@ -237,6 +223,20 @@ public class ReportService extends BaseSevcie {
 				detailReport.setNumber(telecom);
 				reports.add(detailReport);
 			}
+
+		}
+
+		// === ELB === //
+		if (!apply.getNetworkElbItems().isEmpty()) {
+
+			int elbSize = apply.getNetworkElbItems().size();
+
+			DetailReport detailReport = new DetailReport();
+			detailReport.setType("负载均衡");
+			detailReport.setRemark("");
+			detailReport.setPrice(comm.costService.elbCost(workTime, elbSize));
+			detailReport.setNumber(elbSize);
+			reports.add(detailReport);
 
 		}
 

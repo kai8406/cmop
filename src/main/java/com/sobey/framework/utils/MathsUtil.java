@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 public class MathsUtil {
 
 	/**
-	 * 默认除法运算精度(小数点后1位数)
+	 * 默认除法运算精度(小数点后2位数)
 	 */
-	private static final int DEF_DIV_SCALE = 1;
+	private static final int DEF_DIV_SCALE = 2;
 
 	/**
 	 * 

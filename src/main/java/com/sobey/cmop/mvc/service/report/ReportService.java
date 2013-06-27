@@ -164,7 +164,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Netapp高IOPS存储");
 				detailReport.setRemark(netapp + "GB");
-				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Netapp_高IOPS, workTime, 1));
+				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Netapp_高IOPS, workTime,
+						netapp));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -174,7 +175,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Fimas高吞吐量存储");
 				detailReport.setRemark(fimas + "GB");
-				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Fimas_高吞吐量, workTime, 1));
+				detailReport
+						.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Fimas_高吞吐量, workTime, fimas));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -210,10 +212,10 @@ public class ReportService extends BaseSevcie {
 
 			for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
 				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
-					unicom++;
+					telecom++;
 				}
 				if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
-					telecom++;
+					unicom++;
 				}
 			}
 

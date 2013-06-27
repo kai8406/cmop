@@ -223,48 +223,39 @@ public class CostService extends BaseSevcie {
 
 	private double eipCost(Apply apply, double workTime) {
 
-		double price = 0;
+		/**
+		 * 中国联通
+		 */
+		int unicom = 0;
 
-		double accessRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-				CostingConstant.CostingParameter.接入速率.toString()).getDescription());
+		/**
+		 * 中国电信
+		 */
+		int telecom = 0;
 
-		if (!apply.getNetworkEipItems().isEmpty()) {
-
-			for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
-
-				/**
-				 * 单价
-				 */
-				double singletonPrice = 0;
-
-				double priceTemp = 0;
-
-				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
-				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
-
-					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.电信带宽单价.toString()).getDescription());
-
-				} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
-
-					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.联通带宽单价.toString()).getDescription());
-
-				} else {
-					// TODO 中国移动
-				}
-
-				priceTemp = MathsUtil.mul(accessRate, singletonPrice);
-				priceTemp = MathsUtil.add(priceTemp, singletonPrice);
-
-				price = MathsUtil.add(price, priceTemp);
-
+		for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
+			if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
+				telecom++;
 			}
-
-			price = MathsUtil.mul(price, workTime);
+			if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
+				unicom++;
+			}
 		}
 
-		return price;
+		// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
+
+		double unicomPrice = 0;
+		double telecomPrice = 0;
+
+		if (unicom != 0) {
+			unicomPrice = comm.costService.eipCost(NetworkConstant.ISPType.中国联通, workTime, unicom);
+		}
+
+		if (telecom != 0) {
+			telecomPrice = comm.costService.eipCost(NetworkConstant.ISPType.中国电信, workTime, telecom);
+		}
+
+		return MathsUtil.add(unicomPrice, telecomPrice);
 	}
 
 	private double elbCost(Apply apply, double workTime) {
@@ -288,15 +279,26 @@ public class CostService extends BaseSevcie {
 
 	private double es3Cost(Apply apply, double workTime) {
 		double price = 0;
+
 		if (!apply.getStorageItems().isEmpty()) {
+
+			double netAppPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.业务存储单价.toString()).getDescription());
+
+			double fimasPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.数据存储单价.toString()).getDescription());
 
 			for (StorageItem storageItem : apply.getStorageItems()) {
 
 				// ES3核算成本公式:每月服务成本=业务存储大小 × 业务存储单价
 				if (StorageConstant.StorageType.Netapp_高IOPS.toInteger().equals(storageItem.getStorageType())) {
-					double es3Price = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.业务存储单价.toString()).getDescription());
-					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), es3Price));
+
+					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), netAppPrice));
+
+				} else {
+
+					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), fimasPrice));
+
 				}
 			}
 
@@ -448,13 +450,15 @@ public class CostService extends BaseSevcie {
 	 * @param number 数量
 	 * @return
 	 */
-	public Double es3Cost(StorageConstant.StorageType storageType, double workTime, int number) {
+	public Double es3Cost(StorageConstant.StorageType storageType, double workTime, double space) {
 		double price = 0;
 		if (StorageConstant.StorageType.Netapp_高IOPS.toInteger().equals(storageType.toInteger())) {
-			price = MathsUtil.mul(number, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+			price = MathsUtil.mul(space, Double.valueOf(OneCmdbService.findCiBeanByAlias(
 					CostingConstant.Costing.业务存储单价.toString()).getDescription()));
+
 		} else {
-			// TODO 暂时没有fimas的价格.
+			price = MathsUtil.mul(space, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.数据存储单价.toString()).getDescription()));
 		}
 		return MathsUtil.mul(price, workTime);
 	}
@@ -501,6 +505,12 @@ public class CostService extends BaseSevcie {
 				CostingConstant.CostingParameter.接入速率.toString()).getDescription());
 
 		/**
+		 * 双线
+		 */
+		double bandwidthRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.双线.toString())
+				.getDescription());
+
+		/**
 		 * 单价
 		 */
 		double ispPrice = 0;
@@ -521,9 +531,8 @@ public class CostService extends BaseSevcie {
 
 		// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
 
-		price = MathsUtil.mul(accessRate, ispPrice);
-		price = MathsUtil.add(price, ispPrice);
-		price = MathsUtil.mul(price, number);
+		// 带宽成本 + IP成本
+		price = MathsUtil.add(MathsUtil.mul(accessRate, bandwidthRate), MathsUtil.mul(number, ispPrice));
 		return MathsUtil.mul(price, workTime);
 	}
 

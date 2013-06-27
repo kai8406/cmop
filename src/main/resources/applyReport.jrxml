@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="applyReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.4641000000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="106"/>
+	<property name="ireport.y" value="192"/>
 	<style name="Title" forecolor="#000000" fontName="华文细黑" fontSize="24" isBold="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
 	<style name="Lable" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
 	<style name="Parameter" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
@@ -154,7 +154,7 @@
 				<textElement>
 					<font fontName="华文细黑" size="14" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[  资源所属领导（建议及签字）：]]></text>
+				<text><![CDATA[  预算审批领导（建议及签字）：]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="113" width="555" height="1"/>
@@ -167,21 +167,21 @@
 				<textElement>
 					<font fontName="华文细黑" size="14" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[年                 月]]></text>
+				<text><![CDATA[年       月       日]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Lable" x="453" y="93" width="100" height="20"/>
 				<textElement>
 					<font fontName="华文细黑" size="14" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[年                 月]]></text>
+				<text><![CDATA[年       月      日]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Lable" x="298" y="1" width="257" height="20"/>
 				<textElement>
 					<font fontName="华文细黑" size="14" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[  事业部领导（建议及签字）：]]></text>
+				<text><![CDATA[  云平台部（建议及签字）：]]></text>
 			</staticText>
 		</band>
 	</summary>

@@ -18,7 +18,7 @@
 	<field name="serviceStart" class="java.lang.String"/>
 	<field name="serviceEnd" class="java.lang.String"/>
 	<field name="description" class="java.lang.String"/>
-	<field name="servicesCost" class="java.lang.Double"/>
+	<field name="servicesCost" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

@@ -1,5 +1,6 @@
 package com.sobey.cmop.mvc.service.report;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class ReportService extends BaseSevcie {
 		applyReport.setServiceStart(apply.getServiceStart());
 		applyReport.setServiceEnd(apply.getServiceEnd());
 
-		applyReport.setServicesCost(comm.costService.humanCost(apply, workTime));
+		applyReport.setServicesCost(BigDecimal.valueOf(comm.costService.humanCost(apply, workTime)));
 
 		return applyReport;
 	}
@@ -115,8 +116,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Small - 单核,1GB内存,20GB硬盘");
-				detailReport.setPrice(comm.costService.computeCost(
-						ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB, workTime, small));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB, workTime, small)));
 				detailReport.setNumber(small);
 				reports.add(detailReport);
 			}
@@ -125,8 +126,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Middle - 双核,2GB内存,20GB硬盘");
-				detailReport.setPrice(comm.costService.computeCost(
-						ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB, workTime, middle));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB, workTime, middle)));
 				detailReport.setNumber(middle);
 				reports.add(detailReport);
 			}
@@ -136,8 +137,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(computeType);
 				detailReport.setRemark("Large - 四核,4GB内存,20GB硬盘");
-				detailReport.setPrice(comm.costService.computeCost(
-						ComputeConstant.ECSServerType.Large_CPUx4_Memoryx4GB_DISKx20GB, workTime, large));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.computeCost(
+						ComputeConstant.ECSServerType.Large_CPUx4_Memoryx4GB_DISKx20GB, workTime, large)));
 				detailReport.setNumber(large);
 				reports.add(detailReport);
 			}
@@ -164,8 +165,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Netapp高IOPS存储");
 				detailReport.setRemark(netapp + "GB");
-				detailReport.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Netapp_高IOPS, workTime,
-						netapp));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.es3Cost(
+						StorageConstant.StorageType.Netapp_高IOPS, workTime, netapp)));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -175,8 +176,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType("Fimas高吞吐量存储");
 				detailReport.setRemark(fimas + "GB");
-				detailReport
-						.setPrice(comm.costService.es3Cost(StorageConstant.StorageType.Fimas_高吞吐量, workTime, fimas));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.es3Cost(
+						StorageConstant.StorageType.Fimas_高吞吐量, workTime, fimas)));
 				detailReport.setNumber(1);
 				reports.add(detailReport);
 			}
@@ -210,7 +211,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(eipType);
 				detailReport.setRemark("联通线路");
-				detailReport.setPrice(comm.costService.eipCost(NetworkConstant.ISPType.中国联通, workTime, unicom));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.eipCost(NetworkConstant.ISPType.中国联通,
+						workTime, unicom)));
 				detailReport.setNumber(unicom);
 				reports.add(detailReport);
 			}
@@ -219,7 +221,8 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(eipType);
 				detailReport.setRemark("电信线路");
-				detailReport.setPrice(comm.costService.eipCost(NetworkConstant.ISPType.中国电信, workTime, telecom));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.eipCost(NetworkConstant.ISPType.中国电信,
+						workTime, telecom)));
 				detailReport.setNumber(telecom);
 				reports.add(detailReport);
 			}
@@ -234,7 +237,7 @@ public class ReportService extends BaseSevcie {
 			DetailReport detailReport = new DetailReport();
 			detailReport.setType("负载均衡");
 			detailReport.setRemark("");
-			detailReport.setPrice(comm.costService.elbCost(workTime, elbSize));
+			detailReport.setPrice(BigDecimal.valueOf(comm.costService.elbCost(workTime, elbSize)));
 			detailReport.setNumber(elbSize);
 			reports.add(detailReport);
 
@@ -267,7 +270,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.GSLB.toInteger()));
-				detailReport.setPrice(comm.costService.dnsCost(workTime, gslb));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.dnsCost(workTime, gslb)));
 				detailReport.setNumber(gslb);
 				reports.add(detailReport);
 			}
@@ -276,7 +279,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.A.toInteger()));
-				detailReport.setPrice(comm.costService.dnsCost(workTime, a));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.dnsCost(workTime, a)));
 				detailReport.setNumber(a);
 				reports.add(detailReport);
 			}
@@ -285,7 +288,7 @@ public class ReportService extends BaseSevcie {
 				DetailReport detailReport = new DetailReport();
 				detailReport.setType(dnsType);
 				detailReport.setRemark(NetworkConstant.DomainType.get(NetworkConstant.DomainType.CNAME.toInteger()));
-				detailReport.setPrice(comm.costService.dnsCost(workTime, cname));
+				detailReport.setPrice(BigDecimal.valueOf(comm.costService.dnsCost(workTime, cname)));
 				detailReport.setNumber(cname);
 				reports.add(detailReport);
 			}

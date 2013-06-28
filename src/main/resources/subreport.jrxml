@@ -5,18 +5,18 @@
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#000000" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
 	<style name="SubParameter" forecolor="#666666" fontName="华文细黑" fontSize="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H"/>
-	<parameter name="humCost" class="java.lang.Double"/>
+	<parameter name="humCost" class="java.math.BigDecimal"/>
 	<field name="type" class="java.lang.String"/>
 	<field name="remark" class="java.lang.String"/>
 	<field name="number" class="java.lang.Integer"/>
-	<field name="price" class="java.lang.Double"/>
-	<variable name="total" class="java.lang.Double">
-		<variableExpression><![CDATA[$V{init}+$V{hum}]]></variableExpression>
+	<field name="price" class="java.math.BigDecimal"/>
+	<variable name="total" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{init}.add($V{hum})]]></variableExpression>
 	</variable>
-	<variable name="init" class="java.lang.Double" calculation="Sum">
+	<variable name="init" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{price}]]></variableExpression>
 	</variable>
-	<variable name="hum" class="java.lang.Double">
+	<variable name="hum" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$P{humCost}]]></variableExpression>
 	</variable>
 	<background>

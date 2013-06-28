@@ -1,5 +1,7 @@
 package com.sobey.cmop.mvc.service.report;
 
+import java.math.BigDecimal;
+
 public class ApplyReport implements java.io.Serializable {
 
 	/**
@@ -14,7 +16,7 @@ public class ApplyReport implements java.io.Serializable {
 	private String serviceStart; // 服务开始时间
 	private String serviceEnd; // 服务终止时间
 	private String description; // 申请用途
-	private Double servicesCost; // 人工服务成本
+	private BigDecimal servicesCost; // 人工服务成本
 
 	public String getTitle() {
 		return title;
@@ -72,11 +74,11 @@ public class ApplyReport implements java.io.Serializable {
 		this.description = description;
 	}
 
-	public Double getServicesCost() {
+	public BigDecimal getServicesCost() {
 		return servicesCost;
 	}
 
-	public void setServicesCost(Double servicesCost) {
+	public void setServicesCost(BigDecimal servicesCost) {
 		this.servicesCost = servicesCost;
 	}
 

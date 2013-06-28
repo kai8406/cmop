@@ -297,6 +297,13 @@ public class ReportService extends BaseSevcie {
 
 		// === MDN === //
 		if (!apply.getMdnItems().isEmpty()) {
+			DetailReport detailReport = new DetailReport();
+			detailReport.setType("MDN");
+			detailReport.setRemark("");
+			detailReport.setPrice(BigDecimal.valueOf(comm.costService.mdnCost(apply, workTime)));
+			detailReport.setNumber(1);
+			reports.add(detailReport);
+
 		}
 
 		// === CP云生产 === //

@@ -10,7 +10,6 @@ public class MdnLiveJson implements java.io.Serializable {
 
 	private Integer id;
 	private String liveDomain;
-	private String liveBandwidth;
 	private String liveProtocol;
 	private String name;
 	private String guid;
@@ -36,14 +35,6 @@ public class MdnLiveJson implements java.io.Serializable {
 
 	public void setLiveDomain(String liveDomain) {
 		this.liveDomain = liveDomain;
-	}
-
-	public String getLiveBandwidth() {
-		return liveBandwidth;
-	}
-
-	public void setLiveBandwidth(String liveBandwidth) {
-		this.liveBandwidth = liveBandwidth;
 	}
 
 	public String getLiveProtocol() {

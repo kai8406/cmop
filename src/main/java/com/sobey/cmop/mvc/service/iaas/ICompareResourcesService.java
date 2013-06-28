@@ -221,7 +221,8 @@ public interface ICompareResourcesService {
 	 *            重点覆盖ISP
 	 * @return
 	 */
-	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea, String coverIsp);
+	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea,
+			String coverIsp, String bandwidth);
 
 	/**
 	 * 比较MdnVodItem变更前后的值
@@ -239,13 +240,12 @@ public interface ICompareResourcesService {
 	 * @return
 	 */
 	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain,
-			String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl);
+			String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl);
 
 	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth,
-			String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder,
-			String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl,
-			String hlsBitrate);
+			String name, String guid, String liveBandwidth, String liveProtocol, Integer streamOutMode,
+			Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder,
+			String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate);
 
 	/**
 	 * 比较CpItem变更前后的值

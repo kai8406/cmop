@@ -10,14 +10,16 @@
 	<field name="remark" class="java.lang.String"/>
 	<field name="number" class="java.lang.Integer"/>
 	<field name="price" class="java.math.BigDecimal"/>
-	<variable name="total" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$V{init}.add($V{hum})]]></variableExpression>
+	<variable name="total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{init}.add( $V{hum} )]]></variableExpression>
 	</variable>
 	<variable name="init" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{price}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="hum" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$P{humCost}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -114,7 +116,7 @@
 				<textElement>
 					<font fontName="华文细黑" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{humCost}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{hum}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Title" x="270" y="57" width="149" height="20"/>

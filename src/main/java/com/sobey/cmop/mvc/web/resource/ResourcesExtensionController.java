@@ -216,11 +216,11 @@ public class ResourcesExtensionController extends BaseController {
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 			@RequestParam(value = "coverArea") String coverArea, @RequestParam(value = "coverIsp") String coverIsp,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "bandwidth") String bandwidth, RedirectAttributes redirectAttributes) {
 
 		Resources resources = comm.resourcesService.getResources(id);
 
-		comm.mdnService.saveResourcesByMdn(resources, serviceTagId, changeDescription, coverArea, coverIsp);
+		comm.mdnService.saveResourcesByMdn(resources, serviceTagId, changeDescription, coverArea, coverIsp, bandwidth);
 
 		redirectAttributes.addFlashAttribute("message", SUCCESS_MESSAGE_TEXT);
 
@@ -247,7 +247,6 @@ public class ResourcesExtensionController extends BaseController {
 	@RequestMapping(value = "/{id}/vod/{vodId}", method = RequestMethod.POST)
 	public String updateVod(@PathVariable("id") Integer id, @PathVariable("vodId") Integer vodId,
 			@RequestParam(value = "vodDomain") String vodDomain,
-			@RequestParam(value = "vodBandwidth") String vodBandwidth,
 			@RequestParam(value = "vodProtocol") String vodProtocol,
 			@RequestParam(value = "sourceOutBandwidth") String sourceOutBandwidth,
 			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl,
@@ -259,8 +258,8 @@ public class ResourcesExtensionController extends BaseController {
 			resources.setUsedby(RedmineService.MDN_REDMINE_ASSIGNEE);
 		}
 
-		comm.mdnService.saveResourcesByMdnVod(resources, changeDescription, vodId, vodDomain, vodBandwidth,
-				vodProtocol, sourceOutBandwidth, sourceStreamerUrl);
+		comm.mdnService.saveResourcesByMdnVod(resources, changeDescription, vodId, vodDomain, vodProtocol,
+				sourceOutBandwidth, sourceStreamerUrl);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN点播成功");
 
@@ -286,7 +285,6 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateLive(@PathVariable("id") Integer id, @PathVariable("liveId") Integer liveId,
 			@RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
 			@RequestParam(value = "guid") String guid, @RequestParam(value = "liveDomain") String liveDomain,
-			@RequestParam(value = "liveBandwidth") String liveBandwidth,
 			@RequestParam(value = "liveProtocol") String liveProtocol,
 			@RequestParam(value = "streamOutMode") Integer streamOutMode,
 			@RequestParam(value = "encoderMode", required = false) Integer encoderMode,
@@ -307,8 +305,8 @@ public class ResourcesExtensionController extends BaseController {
 		}
 
 		comm.mdnService.saveResourcesByMdnLive(resources, changeDescription, liveId, bandwidth, name, guid, liveDomain,
-				liveBandwidth, liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder,
-				hlsUrlEncoder, hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
+				liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder,
+				hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "变更MDN直播成功");
 

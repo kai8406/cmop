@@ -1291,7 +1291,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea, String coverIsp) {
+	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea,
+			String coverIsp, String bandwidth) {
 
 		boolean isChange = false;
 
@@ -1329,12 +1330,29 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		}
 
+		if (!mdnItem.getBandwidth().equals(bandwidth)) {
+
+			// coverIsp
+
+			String fieldName = FieldNameConstant.MdnItem.加速服务带宽.toString();
+
+			String oldValue = mdnItem.getBandwidth();
+			String oldString = mdnItem.getBandwidth();
+
+			String newValue = bandwidth;
+			String newString = bandwidth;
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
+					newString);
+
+		}
+
 		return isChange;
 	}
 
 	@Override
 	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain,
-			String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+			String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
 
 		boolean isChange = false;
 
@@ -1347,20 +1365,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String newValue = vodDomain;
 			String newString = vodDomain;
-
-			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue,
-					oldString, newValue, newString);
-		}
-
-		if (!mdnVodItem.getVodBandwidth().equals(vodBandwidth)) {
-
-			String fieldName = FieldNameConstant.MdnVodItem.点播加速服务带宽.toString();
-
-			String oldValue = mdnVodItem.getVodBandwidth();
-			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth());
-
-			String newValue = vodBandwidth;
-			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(vodBandwidth);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue,
 					oldString, newValue, newString);
@@ -1413,10 +1417,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 	@Override
 	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth,
-			String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder,
-			String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl,
-			String hlsBitrate) {
+			String name, String guid, String liveDomain, String liveProtocol, Integer streamOutMode,
+			Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder,
+			String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate) {
 
 		boolean isChange = false;
 
@@ -1429,20 +1432,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String newValue = liveDomain;
 			String newString = liveDomain;
-
-			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue,
-					oldString, newValue, newString);
-		}
-
-		if (!mdnLiveItem.getLiveBandwidth().equals(liveBandwidth)) {
-
-			String fieldName = FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString();
-
-			String oldValue = mdnLiveItem.getLiveBandwidth();
-			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth());
-
-			String newValue = liveBandwidth;
-			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(liveBandwidth);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue,
 					oldString, newValue, newString);

@@ -339,6 +339,7 @@
 								<#list ispTypeMap?keys as k ><#if coverIsp?string == k>${ispTypeMap[k]}</#if></#list>
 							</#list>
 						</li>
+						<li><em>加速服务带宽(M)</em>&nbsp;:${mdn.bandwidth}</li>
 						
 						<#if (mdn.mdnVodItems?exists) && (mdn.mdnVodItems?size > 0) >
 							<br>
@@ -347,7 +348,6 @@
 								<#list mdn.mdnVodItems as vod>
 									<li><em>服务子项ID</em>&nbsp;:${vod.id}</li>
 									<li><em>服务域名</em>&nbsp;:${vod.vodDomain}</li>
-									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if vod.vodBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${vod.vodProtocol}</li>
 									<li><em>源站出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
 									<li><em>Streamer地址</em>&nbsp;:${vod.sourceStreamerUrl}</li>
@@ -363,7 +363,6 @@
 								<#list mdn.mdnLiveItems as live>
 									<li><em>服务子项ID</em>&nbsp;:${live.id}</li>
 									<li><em>服务域名</em>&nbsp;:${live.liveDomain}</li>
-									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if live.liveBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${live.liveProtocol}</li>
 									<li><em>源站出口带宽</em>&nbsp;:${live.bandwidth}</li>
 									<li><em>频道名称</em>&nbsp;:${live.name}</li>

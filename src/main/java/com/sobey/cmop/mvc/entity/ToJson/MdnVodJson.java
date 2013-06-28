@@ -9,7 +9,6 @@ package com.sobey.cmop.mvc.entity.ToJson;
 public class MdnVodJson implements java.io.Serializable {
 	private Integer id;
 	private String vodDomain;
-	private String vodBandwidth;
 	private String vodProtocol;
 	private String sourceStreamerUrl;
 	private String sourceOutBandwidth;
@@ -28,14 +27,6 @@ public class MdnVodJson implements java.io.Serializable {
 
 	public void setVodDomain(String vodDomain) {
 		this.vodDomain = vodDomain;
-	}
-
-	public String getVodBandwidth() {
-		return vodBandwidth;
-	}
-
-	public void setVodBandwidth(String vodBandwidth) {
-		this.vodBandwidth = vodBandwidth;
 	}
 
 	public String getVodProtocol() {

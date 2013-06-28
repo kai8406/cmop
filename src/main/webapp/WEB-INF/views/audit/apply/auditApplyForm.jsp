@@ -301,6 +301,8 @@ function setResult(result) {
 								</c:forEach>
 						    </c:forEach>
 					 	</dd>
+					 	
+					 	<dd><em>加速服务带宽(M)</em>&nbsp;&nbsp;${item.bandwidth}</dd>
 						
 						<c:if test="${not empty item.mdnVodItems }">
 							<br>
@@ -308,7 +310,6 @@ function setResult(result) {
 							<c:forEach var="vod" items="${item.mdnVodItems}">
 								<dd><em>服务子项ID</em>&nbsp;&nbsp;${vod.id}</dd>
 								<dd><em>服务域名</em>&nbsp;&nbsp;${vod.vodDomain}</dd>
-								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == vod.vodBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${vod.vodProtocol}</dd>
 								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${vod.sourceOutBandwidth}</dd>
 								<dd><em>Streamer地址</em>&nbsp;&nbsp;${vod.sourceStreamerUrl}</dd>
@@ -322,7 +323,6 @@ function setResult(result) {
 							<c:forEach var="live" items="${item.mdnLiveItems}">
 								<dd><em>服务子项ID</em>&nbsp;&nbsp;${live.id}</dd>
 								<dd><em>服务域名</em>&nbsp;&nbsp;${live.liveDomain}</dd>
-								<dd><em>加速服务带宽</em>&nbsp;&nbsp;<c:forEach var="map" items="${bandwidthMap }"><c:if test="${map.key == live.liveBandwidth }">${map.value }</c:if></c:forEach></dd>
 								<dd><em>播放协议选择</em>&nbsp;&nbsp;${live.liveProtocol}</dd>
 								<dd><em>源站出口带宽</em>&nbsp;&nbsp;${live.bandwidth}</dd>
 								<dd><em>频道名称</em>&nbsp;&nbsp;${live.name}</dd>

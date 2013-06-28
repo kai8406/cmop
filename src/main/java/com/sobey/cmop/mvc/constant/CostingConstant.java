@@ -30,8 +30,9 @@ public class CostingConstant {
 
 		收录服务器硬件单位成本("Costing8"), 转码服务器硬件单位成本("Costing9"), 拆条人工单位成本("Costing10"), 拆条时长("Costing11"),
 
-		EFW("Costing12"), DNS("Costing13"), ES3("Costing14"), 服务人力成本("Costing15"), 数据存储单价("Costing16"), 双线("Costing17"), 单线(
-				"Costing18");
+		EFW("Costing12"), DNS("Costing13"), ES3("Costing14"), 服务人力成本("Costing15"),
+
+		数据存储单价("Costing16"), 双线("Costing17"), 单线("Costing18"), 每M带宽占用("Costing19");
 
 		public static final Map<String, String> mapKeyStr = Maps.newLinkedHashMap();
 

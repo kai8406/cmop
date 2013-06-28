@@ -44,19 +44,6 @@
 			</div>
 					
 			<div class="control-group">
-				<label class="control-label" for="vodBandwidth">加速服务带宽</label>
-				<div class="controls">
-					<select id="vodBandwidth" name="vodBandwidth" class="required">
-						<c:forEach var="map" items="${bandwidthMap}">
-							<option value="${map.key }"
-								<c:if test="${map.key == mdnVod.vodBandwidth }">selected="selected"</c:if>
-							>${map.value }</option>
-						</c:forEach>
-					</select>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<label class="control-label" for="vodProtocol">播放协议选择</label>
 				<div class="controls">
 					<c:forEach var="map" items="${palyProtocolMap}">

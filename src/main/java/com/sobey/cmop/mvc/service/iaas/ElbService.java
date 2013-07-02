@@ -148,14 +148,17 @@ public class ElbService extends BaseSevcie {
 
 			// ELB的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			if (sourcePorts != null && sourcePorts.length > 0) {
 
-			for (int j = 0; j < protocolArray.length; j++) {
-				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
-						targetPortArray[j]);
-				this.saveOrUpdateElbPortItem(elbPortItem);
+				String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+
+				for (int j = 0; j < protocolArray.length; j++) {
+					ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
+							targetPortArray[j]);
+					this.saveOrUpdateElbPortItem(elbPortItem);
+				}
 			}
 
 		}
@@ -205,9 +208,12 @@ public class ElbService extends BaseSevcie {
 
 		// Step.3 ELB的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateElbPortItem(elbPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateElbPortItem(elbPortItem);
+			}
 		}
 
 	}
@@ -278,10 +284,11 @@ public class ElbService extends BaseSevcie {
 		this.saveOrUpdate(networkElbItem);
 
 		// ELB的端口映射
-
-		for (int i = 0; i < protocols.length; i++) {
-			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateElbPortItem(elbPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateElbPortItem(elbPortItem);
+			}
 		}
 
 		// 更新resources

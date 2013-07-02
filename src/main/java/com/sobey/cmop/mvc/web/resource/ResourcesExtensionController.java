@@ -90,8 +90,8 @@ public class ResourcesExtensionController extends BaseController {
 	public String updateElb(@RequestParam(value = "id") Integer id,
 			@RequestParam(value = "keepSession") String keepSession,
 			@RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "sourcePort", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPort", required = false) String[] targetPorts,
 			@RequestParam(value = "computeIds", required = false) String[] computeIds,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 
@@ -114,9 +114,10 @@ public class ResourcesExtensionController extends BaseController {
 	 */
 	@RequestMapping(value = "/eip", method = RequestMethod.POST)
 	public String updateElb(@RequestParam(value = "id") Integer id, @RequestParam(value = "linkType") String linkType,
-			@RequestParam(value = "linkId") String linkId, @RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "linkId") String linkId,
+			@RequestParam(value = "protocols", required = false) String[] protocols,
+			@RequestParam(value = "sourcePorts", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPorts", required = false) String[] targetPorts,
 			@RequestParam(value = "serviceTagId") Integer serviceTagId,
 			@RequestParam(value = "changeDescription") String changeDescription,
 

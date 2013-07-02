@@ -67,23 +67,15 @@
 			</div>
 			
 			<div class="span3">
-				<label class="search-text">状态</label> 
-				<select name="search_EQ_status" class="span2">
-					<option value="" >Choose...</option>
-					<c:forEach var="map" items="${resourcesStatusMap}">
-						<option value="${map.key}" 
-							<c:if test="${map.key == param.search_EQ_status && param.search_EQ_status != ''}">
-								selected="selected"
-							</c:if>
-						>${map.value}</option>
-					</c:forEach>
-				</select>
+				<label class="search-text">IP地址</label> 
+				<input type="text" name="search_LIKE_ipAddress" class="span2" maxlength="45" 
+					value="${param.search_LIKE_ipAddress}" placeholder="...模糊查询">
 			</div>
 			
 			<div class="span3">
 				<label class="search-text">IP地址</label> 
 				<input type="text" name="search_EQ_ipAddress" class="span2" maxlength="45" 
-					value="${param.search_EQ_ipAddress}">
+					value="${param.search_EQ_ipAddress}" placeholder="...精确查询">
 			</div>
 			
 			<div class="span2 pull-right">
@@ -121,6 +113,21 @@
 				<input type="text" name="search_LIKE_user.name" class="span2" maxlength="45" 
 					value="${param.search_LIKE_user.name}">
 			</div>
+			
+			<div class="span3">
+				<label class="search-text">状态</label> 
+				<select name="search_EQ_status" class="span2">
+					<option value="" >Choose...</option>
+					<c:forEach var="map" items="${resourcesStatusMap}">
+						<option value="${map.key}" 
+							<c:if test="${map.key == param.search_EQ_status && param.search_EQ_status != ''}">
+								selected="selected"
+							</c:if>
+						>${map.value}</option>
+					</c:forEach>
+				</select>
+			</div>
+			
 			
 		</div>
 

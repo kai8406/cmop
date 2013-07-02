@@ -127,14 +127,16 @@
 						var protocolText = $tr.find("#protocol>option:selected").text();
 						var sourcePort = $tr.find("#sourcePort").val();
 						var targetPort = $tr.find("#targetPort").val();
-						var portTemp = protocol + "@" + sourcePort + "@" + targetPort;
-						//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
-						if (portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1) {
-							portTempArray.push(portTemp);
-							protocolStr += protocol + "@";
-							sourcePortStr += sourcePort + "@";
-							targetPortStr += targetPort + "@";
-							html += '<dd><strong>' + protocolText + '&nbsp;,&nbsp;' + sourcePort + '&nbsp;,&nbsp;' + targetPort + '</strong></dd>';
+						if(sourcePort != "" && targetPort != ""){
+							var portTemp = protocol + "@" + sourcePort + "@" + targetPort;
+							//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
+							if (portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1) {
+								portTempArray.push(portTemp);
+								protocolStr += protocol + "@";
+								sourcePortStr += sourcePort + "@";
+								targetPortStr += targetPort + "@";
+								html += '<dd><strong>' + protocolText + '&nbsp;,&nbsp;' + sourcePort + '&nbsp;,&nbsp;' + targetPort + '</strong></dd>';
+							}
 						}
 					});
 					
@@ -236,13 +238,13 @@
 				<tbody>
 					<tr class="clone">
 						<td>
-							<select id="protocol" class="input-small required">
+							<select id="protocol" class="input-small">
 								<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
 							</select>
 						</td>
-						<td><input type="text" id="sourcePort" class="input-small required" maxlength="45" placeholder="...SourcePort"></td>
-						<td><input type="text" id="targetPort" class="input-small required" maxlength="45" placeholder="...TargetPort"></td>
-						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+						<td><input type="text" id="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+						<td><input type="text" id="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone " >删除</a></td>
 					</tr>
 				</tbody>
 			</table>	

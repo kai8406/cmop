@@ -20,6 +20,7 @@ import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -297,9 +298,16 @@ public class ReportService extends BaseSevcie {
 
 		// === MDN === //
 		if (!apply.getMdnItems().isEmpty()) {
+
+			String remark = "";
+
+			for (MdnItem mdnItem : apply.getMdnItems()) {
+				remark = mdnItem.getBandwidth();
+			}
+
 			DetailReport detailReport = new DetailReport();
 			detailReport.setType("MDN");
-			detailReport.setRemark("");
+			detailReport.setRemark("加速服务带宽(M):" + remark);
 			detailReport.setPrice(BigDecimal.valueOf(comm.costService.mdnCost(apply, workTime)));
 			detailReport.setNumber(1);
 			reports.add(detailReport);

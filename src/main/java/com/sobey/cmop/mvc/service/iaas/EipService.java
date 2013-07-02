@@ -147,20 +147,25 @@ public class EipService extends BaseSevcie {
 
 			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], linkIds[i]);
+			if (linkIds != null && linkIds.length > 0) {
+				networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], linkIds[i]);
+			}
 
 			this.saveOrUpdate(networkEipItem);
 
 			// EIP的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			if (sourcePorts != null && sourcePorts.length > 0) {
 
-			for (int j = 0; j < protocolArray.length; j++) {
-				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],
-						targetPortArray[j]);
-				this.saveOrUpdateEipPortItem(eipPortItem);
+				String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+
+				for (int j = 0; j < protocolArray.length; j++) {
+					EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],
+							targetPortArray[j]);
+					this.saveOrUpdateEipPortItem(eipPortItem);
+				}
 			}
 
 		}
@@ -209,9 +214,11 @@ public class EipService extends BaseSevcie {
 
 		// ELB的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateEipPortItem(eipPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateEipPortItem(eipPortItem);
+			}
 		}
 
 	}
@@ -277,11 +284,13 @@ public class EipService extends BaseSevcie {
 
 		// EIP的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateEipPortItem(eipPortItem);
-		}
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateEipPortItem(eipPortItem);
+			}
 
+		}
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);

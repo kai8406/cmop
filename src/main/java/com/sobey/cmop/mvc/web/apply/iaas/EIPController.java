@@ -54,9 +54,10 @@ public class EIPController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "applyId") Integer applyId,
 			@RequestParam(value = "ispTypes") String[] ispTypes, @RequestParam(value = "linkTypes") String[] linkTypes,
-			@RequestParam(value = "linkIds") String[] linkIds, @RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "linkIds") String[] linkIds,
+			@RequestParam(value = "protocols", required = false) String[] protocols,
+			@RequestParam(value = "sourcePorts", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPorts", required = false) String[] targetPorts,
 
 			RedirectAttributes redirectAttributes) {
 
@@ -98,9 +99,10 @@ public class EIPController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "linkType") String linkType, @RequestParam(value = "linkId") String linkId,
-			@RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "protocols", required = false) String[] protocols,
+			@RequestParam(value = "sourcePort", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPort", required = false) String[] targetPorts,
+			RedirectAttributes redirectAttributes) {
 
 		NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(id);
 

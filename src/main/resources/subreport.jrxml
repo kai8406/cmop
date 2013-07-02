@@ -10,16 +10,14 @@
 	<field name="remark" class="java.lang.String"/>
 	<field name="number" class="java.lang.Integer"/>
 	<field name="price" class="java.math.BigDecimal"/>
-	<variable name="total" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="total" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$V{init}.add( $V{hum} )]]></variableExpression>
 	</variable>
 	<variable name="init" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{price}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<variable name="hum" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$P{humCost}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -31,7 +29,7 @@
 				<textElement>
 					<font fontName="华文细黑" isBold="true" isItalic="false" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[资源类型		]]></text>
+				<text><![CDATA[服务类型		]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Title" x="124" y="6" width="241" height="20"/>
@@ -89,13 +87,13 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="77">
+		<band height="62">
 			<staticText>
 				<reportElement style="Title" x="270" y="17" width="149" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[硬件成本:]]></text>
+				<text><![CDATA[服务成本:]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="Title" x="442" y="17" width="99" height="20" forecolor="#9D3030"/>
@@ -109,28 +107,14 @@
 				<textElement textAlignment="Right">
 					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[初始化人工成本:]]></text>
+				<text><![CDATA[优先处理成本:]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="Title" x="441" y="37" width="100" height="20" forecolor="#9D3030"/>
 				<textElement>
 					<font fontName="华文细黑" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{hum}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement style="Title" x="270" y="57" width="149" height="20"/>
-				<textElement textAlignment="Right">
-					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[总成本:]]></text>
-			</staticText>
-			<textField>
-				<reportElement style="Title" x="441" y="57" width="99" height="20" forecolor="#9D3030"/>
-				<textElement>
-					<font isBold="true" isStrikeThrough="false" pdfFontName="STSong-Light" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{humCost}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="11" width="555" height="1"/>

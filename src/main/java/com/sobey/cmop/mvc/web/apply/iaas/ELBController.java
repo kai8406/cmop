@@ -56,9 +56,9 @@ public class ELBController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@RequestParam(value = "applyId") Integer applyId,
 			@RequestParam(value = "keepSessions") String[] keepSessions,
-			@RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts,
+			@RequestParam(value = "protocols", required = false) String[] protocols,
+			@RequestParam(value = "sourcePorts", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPorts", required = false) String[] targetPorts,
 			@RequestParam(value = "computeIds", required = false) String[] computeIds,
 			RedirectAttributes redirectAttributes) {
 
@@ -105,10 +105,10 @@ public class ELBController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "keepSession") String keepSession,
-			@RequestParam(value = "protocols") String[] protocols,
-			@RequestParam(value = "sourcePorts") String[] sourcePorts,
-			@RequestParam(value = "targetPorts") String[] targetPorts,
-			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			@RequestParam(value = "protocols", required = false) String[] protocols,
+			@RequestParam(value = "sourcePort", required = false) String[] sourcePorts,
+			@RequestParam(value = "targetPort", required = false) String[] targetPorts,
+			@RequestParam(value = "computeId", required = false) String[] computeIds,
 			RedirectAttributes redirectAttributes) {
 
 		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(id);

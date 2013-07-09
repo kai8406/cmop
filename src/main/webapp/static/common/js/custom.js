@@ -35,14 +35,14 @@ $("button.reset").on('click', function(){
 $("input[type=submit],button.loading").on('click', function(){
 	
 	//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
-	var $resourcesDIV = $("#resourcesDIV");
+	/*var $resourcesDIV = $("#resourcesDIV");
 	if($resourcesDIV.length > 0){
 		var $resources = $resourcesDIV.find("div.resources");
 		if($resources.length == 0){
 			alert("请创建资源.");
 			return false;
 		}
-	}
+	}*/
 	
 	var $this = $(this);
 	$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');

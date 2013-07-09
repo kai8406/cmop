@@ -111,14 +111,14 @@
 			<div class="control-group">
 				<label class="control-label" for="visitSource">访问来源IP</label>
 				<div class="controls">
-					<input type="text" id="visitSource" class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
+					<input type="text" id="visitSource" class="required" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			
 			<div class="control-group">
 				<label class="control-label" for="visitTarget">访问目的IP</label>
 				<div class="controls">
-					<input type="text" id="visitTarget"  class="required ipValidate" placeholder="192.168.0.1 or 192.168.0.1/10">
+					<input type="text" id="visitTarget"  class="required" placeholder="192.168.0.1 or 192.168.0.1/10">
 				</div>
 			</div>
 			

@@ -92,7 +92,7 @@
 				//step.4 判断页面选中的是哪种关联类型( 0:ELB ; 1: 实例),并按不同的关联类型生成不同的HTML代码.
 				if ($elbSelect.val() != undefined && $elbSelect.val() != "" ) {
 					//关联ELB
-					linkType = "0";
+					linkType = "2";
 					linkId = $elbSelect.val();
 					var elbSelectText = $elbSelect.find("option:selected").text();
 					str += '<dd><em>关联ELB</em>&nbsp;&nbsp;<strong>' + elbSelectText + '</strong></dd>';

@@ -53,7 +53,7 @@
 				$("#targetEIPDiv").addClass("show").removeClass("hidden");
 				$("#cnameDomainDiv").addClass("hidden").removeClass("show");
 			}
-			$("#resourcesDIV dl").empty();
+			$("#resourcesDIVNotValidate dl").empty();
 			$("#cnameDomain").val('');
 			
 				
@@ -91,7 +91,7 @@
 			$("input[type=checkbox]").removeAttr('checked');
 			
 			//插入HTML文本
-			$("#resourcesDIV dl").append(html);
+			$("#resourcesDIVNotValidate dl").append(html);
 			
 		}); 
 		 
@@ -170,7 +170,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal">
+			<div id="resourcesDIVNotValidate"><dl class="dl-horizontal">
 			
 				<c:if test="${not empty dns.cnameDomain }"><div class="resources"></div></c:if>
 				

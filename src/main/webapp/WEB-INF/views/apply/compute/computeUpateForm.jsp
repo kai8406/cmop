@@ -60,7 +60,7 @@
 			$("input[type=checkbox]").removeAttr('checked');
 			 
 			//插入HTML文本
-			$("#resourcesDIV dl").append(html);
+			$("#resourcesDIVNotValidate dl").append(html);
 			
 		});
 	</script>
@@ -153,7 +153,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal">
+			<div id="resourcesDIVNotValidate"><dl class="dl-horizontal">
 				<c:forEach var="esg" items="${compute.networkEsgItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>
@@ -167,7 +167,6 @@
 					</div>
 				</c:forEach>
 			</dl></div>
-			
 				 
 			<div class="form-actions">
 				<a href="${ctx}/apply/update/${compute.apply.id}/" class="btn">返回</a>

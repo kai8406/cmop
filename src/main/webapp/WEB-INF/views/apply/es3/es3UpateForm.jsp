@@ -54,7 +54,7 @@
 			$("input[type=checkbox]").removeAttr('checked');
 			 
 			//插入HTML文本
-			$("#resourcesDIV dl").append(html);
+			$("#resourcesDIVNotValidate dl").append(html);
 			
 		}); 
 	</script>
@@ -114,7 +114,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal">
+			<div id="resourcesDIVNotValidate"><dl class="dl-horizontal">
 				<c:forEach var="compute" items="${storage.computeItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>

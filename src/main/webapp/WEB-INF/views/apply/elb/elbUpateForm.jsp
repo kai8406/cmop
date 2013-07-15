@@ -54,7 +54,7 @@
 			$("input[type=checkbox]").removeAttr('checked');
 			
 			//插入HTML文本
-			$("#resourcesDIV dl").append(html);
+			$("#resourcesDIVNotValidate dl").append(html);
 			
 		}); 
 	</script>
@@ -123,8 +123,8 @@
 											</c:forEach>
 										</select>
 									</td>
-									<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
-									<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+									<td><input type="text" id="sourcePort" name="sourcePort" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+									<td><input type="text" id="targetPort" name="targetPort" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>
@@ -140,7 +140,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal">
+			<div id="resourcesDIVNotValidate"><dl class="dl-horizontal">
 				<c:forEach var="compute" items="${elb.computeItemList }">
 					<div class="resources alert alert-block alert-info fade in">
 						<button data-dismiss="alert" class="close" type="button">×</button>

@@ -121,7 +121,7 @@
 						<c:when test="${empty eip.eipPortItems }">
 							<tr class="clone">
 								<td>
-									<select id="protocol" name="protocols" class="input-small ">
+									<select id="protocol" name="protocols" class="input-small">
 										<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
 									</select>
 								</td>
@@ -135,15 +135,15 @@
 							<c:forEach var="item" items="${eip.eipPortItems}">
 								<tr class="clone">
 									<td>
-										<select id="protocol" name="protocols" class="input-small ">
+										<select id="protocol" name="protocols" class="input-small">
 											<c:forEach var="map" items="${protocolMap}">
 												<option value="${map.key }" <c:if test="${item.protocol == map.value }">selected="selected"</c:if>	
 												>${map.value }</option>
 											</c:forEach>
 										</select>
 									</td>
-									<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
-									<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+									<td><input type="text" id="sourcePort" name="sourcePort" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+									<td><input type="text" id="targetPort" name="targetPort" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>

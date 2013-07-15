@@ -108,7 +108,7 @@ public class ELBController extends BaseController {
 			@RequestParam(value = "protocols", required = false) String[] protocols,
 			@RequestParam(value = "sourcePort", required = false) String[] sourcePorts,
 			@RequestParam(value = "targetPort", required = false) String[] targetPorts,
-			@RequestParam(value = "computeId", required = false) String[] computeIds,
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
 			RedirectAttributes redirectAttributes) {
 
 		NetworkElbItem networkElbItem = comm.elbService.getNetworkElbItem(id);

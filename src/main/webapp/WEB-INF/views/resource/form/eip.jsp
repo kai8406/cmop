@@ -163,8 +163,8 @@
 										</c:forEach>
 									</select>
 								</td>
-								<td><input type="text" id="sourcePort" name="sourcePorts" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
-								<td><input type="text" id="targetPort" name="targetPorts" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+								<td><input type="text" id="sourcePort" name="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+								<td><input type="text" id="targetPort" name="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
 								<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 							</tr>
 						</c:when>
@@ -180,8 +180,8 @@
 											</c:forEach>
 										</select>
 									</td>
-									<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
-									<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+									<td><input type="text" id="sourcePort" name="sourcePort" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+									<td><input type="text" id="targetPort" name="targetPort" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
 									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
 								</tr>
 							</c:forEach>

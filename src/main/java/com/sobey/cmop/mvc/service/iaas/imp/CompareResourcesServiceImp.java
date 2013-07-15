@@ -1108,18 +1108,18 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		flag = isChange;
 
 		// 域名
+		// 方便变更时,查看域名.
 
-		if (!networkDnsItem.getDomainName().equals(domainName)) {
+		if (true) {
 
 			String fieldName = FieldNameConstant.Dns.域名.toString();
 			String oldValue = networkDnsItem.getDomainName();
-			String oldString = networkDnsItem.getDomainName();
+			String oldString = networkDnsItem.getDomainName() + " ";
 
 			String newValue = domainName;
 			String newString = domainName;
 
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
-					newString);
+			this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		// Step.2 关联实例没有变更,同时其他属性有变更,插入一条关联实例的数据到数据库中,方便页面查看所有关联的ESG.

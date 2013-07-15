@@ -78,11 +78,19 @@ public class Es3Service extends BaseSevcie {
 
 			if (computeIds != null && computeIds.length > 0) {
 				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-				// 通过"-"获得存储空间挂载的实例ID
-				String[] computeIdArray = StringUtils.split(computeIds[i], ",");
-				for (String computeId : computeIdArray) {
-					computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+
+				if (storageTypes.length == 1) {
+					for (String computeId : computeIds) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+				} else if (storageTypes.length > 1) {
+					// 通过"-"获得存储空间挂载的实例ID
+					String[] computeIdArray = StringUtils.split(computeIds[i], ",");
+					for (String computeId : computeIdArray) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
 				}
+
 				storageItem.setComputeItemList(computeItemList);
 			}
 

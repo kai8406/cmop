@@ -304,12 +304,21 @@ public class ComputeService extends BaseSevcie {
 
 			// 分割关联esg的Id.
 			if (esgIds != null && esgIds.length > 0) {
-				String[] esgIdArray = StringUtils.split(esgIds[i], ",");
-				List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-				for (String esgId : esgIdArray) {
-					networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
 
+				List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+
+				if (osTypes.length == 1) {
+					for (String esgId : esgIds) {
+						networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
+					}
+				} else if (osTypes.length > 1) {
+					String[] esgIdArray = StringUtils.split(esgIds[i], ",");
+					for (String esgId : esgIdArray) {
+						networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
+
+					}
 				}
+
 				computeItem.setNetworkEsgItemList(networkEsgItemList);
 			}
 

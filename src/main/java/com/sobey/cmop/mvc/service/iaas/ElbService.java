@@ -136,12 +136,27 @@ public class ElbService extends BaseSevcie {
 			// 关联实例
 			if (computeIds != null && computeIds.length > 0) {
 				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-				// 通过"-"获得存储空间挂载的实例ID
-				String[] computeIdArray = StringUtils.split(computeIds[i], ",");
-				for (String computeId : computeIdArray) {
-					computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+
+				// 解决select2框架中,多重数组的重复问题.
+				if (keepSessions.length == 1) {
+
+					// 通过"-"获得存储空间挂载的实例ID
+					for (String computeId : computeIds) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+
+				} else if (keepSessions.length > 1) {
+
+					// 通过"-"获得存储空间挂载的实例ID
+					String[] computeIdArray = StringUtils.split(computeIds[i], ",");
+					for (String computeId : computeIdArray) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+
 				}
+
 				networkElbItem.setComputeItemList(computeItemList);
+
 			}
 
 			this.saveOrUpdate(networkElbItem);

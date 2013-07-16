@@ -235,9 +235,12 @@ public class TemplateMailService extends BaseSevcie {
 		map.put("cps", apply.getCpItems());
 
 		// 工单处理完成提示文字
-
-		String operateDoneStr = "工单处理流程已完成.如果申请了VPN账号,请向申请资源负责人索取.<a href=\""
-				+ CONFIG_LOADER.getProperty("RESOURCE_URL") + "\">&#8594点击查看</a><br>";
+		String operateDoneStr = "工单处理流程已完成.";
+		if (!apply.getComputeItems().isEmpty()) {
+			operateDoneStr += "为了账号安全,请尽快修改服务器初始密码.初始账号和密码:<br> Windows: <br> administrator/Newmed!@s0bey<br>Linux: <br> root/newmedia<br>";
+		}
+		operateDoneStr += "如果申请了VPN账号,请向申请资源负责人索取.<a href=\"" + CONFIG_LOADER.getProperty("RESOURCE_URL")
+				+ "\">&#8594点击查看</a><br>";
 
 		map.put("operateDoneStr", operateDoneStr);
 

@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="${ctx}/static/bootstrap-modal/css/bootstrap-modal.css">
 <link rel="stylesheet" href="${ctx}/static/jquery-uniform/css/uniform.default.min.css">
 <link rel="stylesheet" href="${ctx}/static/jquery-ui/css/jquery-ui-1.10.1.custom.min.css">
+<link rel="stylesheet" href="${ctx}/static/select2/select2.css">
 <link rel="stylesheet" href="${ctx}/static/common/css/style.css">
 
 <!-- Le javascript -->
@@ -77,6 +78,8 @@
 	 <script src="${ctx}/static/jquery-fileupload/jquery.fileupload.js"></script>
 	 <script src="${ctx}/static/common/js/custom.js"></script>
 	 <script src="${ctx}/static/common/js/custom.wizard.js"></script>
+	 <script src="${ctx}/static/select2/select2.js"></script>
+	 <script src="${ctx}/static/select2/select2_locale_zh-CN.js"></script>
 	 <script src="${ctx}/static/common/js/custom.fileUpload.js"></script>
 	
 </body>

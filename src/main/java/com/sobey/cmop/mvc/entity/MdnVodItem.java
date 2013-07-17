@@ -24,7 +24,6 @@ public class MdnVodItem implements java.io.Serializable {
 	private Integer id;
 	private MdnItem mdnItem;
 	private String vodDomain;
-	private String vodBandwidth;
 	private String vodProtocol;
 	private String sourceStreamerUrl;
 	private String sourceOutBandwidth;
@@ -36,11 +35,10 @@ public class MdnVodItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MdnVodItem(MdnItem mdnItem, String vodDomain, String vodBandwidth, String vodProtocol,
-			String sourceStreamerUrl, String sourceOutBandwidth) {
+	public MdnVodItem(MdnItem mdnItem, String vodDomain, String vodProtocol, String sourceStreamerUrl,
+			String sourceOutBandwidth) {
 		this.mdnItem = mdnItem;
 		this.vodDomain = vodDomain;
-		this.vodBandwidth = vodBandwidth;
 		this.vodProtocol = vodProtocol;
 		this.sourceStreamerUrl = sourceStreamerUrl;
 		this.sourceOutBandwidth = sourceOutBandwidth;
@@ -75,15 +73,6 @@ public class MdnVodItem implements java.io.Serializable {
 
 	public void setVodDomain(String vodDomain) {
 		this.vodDomain = vodDomain;
-	}
-
-	@Column(name = "vod_bandwidth", nullable = false, length = 45)
-	public String getVodBandwidth() {
-		return this.vodBandwidth;
-	}
-
-	public void setVodBandwidth(String vodBandwidth) {
-		this.vodBandwidth = vodBandwidth;
 	}
 
 	@Column(name = "vod_protocol", nullable = false, length = 45)

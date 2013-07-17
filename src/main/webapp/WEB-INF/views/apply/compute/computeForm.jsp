@@ -4,10 +4,6 @@
 <html>
 <head>
 
-<link rel="stylesheet" href="${ctx}/static/select2/select2.css">
-<script src="${ctx}/static/select2/select2.js"></script>
-<script src="${ctx}/static/select2/select2_locale_zh-CN.js"></script>
-
 	<title>服务申请</title>
 
 	<script>
@@ -82,7 +78,7 @@
 							html += '<dd><em>基本信息</em>&nbsp;&nbsp;<strong>' + osNAME + ' &nbsp;' + osBitText + '</strong></dd>';
 							html += '<dd><em>规格</em>&nbsp;&nbsp;<strong>' + serverTypeText + '</strong></dd>';
 							html += '<dd><em>用途信息</em>&nbsp;&nbsp;<input type="text" placeholder="...用途信息" maxlength="45" class="required" name="remarks" id="remarks' + loopId + '"></dd>';
-							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select id="esgIds'+loopId+'" multiple class="required multipleESG">' + esgHTML + '</select></dd>';
+							html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<select id="esgIds'+loopId+'" multiple class=" multipleESG">' + esgHTML + '</select></dd>';
 							html += '<input type="hidden" name="esgIds">';
 							html += '<input type="hidden" name="osTypes" value="' + osId + '">';
 							html += '<input type="hidden" name="osBits" value="' + osBitId + '">';

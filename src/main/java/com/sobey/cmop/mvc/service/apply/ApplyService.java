@@ -22,8 +22,8 @@ import com.sobey.cmop.mvc.constant.AuditConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ApplyDao;
 import com.sobey.cmop.mvc.entity.Apply;
+import com.sobey.cmop.mvc.entity.Audit;
 import com.sobey.cmop.mvc.entity.AuditFlow;
-import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.SearchFilter;
@@ -178,13 +178,11 @@ public class ApplyService extends BaseSevcie {
 	 * 向第一位审批人发起审批邮件, 同时向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
 	 * 
 	 * <pre>
-	 * 1.先判断是否有上级领导存在.
-	 * 2.如果存在上级领导.首先获得第一个审批人(上级领导)和审批流程.
-	 * 3.根据资源拼装邮件内容并发送到第一个审批人的邮箱.
-	 * 4.更新Apply状态和Apply的审批流程
-	 * 5.向audit表预插入一条数据,待下级审批人审批时,只需更新该数据.
-	 * 6.如果不存在上级领导,判断其是否是终审人,如果不是终审人,则返回一个错误字符串.
-	 * 如果是终审人则直接发送工单
+	 * 1..首先获得第一个审批人(上级领导)和审批流程.
+	 * 2.根据资源拼装邮件内容并发送到第一个审批人的邮箱.
+	 * 3.更新Apply状态和Apply的审批流程
+	 * 4.初始化所有老审批记录.
+	 * 5.插入audit.
 	 * </pre>
 	 * 
 	 * @param apply
@@ -194,54 +192,47 @@ public class ApplyService extends BaseSevcie {
 	public String saveAuditByApply(Apply apply) {
 
 		String message = "";
-		User user = apply.getUser();
 
-		/* Step.1 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在. */
+		try {
 
-		if (user.getLeaderId() != null) {
+			/* Step.1 获得第一个审批人和审批流程 */
 
-			try {
+			Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
 
-				/* Step.2 获得第一个审批人和审批流程 */
+			AuditFlow auditFlow = comm.auditService.findAuditFlowByAuditOrderAndFlowType(
+					AuditConstant.AUDITORDER_FINAL, flowType);
 
-				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
+			logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
 
-				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-				AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
+			/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
 
-				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
+			comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
 
-				/* Step.3 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
+			/* Step.3 更新Apply状态和Apply的审批流程. */
 
-				comm.templateMailService.sendApplyNotificationMail(apply, auditFlow);
+			apply.setAuditFlow(auditFlow);
+			apply.setStatus(ApplyConstant.Status.待审批.toInteger());
+			this.saveOrUpateApply(apply);
 
-				/* Step.4 更新Apply状态和Apply的审批流程. */
+			message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
 
-				apply.setAuditFlow(auditFlow);
-				apply.setStatus(ApplyConstant.Status.待审批.toInteger());
-				this.saveOrUpateApply(apply);
+			logger.info("--->服务申请邮件发送成功...");
 
-				message = "服务申请单 " + apply.getTitle() + " 提交审批成功";
+			/* Step.4 初始化所有老审批记录. */
+			comm.auditService.initAuditStatus(apply);
 
-				logger.info("--->服务申请邮件发送成功...");
+			/* Step.5 插入audit. */
+			Audit audit = new Audit();
+			audit.setApply(apply);
+			audit.setAuditFlow(auditFlow);
+			audit.setStatus(AuditConstant.AuditStatus.待审批.toInteger());
 
-				/* Step.5 初始化所有老审批记录. */
-				comm.auditService.initAuditStatus(apply);
+			comm.auditService.saveOrUpdateAudit(audit);
 
-				/* Step.6 插入一条下级审批人所用到的audit. */
+		} catch (Exception e) {
 
-				comm.auditService.saveSubAudit(user.getId(), apply);
-
-			} catch (Exception e) {
-
-				message = "服务申请单提交审批失败";
-				e.printStackTrace();
-			}
-
-		} else {
-
-			message = "你没有直属领导,请联系管理员添加";
-
+			message = "服务申请单提交审批失败";
+			e.printStackTrace();
 		}
 
 		return message;

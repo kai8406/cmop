@@ -19,17 +19,17 @@
 					return false;
 				}
 				
-				var $length = $("div.resources").length;
-				var domainType = $("#domainType").val();
-				if (domainType == 1 && $length < 2) {
-					//GSLB
-					alert("类型为GSLB时至少需要两个目标IP.");
-					return false;
-				} else if (domainType == 2 && $length != 1) {
-					//A
-					alert("类型为A时只能选一个目标IP.");
-					return false;
-				} 
+				//var $length = $("div.resources").length;
+				//var domainType = $("#domainType").val();
+				//if (domainType == 1 && $length < 2) {
+				//	//GSLB
+				//	alert("类型为GSLB时至少需要两个目标IP.");
+				//	return false;
+				//} else if (domainType == 2 && $length != 1) {
+				//	//A
+				//	alert("类型为A时只能选一个目标IP.");
+				//	return false;
+				//} 
 				
 				$("#inputForm").submit();
 				$(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
@@ -246,8 +246,9 @@
 								<td>${item.ipAddress }</td>
 								<td>
 									<c:choose>
-										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-										<c:otherwise>${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+										<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
+										<c:when test="${not empty item.networkElbItem }"><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;【${item.networkElbItem.mountComputes}】</c:when>
+										<c:otherwise></c:otherwise>
 									</c:choose>
 								</td>
 							</tr>

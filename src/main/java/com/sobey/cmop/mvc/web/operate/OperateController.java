@@ -273,10 +273,11 @@ public class OperateController extends BaseController {
 			@RequestParam("storages") String storages, @RequestParam("hostNames") String hostNames,
 			@RequestParam("serverAlias") String serverAlias, @RequestParam("osStorageAlias") String osStorageAlias,
 			@RequestParam("controllerAlias") String controllerAlias, @RequestParam("volumes") String volumes,
-			@RequestParam("innerIps") String innerIps, @RequestParam("eipIds") String eipIds,
-			@RequestParam("eipAddresss") String eipAddresss, @RequestParam("locationAlias") String locationAlias,
-			@RequestParam("elbIds") String elbIds, @RequestParam("virtualIps") String virtualIps,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam("innerIps") String innerIps,
+			@RequestParam(value = "eipIds", required = false) String[] eipIds,
+			@RequestParam(value = "eipAddress", required = false) String[] eipAddress,
+			@RequestParam("locationAlias") String locationAlias, @RequestParam("elbIds") String elbIds,
+			@RequestParam("virtualIps") String virtualIps, RedirectAttributes redirectAttributes) {
 		logger.info("[issueId,projectId,priority,assignTo,dueDate,estimatedHours,doneRatio,note]：" + issueId + ","
 				+ projectId + "," + priority + "," + assignTo + "," + dueDate + "," + estimatedHours + "," + doneRatio
 				+ "," + note);
@@ -284,7 +285,7 @@ public class OperateController extends BaseController {
 				+ "|" + storages + "|" + hostNames + "|" + serverAlias + "|" + osStorageAlias + "|" + controllerAlias
 				+ "|" + volumes);
 		logger.info("[innerIps,eipIds,eipAddresss,locationAlias,elbIds,virtualIps]：" + innerIps + "|" + eipIds + "|"
-				+ eipAddresss + "|" + locationAlias + "|" + elbIds + "|" + virtualIps);
+				+ eipAddress + "|" + locationAlias + "|" + elbIds + "|" + virtualIps);
 
 		Issue issue = RedmineService.getIssue(issueId);
 		// 此处的User是redmine中的User对象.
@@ -310,7 +311,7 @@ public class OperateController extends BaseController {
 		issue.setAuthor(author); // issue作者
 		// TODO 还有IP分配等功能,待以后完成.
 		boolean result = comm.operateService.updateOperate(issue, computes, storages, hostNames, serverAlias,
-				osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddresss, locationAlias, elbIds,
+				osStorageAlias, controllerAlias, volumes, innerIps, eipIds, eipAddress, locationAlias, elbIds,
 				virtualIps);
 		String message = result ? "工单更新成功！" : "工单更新失败，请稍后重试或联系管理员！";
 		redirectAttributes.addFlashAttribute("message", message);

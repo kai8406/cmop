@@ -165,18 +165,19 @@ public class ComputeService extends BaseSevcie {
 	public ComputeItem updateComputeToApply(Integer computeId, Integer osType, Integer osBit, Integer serverType,
 			String[] esgIds, String remark) {
 
-		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-
-		for (String esgId : esgIds) {
-			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
-		}
-
 		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
 
 		computeItem.setOsType(osType);
 		computeItem.setOsBit(osBit);
 		computeItem.setServerType(serverType);
 		computeItem.setRemark(remark);
+
+		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+		if (esgIds != null) {
+			for (String esgId : esgIds) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+			}
+		}
 		computeItem.setNetworkEsgItemList(networkEsgItemList);
 
 		return comm.computeService.saveOrUpdate(computeItem);
@@ -237,8 +238,10 @@ public class ComputeService extends BaseSevcie {
 		computeItem.setRemark(remark);
 
 		List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-		for (String esgId : esgIds) {
-			networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+		if (esgIds != null && esgIds.length > 0) {
+			for (String esgId : esgIds) {
+				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgId)));
+			}
 		}
 
 		computeItem.setNetworkEsgItemList(networkEsgItemList);
@@ -296,17 +299,29 @@ public class ComputeService extends BaseSevcie {
 			computeItem.setOsBit(Integer.parseInt(osBits[i]));
 			computeItem.setServerType(Integer.parseInt(serverTypes[i]));
 			computeItem.setRemark(remarks[i]);
-
-			// 分割关联esg的Id.
-			String[] esgIdArray = StringUtils.split(esgIds[i], ",");
-			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-			for (String esgId : esgIdArray) {
-				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
-
-			}
-			computeItem.setNetworkEsgItemList(networkEsgItemList);
 			computeItem.setInnerIp(IpPoolConstant.DEFAULT_IPADDRESS);
 			computeItem.setOldIp(IpPoolConstant.DEFAULT_IPADDRESS);
+
+			// 分割关联esg的Id.
+			if (esgIds != null && esgIds.length > 0) {
+
+				List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
+
+				if (osTypes.length == 1) {
+					for (String esgId : esgIds) {
+						networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
+					}
+				} else if (osTypes.length > 1) {
+					String[] esgIdArray = StringUtils.split(esgIds[i], ",");
+					for (String esgId : esgIdArray) {
+						networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.parseInt(esgId)));
+
+					}
+				}
+
+				computeItem.setNetworkEsgItemList(networkEsgItemList);
+			}
+
 			computes.add(computeItem);
 		}
 

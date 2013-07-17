@@ -98,15 +98,14 @@ public class MdnContoller extends BaseController {
 			// mdn
 			@RequestParam(value = "coverArea") String coverArea,
 			@RequestParam(value = "coverIsp") String coverIsp,
+			@RequestParam(value = "bandwidth") String bandwidth,
 			// vod
 			@RequestParam(value = "vodDomains", required = false) String[] vodDomains,
-			@RequestParam(value = "vodBandwidths", required = false) String[] vodBandwidths,
 			@RequestParam(value = "vodProtocols", required = false) String[] vodProtocols,
 			@RequestParam(value = "sourceOutBandwidths", required = false) String[] sourceOutBandwidths,
 			@RequestParam(value = "sourceStreamerUrls", required = false) String[] sourceStreamerUrls,
 			// live
 			@RequestParam(value = "liveDomains", required = false) String[] liveDomains,
-			@RequestParam(value = "liveBandwidths", required = false) String[] liveBandwidths,
 			@RequestParam(value = "liveProtocols", required = false) String[] liveProtocols,
 			@RequestParam(value = "bandwidths", required = false) String[] bandwidths,
 			@RequestParam(value = "channelNames", required = false) String[] channelNames,
@@ -126,9 +125,9 @@ public class MdnContoller extends BaseController {
 		apply.setServiceEnd(serviceEnd);
 		apply.setDescription(description);
 
-		comm.mdnService.saveMdnToApply(apply, coverArea, coverIsp, vodDomains, vodBandwidths, vodProtocols,
-				sourceOutBandwidths, sourceStreamerUrls, liveDomains, liveBandwidths, liveProtocols, bandwidths,
-				channelNames, channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates);
+		comm.mdnService.saveMdnToApply(apply, coverArea, coverIsp, bandwidth, vodDomains, vodProtocols,
+				sourceOutBandwidths, sourceStreamerUrls, liveDomains, liveProtocols, bandwidths, channelNames,
+				channelGUIDs, streamOutModes, encoderModes, httpUrls, httpBitrates, hlsUrls, hlsBitrates);
 
 		redirectAttributes.addFlashAttribute("message", "创建MDN成功.");
 
@@ -161,11 +160,12 @@ public class MdnContoller extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "coverArea") String coverArea, @RequestParam(value = "coverIsp") String coverIsp,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "bandwidth") String bandwidth, RedirectAttributes redirectAttributes) {
 
 		MdnItem mdnItem = comm.mdnService.getMdnItem(id);
 		mdnItem.setCoverArea(coverArea);
 		mdnItem.setCoverIsp(coverIsp);
+		mdnItem.setBandwidth(bandwidth);
 		comm.mdnService.saveOrUpdate(mdnItem);
 
 		redirectAttributes.addFlashAttribute("message", "修改MDN " + mdnItem.getIdentifier() + " 成功");
@@ -206,7 +206,6 @@ public class MdnContoller extends BaseController {
 	@RequestMapping(value = "/mdnVod/update/{id}/applyId", method = RequestMethod.POST)
 	public String updateVod(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "vodDomain") String vodDomain,
-			@RequestParam(value = "vodBandwidth") String vodBandwidth,
 			@RequestParam(value = "vodProtocol") String vodProtocol,
 			@RequestParam(value = "sourceOutBandwidth") String sourceOutBandwidth,
 			@RequestParam(value = "sourceStreamerUrl") String sourceStreamerUrl, RedirectAttributes redirectAttributes) {
@@ -214,7 +213,6 @@ public class MdnContoller extends BaseController {
 		MdnVodItem mdnVodItem = comm.mdnService.getMdnVodItem(id);
 		mdnVodItem.setSourceOutBandwidth(sourceOutBandwidth);
 		mdnVodItem.setSourceStreamerUrl(sourceStreamerUrl);
-		mdnVodItem.setVodBandwidth(vodBandwidth);
 		mdnVodItem.setVodDomain(vodDomain);
 		mdnVodItem.setVodProtocol(vodProtocol);
 
@@ -295,7 +293,6 @@ public class MdnContoller extends BaseController {
 	public String updateLive(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "bandwidth") String bandwidth, @RequestParam(value = "name") String name,
 			@RequestParam(value = "guid") String guid, @RequestParam(value = "liveDomain") String liveDomain,
-			@RequestParam(value = "liveBandwidth") String liveBandwidth,
 			@RequestParam(value = "liveProtocol") String liveProtocol,
 			@RequestParam(value = "streamOutMode") Integer streamOutMode,
 			@RequestParam(value = "encoderMode", required = false) Integer encoderMode,
@@ -311,9 +308,9 @@ public class MdnContoller extends BaseController {
 
 		MdnLiveItem mdnLiveItem = comm.mdnService.getMdnLiveItem(id);
 
-		comm.mdnService.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveBandwidth,
-				liveProtocol, streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder,
-				hlsBitrateEncoder, httpUrl, httpBitrate, hlsUrl, hlsBitrate);
+		comm.mdnService.updateMdnLiveItemToApply(mdnLiveItem, bandwidth, name, guid, liveDomain, liveProtocol,
+				streamOutMode, encoderMode, httpUrlEncoder, httpBitrateEncoder, hlsUrlEncoder, hlsBitrateEncoder,
+				httpUrl, httpBitrate, hlsUrl, hlsBitrate);
 
 		redirectAttributes.addFlashAttribute("message", "修改MDN直播成功");
 

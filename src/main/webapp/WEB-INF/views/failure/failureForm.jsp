@@ -149,7 +149,7 @@
 						html += '<dd><em>关联ESG</em>&nbsp;&nbsp;<strong>' + data.mountESG + '</strong></dd>';
 						html += '<dd><em>内网IP</em>&nbsp;&nbsp;<strong>' + data.innerIp  + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -171,7 +171,7 @@
 						html += '<dd><em>容量空间</em>&nbsp;&nbsp;<strong>' + data.space+ 'GB</strong></dd>';
 						html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>' + data.mountComputes + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 			
@@ -193,7 +193,7 @@
 						html += '<dd><em>是否保持会话</em>&nbsp;&nbsp;<strong>' + data.keepSession + '</strong></dd>';
 						html += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + data.mountComputes + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -219,7 +219,7 @@
 						}
 						
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -245,7 +245,7 @@
 							html += '<dd><em>目标IP</em>&nbsp;&nbsp;<strong>' + data.targetEip + '</strong></dd>';
 						}
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -266,7 +266,7 @@
 						html += '<dd><em>重点覆盖地域</em>&nbsp;&nbsp;<strong>' + data.coverArea + '</strong></dd>';
 						html += '<dd><em>重点覆盖ISP</em>&nbsp;&nbsp;<strong>' + data.coverIsp + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -295,7 +295,7 @@
 						html += '<dd><em>网络延时率</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.pingDelayWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.pingDelayCritical + '</strong></dd>';
 						html += '<dd><em>最大进程数</em>&nbsp;&nbsp;报警阀值&nbsp;<strong>' + data.maxProcessWarn + '</strong>&nbsp;&nbsp;警告阀值&nbsp;<strong>' + data.maxProcessCritical + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -316,7 +316,7 @@
 						html += '<dd><em>标识符</em>&nbsp;&nbsp;<strong>' + data.identifier + '</strong></dd>';
 						html += '<dd><em>监控ELB</em>&nbsp;&nbsp;<strong>' + data.networkElbItem + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -360,7 +360,7 @@
 						html += '<dd><em>输出组类型</em>&nbsp;&nbsp;<strong>' + data.pictrueOutputGroup + '</strong></dd>';
 						html += '<dd><em>输出媒体类型</em>&nbsp;&nbsp;<strong>' + data.pictrueOutputMedia + '</strong></dd>';
 						html += '</div>';
-						$("#resourcesDIV dl").append(html);
+						$("#resourcesDIVNotValidate dl").append(html);
 					}
 				});
 				
@@ -444,7 +444,7 @@
 			</div>
 			
 			<!-- 生成的资源 -->
-			<div id="resourcesDIV"><dl class="dl-horizontal"></dl></div>
+			<div id="resourcesDIVNotValidate"><dl class="dl-horizontal"></dl></div>
 			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">

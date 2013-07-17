@@ -14,6 +14,7 @@ public class MdnJson implements java.io.Serializable {
 	private String identifier;
 	private String coverArea;
 	private String coverIsp;
+	private String bandwidth;
 
 	private List<MdnVodJson> mdnVodJsons;
 	private List<MdnLiveJson> mdnLiveJsons;
@@ -32,6 +33,14 @@ public class MdnJson implements java.io.Serializable {
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+
+	public String getBandwidth() {
+		return bandwidth;
+	}
+
+	public void setBandwidth(String bandwidth) {
+		this.bandwidth = bandwidth;
 	}
 
 	public String getCoverArea() {

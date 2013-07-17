@@ -35,14 +35,14 @@ $("button.reset").on('click', function(){
 $("input[type=submit],button.loading").on('click', function(){
 	
 	//页面验证是否有资源创建. 注意#resourcesDIV 和 div.resources在每个页面必须相同 
-	var $resourcesDIV = $("#resourcesDIV");
+	 var $resourcesDIV = $("#resourcesDIV");
 	if($resourcesDIV.length > 0){
 		var $resources = $resourcesDIV.find("div.resources");
 		if($resources.length == 0){
 			alert("请创建资源.");
 			return false;
 		}
-	}
+	} 
 	
 	var $this = $(this);
 	$this.closest("form").valid() && $this.button('loading').addClass("disabled").closest("body").modalmanager('loading');
@@ -149,10 +149,10 @@ function cloneParamTable() {
 		var $this = $(this);
 		var $tr = $this.closest('tr.clone');
 		if ($this.hasClass("disabled")) {
-			if ($tr.parent().find("tr.clone").length === 1) {
+			/*if ($tr.parent().find("tr.clone").length === 1) {
 				alert("至少要有一个信息");
 				return false;
-			}
+			}*/
 			$tr.remove();
 		} else {
 			if (!$this.closest("form").valid()) {

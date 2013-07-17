@@ -383,6 +383,7 @@ public class RedmineTextUtil {
 			for (MdnItem mdnItem : mdnItems) {
 				content.append("标识符:").append(BLANK).append(mdnItem.getIdentifier()).append(NEWLINE);
 				content.append("重点覆盖地域:").append(BLANK).append(mdnItem.getCoverArea()).append(NEWLINE);
+				content.append("加速服务带宽:").append(BLANK).append(mdnItem.getBandwidth() + "M").append(NEWLINE);
 
 				String[] isps = StringUtils.split(mdnItem.getCoverIsp(), ",");
 				String coverIsp = "";
@@ -402,9 +403,7 @@ public class RedmineTextUtil {
 						content.append("服务子项ID:").append(BLANK).append(mdnVodItem.getId()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnVodItem.点播服务域名 + ":").append(BLANK)
 								.append(mdnVodItem.getVodDomain()).append(NEWLINE);
-						content.append(FieldNameConstant.MdnVodItem.点播加速服务带宽 + ":").append(BLANK)
-								.append(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth()))
-								.append(NEWLINE);
+
 						content.append(FieldNameConstant.MdnVodItem.点播播放协议选择 + ":").append(BLANK)
 								.append(mdnVodItem.getVodProtocol()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnVodItem.点播源站出口带宽 + ":").append(BLANK)
@@ -421,9 +420,6 @@ public class RedmineTextUtil {
 						content.append("服务子项ID:").append(BLANK).append(mdnLiveItem.getId()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播服务域名 + ":").append(BLANK)
 								.append(mdnLiveItem.getLiveDomain()).append(NEWLINE);
-						content.append(FieldNameConstant.MdnLiveItem.直播加速服务带宽 + ":").append(BLANK)
-								.append(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth()))
-								.append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播播放协议选择 + ":").append(BLANK)
 								.append(mdnLiveItem.getLiveProtocol()).append(NEWLINE);
 						content.append(FieldNameConstant.MdnLiveItem.直播源站出口带宽 + ":").append(BLANK)

@@ -60,13 +60,10 @@ $(document).ready(function() {
             serverAlias = "",
             osStorageAlias = "",
             controllerAlias = "",
-            volumes = "",
+            volumes = "",virtualIps = "",
+            innerIps = "",
+            elbIds = "",
             sep = ",";
-        var innerIps = "",
-            eipIds = "",
-            eipAddresss = "";
-        var virtualIps = "",
-            elbIds = "";
         $("#updateDiv #computeDiv").each(function() {
             computes = computes + $(this).find("#computeId").val() + sep;
             hostNames = hostNames + $(this).find("#hostName").val() + " " + sep;
@@ -84,14 +81,7 @@ $(document).ready(function() {
             controllerAlias = controllerAlias + $(this).find("#controller").val() + sep;
             volumes = volumes + $(this).find("#volume").val() + " " + sep;
         });
-        $("#updateDiv #eipDiv").each(function() {
-            eipIds = eipIds + $(this).find("#eipId").val() + sep;
-            var temp = $(this).find("#eipAddress").val();
-            if(temp == ""){
-            	temp = 0;
-            }
-            eipAddresss = eipAddresss + temp + sep;
-        });
+        
         $("#updateDiv #elbDiv").each(function() {
             elbIds = elbIds + $(this).find("#elbId").val() + sep;
             virtualIps = virtualIps + $(this).find("#innerIp").val() + sep;
@@ -104,14 +94,13 @@ $(document).ready(function() {
         $('#controllerAlias').val(controllerAlias);
         $('#volumes').val(volumes);
         $('#innerIps').val(innerIps);
-        $('#eipIds').val(eipIds);
-        $('#eipAddresss').val(eipAddresss);
         if ($('#location').length > 0) {
             $('#locationAlias').val($('#location').val());
         }
         $('#elbIds').val(elbIds);
         $('#virtualIps').val(virtualIps);
         //只有flag为true时才提交.
+         //return false;
         if (flag) {
             $("#inputForm").submit();
             $(this).button('loading').addClass("disabled").closest("body").modalmanager('loading');
@@ -362,8 +351,6 @@ function changeServer(obj) {
 						<input type="hidden" id="controllerAlias" name="controllerAlias"/>
 						<input type="hidden" id="volumes" name="volumes"/>
 						<input type="hidden" id="innerIps" name="innerIps"/>
-						<input type="hidden" id="eipIds" name="eipIds"/>
-						<input type="hidden" id="eipAddresss" name="eipAddresss"/>
 						<input type="hidden" id="locationAlias" name="locationAlias"/>
 						<input type="hidden" id="elbIds" name="elbIds"/>
 						<input type="hidden" id="virtualIps" name="virtualIps"/>
@@ -483,7 +470,7 @@ function changeServer(obj) {
 							<div class="row-fluid" style="padding-bottom: 5px;">
 								<div class="span2">${eip.identifier}</div>
 								<div class="span10" id="eipDiv">
-							    	<input type="hidden" id="eipId" name="eipId" value="${eip.id}"/>
+							    	<input type="hidden" id="eipIds" name="eipIds" value="${eip.id}"/>
 									<select id="eipAddress" name="eipAddress" class="eipAddress">
 										<option></option>
 										<c:forEach var="map" items="${internetIpPool}">

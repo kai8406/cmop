@@ -887,14 +887,13 @@ public class ResourcesService extends BaseSevcie {
 					if (FieldNameConstant.MdnItem.重点覆盖地域.toString().equals(changeItem.getFieldName())) {
 						mdnItem.setCoverIsp(changeItem.getOldValue());
 					}
+					if (FieldNameConstant.MdnItem.加速服务带宽.toString().equals(changeItem.getFieldName())) {
+						mdnItem.setBandwidth(changeItem.getOldValue());
+					}
 
 					// vod
 					if (FieldNameConstant.MdnVodItem.点播服务域名.toString().equals(changeItem.getFieldName())) {
 						mdnVodItem.setVodDomain(changeItem.getOldValue());
-					}
-
-					if (FieldNameConstant.MdnVodItem.点播加速服务带宽.toString().equals(changeItem.getFieldName())) {
-						mdnVodItem.setVodBandwidth(changeItem.getOldValue());
 					}
 
 					if (FieldNameConstant.MdnVodItem.点播播放协议选择.toString().equals(changeItem.getFieldName())) {
@@ -912,10 +911,6 @@ public class ResourcesService extends BaseSevcie {
 					// live
 					if (FieldNameConstant.MdnLiveItem.直播服务域名.toString().equals(changeItem.getFieldName())) {
 						mdnLiveItem.setLiveDomain(changeItem.getOldValue());
-					}
-
-					if (FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString().equals(changeItem.getFieldName())) {
-						mdnLiveItem.setLiveBandwidth(changeItem.getOldValue());
 					}
 
 					if (FieldNameConstant.MdnLiveItem.直播播放协议选择.toString().equals(changeItem.getFieldName())) {

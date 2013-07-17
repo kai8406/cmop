@@ -89,28 +89,19 @@
 					linkId = "",
 					str = "";
 				var ispTypText = $this.next("span.checkboxText").text();	//ISP的文本
-				
 				//step.4 判断页面选中的是哪种关联类型( 0:ELB ; 1: 实例),并按不同的关联类型生成不同的HTML代码.
-				if ($elbSelect.val() != undefined) {
+				if ($elbSelect.val() != undefined && $elbSelect.val() != "" ) {
 					//关联ELB
-					linkType = "0";
+					linkType = "2";
 					linkId = $elbSelect.val();
 					var elbSelectText = $elbSelect.find("option:selected").text();
 					str += '<dd><em>关联ELB</em>&nbsp;&nbsp;<strong>' + elbSelectText + '</strong></dd>';
-				} else {
+				} else if($computeSelect.val() != undefined && $computeSelect.val() != "") {
 					//关联实例
 					linkType = "1";
 					linkId = $computeSelect.val();
 					var computeSelectText = $computeSelect.find("option:selected").text();
 					str += '<dd><em>关联实例</em>&nbsp;&nbsp;<strong>' + computeSelectText + '</strong></dd>';
-				}
-				
-				//Step.5
-				var temp = ispType + "-" + linkType + "-" + linkId;
-				if ($.inArray(temp, selectedArray) > -1) {
-					isUnique = false;
-				} else {
-					selectedArray.push(temp);
 				}
 				
 				if (isUnique) {
@@ -136,14 +127,16 @@
 						var protocolText = $tr.find("#protocol>option:selected").text();
 						var sourcePort = $tr.find("#sourcePort").val();
 						var targetPort = $tr.find("#targetPort").val();
-						var portTemp = protocol + "@" + sourcePort + "@" + targetPort;
-						//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
-						if (portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1) {
-							portTempArray.push(portTemp);
-							protocolStr += protocol + "@";
-							sourcePortStr += sourcePort + "@";
-							targetPortStr += targetPort + "@";
-							html += '<dd><strong>' + protocolText + '&nbsp;,&nbsp;' + sourcePort + '&nbsp;,&nbsp;' + targetPort + '</strong></dd>';
+						if(sourcePort != "" && targetPort != ""){
+							var portTemp = protocol + "@" + sourcePort + "@" + targetPort;
+							//检验LB的协议,端口,实例端口是否重复.(如果重复,生成的时候自动排除重复项.)
+							if (portTempArray.length === 0 || $.inArray(portTemp, portTempArray) === -1) {
+								portTempArray.push(portTemp);
+								protocolStr += protocol + "@";
+								sourcePortStr += sourcePort + "@";
+								targetPortStr += targetPort + "@";
+								html += '<dd><strong>' + protocolText + '&nbsp;,&nbsp;' + sourcePort + '&nbsp;,&nbsp;' + targetPort + '</strong></dd>';
+							}
 						}
 					});
 					
@@ -164,6 +157,8 @@
 			$("tr.clone:gt(0)").remove().end().find("input[type=text]").val('');
 			$("input[type=checkbox]").removeAttr('checked');
 			selectedArray = [];
+			
+			$("#elbSelect , #computeSelect").val("");
 			
 		}); 
 		 
@@ -218,15 +213,17 @@
 				<div class="controls">
 				
 					<div id="computeSelectDiv" class="show">
-						<select id="computeSelect" class="required">
-							<c:forEach var="item" items="${allComputes }">
+						<select id="computeSelect" class="">
+							<option></option>
+							<c:forEach var="item" items="${allComputes }">	
 								<option value="${item.id }">${item.identifier}(${item.remark } - ${item.innerIp })</option>
 							</c:forEach>
 						</select>					
 					</div>
 					
 					<div id="elbSelectDiv" class="hidden">
-						<select id="elbSelect" class="required">
+						<select id="elbSelect" class="">
+							<option></option>
 							<c:forEach var="item" items="${allElbs }">
 								<option value="${item.id }">${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
 							</c:forEach>
@@ -241,13 +238,13 @@
 				<tbody>
 					<tr class="clone">
 						<td>
-							<select id="protocol" class="input-small required">
+							<select id="protocol" class="input-small">
 								<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
 							</select>
 						</td>
-						<td><input type="text" id="sourcePort" class="input-small required" maxlength="45" placeholder="...SourcePort"></td>
-						<td><input type="text" id="targetPort" class="input-small required" maxlength="45" placeholder="...TargetPort"></td>
-						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+						<td><input type="text" id="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+						<td><input type="text" id="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+						<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone " >删除</a></td>
 					</tr>
 				</tbody>
 			</table>	

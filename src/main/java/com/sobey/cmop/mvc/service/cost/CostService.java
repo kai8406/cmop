@@ -15,9 +15,8 @@ import com.sobey.cmop.mvc.constant.StorageConstant;
 import com.sobey.cmop.mvc.entity.Apply;
 import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.CpItem;
-import com.sobey.cmop.mvc.entity.NetworkDnsItem;
+import com.sobey.cmop.mvc.entity.MdnItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
-import com.sobey.cmop.mvc.entity.NetworkElbItem;
 import com.sobey.cmop.mvc.entity.StorageItem;
 import com.sobey.cmop.mvc.service.onecmdb.OneCmdbService;
 import com.sobey.framework.utils.MathsUtil;
@@ -34,7 +33,7 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 资源数量
 	 */
-	private static final int RESOURCE_COUNT = 1;
+	public static final int RESOURCE_COUNT = 1;
 
 	/**
 	 * 汇总所有设备的成本价格
@@ -98,31 +97,32 @@ public class CostService extends BaseSevcie {
 
 	}
 
-	private double cpCost(Apply apply, double workTime) {
+	public double cpCost(Apply apply, double workTime) {
 
 		double price = 0;
 		if (!apply.getCpItems().isEmpty()) {
 
+			double recordServerCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.收录服务器硬件单位成本.toString()).getDescription());
+			double partitionTime = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.拆条时长.toString()).getDescription());
+			double transcodingCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.转码服务器硬件单位成本.toString()).getDescription());
+			double humanCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.拆条人工单位成本.toString()).getDescription());
+			double platformCostring = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+			double es3Costing = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.ES3.toString())
+					.getDescription());
+
 			for (CpItem cpItem : apply.getCpItems()) {
+
+				double recordBitrate = getRecordBitrateForK(cpItem);
+				double recordTime = getRecordTimeForHours(cpItem);
 
 				// CP核算成本公式:每月服务成本 = 收录时长 × 收录服务器硬件单位成本 + 拆条时长 ×（转码服务器硬件单位成本 +
 				// 拆条人工单位成本） +
 				// 收录码率 × 收录时长 × 25200 × 云平台各项服务成本 ÷ 8388608 - ES3
-
-				double recordBitrate = getRecordBitrateForK(cpItem);
-				double recordTime = getRecordTimeForHours(cpItem);
-				double recordServerCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.收录服务器硬件单位成本.toString()).getDescription());
-				double partitionTime = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.拆条时长.toString()).getDescription());
-				double transcodingCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.转码服务器硬件单位成本.toString()).getDescription());
-				double humanCosting = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.拆条人工单位成本.toString()).getDescription());
-				double platformCostring = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
-				double es3Costing = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.ES3.toString()).getDescription());
 
 				// 收录
 				double record = MathsUtil.mul(recordTime, recordServerCosting);
@@ -155,7 +155,7 @@ public class CostService extends BaseSevcie {
 	 * @param cpItem
 	 * @return
 	 */
-	private double getRecordBitrateForK(CpItem cpItem) {
+	public double getRecordBitrateForK(CpItem cpItem) {
 
 		double bitrate = 0;
 		if (cpItem.getRecordBitrate().equals("1")) {
@@ -180,7 +180,7 @@ public class CostService extends BaseSevcie {
 	 * @param cpItem
 	 * @return
 	 */
-	private double getRecordTimeForHours(CpItem cpItem) {
+	public double getRecordTimeForHours(CpItem cpItem) {
 		double time = 0;
 		if (CPConstant.RecordType.每天.toInteger().equals(cpItem.getRecordType())) {
 
@@ -197,23 +197,39 @@ public class CostService extends BaseSevcie {
 		return time;
 	}
 
-	private double mdnCost(Apply apply, double workTime) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double mdnCost(Apply apply, double workTime) {
+
+		// MDN 核算成本公式: 每月服务成本 = 每M带宽占用 x 带宽
+
+		double price = 0;
+
+		if (!apply.getMdnItems().isEmpty()) {
+
+			double bandwidthPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.每M带宽占用.toString()).getDescription());
+
+			for (MdnItem mdnItem : apply.getMdnItems()) {
+				price = MathsUtil.mul(bandwidthPrice, Double.valueOf(mdnItem.getBandwidth()));
+			}
+
+			price = MathsUtil.mul(price, workTime);
+		}
+
+		return price;
 	}
 
 	private double dnsCost(Apply apply, double workTime) {
 		double price = 0;
 		if (!apply.getNetworkDnsItems().isEmpty()) {
-			for (NetworkDnsItem networkDnsItem : apply.getNetworkDnsItems()) {
 
-				// DNS核算成本公式:每月服务成本=云平台各项服务成本 - DNS
-				double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
-				double dnsPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.DNS.toString()).getDescription());
-				price = MathsUtil.add(price, MathsUtil.sub(platformPrice, dnsPrice));
-			}
+			// DNS核算成本公式:每月服务成本=云平台各项服务成本 - DNS
+			double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+
+			double dnsPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.DNS.toString())
+					.getDescription());
+
+			price = MathsUtil.mul(apply.getNetworkDnsItems().size(), MathsUtil.sub(platformPrice, dnsPrice));
 
 			price = MathsUtil.mul(price, workTime);
 		}
@@ -223,62 +239,52 @@ public class CostService extends BaseSevcie {
 
 	private double eipCost(Apply apply, double workTime) {
 
-		double price = 0;
+		/**
+		 * 中国联通
+		 */
+		int unicom = 0;
 
-		double accessRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-				CostingConstant.CostingParameter.接入速率.toString()).getDescription());
+		/**
+		 * 中国电信
+		 */
+		int telecom = 0;
 
-		if (!apply.getNetworkEipItems().isEmpty()) {
-
-			for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
-
-				/**
-				 * 单价
-				 */
-				double singletonPrice = 0;
-
-				double priceTemp = 0;
-
-				// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
-				if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
-
-					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.电信带宽单价.toString()).getDescription());
-
-				} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
-
-					singletonPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.联通带宽单价.toString()).getDescription());
-
-				} else {
-					// TODO 中国移动
-				}
-
-				priceTemp = MathsUtil.mul(accessRate, singletonPrice);
-				priceTemp = MathsUtil.add(priceTemp, singletonPrice);
-
-				price = MathsUtil.add(price, priceTemp);
-
+		for (NetworkEipItem networkEipItem : apply.getNetworkEipItems()) {
+			if (NetworkConstant.ISPType.中国电信.toInteger().equals(networkEipItem.getIspType())) {
+				telecom++;
 			}
-
-			price = MathsUtil.mul(price, workTime);
+			if (NetworkConstant.ISPType.中国联通.toInteger().equals(networkEipItem.getIspType())) {
+				unicom++;
+			}
 		}
 
-		return price;
+		// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
+
+		double unicomPrice = 0;
+		double telecomPrice = 0;
+
+		if (unicom != 0) {
+			unicomPrice = comm.costService.eipCost(NetworkConstant.ISPType.中国联通, workTime, unicom);
+		}
+
+		if (telecom != 0) {
+			telecomPrice = comm.costService.eipCost(NetworkConstant.ISPType.中国电信, workTime, telecom);
+		}
+
+		return MathsUtil.add(unicomPrice, telecomPrice);
 	}
 
 	private double elbCost(Apply apply, double workTime) {
 		double price = 0;
 		if (!apply.getNetworkElbItems().isEmpty()) {
-			for (NetworkElbItem networkElbItem : apply.getNetworkElbItems()) {
+			double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+			double EFWPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.EFW.toString())
+					.getDescription());
 
-				// ELB核算成本公式:每月服务成本=云平台各项服务成本 - EFW
-				double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
-				double EFWPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-						CostingConstant.Costing.EFW.toString()).getDescription());
-				price = MathsUtil.add(price, MathsUtil.sub(platformPrice, EFWPrice));
-			}
+			// ELB核算成本公式:每月服务成本=云平台各项服务成本 - EFW
+
+			price = MathsUtil.mul(apply.getNetworkElbItems().size(), MathsUtil.sub(platformPrice, EFWPrice));
 
 			price = MathsUtil.mul(price, workTime);
 		}
@@ -288,15 +294,26 @@ public class CostService extends BaseSevcie {
 
 	private double es3Cost(Apply apply, double workTime) {
 		double price = 0;
+
 		if (!apply.getStorageItems().isEmpty()) {
+
+			double netAppPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.业务存储单价.toString()).getDescription());
+
+			double fimasPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.数据存储单价.toString()).getDescription());
 
 			for (StorageItem storageItem : apply.getStorageItems()) {
 
 				// ES3核算成本公式:每月服务成本=业务存储大小 × 业务存储单价
 				if (StorageConstant.StorageType.Netapp_高IOPS.toInteger().equals(storageItem.getStorageType())) {
-					double es3Price = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-							CostingConstant.Costing.业务存储单价.toString()).getDescription());
-					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), es3Price));
+
+					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), netAppPrice));
+
+				} else {
+
+					price = MathsUtil.add(price, MathsUtil.mul(storageItem.getSpace().doubleValue(), fimasPrice));
+
 				}
 			}
 
@@ -313,7 +330,7 @@ public class CostService extends BaseSevcie {
 	 * @param ecsCost
 	 * @return
 	 */
-	private double totalCost(double intiCost, double ecsCost, double es3Cost, double elbCost, double eipCost,
+	public double totalCost(double intiCost, double ecsCost, double es3Cost, double elbCost, double eipCost,
 			double dnsCost, double mdnCost, double cpCost) {
 
 		double totalPrice = 0;
@@ -326,7 +343,6 @@ public class CostService extends BaseSevcie {
 		totalPrice = MathsUtil.add(totalPrice, dnsCost);
 		totalPrice = MathsUtil.add(totalPrice, mdnCost);
 		totalPrice = MathsUtil.add(totalPrice, cpCost);
-
 		return totalPrice;
 	}
 
@@ -336,7 +352,7 @@ public class CostService extends BaseSevcie {
 	 * @param workTime
 	 * @return
 	 */
-	private double humanCost(Apply apply, double workTime) {
+	public Double humanCost(Apply apply, double workTime) {
 
 		double price = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.服务人力成本.toString())
 				.getDescription());
@@ -372,6 +388,13 @@ public class CostService extends BaseSevcie {
 
 		if (!apply.getComputeItems().isEmpty()) {
 
+			double smallPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Small服务器单价.toString()).getDescription());
+			double middlePrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Middle服务器单价.toString()).getDescription());
+			double largePrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Large服务器单价.toString()).getDescription());
+
 			for (ComputeItem computeItem : apply.getComputeItems()) {
 
 				// ECS核算成本公式:每月服务成本=Small服务器数量×单价+Middle服务器数量×Middle服务器单价+Large服务器×单价
@@ -380,20 +403,15 @@ public class CostService extends BaseSevcie {
 					if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(
 							computeItem.getServerType())) {
 
-						double smallPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-								CostingConstant.Costing.Small服务器单价.toString()).getDescription());
 						price = MathsUtil.add(price, MathsUtil.mul(RESOURCE_COUNT, smallPrice));
 
 					} else if (ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB.toInteger().equals(
 							computeItem.getServerType())) {
 
-						double middlePrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-								CostingConstant.Costing.Middle服务器单价.toString()).getDescription());
 						price = MathsUtil.add(price, MathsUtil.mul(RESOURCE_COUNT, middlePrice));
 
 					} else {
-						double largePrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
-								CostingConstant.Costing.Large服务器单价.toString()).getDescription());
+
 						price = MathsUtil.add(price, MathsUtil.mul(RESOURCE_COUNT, largePrice));
 					}
 
@@ -407,13 +425,165 @@ public class CostService extends BaseSevcie {
 	}
 
 	/**
+	 * 获得ECS的价格
+	 * 
+	 * @param serverType 规格
+	 * @param workTime 申请时间(月)
+	 * @param number 数量
+	 * @return 价格
+	 */
+	public Double computeCost(ComputeConstant.ECSServerType serverType, double workTime, int number) {
+
+		double price = 0;
+
+		if (ComputeConstant.ECSServerType.Small_CPUx1_Memoryx1GB_DISKx20GB.toInteger().equals(serverType.toInteger())) {
+
+			price = MathsUtil.mul(number, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Small服务器单价.toString()).getDescription()));
+
+		} else if (ComputeConstant.ECSServerType.Middle_CPUx2_Memoryx2GB_DISKx20GB.toInteger().equals(
+				serverType.toInteger())) {
+
+			price = MathsUtil.mul(number, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Middle服务器单价.toString()).getDescription()));
+
+		} else if (ComputeConstant.ECSServerType.Large_CPUx4_Memoryx4GB_DISKx20GB.toInteger().equals(
+				serverType.toInteger())) {
+
+			price = MathsUtil.mul(number, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.Large服务器单价.toString()).getDescription()));
+
+		}
+
+		return MathsUtil.mul(price, workTime);
+	}
+
+	/**
+	 * 获得es3的价格
+	 * 
+	 * @param storageType 规格
+	 * @param workTime 申请时间(月)
+	 * @param number 数量
+	 * @return
+	 */
+	public Double es3Cost(StorageConstant.StorageType storageType, double workTime, double space) {
+		double price = 0;
+		if (StorageConstant.StorageType.Netapp_高IOPS.toInteger().equals(storageType.toInteger())) {
+			price = MathsUtil.mul(space, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.业务存储单价.toString()).getDescription()));
+
+		} else {
+			price = MathsUtil.mul(space, Double.valueOf(OneCmdbService.findCiBeanByAlias(
+					CostingConstant.Costing.数据存储单价.toString()).getDescription()));
+		}
+		return MathsUtil.mul(price, workTime);
+	}
+
+	/**
+	 * 获得elb的价格
+	 * 
+	 * @param workTime 申请时间(月)
+	 * @param number 数量
+	 * @return
+	 */
+	public Double elbCost(double workTime, int number) {
+
+		double price = 0;
+
+		// ELB核算成本公式:每月服务成本=云平台各项服务成本 - EFW
+		double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+				CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+
+		double EFWPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.EFW.toString())
+				.getDescription());
+
+		price = MathsUtil.mul(number, MathsUtil.sub(platformPrice, EFWPrice));
+
+		return MathsUtil.mul(price, workTime);
+	}
+
+	/**
+	 * 获得elb的价格
+	 * 
+	 * @param type 规格
+	 * @param workTime 申请时间(月)
+	 * @param number 数量
+	 * @return
+	 */
+	public Double eipCost(NetworkConstant.ISPType type, double workTime, int number) {
+
+		double price = 0;
+
+		/**
+		 * 接入速率
+		 */
+		double accessRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+				CostingConstant.CostingParameter.接入速率.toString()).getDescription());
+
+		/**
+		 * 双线
+		 */
+		double bandwidthRate = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.双线.toString())
+				.getDescription());
+
+		/**
+		 * 单价
+		 */
+		double ispPrice = 0;
+
+		if (NetworkConstant.ISPType.中国电信.toInteger().equals(type.toInteger())) {
+
+			ispPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.电信带宽单价.toString())
+					.getDescription());
+
+		} else if (NetworkConstant.ISPType.中国联通.toInteger().equals(type.toInteger())) {
+
+			ispPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.联通带宽单价.toString())
+					.getDescription());
+
+		} else {
+			// TODO 中国移动
+		}
+
+		// EIP核算成本公式:每月服务成本=(接入速率 × 电信带宽单价 + 接入速率 × 联通带宽单价)+(电信IP数量 × 电信带宽单价 + 联通IP数量 × 联通带宽单价)
+
+		// 带宽成本 + IP成本
+		price = MathsUtil.add(MathsUtil.mul(accessRate, bandwidthRate), MathsUtil.mul(number, ispPrice));
+		return MathsUtil.mul(price, workTime);
+	}
+
+	/**
+	 * 获得elb的价格
+	 * 
+	 * @param type 规格
+	 * @param workTime 申请时间(月)
+	 * @param number 数量
+	 * @return
+	 */
+	public Double dnsCost(double workTime, int number) {
+
+		double price = 0;
+
+		// DNS核算成本公式:每月服务成本=云平台各项服务成本 - DNS
+		double platformPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(
+				CostingConstant.Costing.云平台各项服务成本.toString()).getDescription());
+
+		double dnsPrice = Double.valueOf(OneCmdbService.findCiBeanByAlias(CostingConstant.Costing.DNS.toString())
+				.getDescription());
+
+		price = MathsUtil.mul(number, MathsUtil.sub(platformPrice, dnsPrice));
+
+		return MathsUtil.mul(price, workTime);
+	}
+
+	/**
 	 * 服务申请Apply的日期差
 	 * 
 	 * 获得两个日期的 天数差,再除以 30天. 获得可能带小数点的天数.
 	 * 
 	 * @return
 	 */
-	private double applyDaysBetween(Apply apply) {
+	public double applyDaysBetween(Apply apply) {
 
 		/**
 		 * 默认的每月天数
@@ -422,10 +592,10 @@ public class CostService extends BaseSevcie {
 
 		DateTime startTime = new DateTime(apply.getServiceStart());
 		DateTime endTime = new DateTime(apply.getServiceEnd());
-		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER);
+		double costTime = MathsUtil.div(Days.daysBetween(startTime, endTime).getDays(), DEFAULT_DAY_NUMBER, 2);
 
 		// 如果是当天,时间差算成1天.
-		return costTime == 0 ? 0.034 : costTime;
+		return costTime == 0 ? 0.04 : costTime;
 
 	}
 

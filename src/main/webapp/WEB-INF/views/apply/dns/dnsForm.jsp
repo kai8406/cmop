@@ -26,28 +26,28 @@
 				
 				var flag = true;
 				
-				$("tr.clone").each(function() {
-					var $this = $(this);
-					var domainType = $this.find("#domainType").val();
-					var count = $this.find(".eipInfoText").length;
-					
-					/*
-					提交时,验证DNS绑定的EIP数量.
-						类型为GSLB时至少需要两个目标IP
-						类型为A时只能选一个目标IP
-					页面默认是有一个p.eipInfoText,用于标注插入点,所以统计都是+1.
-					*/
-					if (domainType == 1 && count < 3) {
-						//GSLB
-						alert("类型为GSLB时至少需要两个目标IP.");
-						flag = false;
-					} else if (domainType == 2 && count != 2) {
-						//A
-						alert("类型为A时只能选一个目标IP.");
-						flag = false;
-					} 
-					
-				});
+		//  $("tr.clone").each(function() {
+		//	var $this = $(this);
+		//	var domainType = $this.find("#domainType").val();
+		//	var count = $this.find(".eipInfoText").length;
+		//	
+		//	/*
+		//	提交时,验证DNS绑定的EIP数量.
+		//		类型为GSLB时至少需要两个目标IP
+		//		类型为A时只能选一个目标IP
+		//	页面默认是有一个p.eipInfoText,用于标注插入点,所以统计都是+1.
+		//	*/
+		//	if (domainType == 1 && count < 3) {
+		//		//GSLB
+		//		alert("类型为GSLB时至少需要两个目标IP.");
+		//		flag = false;
+		//	} else if (domainType == 2 && count != 2) {
+		//		//A
+		//		alert("类型为A时只能选一个目标IP.");
+		//		flag = false;
+		//	} 
+		//	
+		//});  
 				
 				//只有flag为true时才提交.
 				if(flag){
@@ -193,8 +193,9 @@
 								<td>${item.ipAddress }</td>
 								<td>
 									<c:choose>
-										<c:when test="${not empty item.computeItem }">${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-										<c:otherwise>${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })</c:otherwise>
+										<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
+										<c:when test="${not empty item.networkElbItem }"><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;【${item.networkElbItem.mountComputes}】</c:when>
+										<c:otherwise></c:otherwise>
 									</c:choose>
 								</td>
 							</tr>

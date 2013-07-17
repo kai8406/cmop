@@ -48,7 +48,8 @@ public class ES3Controller extends BaseController {
 	public String save(@RequestParam(value = "applyId") Integer applyId,
 			@RequestParam(value = "spaces") String[] spaces,
 			@RequestParam(value = "storageTypes") String[] storageTypes,
-			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			RedirectAttributes redirectAttributes) {
 
 		comm.es3Service.saveES3ToApply(applyId, spaces, storageTypes, computeIds);
 
@@ -84,7 +85,8 @@ public class ES3Controller extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "space") Integer space, @RequestParam(value = "storageType") Integer storageType,
-			@RequestParam(value = "computeIds") String[] computeIds, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "computeIds", required = false) String[] computeIds,
+			RedirectAttributes redirectAttributes) {
 
 		StorageItem storageItem = comm.es3Service.getStorageItem(id);
 

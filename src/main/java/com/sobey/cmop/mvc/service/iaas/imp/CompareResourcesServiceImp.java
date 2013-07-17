@@ -133,16 +133,19 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		if (changeItems.isEmpty() || resources.getStatus().equals(ResourcesConstant.Status.未变更.toInteger())
 				|| resources.getStatus().equals(ResourcesConstant.Status.已创建.toInteger())) {
 
-			// 创建一个新的ChangeItem
-			ChangeItem changeItem = new ChangeItem();
-			changeItem.setChange(change);
-			changeItem.setFieldName(fieldName);
-			changeItem.setOldValue(StringUtils.defaultIfEmpty(oldValue, ""));
-			changeItem.setOldString(StringUtils.defaultIfEmpty(oldString, ""));
-			changeItem.setNewValue(StringUtils.defaultIfEmpty(newValue, ""));
-			changeItem.setNewString(StringUtils.defaultIfEmpty(newString, ""));
+			if (!newString.equals(oldString)) {
 
-			comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+				// 创建一个新的ChangeItem
+				ChangeItem changeItem = new ChangeItem();
+				changeItem.setChange(change);
+				changeItem.setFieldName(fieldName);
+				changeItem.setOldValue(StringUtils.defaultIfEmpty(oldValue, ""));
+				changeItem.setOldString(StringUtils.defaultIfEmpty(oldString, ""));
+				changeItem.setNewValue(StringUtils.defaultIfEmpty(newValue, ""));
+				changeItem.setNewString(StringUtils.defaultIfEmpty(newString, ""));
+
+				comm.changeServcie.saveOrUpdateChangeItem(changeItem);
+			}
 
 		} else {
 
@@ -198,8 +201,10 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-			for (int i = 0; i < esgIds.length; i++) {
-				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+			if (!"".equals(esgIds) && esgIds != null) {
+				for (int i = 0; i < esgIds.length; i++) {
+					networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+				}
 			}
 			String newValue = newId;
 			String newString = ComputeItem.extractToString(networkEsgItemList);
@@ -316,9 +321,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<NetworkEsgItem> networkEsgItemList = new ArrayList<NetworkEsgItem>();
-			for (int i = 0; i < esgIds.length; i++) {
-				networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+
+			if (!"".equals(esgIds) && esgIds != null) {
+				for (int i = 0; i < esgIds.length; i++) {
+					networkEsgItemList.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(esgIds[i])));
+				}
 			}
+
 			String newValue = newId;
 			String newString = ComputeItem.extractToString(networkEsgItemList);
 
@@ -425,9 +434,12 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -479,9 +491,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -519,9 +533,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -573,9 +589,11 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<ComputeItem> list = new ArrayList<ComputeItem>();
-			for (int i = 0; i < computeIds.length; i++) {
-				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
-				list.add(computeItem);
+			if (computeIds != null) {
+				for (int i = 0; i < computeIds.length; i++) {
+					ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
+					list.add(computeItem);
+				}
 			}
 			String newValue = newId;
 			String newString = StorageItem.extractToString(list);
@@ -621,10 +639,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		List<String> sourcePortList = new ArrayList<String>();
 		List<String> targetPortList = new ArrayList<String>();
 
-		for (int i = 0; i < protocols.length; i++) {
-			protocolList.add(protocols[i]);
-			sourcePortList.add(sourcePorts[i]);
-			targetPortList.add(targetPorts[i]);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+
+			for (int i = 0; i < protocols.length; i++) {
+				protocolList.add(protocols[i]);
+				sourcePortList.add(sourcePorts[i]);
+				targetPortList.add(targetPorts[i]);
+			}
 		}
 
 		// 比较OldValue和NewValue的List.
@@ -667,10 +688,12 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	private String wrapPortItemToString(String[] protocols, String[] sourcePorts, String[] targetPorts) {
 
 		StringBuilder sb = new StringBuilder();
+		if (sourcePorts != null && sourcePorts.length > 0) {
 
-		for (int i = 0; i < protocols.length; i++) {
-			sb.append(protocols[i]).append(",").append(sourcePorts[i]).append(",").append(targetPorts[i])
-					.append("<br>");
+			for (int i = 0; i < protocols.length; i++) {
+				sb.append(protocols[i]).append(",").append(sourcePorts[i]).append(",").append(targetPorts[i])
+						.append("<br>");
+			}
 		}
 
 		return sb.toString();
@@ -679,8 +702,12 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 	@Override
 	public boolean compareEip(Resources resources, Change change, NetworkEipItem networkEipItem,
-			List<EipPortItem> eipPortItems, String linkType, Integer linkId, String[] protocols, String[] sourcePorts,
+			List<EipPortItem> eipPortItems, String linkType, String linkId, String[] protocols, String[] sourcePorts,
 			String[] targetPorts) {
+
+		if ("".equals(linkId)) {
+			linkId = "0";
+		}
 
 		/**
 		 * 关于挂载实例的处理逻辑说明请查看 compareCompute方法
@@ -709,7 +736,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
 					.toString() : "";
 			String oldString = networkEipItem.getComputeItem() != null ? this.wrapStringByComputeItem(networkEipItem
-					.getComputeItem().getId()) : "";
+					.getComputeItem().getId().toString()) : "";
 
 			String newValue = linkId.toString();
 			String newString = this.wrapStringByComputeItem(linkId);
@@ -731,7 +758,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 					.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 			String newValue = linkId.toString();
-			String newString = this.wrapStringByNetworkElbItem(linkId);
+			String newString = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 			if (!oldValue.equals(newValue)) {
 				isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
@@ -752,7 +779,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldValueCompute = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem()
 						.getId().toString() : "";
 				String oldStringCompute = networkEipItem.getComputeItem() != null ? this
-						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId().toString()) : "";
 
 				String newValueCompute = UN_SELECTED_STRING;
 				String newStringCompute = "";
@@ -767,7 +794,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldStringElb = "";
 
 				String newValueElb = linkId.toString();
-				String newStringElb = this.wrapStringByNetworkElbItem(linkId);
+				String newStringElb = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 				isChange = this.saveChangeItemByFieldName(resources, change, fieldNameElb, oldValueElb, oldStringElb,
 						newValueElb, newStringElb);
@@ -835,7 +862,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 						.wrapStringByNetworkElbItem(networkEipItem.getNetworkElbItem().getId()) : "";
 
 				String newValue = linkId.toString();
-				String newString = this.wrapStringByNetworkElbItem(linkId);
+				String newString = this.wrapStringByNetworkElbItem(Integer.valueOf(linkId));
 
 				this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 			} else {
@@ -845,7 +872,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 				String oldValue = networkEipItem.getComputeItem() != null ? networkEipItem.getComputeItem().getId()
 						.toString() : "";
 				String oldString = networkEipItem.getComputeItem() != null ? this
-						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId()) : "";
+						.wrapStringByComputeItem(networkEipItem.getComputeItem().getId().toString()) : "";
 
 				String newValue = linkId.toString();
 				String newString = this.wrapStringByComputeItem(linkId);
@@ -915,12 +942,15 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		List<String> sourcePortList = new ArrayList<String>();
 		List<String> targetPortList = new ArrayList<String>();
 
-		for (int i = 0; i < protocols.length; i++) {
-			protocolList.add(protocols[i]);
-			sourcePortList.add(sourcePorts[i]);
-			targetPortList.add(targetPorts[i]);
-		}
+		if (sourcePorts != null && sourcePorts.length > 0) {
 
+			for (int i = 0; i < protocols.length; i++) {
+				protocolList.add(protocols[i]);
+				sourcePortList.add(sourcePorts[i]);
+				targetPortList.add(targetPorts[i]);
+			}
+
+		}
 		// 比较OldValue和NewValue的List.
 
 		return CollectionUtils.isEqualCollection(protocolList, oldProtocolList)
@@ -1015,9 +1045,12 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			// 根据computeIds查询compute的List,再得出字符串.
 			List<NetworkEipItem> list = new ArrayList<NetworkEipItem>();
-			for (int i = 0; i < eipIds.length; i++) {
-				NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipIds[i]));
-				list.add(networkEipItem);
+			if (eipIds != null) {
+
+				for (int i = 0; i < eipIds.length; i++) {
+					NetworkEipItem networkEipItem = comm.eipService.getNetworkEipItem(Integer.valueOf(eipIds[i]));
+					list.add(networkEipItem);
+				}
 			}
 			String newValue = eipIds != null ? StringUtils.join(eipIds, ",") : "";
 			String newString = NetworkDnsItem.extractToString(list);
@@ -1075,18 +1108,18 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 		flag = isChange;
 
 		// 域名
+		// 方便变更时,查看域名.
 
-		if (!networkDnsItem.getDomainName().equals(domainName)) {
+		if (true) {
 
 			String fieldName = FieldNameConstant.Dns.域名.toString();
 			String oldValue = networkDnsItem.getDomainName();
-			String oldString = networkDnsItem.getDomainName();
+			String oldString = networkDnsItem.getDomainName() + " ";
 
 			String newValue = domainName;
 			String newString = domainName;
 
-			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
-					newString);
+			this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue, newString);
 		}
 
 		// Step.2 关联实例没有变更,同时其他属性有变更,插入一条关联实例的数据到数据库中,方便页面查看所有关联的ESG.
@@ -1276,7 +1309,8 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	}
 
 	@Override
-	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea, String coverIsp) {
+	public boolean compareMdnItem(Resources resources, Change change, MdnItem mdnItem, String coverArea,
+			String coverIsp, String bandwidth) {
 
 		boolean isChange = false;
 
@@ -1314,12 +1348,29 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 		}
 
+		if (!mdnItem.getBandwidth().equals(bandwidth)) {
+
+			// coverIsp
+
+			String fieldName = FieldNameConstant.MdnItem.加速服务带宽.toString();
+
+			String oldValue = mdnItem.getBandwidth();
+			String oldString = mdnItem.getBandwidth();
+
+			String newValue = bandwidth;
+			String newString = bandwidth;
+
+			isChange = this.saveChangeItemByFieldName(resources, change, fieldName, oldValue, oldString, newValue,
+					newString);
+
+		}
+
 		return isChange;
 	}
 
 	@Override
 	public boolean compareMdnVodItem(Resources resources, Change change, MdnVodItem mdnVodItem, String vodDomain,
-			String vodBandwidth, String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
+			String vodProtocol, String sourceOutBandwidth, String sourceStreamerUrl) {
 
 		boolean isChange = false;
 
@@ -1332,20 +1383,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String newValue = vodDomain;
 			String newString = vodDomain;
-
-			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue,
-					oldString, newValue, newString);
-		}
-
-		if (!mdnVodItem.getVodBandwidth().equals(vodBandwidth)) {
-
-			String fieldName = FieldNameConstant.MdnVodItem.点播加速服务带宽.toString();
-
-			String oldValue = mdnVodItem.getVodBandwidth();
-			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth());
-
-			String newValue = vodBandwidth;
-			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(vodBandwidth);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, mdnVodItem.getId(), fieldName, oldValue,
 					oldString, newValue, newString);
@@ -1398,10 +1435,9 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 	@Override
 	public boolean compareMdnLiveItem(Resources resources, Change change, MdnLiveItem mdnLiveItem, String bandwidth,
-			String name, String guid, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder,
-			String hlsUrlEncoder, String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl,
-			String hlsBitrate) {
+			String name, String guid, String liveDomain, String liveProtocol, Integer streamOutMode,
+			Integer encoderMode, String httpUrlEncoder, String httpBitrateEncoder, String hlsUrlEncoder,
+			String hlsBitrateEncoder, String httpUrl, String httpBitrate, String hlsUrl, String hlsBitrate) {
 
 		boolean isChange = false;
 
@@ -1414,20 +1450,6 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 
 			String newValue = liveDomain;
 			String newString = liveDomain;
-
-			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue,
-					oldString, newValue, newString);
-		}
-
-		if (!mdnLiveItem.getLiveBandwidth().equals(liveBandwidth)) {
-
-			String fieldName = FieldNameConstant.MdnLiveItem.直播加速服务带宽.toString();
-
-			String oldValue = mdnLiveItem.getLiveBandwidth();
-			String oldString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth());
-
-			String newValue = liveBandwidth;
-			String newString = MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(liveBandwidth);
 
 			isChange = this.saveChangeItemByFieldName(resources, change, mdnLiveItem.getId(), fieldName, oldValue,
 					oldString, newValue, newString);
@@ -2029,9 +2051,13 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 	 * @param elbId
 	 * @return
 	 */
-	private String wrapStringByComputeItem(Integer computeId) {
+	private String wrapStringByComputeItem(String computeId) {
 
-		ComputeItem computeItem = comm.computeService.getComputeItem(computeId);
+		if ("".equals(computeId)) {
+			computeId = "0";
+		}
+
+		ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeId));
 
 		String value = "";
 

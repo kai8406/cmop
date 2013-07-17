@@ -111,7 +111,11 @@
 							</#if>
 						
 					  	</li>
-						<li><em>关联ESG</em>&nbsp;:${compute.mountESG}</li>
+					  	
+					  	<#if compute.mountESG?exists>
+							<li><em>关联ESG</em>&nbsp;:${compute.mountESG}</li>
+						</#if>
+						
 						<br>
 					</ul>
 				</#list>
@@ -129,7 +133,9 @@
 							<#list storageTypeMap?keys as k ><#if storage.storageType?string == k>${storageTypeMap[k]}</#if></#list>
 						</li>
 						<li><em>容量空间</em>&nbsp;:${storage.space}GB</li>
-						<li><em>挂载实例</em>&nbsp;:${storage.mountComputes}</li>
+						<#if storage.mountComputes?exists>
+							<li><em>挂载实例</em>&nbsp;:${storage.mountComputes}</li>
+						</#if>
 						<br>
 					</ul>
 				</#list>
@@ -147,8 +153,9 @@
 						<li><em>是否保持会话</em>&nbsp;:
 							<#list KeepSessionMap?keys as k ><#if elb.keepSession?string == k>${KeepSessionMap[k]}</#if></#list>
 						</li>
-						<li><em>关联实例</em>&nbsp;:${elb.mountComputes}</li>
-						
+						<#if elb.mountComputes?exists>
+							<li><em>关联实例</em>&nbsp;:${elb.mountComputes}</li>
+						</#if>
 						<li><em>端口映射(协议、源端口、目标端口)</em></li>
 						
 						<#list elb.elbPortItems as port>
@@ -212,14 +219,12 @@
 						<li><em>域名类型</em>&nbsp;:
 							<#list domainTypeMap?keys as k ><#if dns.domainType?string == k>${domainTypeMap[k]}</#if></#list>
 						</li>
-						
-						<li>
-							<#if dns.cnameDomain?exists>
-								<em>CNAME域名</em>&nbsp;:${dns.cnameDomain}
-							<#else>
-								<em>目标IP</em>&nbsp;:${dns.mountElbs}
-							</#if>
-						</li>
+					
+						<#if dns.cnameDomain?exists && dns.domainType != 3 >
+							<li><em>目标IP</em>&nbsp;:${dns.mountElbs}</li>
+						<#elseif dns.cnameDomain?exists>
+							<li><em>CNAME域名</em>&nbsp;:${dns.cnameDomain}</li>
+						</#if>
 						
 						<br>
 					</ul>
@@ -334,6 +339,7 @@
 								<#list ispTypeMap?keys as k ><#if coverIsp?string == k>${ispTypeMap[k]}</#if></#list>
 							</#list>
 						</li>
+						<li><em>加速服务带宽(M)</em>&nbsp;:${mdn.bandwidth}</li>
 						
 						<#if (mdn.mdnVodItems?exists) && (mdn.mdnVodItems?size > 0) >
 							<br>
@@ -342,7 +348,6 @@
 								<#list mdn.mdnVodItems as vod>
 									<li><em>服务子项ID</em>&nbsp;:${vod.id}</li>
 									<li><em>服务域名</em>&nbsp;:${vod.vodDomain}</li>
-									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if vod.vodBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${vod.vodProtocol}</li>
 									<li><em>源站出口带宽</em>&nbsp;:${vod.sourceOutBandwidth}</li>
 									<li><em>Streamer地址</em>&nbsp;:${vod.sourceStreamerUrl}</li>
@@ -358,7 +363,6 @@
 								<#list mdn.mdnLiveItems as live>
 									<li><em>服务子项ID</em>&nbsp;:${live.id}</li>
 									<li><em>服务域名</em>&nbsp;:${live.liveDomain}</li>
-									<li><em>加速服务带宽</em>&nbsp;:<#list bandwidthMap?keys as k ><#if live.liveBandwidth?string == k>${bandwidthMap[k]}</#if></#list></li>
 									<li><em>播放协议选择</em>&nbsp;:${live.liveProtocol}</li>
 									<li><em>源站出口带宽</em>&nbsp;:${live.bandwidth}</li>
 									<li><em>频道名称</em>&nbsp;:${live.name}</li>

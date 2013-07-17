@@ -59,6 +59,13 @@
 				</div>
 			</div>
 			
+			<div class="control-group">
+				<label class="control-label" for="bandwidth">加速服务带宽(M)</label>
+				<div class="controls">
+					<input type="text" id="bandwidth" name="bandwidth" class="required digits" value="${mdn.bandwidth }" maxlength="45" placeholder="...加速服务带宽">
+				</div>
+			</div>
+			
 			<div class="form-actions">
 				<a href="${ctx}/apply/update/${mdn.apply.id}/" class="btn">返回</a>
 				<input class="btn btn-primary" type="submit" value="提交">

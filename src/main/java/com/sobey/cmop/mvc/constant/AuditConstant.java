@@ -13,6 +13,11 @@ import com.google.common.collect.Maps;
 public class AuditConstant {
 
 	/**
+	 * 最后一个审批人顺序.
+	 */
+	public static final Integer AUDITORDER_FINAL = 3;
+
+	/**
 	 * 审批结果
 	 * 
 	 * <pre>

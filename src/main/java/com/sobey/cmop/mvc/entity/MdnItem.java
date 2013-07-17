@@ -29,6 +29,7 @@ public class MdnItem implements java.io.Serializable {
 	private String identifier;
 	private String coverArea;
 	private String coverIsp;
+	private String bandwidth;
 	private Set<MdnVodItem> mdnVodItems = new HashSet<MdnVodItem>(0);
 	private Set<MdnLiveItem> mdnLiveItems = new HashSet<MdnLiveItem>(0);
 
@@ -39,19 +40,21 @@ public class MdnItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MdnItem(String identifier, String coverArea, String coverIsp) {
+	public MdnItem(String identifier, String coverArea, String coverIsp, String bandwidth) {
 		this.identifier = identifier;
 		this.coverArea = coverArea;
 		this.coverIsp = coverIsp;
+		this.bandwidth = bandwidth;
 	}
 
 	/** full constructor */
-	public MdnItem(Apply apply, String identifier, String coverArea, String coverIsp, Set<MdnVodItem> mdnVodItems,
-			Set<MdnLiveItem> mdnLiveItems) {
+	public MdnItem(Apply apply, String identifier, String coverArea, String coverIsp, String bandwidth,
+			Set<MdnVodItem> mdnVodItems, Set<MdnLiveItem> mdnLiveItems) {
 		this.apply = apply;
 		this.identifier = identifier;
 		this.coverArea = coverArea;
 		this.coverIsp = coverIsp;
+		this.bandwidth = bandwidth;
 		this.mdnVodItems = mdnVodItems;
 		this.mdnLiveItems = mdnLiveItems;
 	}
@@ -103,6 +106,15 @@ public class MdnItem implements java.io.Serializable {
 
 	public void setCoverIsp(String coverIsp) {
 		this.coverIsp = coverIsp;
+	}
+
+	@Column(name = "bandwidth", nullable = false, length = 45)
+	public String getBandwidth() {
+		return bandwidth;
+	}
+
+	public void setBandwidth(String bandwidth) {
+		this.bandwidth = bandwidth;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mdnItem")

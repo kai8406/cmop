@@ -145,7 +145,8 @@
 							</c:choose>
 						</dd>
 						
-						<dd><em>关联ESG</em>&nbsp;&nbsp;${item.mountESG}</dd>
+						<c:if test="${not empty item.mountESG }"><dd><em>关联ESG</em>&nbsp;&nbsp;${item.mountESG}</dd></c:if>
+						
 						<br>
 						
 					</c:forEach>
@@ -166,7 +167,7 @@
 						
 						<dd><em>容量空间</em>&nbsp;&nbsp;${item.space}&nbsp;GB</dd>
 						
-						<dd><em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
+						<c:if test="${not empty item.mountComputes }"><dd><em>挂载实例</em>&nbsp;&nbsp;${item.mountComputes}</dd></c:if>
 						
 						<br>
 						
@@ -188,13 +189,14 @@
 						
 						<dd><em>是否保持会话</em>&nbsp;<c:forEach var="map" items="${keepSessionMap}"><c:if test="${item.keepSession == map.key }">${map.value}</c:if></c:forEach></dd>
 						
-						<dd><em>关联实例</em>&nbsp;&nbsp;${item.mountComputes}</dd>
 						
 						<dd><em>端口映射（协议、源端口、目标端口）</em></dd>
 						
 						<c:forEach var="port" items="${item.elbPortItems }">
 							<dd>&nbsp;&nbsp;${port.protocol}&nbsp;,&nbsp;${port.sourcePort}&nbsp;,&nbsp;${port.targetPort}</dd>
 						</c:forEach>
+							
+						<c:if test="${not empty item.mountComputes }"><dd><em>关联实例</em>&nbsp;&nbsp;${item.mountComputes}</dd></c:if>
 							
 						<br>
 						
@@ -219,9 +221,8 @@
 						<dd>
 							<c:choose>
 								<c:when test="${not empty item.computeItem }"><em>关联实例</em>&nbsp;&nbsp;${item.computeItem.identifier }(${item.computeItem.remark } - ${item.computeItem.innerIp })</c:when>
-								<c:otherwise>
-									<em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;【${item.networkElbItem.mountComputes}】
-								</c:otherwise>
+								<c:when test="${not empty item.networkElbItem }"><em>关联ELB</em>&nbsp;&nbsp;${item.networkElbItem.identifier }(${item.networkElbItem.virtualIp })&nbsp;【${item.networkElbItem.mountComputes}】</c:when>
+								<c:otherwise></c:otherwise>
 							</c:choose>
 						</dd>
 						
@@ -252,8 +253,9 @@
 						
 						<dd>
 							<c:choose>
-								<c:when test="${item.domainType != 3 }"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
-								<c:otherwise><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:otherwise>
+								<c:when test="${item.domainType != 3 && not empty item.mountElbs}"><em>目标IP</em>&nbsp;&nbsp;${item.mountElbs }</c:when>
+								<c:when test="${not empty item.cnameDomain }"><em>CNAME域名</em>&nbsp;&nbsp;${item.cnameDomain }</c:when>
+								<c:otherwise></c:otherwise>
 							</c:choose>
 						</dd>
 						

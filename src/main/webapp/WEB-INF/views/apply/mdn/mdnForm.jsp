@@ -72,8 +72,6 @@
 					return false;
 				}
 				var domain = $("#domain").val();
-				var speedBandwidth = $("#speedBandwidth").val();
-				var speedBandwidthText = $("#speedBandwidth>option:selected").text();
 				var $protocol = $("input[name='playProtocol']:checked");
 				var exportBandwidth = $("#exportBandwidth").val();
 				var protocolId = "",
@@ -94,12 +92,10 @@
 					html += '<div class="resources alert alert-block alert-info fade in">';
 					html += '<button data-dismiss="alert" class="close" type="button">×</button>';
 					html += '<input type="hidden" name="vodDomains" value="' + domain + '">';
-					html += '<input type="hidden" name="vodBandwidths" value="' + speedBandwidth + '">';
 					html += '<input type="hidden" name="vodProtocols" value="' + protocolId + '">';
 					html += '<input type="hidden" name="sourceOutBandwidths" value="' + exportBandwidth + '">';
 					html += '<input type="hidden" name="sourceStreamerUrls" value="' + vodStreamer + '">';
 					html += '<dd><em>服务域名</em>&nbsp;&nbsp;<strong>' + domain + '</strong></dd>';
-					html += '<dd><em>加速服务带宽</em>&nbsp;&nbsp;<strong>' + speedBandwidthText + '</strong></dd>';
 					html += '<dd><em>播放协议</em>&nbsp;&nbsp;<strong>' + protocolText + '</strong></dd>';
 					html += '<dd><em>源站出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
 					html += '<dd><em>源站Streamer公网地址</em>&nbsp;&nbsp;<strong>' + vodStreamer + '</strong></dd>';
@@ -127,7 +123,6 @@
 					html += '<div class="resources alert alert-block alert-info fade in">';
 					html += '<button data-dismiss="alert" class="close" type="button">×</button>';
 					html += '<input type="hidden" name="liveDomains" value="' + domain + '">';
-					html += '<input type="hidden" name="liveBandwidths" value="' + speedBandwidth + '">';
 					html += '<input type="hidden" name="liveProtocols" value="' + protocolId + '">';
 					html += '<input type="hidden" name="bandwidths" value="' + exportBandwidth + '">';
 					html += '<input type="hidden" name="channelNames" value="' + channelName + '">';
@@ -135,7 +130,6 @@
 					html += '<input type="hidden" name="streamOutModes" value="' + outputMode.val() + '">';
 					html += '<input type="hidden" name="encoderModes" value="' + encoderMode.val() + '">';
 					html += '<dd><em>服务域名</em>&nbsp;&nbsp;<strong>' + domain + '</strong></dd>';
-					html += '<dd><em>加速服务带宽</em>&nbsp;&nbsp;<strong>' + speedBandwidthText + '</strong></dd>';
 					html += '<dd><em>播放协议</em>&nbsp;&nbsp;<strong>' + protocolText + '</strong></dd>';
 					html += '<dd><em>源站出口带宽</em>&nbsp;&nbsp;<strong>' + exportBandwidth + '</strong></dd>';
 					html += '<dd><em>频道名称</em>&nbsp;&nbsp;<strong>' + channelName + '</strong></dd>';
@@ -260,6 +254,13 @@
 					</div>
 				</div>
 				
+				<div class="control-group">
+					<label class="control-label" for="bandwidth">加速服务带宽(M)</label>
+					<div class="controls">
+						<input type="text" id="bandwidth" name="bandwidth" class="required digits" maxlength="45" placeholder="...加速服务带宽">
+					</div>
+				</div>
+				
 				<div class="form-actions">
 					<input class="btn" type="button" value="返回" onClick="history.back()">
 					<input class="btn btn-primary nextStep" type="button" value="下一步">
@@ -279,15 +280,6 @@
 					<label class="control-label" for="domain">服务域名</label>
 					<div class="controls">
 						<input type="text" id="domain" name="domain" class="required" maxlength="45" placeholder="...服务域名">
-					</div>
-				</div>
-				
-				<div class="control-group">
-					<label class="control-label" for="speedBandwidth">加速服务带宽</label>
-					<div class="controls">
-						<select id="speedBandwidth" class="required">
-							<c:forEach var="map" items="${bandwidthMap}"><option value="${map.key }">${map.value }</option></c:forEach>
-						</select>
 					</div>
 				</div>
 				

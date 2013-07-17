@@ -147,21 +147,25 @@ public class EipService extends BaseSevcie {
 
 			// 判断关联类型,根据关联类型和关联ID获得对象后封装至NetworkEipItem.
 
-			networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i],
-					Integer.valueOf(linkIds[i]));
+			if (linkIds != null && linkIds.length > 0) {
+				networkEipItem = this.fillComputeOrElbToNetworkEipItem(networkEipItem, linkTypes[i], linkIds[i]);
+			}
 
 			this.saveOrUpdate(networkEipItem);
 
 			// EIP的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			if (sourcePorts != null && sourcePorts.length > 0) {
 
-			for (int j = 0; j < protocolArray.length; j++) {
-				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],
-						targetPortArray[j]);
-				this.saveOrUpdateEipPortItem(eipPortItem);
+				String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+
+				for (int j = 0; j < protocolArray.length; j++) {
+					EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocolArray[j], sourcePortArray[j],
+							targetPortArray[j]);
+					this.saveOrUpdateEipPortItem(eipPortItem);
+				}
 			}
 
 		}
@@ -191,7 +195,7 @@ public class EipService extends BaseSevcie {
 	 *            目标端口数组
 	 */
 	@Transactional(readOnly = false)
-	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, Integer linkId, String[] protocols,
+	public void updateEIPToApply(NetworkEipItem networkEipItem, String linkType, String linkId, String[] protocols,
 			String[] sourcePorts, String[] targetPorts) {
 
 		// Step.1
@@ -210,9 +214,11 @@ public class EipService extends BaseSevcie {
 
 		// ELB的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateEipPortItem(eipPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateEipPortItem(eipPortItem);
+			}
 		}
 
 	}
@@ -238,7 +244,7 @@ public class EipService extends BaseSevcie {
 	 *            变更说明
 	 */
 	@Transactional(readOnly = false)
-	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, Integer linkId,
+	public void saveResourcesByEip(Resources resources, Integer serviceTagId, String linkType, String linkId,
 			String[] protocols, String[] sourcePorts, String[] targetPorts,
 
 			String changeDescription) {
@@ -278,11 +284,13 @@ public class EipService extends BaseSevcie {
 
 		// EIP的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateEipPortItem(eipPortItem);
-		}
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				EipPortItem eipPortItem = new EipPortItem(networkEipItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateEipPortItem(eipPortItem);
+			}
 
+		}
 		// 更新resources
 
 		comm.resourcesService.saveOrUpdate(resources);
@@ -294,18 +302,26 @@ public class EipService extends BaseSevcie {
 	 * @return
 	 */
 	private NetworkEipItem fillComputeOrElbToNetworkEipItem(NetworkEipItem networkEipItem, String linkType,
-			Integer linkId) {
+			String linkId) {
 
 		if (NetworkConstant.LinkType.关联实例.toString().equals(linkType)) {
 
 			// 关联实例
-			networkEipItem.setComputeItem(comm.computeService.getComputeItem(linkId));
+			if (!"".equals(linkId)) {
+				networkEipItem.setComputeItem(comm.computeService.getComputeItem(Integer.valueOf(linkId)));
+			} else {
+				networkEipItem.setComputeItem(null);
+			}
 			networkEipItem.setNetworkElbItem(null);
 
-		} else {
+		} else if (NetworkConstant.LinkType.关联ELB.toString().equals(linkType) && !"".equals(linkId)) {
 
 			// 关联ELB
-			networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(linkId));
+			if (!"".equals(linkId)) {
+				networkEipItem.setNetworkElbItem(comm.elbService.getNetworkElbItem(Integer.valueOf(linkId)));
+			} else {
+				networkEipItem.setNetworkElbItem(null);
+			}
 			networkEipItem.setComputeItem(null);
 
 		}

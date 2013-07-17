@@ -68,24 +68,6 @@ public class Es3Service extends BaseSevcie {
 
 		for (int i = 0; i < storageTypes.length; i++) {
 
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-
-			// 单个存储空间挂载的实例ID数组,分割后得到类似 1-2-3- 的数组组合.
-
-			String[] computeIdArray = StringUtils.split(computeIds[i], ",");
-
-			for (int j = 0; j < computeIdArray.length; j++) {
-
-				// 通过"-"获得存储空间挂载的实例ID
-
-				String[] ids = StringUtils.split(computeIdArray[j], "-");
-
-				for (String computeId : ids) {
-					computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
-				}
-
-			}
-
 			StorageItem storageItem = new StorageItem();
 
 			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ES3.toInteger());
@@ -93,7 +75,24 @@ public class Es3Service extends BaseSevcie {
 			storageItem.setSpace(Integer.parseInt(spaces[i]));// 存储空间大小
 			storageItem.setApply(apply);
 			storageItem.setStorageType(Integer.parseInt(storageTypes[i]));
-			storageItem.setComputeItemList(computeItemList);
+
+			if (computeIds != null && computeIds.length > 0) {
+				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+
+				if (storageTypes.length == 1) {
+					for (String computeId : computeIds) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+				} else if (storageTypes.length > 1) {
+					// 通过"-"获得存储空间挂载的实例ID
+					String[] computeIdArray = StringUtils.split(computeIds[i], ",");
+					for (String computeId : computeIdArray) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+				}
+
+				storageItem.setComputeItemList(computeItemList);
+			}
 
 			this.saveOrUpdate(storageItem);
 		}
@@ -116,8 +115,10 @@ public class Es3Service extends BaseSevcie {
 	public void updateES3ToApply(StorageItem storageItem, Integer space, Integer storageType, String[] computeIds) {
 
 		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-		for (String computeId : computeIds) {
-			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+		if (computeIds != null) {
+			for (String computeId : computeIds) {
+				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+			}
 		}
 
 		storageItem.setSpace(space);
@@ -171,14 +172,14 @@ public class Es3Service extends BaseSevcie {
 
 		storageItem.setStorageType(storageType);
 		storageItem.setSpace(space);
-		if (computeIds != null) {
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
+		if (computeIds != null && computeIds.length > 0) {
 			for (int i = 0; i < computeIds.length; i++) {
 				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
 				computeItemList.add(computeItem);
 			}
-			storageItem.setComputeItemList(computeItemList);
 		}
+		storageItem.setComputeItemList(computeItemList);
 		// 更新storageItem
 
 		this.saveOrUpdate(storageItem);

@@ -56,8 +56,8 @@ public class ComputeController extends BaseController {
 	public String save(@PathVariable("computeType") Integer computeType,
 			@RequestParam(value = "applyId") Integer applyId, @RequestParam(value = "osTypes") String[] osTypes,
 			@RequestParam(value = "osBits") String[] osBits, @RequestParam(value = "serverTypes") String[] serverTypes,
-			@RequestParam(value = "remarks") String[] remarks, @RequestParam(value = "esgIds") String[] esgIds,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "remarks") String[] remarks,
+			@RequestParam(value = "esgIds", required = false) String[] esgIds, RedirectAttributes redirectAttributes) {
 
 		comm.computeService.saveComputeToApply(computeType, applyId, osTypes, osBits, serverTypes, remarks, esgIds);
 
@@ -97,7 +97,8 @@ public class ComputeController extends BaseController {
 	@RequestMapping(value = "/update/{id}/applyId", method = RequestMethod.POST)
 	public String update(@PathVariable("id") Integer id, @RequestParam("applyId") Integer applyId,
 			@RequestParam(value = "osType") Integer osType, @RequestParam(value = "osBit") Integer osBit,
-			@RequestParam(value = "serverType") Integer serverType, @RequestParam(value = "esgIds") String[] esgIds,
+			@RequestParam(value = "serverType") Integer serverType,
+			@RequestParam(value = "esgIds", required = false) String[] esgIds,
 			@RequestParam(value = "remark") String remark, RedirectAttributes redirectAttributes) {
 
 		ComputeItem computeItem = comm.computeService.updateComputeToApply(id, osType, osBit, serverType, esgIds,

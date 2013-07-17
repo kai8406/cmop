@@ -3,7 +3,6 @@
 
 <html>
 <head>
-
 	<title>服务申请</title>
 
 	<script>
@@ -18,55 +17,54 @@
 				if (e.which == 13) {return false;}
 			});
 			
+			//注意该变量是全局变量!!!
+			var computeHTML;
+			/* ajax获得computeList*/ 
+			$.ajax({
+				type: "GET",
+				url: "${ctx}/ajax/getComputeList",
+				dataType: "json",
+				success: function(data) {
+					for (var i = 0; i < data.length; i++) {
+						computeHTML += '<option value="' + data[i].id + '">' + data[i].identifier+'('+data[i].remark+ ' - '+ data[i].innerIp  +')' + '</option>';
+					}
+				}
+			});
+			
 			$("#addComputeBtn").click(function() {
+				
 				if (!$("#inputForm").valid()) {
 					return false;
 				}
+				
+				var space = $("#space").val();
+				var storageTypeText = $("#storageType>option:selected").text();
+				var storageType = $("#storageType").val();
+				
+				var html = '<div class="resources alert alert-block alert-info fade in">';
+				html += '<button type="button" class="close" data-dismiss="alert">×</button>';
+				html += '<input type="hidden" value="' + space + '" name="spaces">';
+				html += '<input type="hidden" value="' + storageType + '" name="storageTypes">';
+				html += '<input type="hidden" name="computeIds">';
+				html += '<dd><em>存储类型</em>&nbsp;&nbsp;<strong>' + storageTypeText + '</strong></dd>';
+				html += '<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>' + space + '</strong></dd>';
+				html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<select multiple class="multipleCompute">' + computeHTML + '</select></dd>';
+				html += '</div> ';
+				
+				  //插入HTML文本
+			    $("#resourcesDIV dl").append(html);
+				  
+			    $("select.multipleCompute").select2();
+			    
+			  //为每个select.multipleESG元素绑定一个事件:每次变更select中的值,最近的隐藏域值也改变.
+				$("select.multipleCompute").on("change",function(){
+					$(this).parent().parent().find("input[name='computeIds']").val($(this).val());
+				});
+			    
 			});
 			
 		});
 		
-		/*点击弹出窗口保存时,连同ES3的信息生成HTML代码插入页面.*/
-		$(document).on("click", "#ModalSave", function() {
-			
-			var html = "",
-				computeIds = "",
-				computeInfo = "";
-			
-			var $ModalDiv = $(this).parent().parent();
-			var $CheckedIds = $ModalDiv.find("tbody input:checked");
-			var storageType = $("#storageType").val();
-			var storageTypeText = $("#storageType>option:selected").text();
-			var space = $("#space").val();
-			
-			//遍历挂载Compute的Id和identifier.
-			$CheckedIds.each(function() {
-				var $this = $(this);
-				var $td = $this.closest("tr").find("td");
-				computeIds += $this.val() + "-";
-				computeInfo += "<br>" + $td.eq(1).text() + "(" + $td.eq(3).text() + "&nbsp;-&nbsp;" + $td.eq(4).text() + ")";
-			});
-			
-			//判断是否选中实例,拼装HTML文本
-			if ($CheckedIds.length > 0) {
-				html += '<div class="resources alert alert-block alert-info fade in">';
-				html += '<button type="button" class="close" data-dismiss="alert">×</button>';
-				html += '<input type="hidden" value="' + computeIds + '" name="computeIds">';
-				html += '<input type="hidden" value="' + space + '" name="spaces">';
-				html += '<input type="hidden" value="' + storageType + '" name="storageTypes">';
-				html += '<dd><em>存储类型</em>&nbsp;&nbsp;<strong>' + storageTypeText + '</strong></dd>';
-				html += '<dd><em>容量空间(GB)</em>&nbsp;&nbsp;<strong>' + space + '</strong></dd>';
-				html += '<dd><em>挂载实例</em>&nbsp;&nbsp;<strong>' + computeInfo + '</strong></dd>';
-				html += '</div> ';
-			}
-			
-		    //初始化
-		    $("input[type=checkbox]").removeAttr('checked');
-		    
-		    //插入HTML文本
-		    $("#resourcesDIV dl").append(html);
-			
-		}); 
 		 
 	</script>
 	
@@ -113,7 +111,7 @@
 			
 			<div class="control-group">
 				<div class="controls">
-					 <a id="addComputeBtn" class="btn" data-toggle="modal" href="#computeModal" >实例相关资源</a>
+					 <a id="addComputeBtn" class="btn btn-success">生成ES3</a>
 				</div>
 			</div>
 				
@@ -130,50 +128,6 @@
 		</fieldset>
 		
 	</form>
-	
-	<!-- 实例选择的Modal -->
-	<form id="modalForm" action="#" >
-		<div id="computeModal" class="modal container hide fade" tabindex="-1">
-	
-			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4>实例</h4></div>
-				
-			<div class="modal-body">
-				<div class="singlePage">
-				<table class="table table-striped table-bordered table-condensed">
-					<thead><tr>
-						<th><input type="checkbox"></th>
-						<th>实例标识符</th>
-						<th>基本信息(操作系统,位数,规格)</th>
-						<th>用途信息</th>
-						<th>IP地址</th>
-					</tr></thead>
-					<tbody id="resources-tbody">
-						<c:forEach var="item" items="${allComputes }">
-							<tr>
-								<td><input type="checkbox" value="${item.id }"></td>
-								<td>${item.identifier}</td>
-								<td><c:forEach var="map" items="${osTypeMap}"><c:if test="${item.osType == map.key}">${map.value}</c:if></c:forEach>&nbsp;&nbsp;&nbsp;
-									<c:forEach var="map" items="${osBitMap}"><c:if test="${item.osBit == map.key}">${map.value}</c:if></c:forEach>
-									<c:choose>
-										<c:when test="${item.computeType == 1}"><c:forEach var="map" items="${pcsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:when>
-										<c:otherwise><c:forEach var="map" items="${ecsServerTypeMap}"><c:if test="${item.serverType == map.key}">${map.value}</c:if></c:forEach></c:otherwise>
-									</c:choose>
-								</td>
-								<td>${item.remark }</td>
-								<td>${item.innerIp }</td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				</div>
-			</div>
-				
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-				<a id="ModalSave" href="#" class="btn btn-primary" data-dismiss="modal" >确定</a>
-			</div>
-		</div>
-	</form><!-- 实例规格选择的Modal End -->
 	
 </body>
 </html>

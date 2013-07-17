@@ -24,7 +24,6 @@ public class MdnLiveItem implements java.io.Serializable {
 	private Integer id;
 	private MdnItem mdnItem;
 	private String liveDomain;
-	private String liveBandwidth;
 	private String liveProtocol;
 	private Integer streamOutMode;
 	private String name;
@@ -43,11 +42,10 @@ public class MdnLiveItem implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, String name, String guid, String bandwidth) {
+	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveProtocol, Integer streamOutMode, String name,
+			String guid, String bandwidth) {
 		this.mdnItem = mdnItem;
 		this.liveDomain = liveDomain;
-		this.liveBandwidth = liveBandwidth;
 		this.liveProtocol = liveProtocol;
 		this.streamOutMode = streamOutMode;
 		this.name = name;
@@ -56,12 +54,11 @@ public class MdnLiveItem implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveBandwidth, String liveProtocol,
-			Integer streamOutMode, String name, String guid, String bandwidth, Integer encoderMode, String httpUrl,
-			String httpBitrate, String hlsUrl, String hlsBitrate) {
+	public MdnLiveItem(MdnItem mdnItem, String liveDomain, String liveProtocol, Integer streamOutMode, String name,
+			String guid, String bandwidth, Integer encoderMode, String httpUrl, String httpBitrate, String hlsUrl,
+			String hlsBitrate) {
 		this.mdnItem = mdnItem;
 		this.liveDomain = liveDomain;
-		this.liveBandwidth = liveBandwidth;
 		this.liveProtocol = liveProtocol;
 		this.streamOutMode = streamOutMode;
 		this.name = name;
@@ -103,15 +100,6 @@ public class MdnLiveItem implements java.io.Serializable {
 
 	public void setLiveDomain(String liveDomain) {
 		this.liveDomain = liveDomain;
-	}
-
-	@Column(name = "live_bandwidth", nullable = false, length = 45)
-	public String getLiveBandwidth() {
-		return this.liveBandwidth;
-	}
-
-	public void setLiveBandwidth(String liveBandwidth) {
-		this.liveBandwidth = liveBandwidth;
 	}
 
 	@Column(name = "live_protocol", nullable = false, length = 45)

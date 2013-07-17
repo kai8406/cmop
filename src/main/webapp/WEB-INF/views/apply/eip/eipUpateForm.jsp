@@ -68,11 +68,11 @@
 			<div class="control-group">
 				<div class="controls">
 					<label class="radio inline">
- 						<input type="radio" name="linkRadio" value="isCompute" class="required"
+ 						<input type="radio" name="linkRadio" value="isCompute" class=""
  						<c:if test="${not empty eip.computeItem }">checked="checked"</c:if>>关联实例
 					</label>
 					<label class="radio inline">
-	 					<input type="radio" name="linkRadio" value="isElb" class="required"
+	 					<input type="radio" name="linkRadio" value="isElb" class=""
 	 					<c:if test="${not empty eip.networkElbItem }">checked="checked"</c:if>>关联Elb
 					</label>
 				</div>
@@ -87,7 +87,8 @@
 						<c:otherwise>class="hidden"</c:otherwise>
 						</c:choose>
 					>
-						<select id="computeSelect" class="required">
+						<select id="computeSelect" class="">
+							<option></option>
 							<c:forEach var="item" items="${allComputes }">
 								<option value="${item.id }" <c:if test="${item.id == eip.computeItem.id  }">selected="selected"</c:if>			
 								 >${item.identifier}(${item.remark} - ${item.innerIp})</option>
@@ -101,7 +102,8 @@
 						<c:otherwise>class="hidden"</c:otherwise>
 						</c:choose>
 					>
-						<select id="elbSelect" class="required">
+						<select id="elbSelect" class="">
+							<option></option>	
 							<c:forEach var="item" items="${allElbs }">
 								<option value="${item.id }"  <c:if test="${item.id == eip.networkElbItem.id  }">selected="selected"</c:if>
 								>${item.identifier}(${item.virtualIp })&nbsp;【${item.mountComputes}】</option>
@@ -115,21 +117,39 @@
 			<table class="table table-bordered table-condensed"  >
 				<thead><tr><th>Protocol</th><th>SourcePort</th><th>TargetPort</th><th></th></tr></thead>
 				<tbody>
-					<c:forEach var="item" items="${eip.eipPortItems}">
-						<tr class="clone">
-							<td>
-								<select id="protocol" name="protocols" class="input-small required">
-									<c:forEach var="map" items="${protocolMap}">
-										<option value="${map.key }" <c:if test="${item.protocol == map.value }">selected="selected"</c:if>	
-										>${map.value }</option>
-									</c:forEach>
-								</select>
-							</td>
-							<td><input type="text" id="sourcePort" name="sourcePorts" value="${item.sourcePort }" class="input-small required" maxlength="45" placeholder="...SourcePort"></td>
-							<td><input type="text" id="targetPort" name="targetPorts" value="${item.targetPort }" class="input-small required" maxlength="45" placeholder="...TargetPort"></td>
-							<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
-						</tr>
-					</c:forEach>
+					<c:choose>
+						<c:when test="${empty eip.eipPortItems }">
+							<tr class="clone">
+								<td>
+									<select id="protocol" name="protocols" class="input-small">
+										<c:forEach var="map" items="${protocolMap}"><option value="${map.key }">${map.value }</option></c:forEach>
+									</select>
+								</td>
+								<td><input type="text" id="sourcePort" name="sourcePort" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+								<td><input type="text" id="targetPort" name="targetPort" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+								<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+							</tr>
+						
+						</c:when>
+						<c:otherwise>
+							<c:forEach var="item" items="${eip.eipPortItems}">
+								<tr class="clone">
+									<td>
+										<select id="protocol" name="protocols" class="input-small">
+											<c:forEach var="map" items="${protocolMap}">
+												<option value="${map.key }" <c:if test="${item.protocol == map.value }">selected="selected"</c:if>	
+												>${map.value }</option>
+											</c:forEach>
+										</select>
+									</td>
+									<td><input type="text" id="sourcePort" name="sourcePort" value="${item.sourcePort }" class="input-small " maxlength="45" placeholder="...SourcePort"></td>
+									<td><input type="text" id="targetPort" name="targetPort" value="${item.targetPort }" class="input-small " maxlength="45" placeholder="...TargetPort"></td>
+									<td><a class="btn clone">添加</a>&nbsp;<a class="btn clone disabled" >删除</a></td>
+								</tr>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				
 				</tbody>
 			</table>
 			

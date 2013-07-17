@@ -120,8 +120,6 @@ public class ElbService extends BaseSevcie {
 
 		Apply apply = comm.applyService.getApply(applyId);
 
-		logger.info("创建ELB的数量:" + keepSessions.length);
-
 		for (int i = 0; i < keepSessions.length; i++) {
 
 			String identifier = comm.applyService.generateIdentifier(ResourcesConstant.ServiceType.ELB.toInteger());
@@ -136,26 +134,46 @@ public class ElbService extends BaseSevcie {
 					: false);
 
 			// 关联实例
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-			String[] computeIdArray = StringUtils.split(computeIds[i], "-");
-			for (String computeId : computeIdArray) {
-				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
-			}
+			if (computeIds != null && computeIds.length > 0) {
+				List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 
-			networkElbItem.setComputeItemList(computeItemList);
+				// 解决select2框架中,多重数组的重复问题.
+				if (keepSessions.length == 1) {
+
+					// 通过"-"获得存储空间挂载的实例ID
+					for (String computeId : computeIds) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+
+				} else if (keepSessions.length > 1) {
+
+					// 通过"-"获得存储空间挂载的实例ID
+					String[] computeIdArray = StringUtils.split(computeIds[i], ",");
+					for (String computeId : computeIdArray) {
+						computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+					}
+
+				}
+
+				networkElbItem.setComputeItemList(computeItemList);
+
+			}
 
 			this.saveOrUpdate(networkElbItem);
 
 			// ELB的端口映射
 
-			String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
-			String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+			if (sourcePorts != null && sourcePorts.length > 0) {
 
-			for (int j = 0; j < protocolArray.length; j++) {
-				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
-						targetPortArray[j]);
-				this.saveOrUpdateElbPortItem(elbPortItem);
+				String[] protocolArray = StringUtils.split(protocols[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] sourcePortArray = StringUtils.split(sourcePorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+				String[] targetPortArray = StringUtils.split(targetPorts[i], NetworkConstant.SEPARATE_PORT_SYMBOL);
+
+				for (int j = 0; j < protocolArray.length; j++) {
+					ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocolArray[j], sourcePortArray[j],
+							targetPortArray[j]);
+					this.saveOrUpdateElbPortItem(elbPortItem);
+				}
 			}
 
 		}
@@ -192,18 +210,25 @@ public class ElbService extends BaseSevcie {
 
 		// Step.2 关联实例
 		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
-		for (String computeId : computeIds) {
-			computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+		if (computeIds != null) {
+
+			for (String computeId : computeIds) {
+				computeItemList.add(comm.computeService.getComputeItem(Integer.valueOf(computeId)));
+			}
 		}
+
 		networkElbItem.setComputeItemList(computeItemList);
 
 		this.saveOrUpdate(networkElbItem);
 
 		// Step.3 ELB的端口映射
 
-		for (int i = 0; i < protocols.length; i++) {
-			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateElbPortItem(elbPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateElbPortItem(elbPortItem);
+			}
 		}
 
 	}
@@ -262,22 +287,23 @@ public class ElbService extends BaseSevcie {
 		networkElbItem.setKeepSession(NetworkConstant.KeepSession.保持.toString().equals(keepSession) ? true : false);
 
 		// 关联实例
+		List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 		if (computeIds != null) {
-			List<ComputeItem> computeItemList = new ArrayList<ComputeItem>();
 			for (int i = 0; i < computeIds.length; i++) {
 				ComputeItem computeItem = comm.computeService.getComputeItem(Integer.valueOf(computeIds[i]));
 				computeItemList.add(computeItem);
 			}
-			networkElbItem.setComputeItemList(computeItemList);
 		}
+		networkElbItem.setComputeItemList(computeItemList);
 
 		this.saveOrUpdate(networkElbItem);
 
 		// ELB的端口映射
-
-		for (int i = 0; i < protocols.length; i++) {
-			ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
-			this.saveOrUpdateElbPortItem(elbPortItem);
+		if (sourcePorts != null && sourcePorts.length > 0) {
+			for (int i = 0; i < protocols.length; i++) {
+				ElbPortItem elbPortItem = new ElbPortItem(networkElbItem, protocols[i], sourcePorts[i], targetPorts[i]);
+				this.saveOrUpdateElbPortItem(elbPortItem);
+			}
 		}
 
 		// 更新resources

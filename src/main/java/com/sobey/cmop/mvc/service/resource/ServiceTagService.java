@@ -16,19 +16,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sobey.cmop.mvc.comm.BaseSevcie;
-import com.sobey.cmop.mvc.constant.AuditConstant;
+import com.sobey.cmop.mvc.constant.RedmineConstant;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.dao.ServiceTagDao;
 import com.sobey.cmop.mvc.entity.Apply;
-import com.sobey.cmop.mvc.entity.Audit;
-import com.sobey.cmop.mvc.entity.AuditFlow;
+import com.sobey.cmop.mvc.entity.RedmineIssue;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.User;
+import com.sobey.cmop.mvc.service.redmine.RedmineService;
 import com.sobey.framework.utils.DynamicSpecifications;
 import com.sobey.framework.utils.Identities;
 import com.sobey.framework.utils.SearchFilter;
 import com.sobey.framework.utils.SearchFilter.Operator;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Tracker;
 
 /**
  * 服务标签相关的管理类.
@@ -266,69 +269,80 @@ public class ServiceTagService extends BaseSevcie {
 
 		String message = "";
 
-		User user = serviceTag.getUser();
-
 		// 如果有上级领导存在,则发送邮件,否则返回字符串提醒用户没有上级领导存在.
 
 		List<Resources> resourcesList = comm.resourcesService.getCommitingResourcesListByServiceTagId(serviceTag
 				.getId());
 
-		if (user.getLeaderId() != null) {
+		try {
 
-			try {
+			serviceTag.setStatus(ResourcesConstant.Status.待审批.toInteger());
+			this.saveOrUpdate(serviceTag);
 
-				/* Step.1 获得第一个审批人和审批流程 */
+			message = "服务标签 " + serviceTag.getName() + " 提交审批成功";
 
-				User leader = comm.accountService.getUser(user.getLeaderId()); // 上级领导
+			String description = comm.redmineUtilService.resourcesRedmineDesc(serviceTag);
+			// 写入工单Issue到Redmine
 
-				Integer flowType = AuditConstant.FlowType.资源申请_变更的审批流程.toInteger();
-				AuditFlow auditFlow = comm.auditService.findAuditFlowByUserIdAndFlowType(leader.getId(), flowType);
+			Issue issue = new Issue();
 
-				logger.info("---> 审批人 auditFlow.getUser().getLoginName():" + auditFlow.getUser().getLoginName());
+			Integer trackerId = RedmineConstant.Tracker.支持.toInteger();
+			Tracker tracker = new Tracker(trackerId, RedmineConstant.Tracker.get(trackerId));
 
-				/* Step.3 更新ServiceTag状态和ServiceTag的审批流程. 将资源状态和服务标签状态同步 */
+			issue.setTracker(tracker);
+			issue.setSubject(comm.applyService.generateTitle(serviceTag.getUser().getLoginName(), "change"));
+			issue.setPriorityId(serviceTag.getPriority());
+			issue.setDescription(description);
 
-				serviceTag.setAuditFlow(auditFlow);
-				serviceTag.setStatus(ResourcesConstant.Status.待审批.toInteger());
-				this.saveOrUpdate(serviceTag);
+			Integer projectId = RedmineConstant.Project.SobeyCloud运营.toInteger();
+			// 初始化第一接收人
+			RedmineManager mgr = RedmineService.FIRST_REDMINE_ASSIGNEE_REDMINEMANAGER;
+
+			boolean isCreated = RedmineService.createIssue(issue, projectId.toString(), mgr);
+
+			logger.info("--->资源变更Resource Redmine isCreated?" + isCreated);
+
+			if (isCreated) { // 写入Redmine成功
+
+				Integer assignee = RedmineService.FIRST_REDMINE_ASSIGNEE;
+
+				issue = RedmineService.getIssueBySubject(issue.getSubject(), mgr);
+
+				RedmineIssue redmineIssue = new RedmineIssue();
+
+				redmineIssue.setProjectId(projectId);
+				redmineIssue.setTrackerId(issue.getTracker().getId());
+				redmineIssue.setSubject(issue.getSubject());
+				redmineIssue.setAssignee(assignee);
+				redmineIssue.setStatus(RedmineConstant.Status.新建.toInteger());
+				redmineIssue.setIssueId(issue.getId());
+				redmineIssue.setServiceTagId(serviceTag.getId());
+
+				comm.operateService.saveOrUpdate(redmineIssue);
+
+				// 指派人的User
+
+				User assigneeUser = comm.accountService.findUserByRedmineUserId(assignee);
+
+				// 发送工单处理邮件
+
+				comm.templateMailService.sendResourcesOperateNotificationMail(serviceTag, assigneeUser);
 
 				for (Resources resources : resourcesList) {
-
-					resources.setStatus(ResourcesConstant.Status.待审批.toInteger());
+					// 写入redmine成功后,资源状态也随之改变为 4.已审批
+					resources.setStatus(ResourcesConstant.Status.已审批.toInteger());
 					comm.resourcesService.saveOrUpdate(resources);
-
 				}
 
-				message = "服务标签 " + serviceTag.getName() + " 提交审批成功";
-
-				logger.info("--->资源变更邮件发送成功...");
-
-				/* Step.4 初始化所有老审批记录. */
-				comm.auditService.initAuditStatus(serviceTag);
-
-				/* Step.5 插入一条下级审批人所用到的audit. */
-				Audit audit = comm.auditService.saveSubAudit(user.getId(), serviceTag);
-
-				/* Step.6 将变更详情拷贝一份,用于审批记录页面查看和历史记录. */
-				comm.changeHistoryService.copyHistory(resourcesList, audit);
-
-				/* Step.2 根据资源拼装邮件内容并发送到第一个审批人的邮箱. */
-
-				logger.info("--->拼装邮件内容...");
-
-				comm.templateMailService.sendResourcesNotificationMail(serviceTag, auditFlow, audit);
-
-			} catch (Exception e) {
-
-				message = "服务变更提交审批失败";
-
-				e.printStackTrace();
+			} else {
+				message = "工单创建失败,请联系系统管理员";
 			}
 
-		} else {
+		} catch (Exception e) {
 
-			message = "你没有直属领导,请联系管理员添加";
+			message = "工单创建失败,请联系系统管理员";
 
+			e.printStackTrace();
 		}
 
 		return message;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
 import com.sobey.cmop.mvc.comm.BaseController;
+import com.sobey.cmop.mvc.entity.ComputeItem;
 import com.sobey.cmop.mvc.entity.IpPool;
 import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.ServerModel;
@@ -181,6 +182,17 @@ public class AjaxController extends BaseController {
 	@ResponseBody
 	public List<NetworkEsgItem> getEsgList() {
 		return comm.esgService.getESGList();
+	}
+
+	/**
+	 * 获得当前用户创建的所有compute.
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "getComputeList")
+	@ResponseBody
+	public List<ComputeItem> getComputeList() {
+		return comm.computeService.getComputeListByUserId(getCurrentUserId());
 	}
 
 	/**

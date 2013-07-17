@@ -254,6 +254,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 		json.setIdentifier(mdnItem.getIdentifier());
 		json.setCoverArea(mdnItem.getCoverArea());
 		json.setCoverIsp(comm.mdnService.wrapStringByMDNCoverIsp(mdnItem.getCoverIsp()));
+		json.setBandwidth(mdnItem.getBandwidth());
 
 		if (!mdnItem.getMdnLiveItems().isEmpty()) {
 
@@ -265,9 +266,7 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 
 				mdnLiveJson.setId(mdnLiveItem.getId());
 				mdnLiveJson.setLiveDomain(mdnLiveItem.getLiveDomain());
-				mdnLiveJson.setLiveBandwidth(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnLiveItem.getLiveBandwidth()));
 				mdnLiveJson.setLiveProtocol(mdnLiveItem.getLiveProtocol());
-				mdnLiveJson.setStreamOutMode(MdnConstant.OutputMode.get(mdnLiveItem.getStreamOutMode()));
 				mdnLiveJson.setName(mdnLiveItem.getName());
 				mdnLiveJson.setGuid(mdnLiveItem.getGuid());
 				mdnLiveJson.setBandwidth(mdnLiveItem.getBandwidth());
@@ -296,7 +295,6 @@ public class ResourcesJsonServiceImp extends BaseSevcie implements IResourcesJso
 				mdnVodJson.setId(mdnVodItem.getId());
 				mdnVodJson.setVodDomain(mdnVodItem.getVodDomain());
 				mdnVodJson.setVodProtocol(mdnVodItem.getVodProtocol());
-				mdnVodJson.setVodBandwidth(MdnConstant.BANDWIDTH_MAP_STRING_KEY.get(mdnVodItem.getVodBandwidth()));
 				mdnVodJson.setSourceStreamerUrl(mdnVodItem.getSourceStreamerUrl());
 				mdnVodJson.setSourceOutBandwidth(mdnVodItem.getSourceOutBandwidth());
 

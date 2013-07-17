@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,7 +89,7 @@ public class FailureController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@RequestParam("resourcesId") String resourcesId,
+	public String save(@RequestParam(value = "resourcesId", required = false, defaultValue = "") String resourcesId,
 			@RequestParam(value = "fileName", required = false) String fileNames,
 			@RequestParam(value = "fileDesc", required = false) String fileDescs, Failure failure,
 			RedirectAttributes redirectAttributes) {
@@ -140,10 +141,12 @@ public class FailureController extends BaseController {
 		List<MdnItem> mdnItems = new ArrayList<MdnItem>();
 		List<CpItem> cpItems = new ArrayList<CpItem>();
 
-		String[] resourcesIds = failure.getRelatedId().split(",");
-		for (String resourcesId : resourcesIds) {
-			Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
-			resourcesList.add(resources);
+		if (StringUtils.isNotBlank(failure.getRelatedId())) {
+			String[] resourcesIds = failure.getRelatedId().split(",");
+			for (String resourcesId : resourcesIds) {
+				Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
+				resourcesList.add(resources);
+			}
 		}
 
 		/* 封装各个资源对象 */

@@ -152,6 +152,7 @@ public class OperateController extends BaseController {
 				}
 
 				model.addAttribute("internetIpPool", ipPools);
+
 			}
 
 			if (!networkElbList.isEmpty()) {

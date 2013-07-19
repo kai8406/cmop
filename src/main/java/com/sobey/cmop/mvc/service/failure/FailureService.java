@@ -104,8 +104,6 @@ public class FailureService extends BaseSevcie {
 
 		try {
 
-			String description = "";
-
 			List<Resources> resourcesList = new ArrayList<Resources>();
 			List<ComputeItem> computeItems = new ArrayList<ComputeItem>();
 			List<StorageItem> storageItems = new ArrayList<StorageItem>();
@@ -120,26 +118,25 @@ public class FailureService extends BaseSevcie {
 			List<CpItem> cpItems = new ArrayList<CpItem>();
 
 			if (StringUtils.isNotBlank(failure.getRelatedId())) {
-
 				String[] resourcesIds = failure.getRelatedId().split(",");
 				for (String resourcesId : resourcesIds) {
 					Resources resources = comm.resourcesService.getResources(Integer.valueOf(resourcesId));
 					resourcesList.add(resources);
 				}
-
-				/* 封装各个资源对象 */
-
-				comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems,
-						elbItems, eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
-
-				logger.info("--->拼装邮件内容...");
-
-				// 拼装Redmine内容
-
-				description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems, storageItems,
-						elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes, monitorElbs,
-						mdnItems, cpItems);
 			}
+
+			/* 封装各个资源对象 */
+
+			comm.resourcesService.wrapBasicUntilListByResources(resourcesList, computeItems, storageItems, elbItems,
+					eipItems, dnsItems, monitorComputes, monitorElbs, mdnItems, cpItems);
+
+			logger.info("--->拼装邮件内容...");
+
+			// 拼装Redmine内容
+
+			String description = comm.redmineUtilService.failureResourcesRedmineDesc(failure, computeItems,
+					storageItems, elbItems, eipItems, dnsItems, monitorMails, monitorPhones, monitorComputes,
+					monitorElbs, mdnItems, cpItems);
 
 			Issue issue = new Issue();
 

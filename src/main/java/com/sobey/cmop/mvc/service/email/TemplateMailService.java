@@ -498,10 +498,10 @@ public class TemplateMailService extends BaseSevcie {
 			helper.setFrom(sendFrom);
 
 			// TODO 测试环境使用.
-			// helper.setTo(sendToTest);
+			helper.setTo(sendToTest);
 
 			// TODO 生产环境使用.
-			helper.setTo(sendTo);
+			// helper.setTo(sendTo);
 
 			helper.setSubject(sendSubject);
 			helper.setText(content, true);

@@ -427,9 +427,12 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 获得ECS的价格
 	 * 
-	 * @param serverType 规格
-	 * @param workTime 申请时间(月)
-	 * @param number 数量
+	 * @param serverType
+	 *            规格
+	 * @param workTime
+	 *            申请时间(月)
+	 * @param number
+	 *            数量
 	 * @return 价格
 	 */
 	public Double computeCost(ComputeConstant.ECSServerType serverType, double workTime, int number) {
@@ -461,9 +464,12 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 获得es3的价格
 	 * 
-	 * @param storageType 规格
-	 * @param workTime 申请时间(月)
-	 * @param number 数量
+	 * @param storageType
+	 *            规格
+	 * @param workTime
+	 *            申请时间(月)
+	 * @param number
+	 *            数量
 	 * @return
 	 */
 	public Double es3Cost(StorageConstant.StorageType storageType, double workTime, double space) {
@@ -482,8 +488,10 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 获得elb的价格
 	 * 
-	 * @param workTime 申请时间(月)
-	 * @param number 数量
+	 * @param workTime
+	 *            申请时间(月)
+	 * @param number
+	 *            数量
 	 * @return
 	 */
 	public Double elbCost(double workTime, int number) {
@@ -505,9 +513,12 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 获得elb的价格
 	 * 
-	 * @param type 规格
-	 * @param workTime 申请时间(月)
-	 * @param number 数量
+	 * @param type
+	 *            规格
+	 * @param workTime
+	 *            申请时间(月)
+	 * @param number
+	 *            数量
 	 * @return
 	 */
 	public Double eipCost(NetworkConstant.ISPType type, double workTime, int number) {
@@ -555,9 +566,12 @@ public class CostService extends BaseSevcie {
 	/**
 	 * 获得elb的价格
 	 * 
-	 * @param type 规格
-	 * @param workTime 申请时间(月)
-	 * @param number 数量
+	 * @param type
+	 *            规格
+	 * @param workTime
+	 *            申请时间(月)
+	 * @param number
+	 *            数量
 	 * @return
 	 */
 	public Double dnsCost(double workTime, int number) {

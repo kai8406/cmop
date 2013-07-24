@@ -101,8 +101,7 @@ public class Collections3 {
 	}
 
 	/**
-	 * 转换Collection所有元素(通过toString())为String,
-	 * 每个元素的前面加入prefix，后面加入postfix，如<div>mymessage</div>。
+	 * 转换Collection所有元素(通过toString())为String, 每个元素的前面加入prefix，后面加入postfix，如<div>mymessage</div>。
 	 */
 	@SuppressWarnings("rawtypes")
 	public static String convertToString(final Collection collection, final String prefix, final String postfix) {

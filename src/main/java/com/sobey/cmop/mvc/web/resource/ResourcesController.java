@@ -55,8 +55,7 @@ public class ResourcesController extends BaseController {
 		/**
 		 * 返回不同服务类型的资源统计.页面参数为:服务类型名+COUNT. eg: PCSCOUNT,ECSCOUNT.
 		 * 
-		 * 服务类型注意是从ResourcesConstant.ServiceType中迭代出来的. 所以枚举中修改了名称的话,
-		 * 页面的参数名和链接后的查询参数也需要修改.
+		 * 服务类型注意是从ResourcesConstant.ServiceType中迭代出来的. 所以枚举中修改了名称的话, 页面的参数名和链接后的查询参数也需要修改.
 		 */
 		for (Entry<Integer, String> entry : ResourcesConstant.ServiceType.map.entrySet()) {
 

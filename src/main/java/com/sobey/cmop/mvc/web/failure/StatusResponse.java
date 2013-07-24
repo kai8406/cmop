@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A POJO containing the status of an action and a {@link List} of messages.
- * This is mainly used as a DTO for the presentation layer
+ * A POJO containing the status of an action and a {@link List} of messages. This is mainly used as a DTO for the
+ * presentation layer
  */
 public class StatusResponse {
 

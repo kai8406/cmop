@@ -152,8 +152,7 @@ public class ApplyAuditController extends BaseController {
 	/**
 	 * 获得指定apply当前审批记录
 	 * 
-	 * 根据applyId,auditFlow获得状态为"待审批"的audit.
-	 * 此audit为申请人或上级审批人进行操作时,插入下级审批人的audit中的临时数据.
+	 * 根据applyId,auditFlow获得状态为"待审批"的audit. 此audit为申请人或上级审批人进行操作时,插入下级审批人的audit中的临时数据.
 	 * 
 	 * @param userId
 	 *            审批人Id

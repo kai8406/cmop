@@ -71,8 +71,7 @@ public class RedmineUtilService extends BaseSevcie {
 	private static final String RARR = BLANK + "→" + BLANK;
 
 	/**
-	 * 因为oneCMDB中的update方法,没有更改复杂对象的功能.
-	 * 故只能通过redmine显示的方法通知管理人员手动修改变更对象在oneCMDB中的数据.
+	 * 因为oneCMDB中的update方法,没有更改复杂对象的功能. 故只能通过redmine显示的方法通知管理人员手动修改变更对象在oneCMDB中的数据.
 	 */
 	private static final String CHANGE_ONECMDB_NOTIFICATION = "(提交后,请按工单手动修改oneCMDB中的数据)";
 

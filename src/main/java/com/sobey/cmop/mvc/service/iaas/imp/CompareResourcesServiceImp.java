@@ -170,8 +170,7 @@ public class CompareResourcesServiceImp extends BaseSevcie implements ICompareRe
 			String[] applicationVersions, String[] applicationDeployPaths) {
 
 		/**
-		 * 现在需求是:不管变更了哪些属性.PCS & ECS的 关联ESG, ES3的 挂载实例, ELB的 关联实例
-		 * 有变更.EIP的关联实例&关联ELB
+		 * 现在需求是:不管变更了哪些属性.PCS & ECS的 关联ESG, ES3的 挂载实例, ELB的 关联实例 有变更.EIP的关联实例&关联ELB
 		 * 
 		 * 1.设置一个boolean类型的flag.用于检测关联ESG是否修改.
 		 * 

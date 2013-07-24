@@ -81,26 +81,19 @@ public class ImportService extends BaseSevcie {
 			logger.info("--->共计宿主机数：" + hostServerList.size() + "，虚拟机数：" + ecsCount);
 
 			/**
-			 * logger.info("--->保存已使用物理机信息..."); Map serverMap2 =
-			 * OneCmdbUitl.findCiByText("Server"); // Alias-DisplayName Map
-			 * serverPortMap = OneCmdbUitl.findServerPortCi("ServerPort",
-			 * "Location", "Hardware"); Iterator iterator = (Iterator)
-			 * serverPortMap.keySet().iterator(); String key = ""; ServerBean
-			 * serverInfo = null; hostServerList = new ArrayList<HostServer>();
-			 * while (iterator.hasNext()) { key = (String) iterator.next();
-			 * serverInfo = (ServerBean) serverPortMap.get(key);
-			 * serverInfo.setDisplayName((String)
+			 * logger.info("--->保存已使用物理机信息..."); Map serverMap2 = OneCmdbUitl.findCiByText("Server"); //
+			 * Alias-DisplayName Map serverPortMap = OneCmdbUitl.findServerPortCi("ServerPort", "Location", "Hardware");
+			 * Iterator iterator = (Iterator) serverPortMap.keySet().iterator(); String key = ""; ServerBean serverInfo
+			 * = null; hostServerList = new ArrayList<HostServer>(); while (iterator.hasNext()) { key = (String)
+			 * iterator.next(); serverInfo = (ServerBean) serverPortMap.get(key); serverInfo.setDisplayName((String)
 			 * serverMap2.get(serverInfo.getHardware()));
 			 * 
 			 * hostServer = saveHostServer(hostServerList, serverInfo, 2);
 			 * 
 			 * // 更新IP池关联的HostServer if (hostServer != null) { //
-			 * logger.info("--->HostServer.hostIp:"+serverInfo.getHostIp());
-			 * IpPool ipPool =
-			 * ipPoolManager.findIpPoolByIpAddress(serverInfo.getHostIp());
-			 * ipPool.setHostServer(hostServer);
-			 * ipPoolManager.saveIpPool(ipPool); } }
-			 * updateHostServer(hostServerList, serverMap);
+			 * logger.info("--->HostServer.hostIp:"+serverInfo.getHostIp()); IpPool ipPool =
+			 * ipPoolManager.findIpPoolByIpAddress(serverInfo.getHostIp()); ipPool.setHostServer(hostServer);
+			 * ipPoolManager.saveIpPool(ipPool); } } updateHostServer(hostServerList, serverMap);
 			 * logger.info("--->共计Server数：" + hostServerList.size());
 			 **/
 			logger.info("--->基础数据导入处理成功！耗时：" + (System.currentTimeMillis() - start) / 1000 + "s");

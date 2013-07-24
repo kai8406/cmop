@@ -171,8 +171,7 @@ public class OperateService extends BaseSevcie {
 				redmineIssue.setAssignee(issue.getAssignee().getId());
 
 				/*
-				 * Step.2 根据RedmineIssue对象中的applyId, serviceTagId,
-				 * recycleId进行不同的逻辑操作
+				 * Step.2 根据RedmineIssue对象中的applyId, serviceTagId, recycleId进行不同的逻辑操作
 				 */
 
 				Integer applyId = redmineIssue.getApplyId();

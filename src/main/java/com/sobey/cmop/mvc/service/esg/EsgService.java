@@ -183,8 +183,7 @@ public class EsgService extends BaseSevcie {
 	}
 
 	/**
-	 * 如果权限角色是 1.管理员 <b>admin</b> 创建的ESG,设置ESG中share为true.
-	 * 其它权限角色创建的ESG中的share为false.
+	 * 如果权限角色是 1.管理员 <b>admin</b> 创建的ESG,设置ESG中share为true. 其它权限角色创建的ESG中的share为false.
 	 * 
 	 * share为true 的ESG为公共可用的ESG.不为true的为当前用户可见的.
 	 * 

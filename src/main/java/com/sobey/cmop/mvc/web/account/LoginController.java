@@ -29,8 +29,7 @@ public class LoginController extends BaseController {
 	/**
 	 * 登录出错跳转页面.
 	 * 
-	 * (登录成功将不会走此方法,而是通过Filter判断是否登录成功. 具体配置可以通过applicationContext-shiro.xml
-	 * 文件中的"successUrl"参数指定)
+	 * (登录成功将不会走此方法,而是通过Filter判断是否登录成功. 具体配置可以通过applicationContext-shiro.xml 文件中的"successUrl"参数指定)
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String loginFail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
@@ -65,7 +66,6 @@ public class SummaryController extends BaseController {
 		Resources resources = comm.resourcesService.getResources(id);
 
 		model.addAttribute("resources", resources);
-
 		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
 
 		String detailUrl = null;
@@ -137,6 +137,106 @@ public class SummaryController extends BaseController {
 		}
 
 		return detailUrl;
+	}
+
+	/**
+	 * 跳转到迁移页面
+	 */
+	@RequestMapping(value = "/migrate/{id}", method = RequestMethod.GET)
+	public String migrate(@PathVariable("id") Integer id, Model model) {
+
+		Resources resources = comm.resourcesService.getResources(id);
+
+		model.addAttribute("resources", resources);
+		model.addAttribute("migrate", "migrate");
+		model.addAttribute("change", comm.changeServcie.findChangeByResourcesId(id));
+		model.addAttribute("users", comm.accountService.getUsers());
+
+		String detailUrl = null;
+		Integer serviceId = resources.getServiceId();
+
+		// 服务类型
+
+		Integer serviceType = resources.getServiceType();
+
+		if (serviceType.equals(ResourcesConstant.ServiceType.PCS.toInteger())
+				|| serviceType.equals(ResourcesConstant.ServiceType.ECS.toInteger())) {
+
+			model.addAttribute("compute", comm.computeService.getComputeItem(serviceId));
+
+			detailUrl = "resource/detail/computeDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ES3.toInteger())) {
+
+			model.addAttribute("storage", comm.es3Service.getStorageItem(serviceId));
+
+			detailUrl = "resource/detail/storageDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.ELB.toInteger())) {
+
+			model.addAttribute("elb", comm.elbService.getNetworkElbItem(serviceId));
+
+			detailUrl = "resource/detail/elbDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.EIP.toInteger())) {
+
+			model.addAttribute("eip", comm.eipService.getNetworkEipItem(serviceId));
+
+			detailUrl = "resource/detail/eipDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.DNS.toInteger())) {
+
+			model.addAttribute("dns", comm.dnsService.getNetworkDnsItem(serviceId));
+
+			detailUrl = "resource/detail/dnsDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_COMPUTE.toInteger())) {
+
+			model.addAttribute("monitorCompute", comm.monitorComputeServcie.getMonitorCompute(serviceId));
+
+			detailUrl = "resource/detail/monitorComputeDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MONITOR_ELB.toInteger())) {
+
+			model.addAttribute("monitorElb", comm.monitorElbServcie.getMonitorElb(serviceId));
+
+			detailUrl = "resource/detail/monitorElbDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.MDN.toInteger())) {
+
+			model.addAttribute("mdn", comm.mdnService.getMdnItem(serviceId));
+
+			detailUrl = "resource/detail/mdnDetail";
+
+		} else if (serviceType.equals(ResourcesConstant.ServiceType.CP.toInteger())) {
+
+			model.addAttribute("cp", comm.cpService.getCpItem(serviceId));
+
+			detailUrl = "resource/detail/cpDetail";
+
+		} else {
+
+			detailUrl = "resource/resourceList";
+		}
+
+		return detailUrl;
+	}
+
+	/**
+	 * 迁移
+	 * 
+	 * @param redirectAttributes
+	 * @param userId
+	 * @param resourceId
+	 * @return
+	 */
+	@RequestMapping(value = "/migrate", method = RequestMethod.POST)
+	public String migrateForm(RedirectAttributes redirectAttributes, @RequestParam(value = "userId") Integer userId,
+			@RequestParam(value = "resourceId") Integer resourceId) {
+		Resources resources = comm.resourcesService.getResources(resourceId);
+		resources.setUser(comm.accountService.getUser(userId));
+		comm.resourcesService.saveOrUpdate(resources);
+		return "redirect:/summary/migrate/" + resourceId;
 	}
 
 }

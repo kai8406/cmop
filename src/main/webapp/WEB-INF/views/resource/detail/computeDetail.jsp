@@ -20,7 +20,9 @@
 	
 	<style>body{background-color: #f5f5f5;}</style>
 
-	<form id="inputForm" action="#" method="post" class="form-horizontal input-form">
+	<form id="inputForm" action="${ctx}/summary/migrate" method="post" class="form-horizontal input-form">
+	
+		<input type="hidden" name="resourceId" value="${resources.id }">
 		
 		<fieldset>
 			<legend><small>资源详情</small></legend>
@@ -146,8 +148,24 @@
 				</div>
 			</div>
 			
+			<c:if test="${not empty migrate }">
+				<div class="control-group">
+					<label class="control-label" for="userId">资源所属人</label>
+					<div class="controls">
+						<select name="userId">
+							<c:forEach var="item" items="${users }">
+								<option value="${item.id }" 
+									<c:if test="${item.id == resources.user.id }">selected="selected"</c:if>	
+								>${item.name }</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+			</c:if>
+			
 			<div class="form-actions">
 				<input class="btn" type="button" value="返回" onclick="history.back()">
+				<c:if test="${not empty migrate }"><input class="btn btn-primary" type="submit" value="提交"></c:if>
 			</div>
 		
 		</fieldset>

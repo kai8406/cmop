@@ -148,6 +148,7 @@
 				<th>状态</th>
 				<th>申请时间</th>
 				<th>申请人</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -204,6 +205,11 @@
 					</td>
 					<td><fmt:formatDate value="${item.createTime}" pattern="yyyy年MM月dd日  HH时mm分ss秒" /></td>
 					<td>${item.user.name}</td>
+					<td>
+						<c:if test="${item.status == -1 || item.status == 0 || item.status == 3 || item.status == 6}">
+							<a href="migrate/${item.id}">迁移</a>
+						</c:if>
+					</td>
 				</tr>
 			</c:forEach>
 		</tbody>

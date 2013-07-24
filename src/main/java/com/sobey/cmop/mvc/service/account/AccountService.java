@@ -207,6 +207,15 @@ public class AccountService extends BaseSevcie {
 	}
 
 	/**
+	 * 获得所有的用户列表
+	 * 
+	 * @return
+	 */
+	public List<User> getUsers() {
+		return (List<User>) userDao.findAll();
+	}
+
+	/**
 	 * 初始化所有User的密码和LoginName, 将老系统的邮箱@前的字符串设置为新的loginName.
 	 */
 	@Transactional(readOnly = false)

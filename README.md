@@ -11,4 +11,7 @@
 
 
 
-mvn install:install-file -Dfile=E:\xfire-all-1.2.6.jar -DgroupId=com.sobey.cmop -DartifactId=xfire-all -Dversion=1.2.6 -Dpackaging=jar
+mvn install:install-file -Dfile=D:\xfire-all-1.2.6.jar -DgroupId=com.sobey.cmop -DartifactId=xfire-all -Dversion=1.2.6 -Dpackaging=jar
+mvn install:install-file -Dfile=D:\onecmdb-core-2.1.0.jar -DgroupId=org.onecmdb -DartifactId=onecmdb-core -Dversion=2.1.0 -Dpackaging=jar
+mvn install:install-file -Dfile=D:\fonts-1.jar -DgroupId=com.sobey.cmop -DartifactId=fonts -Dversion=1 -Dpackaging=jar
+mvn install:install-file -Dfile=D:\vmware-5.1.0.jar -DgroupId=com.vmware -DartifactId=vmware -Dversion=5.1.0 -Dpackaging=jar

@@ -246,7 +246,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 	private void saveESGChangeText(String fieldName, StringBuilder content, ChangeItem changeItem) {
 		String[] ids = StringUtils.split(changeItem.getNewValue(), ",");
-		List<NetworkEsgItem> networkEsgItems = new ArrayList<>();
+		List<NetworkEsgItem> networkEsgItems = new ArrayList<NetworkEsgItem>();
 		for (String id : ids) {
 			networkEsgItems.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(id)));
 		}

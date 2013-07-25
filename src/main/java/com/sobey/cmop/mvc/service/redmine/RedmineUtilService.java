@@ -340,7 +340,8 @@ public class RedmineUtilService extends BaseSevcie {
 
 									} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-										this.saveESGChangeText(fieldName, content, changeItem);
+										this.saveESGChangeText(fieldName + CHANGE_ONECMDB_NOTIFICATION, content,
+												changeItem);
 
 									} else {
 

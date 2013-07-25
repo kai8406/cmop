@@ -183,7 +183,43 @@ public class ServiceTagService extends BaseSevcie {
 		}
 
 		return serviceTag;
+	}
 
+	/**
+	 * 迁移时,通过资源的服务标签名判断迁移目标用户是否有该服务标签. 如果有,直接返回查询出来的服务标签.如果没有,在目标用户下创建新的服务标签.
+	 * 
+	 * @param resources
+	 * @param user
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public ServiceTag saveServiceTag(Resources resources, User user) {
+
+		ServiceTag serviceTag = comm.serviceTagService.findServiceTagByNameAndUserId(resources.getServiceTag()
+				.getName(), user.getId());
+
+		if (serviceTag == null) {
+
+			serviceTag = new ServiceTag();
+
+			serviceTag.setIdentifier(TAG_IDENTIFIER + "-" + Identities.randomBase62(8));
+			serviceTag.setUser(user);
+			serviceTag.setName(resources.getServiceTag().getName());
+			serviceTag.setPriority(resources.getServiceTag().getPriority());
+			serviceTag.setDescription(resources.getServiceTag().getDescription());
+			serviceTag.setServiceStart(resources.getServiceTag().getServiceStart());
+			serviceTag.setServiceEnd(resources.getServiceTag().getServiceEnd());
+			serviceTag.setCreateTime(new Date());
+			serviceTag.setStatus(ResourcesConstant.Status.未变更.toInteger());
+
+			this.saveOrUpdate(serviceTag);
+
+			// 插入oneCMDB
+			comm.oneCmdbUtilService.saveServiceTagToOneCMDB(serviceTag);
+
+		}
+
+		return serviceTag;
 	}
 
 	/**

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sobey.cmop.mvc.comm.BaseController;
 import com.sobey.cmop.mvc.constant.ResourcesConstant;
 import com.sobey.cmop.mvc.entity.Resources;
+import com.sobey.cmop.mvc.entity.User;
 import com.sobey.framework.utils.Servlets;
 
 /**
@@ -234,7 +235,9 @@ public class SummaryController extends BaseController {
 	public String migrateForm(RedirectAttributes redirectAttributes, @RequestParam(value = "userId") Integer userId,
 			@RequestParam(value = "resourceId") Integer resourceId) {
 		Resources resources = comm.resourcesService.getResources(resourceId);
-		resources.setUser(comm.accountService.getUser(userId));
+		User user = comm.accountService.getUser(userId);
+		resources.setServiceTag(comm.serviceTagService.saveServiceTag(resources, user));
+		resources.setUser(user);
 		comm.resourcesService.saveOrUpdate(resources);
 		return "redirect:/summary/migrate/" + resourceId;
 	}

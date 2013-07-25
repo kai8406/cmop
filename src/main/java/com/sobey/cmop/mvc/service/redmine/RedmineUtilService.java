@@ -3,6 +3,7 @@ package com.sobey.cmop.mvc.service.redmine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import com.sobey.cmop.mvc.entity.MonitorPhone;
 import com.sobey.cmop.mvc.entity.NetworkDnsItem;
 import com.sobey.cmop.mvc.entity.NetworkEipItem;
 import com.sobey.cmop.mvc.entity.NetworkElbItem;
+import com.sobey.cmop.mvc.entity.NetworkEsgItem;
 import com.sobey.cmop.mvc.entity.Resources;
 import com.sobey.cmop.mvc.entity.ServiceTag;
 import com.sobey.cmop.mvc.entity.StorageItem;
@@ -242,6 +244,18 @@ public class RedmineUtilService extends BaseSevcie {
 				.append(changeItem.getNewString()).append(NEWLINE);
 	}
 
+	private void saveESGChangeText(String fieldName, StringBuilder content, ChangeItem changeItem) {
+		String[] ids = StringUtils.split(changeItem.getNewValue(), ",");
+		List<NetworkEsgItem> networkEsgItems = new ArrayList<>();
+		for (String id : ids) {
+			networkEsgItems.add(comm.esgService.getNetworkEsgItem(Integer.valueOf(id)));
+		}
+
+		content.append(fieldName + ":" + BLANK).append(changeItem.getOldString()).append(RARR)
+				.append(ComputeItem.extractDetailToString(networkEsgItems)).append(NEWLINE);
+
+	}
+
 	/**
 	 * 将变更前和变更后的值拼装成StringBuilder content(包括换行)
 	 * 
@@ -326,8 +340,7 @@ public class RedmineUtilService extends BaseSevcie {
 
 									} else if (FieldNameConstant.Compate.ESG.toString().equals(fieldName)) {
 
-										this.saveChangeText(fieldName + CHANGE_ONECMDB_NOTIFICATION, content,
-												changeItem);
+										this.saveESGChangeText(fieldName, content, changeItem);
 
 									} else {
 

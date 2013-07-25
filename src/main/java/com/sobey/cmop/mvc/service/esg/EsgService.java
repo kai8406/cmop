@@ -241,10 +241,41 @@ public class EsgService extends BaseSevcie {
 	private List<EsgRuleItem> wrapEsgRuleItemToList(NetworkEsgItem networkEsgItem, String[] protocols,
 			String[] portRanges, String[] visitSources, String[] visitTargets) {
 		List<EsgRuleItem> esgRuleItems = new ArrayList<EsgRuleItem>();
-		for (int i = 0; i < protocols.length; i++) {
-			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i],
-					visitTargets[i]);
+
+		int protocolSize = protocols.length;
+
+		if (protocolSize == 1) {
+
+			StringBuilder portRangeSB = new StringBuilder();
+			StringBuilder sourceSB = new StringBuilder();
+			StringBuilder targetRangeSB = new StringBuilder();
+
+			for (String portRange : portRanges) {
+				portRangeSB.append(portRange).append(",");
+			}
+
+			for (String visitSource : visitSources) {
+				sourceSB.append(visitSource).append(",");
+			}
+
+			for (String visitTarget : visitTargets) {
+				targetRangeSB.append(visitTarget).append(",");
+			}
+
+			EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[0], portRangeSB.toString().substring(0,
+					portRangeSB.toString().length() - 1), sourceSB.toString().substring(0,
+					sourceSB.toString().length() - 1), targetRangeSB.toString().substring(0,
+					targetRangeSB.toString().length() - 1));
 			esgRuleItems.add(esgRuleItem);
+
+		} else {
+
+			for (int i = 0; i < protocolSize; i++) {
+
+				EsgRuleItem esgRuleItem = new EsgRuleItem(networkEsgItem, protocols[i], portRanges[i], visitSources[i],
+						visitTargets[i]);
+				esgRuleItems.add(esgRuleItem);
+			}
 		}
 
 		return esgRuleItems;

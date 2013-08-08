@@ -309,7 +309,18 @@ public class RedmineUtilService extends BaseSevcie {
 
 					// 只有当ip不为0.0.0.0时才插入IP(即资源本身有IP时,像DNS,ES3这些没有IP的资源将不显示ip)
 					if (!IpPoolConstant.DEFAULT_IPADDRESS.equals(resources.getIpAddress())) {
-						content.append("(" + resources.getIpAddress() + ")");
+
+						String remark = "";
+						// 增加ECS的备注,以便于工单IP的替换.
+						if (ResourcesConstant.ServiceType.ECS.toInteger().equals(serviceType)) {
+							ComputeItem computeItem = comm.computeService.getComputeItem(resources.getServiceId());
+							remark = computeItem.getRemark();
+							content.append("(" + remark + " - " + resources.getIpAddress() + ")");
+						} else {
+
+							content.append("(" + resources.getIpAddress() + ")");
+						}
+
 					}
 
 					content.append(BLANK + BLANK).append("变更描述:" + BLANK).append(change.getDescription())

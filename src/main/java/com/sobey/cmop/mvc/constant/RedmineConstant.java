@@ -54,7 +54,7 @@ public class RedmineConstant {
 	 * Redmine中的指派人
 	 * 
 	 * <pre>
-	 * 4-余波
+	 * 4-朱少龙
 	 * 5-艾磊
 	 * 6-杨飞
 	 * 7-胡光俊
@@ -67,7 +67,7 @@ public class RedmineConstant {
 	 */
 	public enum Assignee implements ICommonEnum {
 
-		陆俊(3), 余波(4), 艾磊(5), 杨飞(6), 胡光俊(7), 李乾星(8), 苏颖(10);
+		陆俊(3), 朱少龙(4), 艾磊(5), 杨飞(6), 胡光俊(7), 李乾星(8), 苏颖(10);
 
 		public static final Map<Integer, String> map = Maps.newLinkedHashMap();
 

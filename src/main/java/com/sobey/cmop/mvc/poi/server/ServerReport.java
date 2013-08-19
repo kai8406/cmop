@@ -20,7 +20,7 @@ import com.sobey.cmop.mvc.service.onecmdb.OneCmdbService;
  */
 public class ServerReport {
 
-	private static String RESOURCE_TYPE = "Controller";
+	private static String RESOURCE_TYPE = "Switch";
 
 	/**
 	 * @param args
@@ -61,10 +61,7 @@ public class ServerReport {
 			Server server = new Server();
 
 			CiBean ciBean = OneCmdbService.findCiBeanByAlias(alias);
-
-			for (ValueBean valueBean : ciBean.fetchAttributeValueBeans("HostName")) {
-				server.setHostName(valueBean.getValue());
-			}
+			server.setHostName(ciBean.getDisplayName());
 
 			for (ValueBean valueBean : ciBean.fetchAttributeValueBeans("SN")) {
 				server.setSn(valueBean.getValue());
